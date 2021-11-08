@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -28,14 +29,14 @@ export class ReviewController {
 
   @Post()
   @HttpCode(201)
-  create() {
-    return this.reviewService.create();
+  create(@Body() body: any) {
+    return this.reviewService.create(body);
   }
 
   @Patch(':id')
   @HttpCode(200)
-  update(@Param('id') id: string) {
-    return this.reviewService.update(id);
+  update(@Param('id') id: string, @Body() body: any) {
+    return this.reviewService.update(id, body);
   }
 
   @Delete(':id')

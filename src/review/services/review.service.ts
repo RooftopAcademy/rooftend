@@ -16,11 +16,11 @@ export class ReviewService {
     };
   }
 
-  create() {
+  create(body: any) {
     return 'Review created.';
   }
 
-  update(id: string) {
+  update(id: string, body: any) {
     return `Review ${id} updated`;
   }
 
