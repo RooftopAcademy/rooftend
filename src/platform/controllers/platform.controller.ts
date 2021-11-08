@@ -24,7 +24,7 @@ export class PlatformController {
   @Get(':id')
   @HttpCode(200)
   async findOneById(@Param('id') id: string) {
-    this.platformService.findOneById(id);
+    this.platformService.findOneById(parseInt(id));
   }
 
   @Post()
@@ -36,12 +36,12 @@ export class PlatformController {
   @Patch(':id')
   @HttpCode(200)
   async update(@Param('id') id: string, @Body() body) {
-    this.platformService.update(id, body);
+    this.platformService.update(parseInt(id), body);
   }
 
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {
-    this.platformService.remove(id);
+    this.platformService.remove(parseInt(id));
   }
 }
