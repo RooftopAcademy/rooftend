@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { AdressesService } from '../services/adresses.service';
 
 @Controller('adresses')
@@ -15,7 +15,7 @@ export class AdressesController {
     @Get(':id')
     @HttpCode(200)
     public find(@Param('id') id){
-        return `${id}`
+        return this.addressesService.find(id)
     }
 
     @Patch()
@@ -32,9 +32,8 @@ export class AdressesController {
     
     @Post()
     @HttpCode(201)
-    public created() {
-        return this.addressesService.create()
+    public created(@Body() body) {
+        return this.addressesService.create(body)
     }
-
 
 }
