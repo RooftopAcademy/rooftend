@@ -10,7 +10,7 @@ import {
 
 import { ReviewService } from '../services/review.service';
 
-@Controller('review')
+@Controller('reviews')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
