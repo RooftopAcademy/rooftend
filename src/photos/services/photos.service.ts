@@ -11,7 +11,18 @@ export class PhotosService {
   }
 
   findOne(id: number) {
-    return `Photo id= ${id}`;
+    return `{
+      id: ${id},
+      created_at: Date,
+      url: varchar (200),
+      width: smallint,
+      height: smallint,
+      size: integer,
+      subject: integer,
+      subject_type: varchar (200),
+      redirect_url: varchar(200)
+    }
+    `;
   }
 
   update(id: number, body: any) {
