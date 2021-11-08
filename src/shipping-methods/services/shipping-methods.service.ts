@@ -11,12 +11,24 @@ export class ShippingMethodsService {
 
   findAll() {
     //return this.shippingMethodsRepo.find();
-    return "Imagina que tienes muchos Métodos de Envío";
+    return [{
+      id: 1,
+      name: "",
+      photoId: 1
+    },{
+      id: 2,
+      name: "",
+      photoId: 2
+    }];
   }
 
   findOne(id: number) {
     //return this.shippingMethodsRepo.findOne(id);
-    return "Imagina que tienes un Método de Envío";
+    return {
+      id: id,
+      name: "",
+      photoId: 1
+    };
   }
 
   getCount() {
