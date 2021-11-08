@@ -15,7 +15,7 @@ export class PhonesService {
   }
 
   update(id: number, phone: any): string {
-    return `Update phone with id: ${id}`;
+    return `Update phone with id: ${id} and ${phone}`;
   }
 
   delete(id: number): string {
