@@ -28,8 +28,8 @@ export class FavoritesService {
     return this.favoritesRepo.save(favorite);
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
-    return true;
+    return;
   }
 }
