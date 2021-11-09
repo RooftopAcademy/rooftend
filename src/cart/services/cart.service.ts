@@ -10,7 +10,7 @@ export class CartService {
     }
 
     findAll(){
-        return [];
+        return this.cartRepo.find();
     }
 
     findOne(id : number ){
@@ -20,6 +20,8 @@ export class CartService {
     create(body : any){
         const newCart = new Cart();
         newCart.userId = body.userId;
+        newCart.ammount = body.ammount;
+        newCart.currencyCode = body.currencyCode;
         return this.cartRepo.save(newCart);
     }
 
