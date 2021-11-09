@@ -6,27 +6,27 @@ export class NotificationController {
     constructor(private notificationServices: NotificationService) { };
 
     @Get()
-    getAll() {
+    getAll(): Promise<Notification[]> {
         return this.notificationServices.findAll();
     };
 
     @Get(':id')
-    getOne(@Param('id') id: number) {
+    getOne(@Param('id') id: number): Promise<Notification> {
         return this.notificationServices.findOne(id);
     };
 
     @Post()
-    create(@Body() body: any) {
+    create(@Body() body: any): Promise<Notification[]> {
         return this.notificationServices.create(body);
     };
 
     @Put(':id')
-    update(@Param('id') id: number, @Body() body: any) {
+    update(@Param('id') id: number, @Body() body: any): Promise<Notification> {
         return this.notificationServices.update(id, body);
     };
 
     @Delete(':id')
-    delete(@Param('id') id: number) {
+    delete(@Param('id') id: number): Promise<Boolean> {
         return this.notificationServices.delete(id);
     };
 }

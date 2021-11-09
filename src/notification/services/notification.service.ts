@@ -6,21 +6,21 @@ import { Repository } from 'typeorm';
 export class NotificationService {
     constructor(@InjectRepository(Notification) private notificationRepo: Repository<Notification>) { };
 
-    findAll() {
+    findAll(): Promise<Notification[]> {
         return this.notificationRepo.find();
     };
 
-    findOne(id: number) {
+    findOne(id: number): Promise<Notification> {
         return this.notificationRepo.findOne(id);
     };
 
-    create(body: any) {
+    create(body: any): Promise<Notification[]> {
         const notification = this.notificationRepo.create(body);
 
         return this.notificationRepo.save(notification);
     };
 
-    async update(id: number, body: any) {
+    async update(id: number, body: any): Promise<Notification> {
         const notofication = await this.notificationRepo.findOne(id);
 
         if(!notofication) {
@@ -32,7 +32,7 @@ export class NotificationService {
         return this.notificationRepo.save(notofication);
     };
 
-    async delete(id: number) {
+    async delete(id: number): Promise<Boolean> {
         await this.notificationRepo.delete(id);
 
         return true;
