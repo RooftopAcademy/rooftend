@@ -79,6 +79,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - [Santiago Mansilla](https://github.com/MansillaSantiago)
 - [Victor Moreno](https://github.com/Viterr)
 - [Gonzalo Bordón](https://github.com/ChachoPacho)
+- [Lucas Abba](https://github.com/Lucas-Abba) 
 
 ## License
 
