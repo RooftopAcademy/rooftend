@@ -1,29 +1,47 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Param,Post,Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  Patch,
+} from '@nestjs/common';
+
+import { CategoriesService } from '../services/categories.service';
 
 @Controller('categories')
 export class CategoriesController {
-    @Get('')
+
+    constructor (private readonly categoriesService: CategoriesService) {}
+
+    @Get()
     getAll(){
-        return []
+        return this.categoriesService.getAll();
     }
     @Get(':id')
-    getOne(@Param('id') id:number){
-        return id;
+    @HttpCode(201)
+    findOneById(@Param('id') id:number){
+        return this.categoriesService.findOneById(id);
     }
 
     @Post()
-    create(@Body() body: any){
-        return body;
+    @HttpCode(201)
+    create(@Body() body){
+        return this.categoriesService.create(body);
     }
 
-    @Put(':id')
+    @Patch(':id')
+    @HttpCode(200)
     update(@Param('id') id:number, @Body() body:any){
-        return body
+        return this.categoriesService.update(id,body)
     }
     @Delete(':id')
+    @HttpCode(204)
     delete(@Param('id') id:number){
-        return true;
+        return this.categoriesService.delete(id);
     }
 }

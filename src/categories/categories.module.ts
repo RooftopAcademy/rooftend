@@ -4,6 +4,6 @@ import { CategoriesController } from './categories/controllers/categories.contro
 
 @Module({
   providers: [CategoriesService],
-  controllers: [CategoriesController]
+  controllers: [CategoriesController],
 })
 export class CategoriesModule {}
