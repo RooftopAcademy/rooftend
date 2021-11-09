@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { PhotosModule } from './photos/photos.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { PhotosEntity } from './photos/models/photos.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [],
+      entities: [PhotosEntity],
       synchronize: true,
     }),
     PhotosModule,
