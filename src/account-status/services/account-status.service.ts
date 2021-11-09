@@ -1,29 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { AccountStatusEntity } from '../model/account-status.entity';
-import { AccountStatus } from '../model/account-status.interface';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { AccountStatusEntity } from '../models/account-status.entity';
+import { AccountStatus } from '../models/account-status.interface';
 
 @Injectable()
 export class AccountStatusService {
-        constructor(
-            @InjectRepository(AccountStatusEntity)
-            private readonly accountStatusRepository: Repository<AccountStatusEntity>
-        ) { }
+    constructor(
+        @InjectRepository(AccountStatusEntity)
+        private readonly accountStatusRepository: Repository<AccountStatusEntity>
+    ) { }
 
-    createStatus(accountStatus: AccountStatus) {
+    createStatus(accountStatus: AccountStatus): Promise<AccountStatus> {
         return this.accountStatusRepository.save(accountStatus);
     }
 
-    findAllStatus() {
+    findAllStatus(): Promise<AccountStatus[]> {
         return this.accountStatusRepository.find();
     }
 
-    uptateStatus(id: number, accountStatus: AccountStatus) {
+    updateStatus(id: number, accountStatus: AccountStatus): Promise<UpdateResult> {
         return this.accountStatusRepository.update(id, accountStatus);
     }
 
-    deleteStatus(id: number) {
+    deleteStatus(id: number): Promise<DeleteResult> {
         return this.accountStatusRepository.delete(id);
     }
 }
