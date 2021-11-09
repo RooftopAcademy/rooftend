@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Delete, HttpCode } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
@@ -7,26 +7,46 @@ export class NotificationController {
 
     @Get()
     getAll(): Promise<Notification[]> {
-        return this.notificationServices.findAll();
+        try {
+            return this.notificationServices.findAll();
+        } catch(error) {
+            console.log(`Error: ${error}`);
+        };
     };
 
     @Get(':id')
     getOne(@Param('id') id: number): Promise<Notification> {
-        return this.notificationServices.findOne(id);
+        try {
+            return this.notificationServices.findOne(id);
+        } catch(error) {
+            console.log(`Error: ${error}`);
+        };
     };
 
     @Post()
     create(@Body() body: any): Promise<Notification[]> {
-        return this.notificationServices.create(body);
+        try {
+            return this.notificationServices.create(body);
+        } catch(error) {
+            console.log(`Error: ${error}`);
+        };
     };
 
     @Put(':id')
     update(@Param('id') id: number, @Body() body: any): Promise<Notification> {
-        return this.notificationServices.update(id, body);
+        try {
+            return this.notificationServices.update(id, body);
+        } catch(error) {
+            console.log(`Error: ${error}`);
+        };
     };
 
     @Delete(':id')
     delete(@Param('id') id: number): Promise<Boolean> {
-        return this.notificationServices.delete(id);
+        try {
+            return this.notificationServices.delete(id);
+        } catch(error) {
+            console.log(`Error: ${error}`);
+        };
     };
 }
