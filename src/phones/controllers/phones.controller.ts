@@ -29,8 +29,8 @@ export class PhonesController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() bodyParams: any) {
-    return this.update(id, bodyParams);
+  update(@Param('id') id: number, @Body() bodyParams: any) {
+    return this.phonesService.update(id, bodyParams);
   }
 
   @Delete(':id')
