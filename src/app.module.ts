@@ -17,6 +17,7 @@ import { PhotosEntity } from './photos/models/photos.entity';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [PhotosEntity],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     PhotosModule,
