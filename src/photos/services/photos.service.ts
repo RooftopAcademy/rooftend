@@ -20,7 +20,7 @@ export class PhotosService {
     return from(this.photosRepository.find());
   }
 
-  findOne(id: number): Observable<PhotosEntity> {
+  findOne(id: string | number): Observable<PhotosEntity> {
     return from(this.photosRepository.findOne(id));
   }
 
