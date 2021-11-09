@@ -7,8 +7,10 @@ export class PhotosEntity {
 
   @Column({
     type: 'timestamp with time zone',
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @Column({ type: 'varchar', length: 200 })
   url: string;
@@ -22,12 +24,12 @@ export class PhotosEntity {
   @Column({ type: 'smallint' })
   size: number;
 
-  @Column({ type: 'integer' })
-  subject_id: number;
+  @Column({ type: 'integer', name: 'subject_id' })
+  subjectId: number;
 
-  @Column({ type: 'varchar', length: 100 })
-  subject_type: string;
+  @Column({ type: 'varchar', length: 100, name: 'subject_type' })
+  subjectType: string;
 
-  @Column({ type: 'varchar', length: 200 })
-  redirect_url: string;
+  @Column({ type: 'varchar', length: 200, name: 'redirect_url' })
+  redirectUrl: string;
 }
