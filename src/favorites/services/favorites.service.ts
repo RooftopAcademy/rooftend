@@ -25,7 +25,7 @@ export class FavoritesService {
     return this.favoritesRepo.find();
   }
 
-  getById(id: number): Promise<Favorite> {
+  getById(id: number | string): Promise<Favorite> {
     return this.favoritesRepo.findOne(id);
   }
 
@@ -34,13 +34,13 @@ export class FavoritesService {
     return this.favoritesRepo.save(newFavorite);
   }
 
-  async update(id: number, body: any): Promise<Favorite> {
+  async update(id: number | string, body: any): Promise<Favorite> {
     const favorite = await this.favoritesRepo.findOne(id);
     this.favoritesRepo.merge(favorite, body);
     return this.favoritesRepo.save(favorite);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number | string): Promise<void> {
     await this.favoritesRepo.delete(id);
     return;
   }

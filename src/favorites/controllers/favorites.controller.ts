@@ -45,7 +45,7 @@ export class FavoritesController {
 
   @Get(':id')
   @HttpCode(200)
-  getById(@Param('id') id: number) {
+  getById(@Param('id') id: number | string) {
     return this.favoritesService.getById(id);
   }
 
@@ -57,13 +57,13 @@ export class FavoritesController {
 
   @Put(':id')
   @HttpCode(204)
-  update(@Param('id') id: number, @Body() body: any) {
+  update(@Param('id') id: number | string, @Body() body: any) {
     return this.favoritesService.update(id, body);
   }
 
   @Delete(':id')
   @HttpCode(200)
-  delete(@Param('id') id: number) {
+  delete(@Param('id') id: number | string) {
     return this.favoritesService.delete(id);
   }
 }
