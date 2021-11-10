@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Delete, Res, Patch } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
@@ -15,11 +15,11 @@ export class NotificationController {
     };
 
     @Get(':id')
-    getOne(@Param('id') id: number): Promise<Notification> {
+    async getOne(@Param('id') id: number, @Res() res): Promise<Notification> {
         try {
-            return this.notificationServices.findOne(id);
+            return await this.notificationServices.findOne(id);
         } catch(error) {
-            console.log(`Error: ${error}`);
+            return res.status(404).end(error.message);
         };
     };
 
@@ -32,7 +32,7 @@ export class NotificationController {
         };
     };
 
-    @Put(':id')
+    @Patch(':id')
     update(@Param('id') id: number, @Body() body: any): Promise<Notification> {
         try {
             return this.notificationServices.update(id, body);
