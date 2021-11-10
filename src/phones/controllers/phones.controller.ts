@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { PhonesService } from '../services/phones.service';
 
@@ -28,7 +28,7 @@ export class PhonesController {
     return this.phonesService.create(bodyParams);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(@Param('id') id: number, @Body() bodyParams: any) {
     return this.phonesService.update(id, bodyParams);
   }
