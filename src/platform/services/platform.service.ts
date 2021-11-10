@@ -14,8 +14,8 @@ export class PlatformService {
     return this.platformRepository.find();
   }
 
-  findOneById(id: number): Promise<Platform> {
-    return this.platformRepository.find({ id })[0];
+  findOneById(id: number | string): Promise<Platform> {
+    return this.platformRepository.findOne(id);
   }
 
   create(platform: Platform): boolean {
