@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
 
 import { PlatformService } from '../services/platform.service';
@@ -18,13 +19,20 @@ export class PlatformController {
   @Get()
   @HttpCode(200)
   async findAll() {
-    this.platformService.findAll();
+    return await this.platformService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  async findOneById(@Param('id') id: string) {
-    this.platformService.findOneById(parseInt(id));
+  async findOne(@Param('id') id: number | string, @Res() response) {
+    this.platformService
+      .findOneById(id)
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        return response.status(400).end(err.message);
+      });
   }
 
   @Post()
