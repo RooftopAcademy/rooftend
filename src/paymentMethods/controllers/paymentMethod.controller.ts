@@ -10,16 +10,20 @@ import PaymentMethodsService from '../services/paymentMethod.service';
 @Controller('payment-methods')
 export class PaymentMethodsController {
 
-    constructor(private readonly paymentMethodService: PaymentMethodsService) {}
+    constructor(private readonly service: PaymentMethodsService) {}
 
     @Get()
-        all(): PaymentMethod[] {
-            return this.paymentMethodService.all();
+        all(@Res() response) : Promise<PaymentMethod[]> {
+            const payment_methods = this.service.all(); 
+
+            if (payment_methods) return payment_methods;
+
+            return response.status(404).end();
         }
 
     @Get(':id')
         async find(@Param(':id') id : number, @Res() response) {
-            const payment_method : PaymentMethod = await this.paymentMethodService.find(id);
+            const payment_method : PaymentMethod = await this.service.find(id);
 
             if (payment_method) return payment_method;
 
@@ -29,18 +33,18 @@ export class PaymentMethodsController {
     @Post()
     @HttpCode(201)
         create(@Body() paymentMethod: PaymentMethod) {
-            return this.paymentMethodService.create(paymentMethod);
+            return this.service.create(paymentMethod);
         }
 
     @Put(':id')
     @HttpCode(204)
         update(@Param('id') id: number, @Body() paymentMethod: PaymentMethod) {
-            return this.paymentMethodService.update(id, paymentMethod);
+            return this.service.update(id, paymentMethod);
         }
 
     @Delete(':id')
     @HttpCode(200)
         delete(@Param('id') id: number) {
-            return this.paymentMethodService.delete(id);
+            return this.service.delete(id);
         }
 }
