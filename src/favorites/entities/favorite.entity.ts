@@ -1,13 +1,34 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Favorite {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint',
+  })
   id: number;
 
-  @Column()
+  @Column({
+    unsigned: true,
+    type: 'bigint',
+  })
+  user_id: number;
+
+  @Column({
+    unsigned: true,
+    type: 'bigint',
+  })
   item_id: number;
 
-  @Column()
-  user_id: number;
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }
