@@ -1,23 +1,26 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
-@Entity(/*{name: "carts"}*/)
+@Entity({name: "carts"})
 export class Cart{
     /*@PrimaryColumn()*/
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true, type: 'bigint'})
     id : number;
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
-    createdAt: Date;
+    /*@Column('timestamp with time zone', { name: 'created_at', nullable: false, default: () => '((CURRENT_TIMESTAMP))' })  */
+    @CreateDateColumn({name: 'created_at', nullable: false, type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP'})
+    created_at: Date;
 
-    @Column({type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
-    updatedAt: Date;
+    /*@Column('timestamp with time zone', { name: 'updated_at', nullable: false, default: () => 'CURRENT_TIMESTAMP' })  */
+    @UpdateDateColumn({name: 'updated_at', nullable: false, type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP'})
+    updated_at: Date;
 
-    @Column()
+    @Column({name: 'user_id', type: "bigint"})
     userId: number;
 
-    @Column()
+    /*Esta mal escrito amount pero es el nombre en la tabla*/
+    @Column({name: 'amount', type:"double precision"})
     ammount: number;
 
-    @Column("varchar", { length: 3 })
+    @Column("varchar", { length: 3 , name: 'currency_code'})
     currencyCode: string;
 }
