@@ -1,13 +1,18 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Review } from '../review.entity';
 
 import { ReviewService } from '../services/review.service';
 
@@ -17,8 +22,17 @@ export class ReviewController {
 
   @Get()
   @HttpCode(200)
-  findAll() {
-    return this.reviewService.findAll();
+  @Get('')
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ): Promise<Pagination<Review>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.reviewService.paginate({
+      page,
+      limit,
+      route: '/reviews',
+    });
   }
 
   @Get(':id')
