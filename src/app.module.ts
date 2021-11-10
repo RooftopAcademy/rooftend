@@ -4,19 +4,8 @@ import {ConfigModule} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-<<<<<<< HEAD
-import { PaymentMethodsController } from './paymentMethod.controller';
-import { PaymentMethodsService } from './paymentMethod.service';
-
-@Module({
-  imports: [PaymentMethdosModuleModule],
-  controllers: [AppController, PaymentMethodsController],
-  providers: [AppService, PaymentMethodsService],
-=======
+import { PaymentMethdosModule } from './paymentMethods/paymentMethod.module';
 import { ProfileModule } from './profile/profile.module';
-import { ProfilesController } from './profile/controllers/profiles.controller';
-import {ProfileService} from './profile/services/profile/profile.service'
-import { PaymentMethdosModuleModule } from './payment-methdos-module/payment-methdos-module.module';
 
 @Module({
   imports: [
@@ -31,10 +20,10 @@ import { PaymentMethdosModuleModule } from './payment-methdos-module/payment-met
       autoLoadEntities : true,
       // synchronize: true,
     }),
-    ProfileModule
+    ProfileModule, PaymentMethdosModule
   ],
   controllers: [AppController],
   providers: [AppService],
->>>>>>> 8fa7bfaef7fd2d45b87679e48a2f29927df654bd
 })
+
 export class AppModule {}
