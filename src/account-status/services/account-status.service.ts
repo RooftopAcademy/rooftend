@@ -19,6 +19,10 @@ export class AccountStatusService {
         return this.accountStatusRepository.find();
     }
 
+    findOneStatus(id: number): Promise<AccountStatus> {
+        return this.accountStatusRepository.findOne(id)
+    }
+
     updateStatus(id: number, accountStatus: AccountStatus): Promise<UpdateResult> {
         return this.accountStatusRepository.update(id, accountStatus);
     }
