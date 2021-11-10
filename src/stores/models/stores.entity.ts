@@ -2,21 +2,41 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('stores')
 export class StoresEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    name: 'id',
+    type: 'bigint',
+  })
   id: number;
 
-  @Column()
+  @Column({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
-  @Column()
+  @Column({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
-  @Column()
+  @Column({
+    name: 'brand_id',
+    type: 'bigint',
+  })
   brandId: number;
 
-  @Column()
+  @Column({
+    name: 'user_id',
+    type: 'bigint',
+  })
   userId: number;
 
-  @Column()
+  @Column({
+    name: 'banner_id',
+    type: 'bigint',
+  })
   bannerId: number;
 }
