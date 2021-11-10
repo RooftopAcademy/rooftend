@@ -4,11 +4,23 @@ import { Repository } from 'typeorm';
 
 import { Favorite } from '../entities/favorite.entity';
 
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class FavoritesService {
   constructor(
-    @InjectRepository(Favorite) private favoritesRepo: Repository<Favorite>,
+    @InjectRepository(Favorite)
+    private readonly favoritesRepo: Repository<Favorite>,
   ) {}
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Favorite>> {
+    return paginate<Favorite>(this.favoritesRepo, options);
+  }
+
   getAll(): Promise<Favorite[]> {
     return this.favoritesRepo.find();
   }
