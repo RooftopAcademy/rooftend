@@ -43,7 +43,7 @@ export class FavoritesController {
     return this.favoritesService.getAll();
   }
 
-  @Get()
+  @Get(':id')
   @HttpCode(200)
   getById(@Param('id') id: number) {
     return this.favoritesService.getById(id);
