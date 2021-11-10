@@ -11,7 +11,7 @@ export class PhonesService {
   }
 
   create(phone: any): string {
-    return `Phone with id: ${phone.id}`;
+    return `Create phone with id: ${phone.id}`;
   }
 
   update(id: number, phone: any): string {
