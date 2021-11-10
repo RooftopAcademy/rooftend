@@ -4,6 +4,11 @@ import { Repository } from 'typeorm';
 import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
 import { DeleteResult } from 'typeorm/browser';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class StoresService {
@@ -11,6 +16,12 @@ export class StoresService {
     @InjectRepository(StoresEntity)
     private readonly storesRepository: Repository<StoresEntity>,
   ) {}
+
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<StoresEntity>> {
+    return paginate<StoresEntity>(this.storesRepository, options);
+  }
 
   getAll(): Promise<StoresInterface[]> {
     return this.storesRepository.find();
