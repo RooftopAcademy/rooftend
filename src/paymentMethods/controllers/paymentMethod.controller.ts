@@ -8,7 +8,7 @@ import PaymentMethod from '../paymentMethod.entity';
 import PaymentMethodsService from '../services/paymentMethod.service';
 
 @Controller('payment-methods')
-export class PaymentMethodsController {
+export default class PaymentMethodsController {
 
     constructor(private readonly service: PaymentMethodsService) {}
 
