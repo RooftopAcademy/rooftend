@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Platform } from '../entities/platform.entity';
+import { Platform } from '../platform.entity';
 
 @Injectable()
 export class PlatformService {
