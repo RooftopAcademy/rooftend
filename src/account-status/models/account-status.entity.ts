@@ -1,10 +1,16 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('account_status')
+@Entity('account_statuses')
 export class AccountStatusEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({
+        unsigned: true,
+        type: 'smallint',
+    })
     id: number;
 
-    @Column()
+    @Column({
+        name: 'character varying',
+        length: 10,
+    })
     name: string;
 }
