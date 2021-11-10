@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TelefonosModule } from './phones/phones.module';
+import { PhonesModule } from './phones/phones.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
@@ -20,7 +20,7 @@ import { ProfileModule } from './profile/profile.module';
       // synchronize: true,
     }),
     ProfileModule,
-    TelefonosModule,
+    PhonesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
