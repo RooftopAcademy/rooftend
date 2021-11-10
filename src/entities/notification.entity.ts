@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('notification')
 export class Notification {
     @PrimaryGeneratedColumn()
     id: Number;
