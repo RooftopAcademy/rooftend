@@ -4,10 +4,10 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
-  Res,
 } from '@nestjs/common';
 
 import { PlatformService } from '../services/platform.service';
@@ -24,14 +24,17 @@ export class PlatformController {
 
   @Get(':id')
   @HttpCode(200)
-  async findOne(@Param('id') id: number | string, @Res() response) {
-    this.platformService
+  async findOne(@Param('id') id: number | string) {
+    return this.platformService
       .findOneById(id)
       .then((data) => {
+        if (!data) {
+          throw new NotFoundException('Platform not found');
+        }
         return data;
       })
       .catch((err) => {
-        return response.status(400).end(err.message);
+        return err.message;
       });
   }
 
