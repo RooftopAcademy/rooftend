@@ -8,6 +8,12 @@ export class Review {
   @Column({ name: 'user_id', type: 'bigint', nullable: false })
   userId: number;
 
+  @Column({ name: 'subject_id', type: 'bigint', nullable: false })
+  subjectId: number;
+
+  @Column({ name: 'subject_type', type: 'varchar', length: 5 })
+  subjectType: string;
+
   @Column({ name: 'comment', type: 'varchar', length: 500, nullable: false })
   comment: string;
 
@@ -20,4 +26,11 @@ export class Review {
     nullable: false,
   })
   createdAt: Date;
+
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp with time zone',
+    nullable: false,
+  })
+  updatedAt: Date;
 }
