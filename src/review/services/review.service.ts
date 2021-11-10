@@ -27,22 +27,22 @@ export class ReviewService {
   create(body: any) {
     // it would return the created entity
     return {
-        id: 4,
-        title: 'title 4',
-        content: 'content 4',
-        user: {},
-        item: {},
+      id: 4,
+      title: 'title 4',
+      content: 'content 4',
+      user: {},
+      item: {},
     };
   }
 
   update(id: string, body: any) {
     // it would return the updated entity
     return {
-        id: 1,
-        title: 'updated title',
-        content: 'updated content',
-        user: {},
-        item: {},
+      id: 1,
+      title: 'updated title',
+      content: 'updated content',
+      user: {},
+      item: {},
     };
   }
 
