@@ -1,34 +1,67 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('notification')
+@Entity({
+    name: 'notification',
+})
 export class Notification {
-    @PrimaryGeneratedColumn()
-    id: Number;
+    @PrimaryGeneratedColumn({
+        unsigned: true,
+        type: 'bigint',
+    })
+    id: number;
 
-    @Column()
-    user_id: Number
+    @Column({
+        name: 'user_id',
+        unsigned: true,
+        type: 'bigint',
+    })
+    user_id: number
 
-    @Column()
-    action_url: String
+    @Column({
+        name: 'action_url',
+        type: 'character varying',
+        length: 100
+    })
+    action_url: string
 
-    @Column()
-    title: String
+    @Column({
+        name: 'title',
+        type: 'character varying',
+        length: 20
+    })
+    title: string
 
-    @Column()
-    description: String
+    @Column({
+        name: 'description',
+        type: 'character varying',
+        length: 120
+    })
+    description: string
 
-    @Column()
-    image_url: String
+    @Column({
+        name: 'image_url',
+        type: 'character varying',
+        length: 100
+    })
+    image_url: string
 
-    @Column()
+    @Column({
+        name: 'created_at',
+    })
     created_at: Date
 
-    @Column()
+    @Column({
+        name: 'sent_at'
+    })
     sent_at: Date
 
-    @Column()
+    @Column({
+        name: 'read_at'
+    })
     read_at: Date
 
-    @Column()
+    @Column({
+        name: 'deleted_at'
+    })
     deleted_at: Date
 }
