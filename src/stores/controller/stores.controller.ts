@@ -7,6 +7,7 @@ import {
   Param,
   HttpCode,
   Body,
+  Res,
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 
@@ -25,8 +26,15 @@ export class StoresController {
 
   @Get()
   @HttpCode(200)
-  getOne(@Param('id') id: number): Promise<StoresInterface> {
-    return this.storesService.getOne(id);
+  getOne(@Param('id') id: number, @Res() res) {
+    this.storesService
+      .getOne(id)
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        return res.status(404).end(err.message);
+      });
   }
 
   @Post()
