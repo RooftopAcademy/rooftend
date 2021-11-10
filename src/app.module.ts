@@ -3,6 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PhotosEntity } from './photos/models/photos.entity';
+import { PhotosModule } from './photos/photos.module';
+import { Profile } from './profile/profile.entity';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -14,11 +18,12 @@ import { AppService } from './app.service';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [PhotosEntity],
+      entities: [PhotosEntity, Profile],
       autoLoadEntities: true,
       synchronize: true,
     }),
     PhotosModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
