@@ -15,21 +15,28 @@ export class AccountStatusController {
 
     @Get()
     @HttpCode(200)
-    findAll(): Promise<AccountStatus[]> {
-        return this.accountStatusService.findAllStatus();
+    async findAll(): Promise<AccountStatus[]> {
+        return await this.accountStatusService.findAllStatus();
+    }
+
+
+    @Get(':id')
+    @HttpCode(200)
+    async findOne(@Param('id') id: number): Promise<AccountStatus> {
+        return await this.accountStatusService.findOneStatus(id);
     }
 
     @Put(':id')
     @HttpCode(200)
-    uptade(
+    async update(
         @Param('id') id: number,
         @Body() accountStatus: AccountStatus): Promise<UpdateResult> {
-        return this.accountStatusService.updateStatus(id, accountStatus)
+        return await this.accountStatusService.updateStatus(id, accountStatus)
     }
 
     @Delete(':id')
-    @HttpCode(204)
-    dalete(@Param('id') id: number): Promise<DeleteResult> {
-        return this.accountStatusService.deleteStatus(id)
+    @HttpCode(200)
+    async delete(@Param('id') id: number): Promise<DeleteResult> {
+        return await this.accountStatusService.deleteStatus(id)
     }
 }
