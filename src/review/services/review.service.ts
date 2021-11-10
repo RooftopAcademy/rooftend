@@ -1,41 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Review } from '../review.entity';
 
 @Injectable()
 export class ReviewService {
-  findAll() {
-    return [
-      {
-        id: 1,
-        title: 'title',
-        content: 'content',
-        user: {},
-        item: {},
-      },
-      {
-        id: 2,
-        title: 'title 2',
-        content: 'content 2',
-        user: {},
-        item: {},
-      },
-      {
-        id: 3,
-        title: 'title 3',
-        content: 'content 3',
-        user: {},
-        item: {},
-      },
-    ];
+  constructor(
+    @InjectRepository(Review)
+    private readonly reviewRepository: Repository<Review>,
+  ) {}
+
+  async findAll(): Promise<Review[]> {
+    return this.reviewRepository.find();
   }
 
-  findOne(id: string) {
-    return {
-      id: id,
-      title: 'title',
-      content: 'content',
-      user: {},
-      item: {},
-    };
+  async findOne(id: string | number): Promise<Review> {
+    const review: Review | undefined = await this.reviewRepository.findOne(id);
+
+    if (!review) {
+      throw new NotFoundException(`Review with id ${id} not found.`);
+    }
+
+    return review;
   }
 
   create(body: any) {
