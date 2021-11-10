@@ -6,26 +6,35 @@ import {
   Param,
   Post,
   Body,
-  Put,
   Delete,
   Patch,
+  Req,
+  Res,
 } from '@nestjs/common';
-
+import { Request } from 'express';
+import categories from '../mock/categories';
 import { CategoriesService } from '../services/categories.service';
+
 
 @Controller('categories')
 export class CategoriesController {
 
-    constructor (private readonly categoriesService: CategoriesService) {}
-
+   public constructor (private readonly categoriesService: CategoriesService) {}
     @Get()
-    getAll(){
-        return this.categoriesService.getAll();
+    public index(@Req() req : Request) {
+    return this.categoriesService.getAll()
     }
+   
     @Get(':id')
     @HttpCode(201)
-    findOneById(@Param('id') id:number){
-        return this.categoriesService.findOneById(id);
+    public findOneById(@Param('id') id:number | string){
+        
+        // this.categoriesService.findOneById(id)
+        // .then(data=>{
+        //     return data
+        // }).catch(err => {
+        //     return res.status(404).end(err.message)
+        // })
     }
 
     @Post()
@@ -41,7 +50,7 @@ export class CategoriesController {
     }
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id:number){
-        return this.categoriesService.delete(id);
+    delete(@Param('id') id:number,@Res() res){
+        res.send('ok')
     }
 }

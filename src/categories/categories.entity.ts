@@ -1,12 +1,24 @@
-/* eslint-disable prettier/prettier */
-import{Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
-export class Categories {
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-    @PrimaryGeneratedColumn()
-    id : number;
+@Entity('categories')
+export class Category {
 
-    @Column()
-    name : string;
+  @PrimaryGeneratedColumn({
+    unsigned : true,
+    type : 'smallint'
+  })
+  id: number
+  
+  @Column({
+    type : 'character varying',
+    length  : 100
+  })
+  name : string
+
+  @Column({
+      name :'category_id'
+  })
+  category_id : string
+
 }
