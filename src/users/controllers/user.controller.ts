@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Post, Body, Patch,Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch,Delete,
+Query,ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
 export class UserController {
-    constructor(private userService: UserService){
+    constructor(private readonly userService: UserService){
 
     }
 
@@ -11,6 +12,19 @@ export class UserController {
     getAll(){
         return this.userService.findAll();
     }
+
+    @Get()
+    findAll(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.userService.paginate({
+      page,
+      limit,
+      route: '/users',
+    });
+  }
 
     @Get(':id')
     getOne(@Param('id') id:number ){
