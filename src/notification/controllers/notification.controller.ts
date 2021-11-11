@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Delete, Res, Patch, Query } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { Body, Controller, Get, Param, Post, Put, Delete, Res, Query } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
@@ -13,7 +12,7 @@ export class NotificationController {
         try {
             //return this.notificationServices.findAll();
             limit = limit > 100 ? 100: limit;
-            return this.notificationServices.paginate({page, limit, route: 'http://localhost:3000/notification'});
+            return this.notificationServices.paginate({page, limit, route: '/notification'});
         } catch(error) {
             console.log(`Error: ${error}`);
         };
