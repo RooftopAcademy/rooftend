@@ -32,7 +32,7 @@ export class FavoritesController {
     return this.favoritesService.paginate({
       page,
       limit,
-      route: `localhost:3000/favorites`,
+      route: `/favorites`,
     });
   }
 
