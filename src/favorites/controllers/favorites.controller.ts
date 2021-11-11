@@ -36,12 +36,6 @@ export class FavoritesController {
     });
   }
 
-  @Get()
-  @HttpCode(200)
-  public getAll() {
-    return this.favoritesService.getAll();
-  }
-
   @Get(':id')
   public async getById(@Param('id') id: number | string, @Res() res: Response) {
     const response = await this.favoritesService.getById(id);
