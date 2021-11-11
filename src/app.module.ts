@@ -6,8 +6,6 @@ import { AppService } from './app.service';
 import { FavoritesModule } from './favorites/favorites.module';
 
 import { ProfileModule } from './profile/profile.module';
-import { ProfilesController } from './profile/controllers/profiles.controller';
-import { ProfileService } from './profile/services/profile/profile.service';
 
 @Module({
   imports: [
@@ -25,7 +23,7 @@ import { ProfileService } from './profile/services/profile/profile.service';
     ProfileModule,
     FavoritesModule,
   ],
-  controllers: [AppController, ProfilesController],
-  providers: [AppService, ProfileService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
