@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Res } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { AccountStatus } from '../models/account-status.interface';
 import { AccountStatusService } from '../services/account-status.service';
+import { Response } from 'express';
+
 
 @Controller('account-status')
 export class AccountStatusController {
@@ -21,9 +23,11 @@ export class AccountStatusController {
 
 
     @Get(':id')
-    @HttpCode(200)
-    async findOne(@Param('id') id: number): Promise<AccountStatus> {
-        return await this.accountStatusService.findOneStatus(id);
+    async findOne(@Param('id') id: number, @Res() res: Response) {
+        const status = await this.accountStatusService.findOneStatus(id);
+        if (status)
+            return res.status(200).send(status).end();
+        return res.status(404).end('Status Not Found');
     }
 
     @Put(':id')
