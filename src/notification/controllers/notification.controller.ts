@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Put, Delete, Res, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Delete, Res, Patch, Query } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
@@ -6,9 +7,11 @@ export class NotificationController {
     constructor(private notificationServices: NotificationService) { };
 
     @Get()
-    getAll(): Promise<Notification[]> {
+    getAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10,): Promise<Pagination<Notification>> {
         try {
-            return this.notificationServices.findAll();
+            //return this.notificationServices.findAll();
+            limit = limit > 100 ? 100: limit;
+            return this.notificationServices.paginate({page, limit, route: 'http://localhost:3000/notification'});
         } catch(error) {
             console.log(`Error: ${error}`);
         };
