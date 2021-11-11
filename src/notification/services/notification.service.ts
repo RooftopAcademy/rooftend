@@ -22,15 +22,15 @@ export class NotificationService {
     };
 
     async update(id: number, body: any): Promise<Notification> {
-        const notofication = await this.notificationRepo.findOne(id);
+        const notification = await this.notificationRepo.findOne(id);
 
-        if(!notofication) {
+        if(!notification) {
             throw new Error('Notification not found.');
         };
 
-        this.notificationRepo.merge(notofication, body);
+        this.notificationRepo.merge(notification, body);
 
-        return this.notificationRepo.save(notofication);
+        return this.notificationRepo.save(notification);
     };
 
     async delete(id: number): Promise<Boolean> {
