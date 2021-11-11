@@ -24,19 +24,19 @@ export class StoresEntity {
 
   @Column({
     name: 'brand_id',
-    type: 'bigint',
+    type: 'integer',
   })
   brandId: number;
 
   @Column({
     name: 'user_id',
-    type: 'bigint',
+    type: 'integer',
   })
   userId: number;
 
   @Column({
     name: 'banner_id',
-    type: 'bigint',
+    type: 'integer',
   })
   bannerId: number;
 }
