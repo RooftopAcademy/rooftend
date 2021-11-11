@@ -4,10 +4,12 @@ import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
 export class NotificationController {
-    constructor(private notificationServices: NotificationService) { };
+    constructor(
+        private notificationServices: NotificationService
+    ) { };
 
     @Get()
-    getAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10,): Promise<Pagination<Notification>> {
+    getAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10,) : Promise<Notification[]>  {
         try {
             //return this.notificationServices.findAll();
             limit = limit > 100 ? 100: limit;
@@ -18,7 +20,7 @@ export class NotificationController {
     };
 
     @Get(':id')
-    async getOne(@Param('id') id: number, @Res() res): Promise<Notification> {
+    async getOne(@Param('id') id: number, @Res() res) {
         try {
             return await this.notificationServices.findOne(id);
         } catch(error) {
@@ -27,7 +29,7 @@ export class NotificationController {
     };
 
     @Post()
-    create(@Body() body: any): Promise<Notification[]> {
+    create(@Body() body: any) {
         try {
             return this.notificationServices.create(body);
         } catch(error) {
@@ -35,8 +37,8 @@ export class NotificationController {
         };
     };
 
-    @Patch(':id')
-    update(@Param('id') id: number, @Body() body: any): Promise<Notification> {
+    @Put(':id')
+    update(@Param('id') id: number, @Body() body: any) {
         try {
             return this.notificationServices.update(id, body);
         } catch(error) {
