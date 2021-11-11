@@ -19,18 +19,8 @@ import { brandsService } from '../services/brands.serveces';
 export class brandsController{
 
     constructor(private readonly brandService: brandsService){}
-
+       
     @Get()
-    getAll(){
-        return this.brandService.findAll();
-    }
-    
-    @Get(':id')
-    getOne(@Param('id') id:number){
-        return this.brandService.findOne(id);
-    }
-    
-    @Get('')
     async index(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
@@ -41,6 +31,11 @@ export class brandsController{
           limit, 
           route: '/brands',
         });
+    }
+
+    @Get(':id')
+    getOne(@Param('id') id:number){
+        return this.brandService.findOne(id);
     }
 
     @Post()
