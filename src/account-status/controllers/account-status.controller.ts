@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Res } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { AccountStatus } from '../models/account-status.interface';
 import { AccountStatusService } from '../services/account-status.service';
@@ -30,7 +30,7 @@ export class AccountStatusController {
         return res.status(404).end('Status Not Found');
     }
 
-    @Put(':id')
+    @Patch(':id')
     @HttpCode(200)
     async update(
         @Param('id') id: number,
