@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { 
+    IPaginationOptions, 
+    paginate, 
+    Pagination 
+} from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { Brand } from '../entities/brands.entity';
 
 @Injectable()
 export class brandsService{
-    constructor(@InjectRepository(Brand) private brandRepo: Repository<Brand>){
-
-    }
-
+    constructor(
+        @InjectRepository(Brand) 
+        private brandRepo: Repository<Brand>
+    ){}
     findOne(id: number){
         this.brandRepo.findOne(id);
     }
@@ -31,5 +36,9 @@ export class brandsService{
     async delete(id: number){
         await this.brandRepo.delete(id)
         return true;
+    }
+
+    async paginate(options: IPaginationOptions): Promise<Pagination<Brand>> {
+        return paginate<Brand>(this.brandRepo, options);
     }
 }
