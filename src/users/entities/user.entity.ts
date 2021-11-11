@@ -18,6 +18,4 @@ export class User {
   @Column()
   account_status: number;
 
-  @Column({ default: false })
-  completed: boolean;
 }

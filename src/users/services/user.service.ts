@@ -10,11 +10,11 @@ export class UserService {
     }
 
     findOne(id: number){
-        this.userRepo.findOne(id);
+        return this.userRepo.findOne(id);
     }
 
     findAll(){
-        this.userRepo.find();
+        return this.userRepo.find();
     }
 
     create(body: any){
@@ -28,8 +28,7 @@ export class UserService {
         return this.userRepo.save(user);
     }
 
-    async delete(id: number){
-        await this.userRepo.delete(id)
-        return true;
+    delete(id: number){
+        return this.userRepo.delete(id);   
     }
 }

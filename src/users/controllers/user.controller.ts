@@ -1,13 +1,13 @@
 import { Controller, Get, Param, Post, Body, Patch,Delete } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
     constructor(private userService: UserService){
 
     }
 
-    @Get('filter')
+    @Get()
     getAll(){
         return this.userService.findAll();
     }
@@ -23,12 +23,12 @@ export class UserController {
     }
 
     @Patch(':id')
-    actualizar(@Param() id:number, @Body() body:any){
+    update(@Param() id:number, @Body() body:any){
         return this.userService.update(id,body);
     }
 
     @Delete(':id')
-    eliminar(@Param('id') id:number){
+    delete(@Param('id') id:number){
         return this.userService.delete(id);
     }
 }
