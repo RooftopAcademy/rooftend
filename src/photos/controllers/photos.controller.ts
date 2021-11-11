@@ -6,10 +6,13 @@ import {
   Patch,
   Post,
   Delete,
+  Res,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PhotosInterface } from '../models/photos.interface';
 import { PhotosService } from '../services/photos.service';
-import { PhotosEntity } from '../models/photos.entity';
 import { UpdateResult, DeleteResult } from 'typeorm';
 import { Observable } from 'rxjs';
 
@@ -23,13 +26,28 @@ export class PhotosController {
   }
 
   @Get()
-  findAll(): Observable<PhotosEntity[]> {
-    return this.photosService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.photosService.paginate({
+      page,
+      limit,
+      route: '/photos',
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Observable<PhotosEntity> {
-    return this.photosService.findOne(id);
+  public findOne(@Param('id') id, @Res() res): void {
+    this.photosService
+      .findOne(id)
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        return res.status(404).end(err.message);
+      });
   }
 
   @Patch(':id')
