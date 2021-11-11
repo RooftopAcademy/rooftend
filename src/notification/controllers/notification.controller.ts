@@ -8,7 +8,10 @@ export class NotificationController {
     ) { };
 
     @Get()
-    getAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10,) : Promise<Notification[]>  {
+    getAll(
+        @Query('page') page: number = 1, 
+        @Query('limit') limit: number = 10,
+    ) : Promise<Notification[]>  {
         try {
             //return this.notificationServices.findAll();
             limit = limit > 100 ? 100: limit;
