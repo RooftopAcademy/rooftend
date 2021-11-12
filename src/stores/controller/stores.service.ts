@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
 import { DeleteResult } from 'typeorm/browser';
@@ -23,11 +23,7 @@ export class StoresService {
     return paginate<StoresEntity>(this.storesRepository, options);
   }
 
-  getAll(): Promise<StoresInterface[]> {
-    return this.storesRepository.find();
-  }
-
-  getOne(id: number): Promise<StoresInterface> {
+  getOne(id: string | number): Promise<StoresEntity> {
     return this.storesRepository.findOne(id);
   }
 
@@ -37,11 +33,9 @@ export class StoresService {
 
   async update(
     id: number,
-    newStore: StoresInterface,
-  ): Promise<StoresInterface> {
-    const store = await this.storesRepository.findOne(id);
-    this.storesRepository.merge(store, newStore);
-    return this.storesRepository.save(store);
+    store: StoresInterface,
+  ): Promise<UpdateResult> {
+    return this.storesRepository.update(id, store);
   }
 
   delete(id: number): Promise<DeleteResult> {
