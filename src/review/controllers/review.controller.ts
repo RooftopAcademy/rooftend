@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -7,11 +8,13 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { ReviewService } from '../services/review.service';
 
 @Controller('reviews')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
