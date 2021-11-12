@@ -19,8 +19,8 @@ export class StoresService {
 
   async paginate(
     options: IPaginationOptions,
-  ): Promise<Pagination<StoresEntity>> {
-    return paginate<StoresEntity>(this.storesRepository, options);
+  ): Promise<Pagination<StoresInterface>> {
+    return paginate<StoresInterface>(this.storesRepository, options);
   }
 
   getOne(id: string | number): Promise<StoresEntity> {
