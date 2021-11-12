@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   DefaultValuePipe,
   Delete,
@@ -10,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Review } from '../review.entity';
@@ -17,6 +19,7 @@ import { Review } from '../review.entity';
 import { ReviewService } from '../services/review.service';
 
 @Controller('reviews')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
