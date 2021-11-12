@@ -16,7 +16,7 @@ export class StoresEntity {
   createdAt: Date;
 
   @Column({
-    name: 'created_at',
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
