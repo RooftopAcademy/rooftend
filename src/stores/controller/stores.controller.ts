@@ -12,12 +12,13 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
 } from '@nestjs/common';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { StoresService } from './stores.service';
 import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
+import { Response } from 'express';
 
 @Controller('stores')
 export class StoresController {
@@ -37,17 +38,17 @@ export class StoresController {
     });
   }
 
-  @Get()
+  @Get(':id')
   @HttpCode(200)
-  getOne(@Param('id') id: number, @Res() res) {
-    this.storesService
-      .getOne(id)
-      .then((data) => {
-        return data;
-      })
-      .catch((err) => {
-        return res.status(404).end(err.message);
-      });
+  async getOne(
+    @Param('id') id: number,
+    @Res() res: Response,
+    ): Promise<StoresEntity | void> {
+      const data = await this.storesService.getOne(id);
+
+      if (!data) return res.status(404).end('404');
+
+      return res.status(200).send(data).end();
   }
 
   @Post()
@@ -61,7 +62,7 @@ export class StoresController {
   update(
     @Param('id') id: number,
     @Body() store: StoresInterface,
-  ): Promise<StoresInterface> {
+  ): Promise<UpdateResult> {
     return this.storesService.update(id, store);
   }
 
