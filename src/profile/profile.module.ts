@@ -9,6 +9,12 @@ import {TypeOrmModule} from '@nestjs/typeorm'
   controllers: [ProfilesController],
   imports : [
     TypeOrmModule.forFeature([Profile])
+<<<<<<< HEAD
   ]
 })
 export class ProfileModule {}
+=======
+  ] 
+})
+export class ProfileModule {}
+>>>>>>> 7691872 (Add profile module)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { 
     Controller, Get, Post, Patch, Body, Delete, 
     Req, HttpCode, Header, Redirect, Param, Res 
@@ -38,3 +39,9 @@ export class ProfilesController {
         res.send(body)
     }
 }
+=======
+import { Controller } from '@nestjs/common';
+
+@Controller('profiles')
+export class ProfilesController {}
+>>>>>>> 7691872 (Add profile module)
