@@ -14,6 +14,7 @@ export class brandsService{
         @InjectRepository(Brand) 
         private brandRepo: Repository<Brand>
     ){}
+    
     findOne(id: number){
         return this.brandRepo.findOne(id);
     }
