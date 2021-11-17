@@ -7,6 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   providers: [ProfileService],
   controllers: [ProfilesController],
+<<<<<<< HEAD
   imports: [TypeOrmModule.forFeature([Profile])],
+=======
+  imports : [
+    TypeOrmModule.forFeature([Profile])
+  ]
+>>>>>>> main
 })
 export class ProfileModule {}
