@@ -3,11 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PlatformModule } from './platform/platform.module';
-import { ReviewModule } from './review/review.module';
-import { ProfileModule } from './profile/profile.module';
 import { AccountStatusModule } from './account-status/account-status.module';
+import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
+import { ReviewModule } from './review/review.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -25,7 +25,8 @@ import { ProfileModule } from './profile/profile.module';
     ProfileModule,
     PlatformModule,
     ReviewModule,
-    AccountStatusModule
+    AccountStatusModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
