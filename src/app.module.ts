@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { NotificationModule } from './notification/notification.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
@@ -27,8 +28,9 @@ import { UsersModule } from './users/users.module';
 
     AccountStatusModule,
     FavoritesModule,
+    NotificationModule
     PlatformModule,
-    ProfileModule,    
+    ProfileModule,
     ReviewModule,
     UsersModule,
   ],
