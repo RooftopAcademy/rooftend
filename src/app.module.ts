@@ -3,9 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ReviewModule } from './review/review.module';
+import { ProfileModule } from './profile/profile.module';
 import { AccountStatusModule } from './account-status/account-status.module';
 import { ProfileModule } from './profile/profile.module';
-
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProfileModule } from './profile/profile.module';
       // synchronize: true,
     }),
     ProfileModule,
+    ReviewModule,
     AccountStatusModule
   ],
   controllers: [AppController],
