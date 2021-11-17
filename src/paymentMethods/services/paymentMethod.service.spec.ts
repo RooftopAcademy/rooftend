@@ -6,7 +6,13 @@ import PaymentMethodsService from './paymentMethod.service';
 describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;
 
-  let mockPaymentMethodRepo = {}
+  let mockPaymentMethodRepo = {
+    create: jest.fn(dto => dto),
+    save: jest.fn(paymentMethod => Promise.resolve({
+      id: Date.now(),
+      ...paymentMethod
+    }))
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,4 +28,13 @@ describe('PaymentMethodsService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should create a new payment method record and return that', async () => {
+    const dto = {name: 'Cash', type: 'CASH'};
+    expect(await service.create(dto)).toEqual({
+      id: expect.any(Number),
+      ...dto
+    })
+  })
+
 });
