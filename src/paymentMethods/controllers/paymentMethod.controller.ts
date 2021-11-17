@@ -4,25 +4,27 @@ import {
   Get, HttpCode, Param, 
   Post, Put, Res 
 } from '@nestjs/common';
+import { PaymentMethodDto } from '../create-paymentMethod.dto';
 import PaymentMethod from '../paymentMethod.entity';
 import PaymentMethodsService from '../services/paymentMethod.service';
 
-@Controller('payment-methods')
+@Controller('payment')
 export default class PaymentMethodsController {
 
     constructor(private readonly service: PaymentMethodsService) {}
 
     @Get()
-        all(@Res() response) : Promise<PaymentMethod[]> {
-            const payment_methods = this.service.all(); 
+        async all(@Res(({ passthrough: true })) response) : Promise<PaymentMethod[]> {
+            const payment_methods = await this.service.all(); 
 
             if (payment_methods) return payment_methods;
-
-            return response.status(404).end();
+            
+            return response.status(404).end()
         }
 
     @Get(':id')
-        async find(@Param(':id') id : number, @Res() response) {
+        async find(@Param('id') id : number, @Res(({ passthrough: true })) response) {
+
             const payment_method : PaymentMethod = await this.service.find(id);
 
             if (payment_method) return payment_method;
@@ -32,14 +34,14 @@ export default class PaymentMethodsController {
 
     @Post()
     @HttpCode(201)
-        create(@Body() paymentMethod: PaymentMethod) {
-            return this.service.create(paymentMethod);
+        create(@Body() body: PaymentMethodDto) {
+            return this.service.create(body);
         }
 
     @Put(':id')
     @HttpCode(204)
-        update(@Param('id') id: number, @Body() paymentMethod: PaymentMethod) {
-            return this.service.update(id, paymentMethod);
+        update(@Param('id') id: number, @Body() body: PaymentMethodDto) {
+            return this.service.update(id, body);
         }
 
     @Delete(':id')
