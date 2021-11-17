@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ReviewModule } from './review/review.module';
 import { ProfileModule } from './profile/profile.module';
+import { AccountStatusModule } from './account-status/account-status.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { ProfileModule } from './profile/profile.module';
     }),
     ProfileModule,
     ReviewModule,
+    AccountStatusModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
