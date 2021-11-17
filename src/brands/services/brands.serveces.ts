@@ -14,12 +14,13 @@ export class brandsService{
         @InjectRepository(Brand) 
         private brandRepo: Repository<Brand>
     ){}
+    
     findOne(id: number){
-        this.brandRepo.findOne(id);
+        return this.brandRepo.findOne(id);
     }
 
     findAll(){
-        this.brandRepo.find();
+        return this.brandRepo.find();
     }
 
     create(body: any){
