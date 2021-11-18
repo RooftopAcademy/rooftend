@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ReviewRepository } from '../repositories/review.repository';
 import { Review } from '../review.entity';
 
 @Injectable()
 export class ReviewService {
   constructor(
-    @InjectRepository(Review)
-    private readonly reviewRepository: Repository<Review>,
+    @InjectRepository(ReviewRepository)
+    private readonly reviewRepository: ReviewRepository,
   ) {}
 
   async findAll(): Promise<Review[]> {
