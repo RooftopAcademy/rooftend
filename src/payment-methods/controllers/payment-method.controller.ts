@@ -4,9 +4,9 @@ import {
   Get, HttpCode, Param, 
   Post, Put, Res 
 } from '@nestjs/common';
-import { PaymentMethodDto } from '../dto/create-paymentmethod.dto';
-import PaymentMethod from '../paymentmethod.entity';
-import PaymentMethodsService from '../services/paymentmethod.service';
+import { PaymentMethodDto } from '../dto/create-payment-method.dto';
+import PaymentMethod from '../payment-method.entity';
+import PaymentMethodsService from '../services/payment-method.service';
 
 @Controller('payment')
 export default class PaymentMethodsController {

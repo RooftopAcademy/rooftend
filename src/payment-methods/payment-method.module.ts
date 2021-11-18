@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import PaymentMethodsController from './controllers/paymentmethod.controller';
-import PaymentMethod from './paymentmethod.entity';
-import PaymentMethodsService from './services/paymentmethod.service';
+import PaymentMethodsController from './controllers/payment-method.controller';
+import PaymentMethod from './payment-method.entity';
+import PaymentMethodsService from './services/payment-method.service';
 
 @Module({
     providers: [PaymentMethodsService],

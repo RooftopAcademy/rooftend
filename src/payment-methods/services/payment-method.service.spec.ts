@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import PaymentMethod from '../paymentmethod.entity';
-import PaymentMethodsService from './paymentmethod.service';
+import PaymentMethod from '../payment-method.entity';
+import PaymentMethodsService from './payment-method.service';
 
 describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;

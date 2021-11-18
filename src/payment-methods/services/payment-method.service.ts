@@ -4,8 +4,8 @@
 import { Body, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import PaymentMethod from '../paymentmethod.entity';
-import { PaymentMethodDto } from '../dto/create-paymentmethod.dto';
+import PaymentMethod from '../payment-method.entity';
+import { PaymentMethodDto } from '../dto/create-payment-method.dto';
 import { throws } from 'assert';
 
 @Injectable()
