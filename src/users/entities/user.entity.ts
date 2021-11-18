@@ -1,5 +1,5 @@
-
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Review } from 'src/review/review.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -20,4 +20,7 @@ export class User {
 
   @Column({ default: false })
   completed: boolean;
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }

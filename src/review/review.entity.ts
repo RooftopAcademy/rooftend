@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Type } from 'class-transformer';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity('reviews')
 export class Review {
@@ -7,9 +14,9 @@ export class Review {
   @Type(() => Number)
   id: number;
 
-  @Column({ name: 'user_id', type: 'bigint' })
-  @Type(() => Number)
-  userId: number;
+  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, (user) => user.reviews, { eager: true })
+  user: User;
 
   @Column({ name: 'subject_id', type: 'bigint' })
   @Type(() => Number)
