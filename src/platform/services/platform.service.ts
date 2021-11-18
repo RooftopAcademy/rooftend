@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Platform } from '../platform.entity';
@@ -18,26 +18,27 @@ export class PlatformService {
     return this.platformRepository.findOne(id);
   }
 
-  create(platform: Platform): boolean {
+  create(platform: Platform) {
     try {
       this.platformRepository.save(platform);
-      return true;
-    } catch {
-      return false;
+    } catch (err) {
+      throw new BadRequestException(err.message);
     }
   }
 
-  update(id: number, platform: Platform): boolean {
+  update(id: number | string, platform: Platform) {
     try {
       this.platformRepository.update(id, platform);
-      return true;
-    } catch {
-      return false;
+    } catch (err) {
+      throw new BadRequestException(err.message);
     }
   }
 
   async remove(id: number) {
-    const platform: Platform = await this.findOneById(id);
-    this.platformRepository.remove(platform);
+    try {
+      this.platformRepository.delete(id);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 }
