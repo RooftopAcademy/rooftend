@@ -19,7 +19,7 @@ import { brandsService } from '../services/brands.serveces';
 export class brandsController{
 
     constructor(private readonly brandService: brandsService){}
-       
+
     @Get()
     async index(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
