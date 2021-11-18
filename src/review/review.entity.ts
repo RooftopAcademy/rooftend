@@ -7,9 +7,11 @@ import {
 } from 'typeorm';
 import { Type } from 'class-transformer';
 import { User } from 'src/users/entities/user.entity';
+import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
+import { PolymorphicParent } from 'typeorm-polymorphic';
 
 @Entity('reviews')
-export class Review {
+export class Review implements PolymorphicChildInterface {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   @Type(() => Number)
   id: number;
@@ -18,12 +20,15 @@ export class Review {
   @ManyToOne(() => User, (user) => user.reviews, { eager: true })
   user: User;
 
+  @PolymorphicParent(() => User)
+  subject: User;
+
   @Column({ name: 'subject_id', type: 'bigint' })
   @Type(() => Number)
-  subjectId: number;
+  entityId: number;
 
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
-  subjectType: string;
+  entityType: string;
 
   @Column({ name: 'comment', type: 'varchar', length: 500 })
   comment: string;

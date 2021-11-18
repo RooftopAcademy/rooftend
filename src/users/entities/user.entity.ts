@@ -1,5 +1,6 @@
 import { Review } from 'src/review/review.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { PolymorphicChildren } from 'typeorm-polymorphic';
 
 @Entity()
 export class User {
@@ -23,4 +24,7 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @PolymorphicChildren(() => Review, { eager: false })
+  receivedReviews: Review[];
 }
