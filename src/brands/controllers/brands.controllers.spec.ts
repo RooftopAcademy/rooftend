@@ -1,18 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { brandsController } from './brands.controllers';
+import { BrandsService } from '../services/brands.serveces';
+import { BrandsController } from './brands.controllers';
 
 describe('brandsController', () => {
-  let controller: brandsController;
+  let controller: BrandsController;
+
+  const mockBrandService = {}
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [brandsController],
-    }).compile();
+      controllers: [BrandsController],
+      providers:[BrandsService]
+    })
+    .overrideProvider(BrandsService)
+    .useValue(mockBrandService)
+    .compile();
 
-    controller = module.get<brandsController>(brandsController);
+    controller = module.get<BrandsController>(BrandsController);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should create a brand', () => {
+    expect(controller.create())
   });
 });

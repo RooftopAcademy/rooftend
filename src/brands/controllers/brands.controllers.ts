@@ -12,13 +12,13 @@ import {
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Brand } from '../entities/brands.entity';
-import { brandsService } from '../services/brands.serveces';
+import { BrandsService } from '../services/brands.serveces';
 
 
 @Controller('brands')
-export class brandsController{
+export class BrandsController{
 
-    constructor(private readonly brandService: brandsService){}
+    constructor(private readonly brandService: BrandsService){}
 
     @Get()
     async index(

@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { Brand } from '../entities/brands.entity';
 
 @Injectable()
-export class brandsService{
+export class BrandsService{
     constructor(
         @InjectRepository(Brand) 
         private brandRepo: Repository<Brand>
