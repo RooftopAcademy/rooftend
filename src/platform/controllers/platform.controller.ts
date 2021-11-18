@@ -77,8 +77,18 @@ export class PlatformController {
   @ApiBadRequestResponse({
     description: 'The platform could not be created',
   })
-  async create(@Body() createPlatformDTO: CreatePlatformDTO) {
-    return await this.platformService.create(createPlatformDTO);
+  async create(
+    @Body() createPlatformDTO: CreatePlatformDTO,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.platformService
+      .create(createPlatformDTO)
+      .then(() => {
+        response.status(200).end('Platform created');
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
   }
 
   @Patch(':id')
@@ -93,7 +103,7 @@ export class PlatformController {
   })
   update(
     @Param('id') id: string | number,
-    @Body() body,
+    @Body() createPlatformDTO: CreatePlatformDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.platformService
@@ -102,7 +112,8 @@ export class PlatformController {
         if (!data) {
           response.status(400).end('Platform not found');
         }
-        this.platformService.update(id, body);
+        this.platformService.update(id, createPlatformDTO);
+        response.status(200).end('Platform updated');
       })
       .catch((err) => {
         response.status(400).end(err.message);
@@ -130,6 +141,7 @@ export class PlatformController {
           response.status(400).end('Platform not found');
         }
         this.platformService.remove(parseInt(id));
+        response.status(200).end('Platform removed');
       })
       .catch((err) => {
         response.status(400).end(err.message);
