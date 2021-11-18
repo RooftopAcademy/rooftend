@@ -31,7 +31,6 @@ export default class PaymentMethod {
         name: 'created_at',
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
-        nullable: false
     })
     created_at : Date;
 
@@ -39,7 +38,6 @@ export default class PaymentMethod {
         name: 'updated_at',
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
-        nullable: false
     })
     updated_at : Date;
 

@@ -4,7 +4,9 @@
 import { Body, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import PaymentMethod from '../paymentMethod.entity';
+import PaymentMethod from '../paymentmethod.entity';
+import { PaymentMethodDto } from '../dto/create-paymentmethod.dto';
+import { throws } from 'assert';
 
 @Injectable()
 export default class PaymentMethodsService {
@@ -13,18 +15,19 @@ export default class PaymentMethodsService {
         @InjectRepository(PaymentMethod) private readonly repository: Repository<PaymentMethod>
     ) {}
 
-    async all() : Promise<PaymentMethod[]> {
-        return await this.repository.find();
+    all() : Promise<PaymentMethod[]> {
+        return this.repository.find();
     }
 
     find(id : number) : Promise<PaymentMethod> {
         return this.repository.findOne(id);
     }
 
-    create(@Body() body) : void { 
+    create(@Body() body : PaymentMethodDto) : Promise<PaymentMethod> {
+        return this.repository.save(body)
     }
 
-    async update(id: number, body: PaymentMethod) : Promise<PaymentMethod> {
+    async update(id: number, body: PaymentMethodDto) : Promise<PaymentMethod> {
         const paymentMethod = await this.find(id);
         this.repository.merge(paymentMethod, body);
         return this.repository.save(paymentMethod);
