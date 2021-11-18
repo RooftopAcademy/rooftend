@@ -4,7 +4,7 @@ import {ConfigModule} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PaymentMethdosModule } from './paymentMethods/paymentMethod.module';
+import { PaymentMethdosModule } from './paymentMethods/paymentmethod.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
