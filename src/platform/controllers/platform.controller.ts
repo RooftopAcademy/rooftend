@@ -4,29 +4,53 @@ import {
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   Patch,
   Post,
   Res,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBadRequestResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
+import { CreatePlatformDTO } from '../create-platform-dto.entity';
+import { Platform } from '../platform.entity';
 
 import { PlatformService } from '../services/platform.service';
 
+@ApiBearerAuth()
+@ApiTags('Platforms')
 @Controller('platforms')
 export class PlatformController {
   constructor(private platformService: PlatformService) {}
 
+  @ApiOperation({ summary: 'Get all platforms' })
+  @ApiResponse({
+    status: 200,
+    description: 'A list with all the platforms',
+    type: Platform,
+  })
   @Get()
   @HttpCode(200)
-  async findAll() {
-    return await this.platformService.findAll();
+  findAll() {
+    return this.platformService.findAll().then((data) => {
+      return data;
+    });
   }
 
+  @ApiOperation({ summary: 'Get a platform by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found platform with that id',
+    type: Platform,
+  })
   @Get(':id')
   @HttpCode(200)
-  async findOne(
+  findOne(
     @Param('id') id: number | string,
     @Res({ passthrough: true }) response: Response,
   ) {
@@ -45,19 +69,70 @@ export class PlatformController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() body) {
-    this.platformService.create(body);
+  @ApiOperation({ summary: 'Create a platform' })
+  @ApiResponse({
+    status: 201,
+    description: 'The platform has been created successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The platform could not be created',
+  })
+  async create(@Body() createPlatformDTO: CreatePlatformDTO) {
+    return await this.platformService.create(createPlatformDTO);
   }
 
   @Patch(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() body) {
-    this.platformService.update(parseInt(id), body);
+  @ApiOperation({ summary: 'Update a platform' })
+  @ApiResponse({
+    status: 200,
+    description: 'The platform has been updated successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The platform could not be updated',
+  })
+  update(
+    @Param('id') id: string | number,
+    @Body() body,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.platformService
+      .findOneById(id)
+      .then((data) => {
+        if (!data) {
+          response.status(400).end('Platform not found');
+        }
+        this.platformService.update(id, body);
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async remove(@Param('id') id: string) {
-    this.platformService.remove(parseInt(id));
+  @ApiOperation({ summary: 'Remove a platform' })
+  @ApiResponse({
+    status: 200,
+    description: 'The platform has been removed successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The platform could not be removed',
+  })
+  remove(
+    @Param('id') id: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.platformService
+      .findOneById(id)
+      .then((data) => {
+        if (!data) {
+          response.status(400).end('Platform not found');
+        }
+        this.platformService.remove(parseInt(id));
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
   }
 }
