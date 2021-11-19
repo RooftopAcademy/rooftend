@@ -1,5 +1,4 @@
-import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity {
@@ -26,7 +25,6 @@ export class PhotosEntity {
   @Column({ type: 'smallint', nullable: false })
   size: number;
 
-  @ManyToOne(() => User)
   @Column({ type: 'integer', name: 'subject_id', nullable: false })
   subjectId: number;
 
