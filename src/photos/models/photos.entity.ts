@@ -1,7 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
+import { PolymorphicParent } from 'typeorm-polymorphic';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity({ name: 'photos' })
-export class PhotosEntity {
+export class PhotosEntity implements PolymorphicChildInterface {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -25,8 +28,11 @@ export class PhotosEntity {
   @Column({ type: 'smallint', nullable: false })
   size: number;
 
+  @PolymorphicParent(() => [User]) // Items also could be a parent
+  subject: User;
+
   @Column({ type: 'integer', name: 'subject_id', nullable: false })
-  subjectId: number;
+  entityId: number;
 
   @Column({
     type: 'varchar',
@@ -34,7 +40,7 @@ export class PhotosEntity {
     name: 'subject_type',
     nullable: false,
   })
-  subjectType: string;
+  entityType: string;
 
   @Column({
     type: 'varchar',
