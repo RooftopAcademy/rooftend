@@ -12,6 +12,7 @@ import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
+import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   imports: [
@@ -29,12 +30,13 @@ import { UsersModule } from './users/users.module';
 
     AccountStatusModule,
     FavoritesModule,
-    NotificationModule
+    NotificationModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
-    ShippingMethodsModule
+    ShippingMethodsModule,
     UsersModule,
+    QuestionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
