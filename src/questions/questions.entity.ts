@@ -14,7 +14,6 @@ export class QuestionsEntity {
     @ManyToOne(type => ItemEntity, item => item.questions)
     item: ItemEntity;
 
-
     @ManyToOne(type => UserEntity, user => user.questions)
     user: UserEntity;
 
