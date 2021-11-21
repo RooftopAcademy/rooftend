@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Brand } from '../../brands/entities/brands.entity.ts';
+import { User } from '../../users/entities/users.entity.ts';
+import { Banner } from '../../banners/entities/banners.entity.ts';
 
 @Entity('stores')
 export class StoresEntity {
@@ -22,21 +25,21 @@ export class StoresEntity {
   })
   updatedAt: Date;
 
-  @Column({
+  @OneToOne(() => Brand)
+  @JoinColumn({
     name: 'brand_id',
-    type: 'integer',
   })
-  brandId: number;
+  brandId: Brand;
 
+  @OneToOne(() => User)
   @Column({
     name: 'user_id',
-    type: 'integer',
   })
-  userId: number;
+  userId: User;
 
+  @OneToOne(() => Banner)
   @Column({
     name: 'banner_id',
-    type: 'integer',
   })
-  bannerId: number;
+  bannerId: Banner;
 }
