@@ -8,11 +8,9 @@ import {
   Body,
   Delete,
   Patch,
-  Req,
   Res,
 } from '@nestjs/common';
-import { Request } from 'express';
-import categories from '../mock/categories';
+import { Category } from 'src/categories/categories.entity';
 import { CategoriesService } from '../services/categories.service';
 
 
@@ -20,22 +18,29 @@ import { CategoriesService } from '../services/categories.service';
 export class CategoriesController {
 
    public constructor (private readonly categoriesService: CategoriesService) {}
-    @Get()
-    public index(@Req() req : Request) {
-    return this.categoriesService.getAll()
+    
+   @Get()
+    getAll(){
+    return this.categoriesService.getAll();
     }
    
     @Get(':id')
-    @HttpCode(201)
-    public findOneById(@Param('id') id:number | string){
-        
-        // this.categoriesService.findOneById(id)
-        // .then(data=>{
-        //     return data
-        // }).catch(err => {
-        //     return res.status(404).end(err.message)
-        // })
-    }
+    @HttpCode(200)
+
+    async findOne(@Param('id') id:number, @Res() res){
+        return await this.categoriesService
+        .findOne(id)
+        .then((data)=>{
+            if(!data){
+                res.status(400).end('Category not found');
+            }
+            return data;
+        })
+        .catch((err)=>{
+            return res.status(400).end(err.message);
+        });
+      }
+    
 
     @Post()
     @HttpCode(201)
@@ -49,8 +54,8 @@ export class CategoriesController {
         return this.categoriesService.update(id,body)
     }
     @Delete(':id')
-    @HttpCode(204)
-    delete(@Param('id') id:number,@Res() res){
-        res.send('ok')
+    @HttpCode(200)
+    delete(@Param('id') id:number){
+        return this.categoriesService.delete(id)
     }
 }
