@@ -10,6 +10,8 @@ export class Profile {
     })
     id : number
 
+    
+
     @Column({
         name : 'first_name',
         type : 'character varying',
@@ -30,6 +32,8 @@ export class Profile {
         length : 5
     })
     identificationType : string
+
+    
 
     @Column({
         name : 'identification_number',

@@ -16,4 +16,6 @@ export class ProfileService {
     find(id : string | number) {
         return this.repository.findOne(id)
     }
+
 }
+
