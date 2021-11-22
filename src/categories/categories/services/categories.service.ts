@@ -30,12 +30,19 @@ export class CategoriesService {
     return category;
   }
   
-  create(body: Body) {
-    return true;
-  }
-  async update(id:number, body:Body) {
-    return true;
+  create(body: any): Promise<Category> {
+    const newCategory = this.repository.create({id: body.id,name: body.name});
+    return this.repository.save(newCategory)
   }
 
-  delete(id:number) {}
+   async update(id:number, body:any): Promise<Category>{
+    const category = await this.repository.findOne(id);
+    this.repository.merge(category, body);
+    return this.repository.save(category);
+  }
+
+  async delete(id:number) : Promise<boolean> {
+    await this.repository.delete(id);
+    return true;
+  }
 }

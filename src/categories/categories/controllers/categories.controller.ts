@@ -15,7 +15,6 @@ import {
   Query
 } from '@nestjs/common';
 import { Request } from 'express';
-import categories from '../mock/categories';
 import {Category} from 'src/categories/categories.entity';
 import { CategoriesService } from '../services/categories.service';
 import  {  Pagination  } from 'nestjs-typeorm-paginate' ;
@@ -26,11 +25,6 @@ export class CategoriesController {
    public constructor (private readonly categoriesService: CategoriesService) {}
     
    @Get()
-   getAll(){
-       return this.categoriesService.getAll();
-   }
-
-   @Get('')
     async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
@@ -63,4 +57,5 @@ export class CategoriesController {
     delete(@Param('id') id: number) {
         return this.categoriesService.delete(id);
     }
+  
 }
