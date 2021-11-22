@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Get, Injectable } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/categories.entity';
@@ -9,27 +9,28 @@ export class CategoriesService {
   public constructor(
     @InjectRepository(Category) private repository : Repository<Category>
   ){}
-
-  getAll() {
+  
+  @Get()
+  getAll() : Promise<Category[]>{
     return this.repository.find()
   }
-  findOneById(id:number) {
-    return {
-      id: 'id',
-      name: 'name',
-    };
+
+  findOne(id:number) : Promise<Category> {
+    return this.repository.findOne(id);
   }
 
-//   let category = categories.find(c => c.id=id)
-//         if (category)  return category
-//         // return this.categoriesService.findOneById(id);
-//         return res.status(404).end();
-  create(body: Body) {
-    return true;
+  create(body: any): Promise<Category> {
+    const newCategory = this.repository.create({id: body.id,name: body.name});
+    return this.repository.save(newCategory)
   }
-  async update(id:number, body:Body) {
-    return true;
+  async update(id:number, body:any): Promise<Category>{
+    const category = await this.repository.findOne(id);
+    this.repository.merge(category, body);
+    return this.repository.save(category);
   }
 
-  delete(id:number) {}
+  async delete(id:number) : Promise<boolean> {
+    await this.repository.delete(id);
+    return true;
+  }
 }
