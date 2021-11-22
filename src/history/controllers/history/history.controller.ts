@@ -17,7 +17,7 @@ export class HistoryController {
         return this.historyService.paginate({
           page,
           limit,
-          route: '/stores',
+          route: '/history',
         });
     }
 
