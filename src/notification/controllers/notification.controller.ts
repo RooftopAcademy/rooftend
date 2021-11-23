@@ -12,9 +12,7 @@ import {
 @ApiTags('notifications')
 @Controller('/notification')
 export class NotificationController {
-    constructor(
-        private notificationServices: NotificationService
-    ) { };
+  constructor(private notificationServices: NotificationService) {}
 
     @Get()
     @ApiOperation({
@@ -30,13 +28,15 @@ export class NotificationController {
     ) : Promise<Pagination<Notification>>|any {
         try {
             limit = limit > 100 ? 100: limit;
-
-            return this.notificationServices.paginate({page, limit, route: '/notification'});
-        } catch(error) {
-            return res.status(404).end(error.message);
-        };
-    };
-
+      return this.notificationServices.paginate({
+        page,
+        limit,
+        route: '/notification',
+      });
+    } catch (error) {
+      return res.status(404).end(error.message);
+    }
+  }
     @ApiOperation({
         summary: 'gets a record that matches the specified id'
     })
