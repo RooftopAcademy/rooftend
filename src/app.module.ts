@@ -29,11 +29,19 @@ import { UsersModule } from './users/users.module';
 
     AccountStatusModule,
     FavoritesModule,
+<<<<<<< HEAD
     NotificationModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
     ShippingMethodsModule,
+=======
+    NotificationModule
+    PlatformModule,
+    ProfileModule,
+    ReviewModule,
+    ShippingMethodsModule
+>>>>>>> aa86e1390f27145513afe7ba3289c14f11f8eaf7
     UsersModule,
   ],
   controllers: [AppController],
