@@ -13,7 +13,6 @@ import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -29,16 +28,16 @@ import { UsersModule } from './users/users.module';
     }),
     ProfileModule,
     PhonesModule,
-    AccountStatusModule,
+    //AccountStatusModule,
     FavoritesModule,
-    NotificationModule,
+    //NotificationModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
     ShippingMethodsModule,
-    UsersModule,
+    //UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
