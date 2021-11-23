@@ -6,28 +6,31 @@ import { AccountStatus } from '../models/account-status.interface';
 
 @Injectable()
 export class AccountStatusService {
-    constructor(
-        @InjectRepository(AccountStatusEntity)
-        private readonly accountStatusRepository: Repository<AccountStatusEntity>
-    ) { }
+  constructor(
+    @InjectRepository(AccountStatusEntity)
+    private readonly accountStatusRepository: Repository<AccountStatusEntity>,
+  ) {}
 
-    createStatus(accountStatus: AccountStatus): Promise<AccountStatus> {
-        return this.accountStatusRepository.save(accountStatus);
-    }
+  createStatus(accountStatus: AccountStatus): Promise<AccountStatus> {
+    return this.accountStatusRepository.save(accountStatus);
+  }
 
-    findAllStatus(): Promise<AccountStatus[]> {
-        return this.accountStatusRepository.find();
-    }
+  findAllStatus(): Promise<AccountStatus[]> {
+    return this.accountStatusRepository.find();
+  }
 
-    findOneStatus(id: number): Promise<AccountStatus> {
-        return this.accountStatusRepository.findOne(id)
-    }
+  findOneStatus(id: number): Promise<AccountStatus> {
+    return this.accountStatusRepository.findOne(id);
+  }
 
-    updateStatus(id: number, accountStatus: AccountStatus): Promise<UpdateResult> {
-        return this.accountStatusRepository.update(id, accountStatus);
-    }
+  updateStatus(
+    id: number,
+    accountStatus: AccountStatus,
+  ): Promise<UpdateResult> {
+    return this.accountStatusRepository.update(id, accountStatus);
+  }
 
-    deleteStatus(id: number): Promise<DeleteResult> {
-        return this.accountStatusRepository.delete(id);
-    }
+  deleteStatus(id: number): Promise<DeleteResult> {
+    return this.accountStatusRepository.delete(id);
+  }
 }
