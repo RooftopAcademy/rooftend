@@ -14,12 +14,16 @@ import {
 } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import {
+  ApiTags,
+ } from '@nestjs/swagger';
 
 import { StoresService } from './stores.service';
 import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
 import { Response } from 'express';
 
+@ApiTags('stores')
 @Controller('stores')
 export class StoresController {
   constructor(private storesService: StoresService) {}
