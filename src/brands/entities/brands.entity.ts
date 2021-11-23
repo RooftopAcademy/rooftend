@@ -11,5 +11,5 @@ export class Brand {
   name: string;
 
   @Column()
-  photoId: string;
+  photoId: string; 
 }

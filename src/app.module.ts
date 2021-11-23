@@ -11,6 +11,7 @@ import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
+import { BrandsModule } from './brands/brands.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     ReviewModule,
     ShippingMethodsModule,
     UsersModule,
+    BrandsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
