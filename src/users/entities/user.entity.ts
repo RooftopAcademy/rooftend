@@ -1,6 +1,6 @@
 
 import { AccountStatusEntity } from 'src/account-status/models/account-status.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -20,6 +20,7 @@ export class User {
   email: string;
 
   @OneToOne(() => AccountStatusEntity, accountStatus => accountStatus.name)
+  @JoinColumn()
   account_status: AccountStatusEntity;
 
 }
