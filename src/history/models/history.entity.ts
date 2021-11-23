@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { User } from "src/users/entities/user.entity";
+import { Item } from "src/items/entities/item.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 
 
 @Entity()
@@ -9,19 +11,16 @@ export class History {
     })
     id: number;
 
-
+    @OneToOne(() => User)
     @Column({
         name:'user_id',
-        type:'bigint',
-        unsigned:true,
     })
     user_id: number;
 
 
+    @OneToOne(() => Item)
     @Column({
         name:'item_id',
-        type: 'bigint',
-        unsigned: true,
     })
     item_id: number;
 
