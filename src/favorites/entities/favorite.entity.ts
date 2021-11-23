@@ -47,7 +47,7 @@ export class Favorite {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
-    example: '3',
+    example: '2021-11-15 17:32:19.537+00',
     description: 'The date the record was last updated',
     format: 'date',
   })
