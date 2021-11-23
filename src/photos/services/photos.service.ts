@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { PhotosEntity } from '../models/photos.entity';
 import { PhotosInterface } from '../models/photos.interface';
 import { Observable, from } from 'rxjs';
