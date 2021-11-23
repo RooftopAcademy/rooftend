@@ -13,12 +13,12 @@ import {
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Brand } from '../entities/brands.entity';
 import { BrandsService } from '../services/brands.serveces';
-
+import { createBrandDTO } from '../entities/create-brands-dto.entity';
 
 @Controller('brands')
 export class BrandsController{
 
-    constructor(private readonly brandService: BrandsService){}
+    constructor(private brandService: BrandsService){}
 
     @Get()
     async index(
@@ -39,13 +39,13 @@ export class BrandsController{
     }
 
     @Post()
-    create(@Body() body:any){
-        return this.brandService.create(body);
+    create(@Body() createBrandDTO:createBrandDTO){
+        return this.brandService.create(createBrandDTO);
     }
 
     @Patch()
-    edit(@Param() id:number, @Body() body:any){
-        return this.brandService.update(id, body);
+    update(@Param() id: number, @Body() createBrandDTO:createBrandDTO){
+        return this.brandService.update(id, createBrandDTO);
     }
 
     @Delete()

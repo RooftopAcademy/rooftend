@@ -2,11 +2,11 @@ export default [
     {
         "id" : 1,
         "name": "Santiago",
-        "photo_id": 123
+        "photo_id": "ph-brand"
     },
     {
         "id" : 2,
         "name": "Ezequiel",
-        "photo_id": 234
+        "photo_id": "ph-brand"
     }
 ]
