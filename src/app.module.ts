@@ -29,14 +29,14 @@ import { UsersModule } from './users/users.module';
 
     AccountStatusModule,
     FavoritesModule,
-    NotificationModule
+    NotificationModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
-    ShippingMethodsModule
+    ShippingMethodsModule,
     UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
