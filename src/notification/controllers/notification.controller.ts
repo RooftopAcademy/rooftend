@@ -7,6 +7,7 @@ import {
   Delete,
   Res,
   Put,
+  Query
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
