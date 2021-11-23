@@ -10,7 +10,6 @@ import {
   Res,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -22,7 +21,6 @@ import { Platform } from '../platform.entity';
 
 import { PlatformService } from '../services/platform.service';
 
-@ApiBearerAuth()
 @ApiTags('Platforms')
 @Controller('platforms')
 export class PlatformController {
@@ -84,7 +82,7 @@ export class PlatformController {
     return this.platformService
       .create(createPlatformDTO)
       .then(() => {
-        response.status(200).end('Platform created');
+        response.status(201).end('Platform created');
       })
       .catch((err) => {
         response.status(400).end(err.message);
