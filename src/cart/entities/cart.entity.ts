@@ -23,7 +23,7 @@ export class Cart{
     userId: number;
 
     /*Esta mal escrito amount pero es el nombre en la tabla*/
-    @Column({name: 'amount', type:"double precision"})
+    @Column({type:"double precision"})
     @ApiProperty({ type: [Number] })
     ammount: number;
 
