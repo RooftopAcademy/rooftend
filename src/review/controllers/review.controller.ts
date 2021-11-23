@@ -49,43 +49,53 @@ export class ReviewController {
     description: 'Maximum results per page. Max value: 100. Defaults to 10.',
   })
   @ApiOkResponse({
-    description: 'Array with page contents and pagination metadata.',
+    description: 'List of reviews and pagination metadata.',
     schema: {
-      example: new Pagination<Review>(
-        [
+      example: {
+        items: [
           {
             id: 1,
-            userId: 4,
+            user: {
+              id: 4,
+              username: 'pepito',
+              email: 'pepito@gmail.com',
+              account_status: 1,
+            },
             subjectId: 1,
-            subjectType: 'Item',
+            subjectType: 'User',
             score: 5,
-            comment: 'Me encantó!',
+            comment: 'Buen vendedor. Los envíos son a tiempo.',
             createdAt: new Date('2021-11-18T17:10:00.246Z'),
             updatedAt: new Date('2021-11-18T17:10:00.246Z'),
           },
           {
             id: 2,
-            userId: 3,
+            user: {
+              id: 3,
+              username: 'marcelo',
+              email: 'marcelo@gmail.com',
+              account_status: 1,
+            },
             subjectId: 1,
-            subjectType: 'Item',
+            subjectType: 'User',
             score: 3,
-            comment: 'Cumple su función pero podría mejorar.',
+            comment: 'Nunca contesta las preguntas.',
             createdAt: new Date('2021-11-22T13:24:33.541Z'),
             updatedAt: new Date('2021-11-22T13:24:33.541Z'),
           },
         ],
-        {
+        meta: {
           itemCount: 2,
           itemsPerPage: 10,
           currentPage: 10,
         },
-        {
+        links: {
           first: '/reviews?limit=10',
           previous: '',
           next: '',
           last: '/reviews?page=1&limit=10',
         },
-      ),
+      },
     },
   })
   async findAll(
