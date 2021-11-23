@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
-// import { ShippingMethod } from '../entities/shipping-method';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { ShippingMethod } from '../shipping-method.entity';
 
 @Injectable()
 export class ShippingMethodsService {
-  // constructor(
-  //   @InjectRepository(ShippingMethod) private shippingMethodsRepo: Repository<ShippingMethod>
-  // ) {}
+  constructor(
+    @InjectRepository(ShippingMethod) private shippingMethodsRepo: Repository<ShippingMethod>
+  ) {}
 
   findAll() {
     //return this.shippingMethodsRepo.find();

@@ -1,23 +1,23 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
-@Controller('api/shipping-methods')
+@Controller('shipping-methods')
 export class ShippingMethodsController {
 
   constructor(
     private shippingMethodsService: ShippingMethodsService
-  ) {}
+  ) { }
 
   @Get()
   @HttpCode(200)
   getAll() {
-    return this.getAll();
+    return this.shippingMethodsService.findAll();
   }
 
   @Get('count')
   @HttpCode(200)
   getCount() {
-    return this.getCount();
+    return this.shippingMethodsService.getCount();
   }
 
   @Get(':id')
@@ -25,7 +25,7 @@ export class ShippingMethodsController {
   getOne(
     @Param('id') id: number
   ) {
-    return this.getOne(id);
+    return this.shippingMethodsService.findOne(id);
   }
 
   @Post()
@@ -33,7 +33,7 @@ export class ShippingMethodsController {
   create(
     @Body() body: any,
   ) {
-    return this.create(body);
+    return this.shippingMethodsService.create(body);
   }
 
   @Put(':id')
@@ -42,7 +42,7 @@ export class ShippingMethodsController {
     @Body() body: any,
     @Param('id') id: number
   ) {
-    return this.update(body, id);
+    return this.shippingMethodsService.update(body, id);
   }
 
   @Delete(':id')
@@ -50,7 +50,7 @@ export class ShippingMethodsController {
   delete(
     @Param('id') id: number
   ) {
-    return this.delete(id);
+    return this.shippingMethodsService.delete(id);
   }
 
 }
