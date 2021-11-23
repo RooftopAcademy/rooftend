@@ -2,12 +2,19 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
 import { User } from 'src/users/entities/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity implements PolymorphicChildInterface {
+  @ApiProperty({ example: 1, type: Number, description: 'PK' })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({
+    example: '2003-01-01 2:00:00',
+    type: Date,
+    description: 'Creation date',
+  })
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',
@@ -16,24 +23,42 @@ export class PhotosEntity implements PolymorphicChildInterface {
   })
   createdAt: Date;
 
+  @ApiProperty({
+    example: 'galery/items/yellow_one.jpg',
+    type: String,
+    description: 'Route to the photo',
+  })
   @Column({ type: 'varchar', length: 200, nullable: false })
   url: string;
 
+  @ApiProperty({ example: 150, type: Number, description: "photo's width" })
   @Column({ type: 'smallint', nullable: false })
   width: number;
 
+  @ApiProperty({ example: 150, type: Number, description: "photo's height" })
   @Column({ type: 'smallint', nullable: false })
   height: number;
 
+  @ApiProperty({ example: 150, type: Number, description: "photo's size" })
   @Column({ type: 'smallint', nullable: false })
   size: number;
 
-  @PolymorphicParent(() => [User]) // Items also could be a parent
+  @PolymorphicParent(() => [User]) // Also items could be a parent
   subject: User;
 
+  @ApiProperty({
+    example: 12,
+    type: Number,
+    description: 'associated entity id',
+  })
   @Column({ type: 'integer', name: 'subject_id', nullable: false })
   entityId: number;
 
+  @ApiProperty({
+    example: 'user',
+    type: String,
+    description: 'associated entity name',
+  })
   @Column({
     type: 'varchar',
     length: 100,
@@ -42,6 +67,11 @@ export class PhotosEntity implements PolymorphicChildInterface {
   })
   entityType: string;
 
+  @ApiProperty({
+    example: 'galery/items/yellow_one.jpg',
+    type: String,
+    description: 'url to redirect the user',
+  })
   @Column({
     type: 'varchar',
     length: 200,
