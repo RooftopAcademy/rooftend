@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Brand {
@@ -11,5 +11,5 @@ export class Brand {
   name: string;
 
   @Column()
-  photoId: string; 
+  photoId: string;
 }
