@@ -49,6 +49,7 @@ export class Favorite {
   @ApiProperty({
     example: '3',
     description: 'The date the record was last updated',
+    format: 'date',
   })
   updatedAt: Date;
 
