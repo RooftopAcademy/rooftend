@@ -13,6 +13,7 @@ export class PhotosEntity implements PolymorphicChildInterface {
   @ApiProperty({
     example: '2003-01-01 2:00:00',
     type: Date,
+    format: 'date-time',
     description: 'Creation date',
   })
   @Column({
