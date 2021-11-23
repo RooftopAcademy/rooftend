@@ -1,24 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { IsString, IsDate, IsInt } from 'class-validator';
 
-@Entity({
-  name: 'platforms',
-})
-export class Platform {
+export class CreatePlatformDTO {
   @ApiProperty({
-    description: 'Platform Id number',
+    description: 'The platform id',
     type: BigInt,
   })
-  @PrimaryGeneratedColumn({
-    unsigned: true,
-    type: 'bigint',
-  })
+  @IsInt()
   id: number;
 
   @ApiProperty({
@@ -26,11 +14,7 @@ export class Platform {
     default: 'Current date',
     type: Date,
   })
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @IsDate()
   createdAt: Date;
 
   @ApiProperty({
@@ -38,54 +22,34 @@ export class Platform {
     default: 'Current date',
     type: Date,
   })
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @IsDate()
   updatedAt: Date;
 
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
     type: String,
   })
-  @Column({
-    name: 'country_code',
-    type: 'char',
-    length: 3,
-  })
+  @IsString()
   countryCode: string;
 
   @ApiProperty({
     description: '3 digits ISO currency code (Example: ARS)',
     type: String,
   })
-  @Column({
-    name: 'currency_code',
-    type: 'char',
-    length: 3,
-  })
+  @IsString()
   currencyCode: string;
 
   @ApiProperty({
     description: '5 digits ISO language code (Example: es_AR)',
     type: String,
   })
-  @Column({
-    name: 'lang_code',
-    type: 'char',
-    length: 5,
-  })
+  @IsString()
   langCode: string;
 
   @ApiProperty({
     description: 'Up to 5 digits phone code (Example: ++549)',
     type: String,
   })
-  @Column({
-    name: 'phone_country_code',
-    type: 'char',
-    length: 5,
-  })
+  @IsString()
   phoneCountryCode: string;
 }
