@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { type } from "os";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
     name: 'notification',
@@ -10,12 +11,14 @@ export class Notification {
     })
     id: number;
 
-    @Column({
+    /* @Column({
         name: 'user_id',
         unsigned: true,
         type: 'bigint',
-    })
+    }) */
+    @OneToOne(type => User, user => user.id)
     user_id: number
+
 
     @Column({
         name: 'action_url',

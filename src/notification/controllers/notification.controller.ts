@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Put, Delete, Res, Query } from '@ne
 import { Response } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { NotificationService } from '../services/notification.service';
-import { Notification } from 'src/notification/entities/notification.entity';
+import { Notification } from '../entities/notification.entity';
 
 @Controller('/notification')
 export class NotificationController {
