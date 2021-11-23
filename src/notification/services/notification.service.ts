@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from } from 'rxjs';
 import { Repository } from 'typeorm';
 import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { Notification } from '../notification.entity';
 
 @Injectable()
 export class NotificationService {
@@ -23,20 +23,24 @@ export class NotificationService {
     };
 
     async update(id: number, body: any): Promise<Notification> {
-        const notofication = await this.notificationRepo.findOne(id);
+        const notification = await this.notificationRepo.findOne(id);
 
-        if(!notofication) {
+        if(!notification) {
             throw new Error('Notification not found.');
         };
 
-        this.notificationRepo.merge(notofication, body);
+        this.notificationRepo.merge(notification, body);
 
-        return this.notificationRepo.save(notofication);
+        return this.notificationRepo.save(notification);
     };
 
     async delete(id: number): Promise<Boolean> {
         await this.notificationRepo.delete(id);
 
         return true;
+    };
+
+    async paginate(options: IPaginationOptions): Promise<Pagination<Notification>> {
+        return paginate<Notification>(this.notificationRepo, options);
     };
 }

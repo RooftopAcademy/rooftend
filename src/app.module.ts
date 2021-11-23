@@ -22,8 +22,8 @@ import { BrandsModule } from './brands/brands.module';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
+      database : process.env.DB_NAME,
+      autoLoadEntities : true,
       // synchronize: true,
     }),
 
@@ -40,4 +40,4 @@ import { BrandsModule } from './brands/brands.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

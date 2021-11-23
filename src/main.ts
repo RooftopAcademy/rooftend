@@ -13,7 +13,6 @@ async function bootstrap() {
     .setTitle('Rooftend API')
     .setDescription('The API description')
     .setVersion('1.0')
-    .addTag('platforms')
     .addBearerAuth()
     .build();
   const options: SwaggerDocumentOptions = {
