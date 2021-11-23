@@ -8,7 +8,7 @@ import { PaymentMethodDto } from '../dto/create-payment-method.dto';
 import PaymentMethod from '../payment-method.entity';
 import PaymentMethodsService from '../services/payment-method.service';
 
-@ApiTags('payment-methods')
+@ApiTags('Payment Methods')
 @Controller('payment')
 export default class PaymentMethodsController {
 
