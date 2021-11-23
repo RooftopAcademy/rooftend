@@ -1,9 +1,11 @@
-/* eslint-disable prettier/prettier */
+import { APP_FILTER } from '@nestjs/core';
+import { ApiProperty } from '@nestjs/swagger';/* eslint-disable prettier/prettier */
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({
     name: 'payment_methods'
 })
+
 export default class PaymentMethod {
     @PrimaryGeneratedColumn({
         unsigned: true,
@@ -11,6 +13,10 @@ export default class PaymentMethod {
     })
     id: number;
 
+    @ApiProperty({ 
+        example: 'CASH', 
+        description: 'The name of the payment method' 
+    })
     @Column({
         name: 'name',
         type: 'character varying',
@@ -19,6 +25,10 @@ export default class PaymentMethod {
     })
     name: string;
 
+    @ApiProperty({ 
+        example: 'Cash', 
+        description: 'The type of the payment method, usually similar to the name' 
+    })
     @Column({
         name: 'type',
         type: 'character varying',
@@ -27,6 +37,10 @@ export default class PaymentMethod {
     })
     type: string;
 
+    @ApiProperty({ 
+        example: '2021-11-15 17:32:19.537+00', 
+        description: 'The timestamp when the the payment method was created' 
+    })
     @CreateDateColumn({
         name: 'created_at',
         type: 'timestamptz',
@@ -34,11 +48,14 @@ export default class PaymentMethod {
     })
     created_at : Date;
 
+    @ApiProperty({ 
+        example: '2021-11-15 17:32:19.537+00', 
+        description: 'The timestamp when the the payment method was updated for the last time' 
+    })
     @UpdateDateColumn({
         name: 'updated_at',
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
     })
     updated_at : Date;
-
 }
