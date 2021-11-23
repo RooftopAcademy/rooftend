@@ -28,9 +28,15 @@ export class Review implements PolymorphicChildInterface {
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, (user) => user.reviews, { eager: true })
+  @ApiProperty({ type: User, description: 'The user who creates the review.' })
   user: User;
 
   @PolymorphicParent(() => User)
+  @ApiProperty({
+    type: User,
+    description: `The entity who receives the review.
+    currently the only allowed is User.`,
+  })
   subject: User;
 
   @ApiProperty({
@@ -47,8 +53,8 @@ export class Review implements PolymorphicChildInterface {
     type: String,
     maxLength: 10,
     required: true,
-    description: 'The type of the reviewed entity. Must match an entity name.',
-    example: 'Item',
+    description: 'The type of the reviewed entity. Must match an entity name. currently the only valid is "User"',
+    example: 'User',
   })
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
   entityType: string;
