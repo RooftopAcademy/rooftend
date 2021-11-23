@@ -82,7 +82,7 @@ export class PlatformController {
     return this.platformService
       .create(createPlatformDTO)
       .then(() => {
-        response.status(200).end('Platform created');
+        response.status(201).end('Platform created');
       })
       .catch((err) => {
         response.status(400).end(err.message);
