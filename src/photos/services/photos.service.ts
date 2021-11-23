@@ -4,12 +4,13 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { PhotosEntity } from '../models/photos.entity';
 import { PhotosInterface } from '../models/photos.interface';
 import { Observable, from } from 'rxjs';
+import { PhotosRepository } from '../repositories/photos.repository';
 
 @Injectable()
 export class PhotosService {
   constructor(
     @InjectRepository(PhotosEntity)
-    private readonly photosRepository: Repository<PhotosEntity>,
+    private readonly photosRepository: PhotosRepository,
   ) {}
 
   create(photo: PhotosInterface): Observable<PhotosInterface> {
