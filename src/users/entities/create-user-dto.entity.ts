@@ -4,7 +4,7 @@ import { IsString, IsInt } from 'class-validator';
 export class CreateUserDTO {
   @ApiProperty({
     description: 'The user id',
-    type: BigInt,
+    type: Number,
   })
   @IsInt()
   id: number;
@@ -35,7 +35,7 @@ export class CreateUserDTO {
     type: String,
   })
   @IsString()
-  accountStatus: string;
+  account_status: string;
 
   
 }
