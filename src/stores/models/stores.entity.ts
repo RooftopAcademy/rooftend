@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+  OneToOne,
+} from 'typeorm';
 import { Brand } from '../../brands/entities/brands.entity.ts';
 import { User } from '../../users/entities/users.entity.ts';
 import { Banner } from '../../banners/entities/banners.entity.ts';
