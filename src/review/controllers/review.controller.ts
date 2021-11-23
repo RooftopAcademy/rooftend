@@ -6,6 +6,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -13,11 +14,20 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Review } from '../review.entity';
 
 import { ReviewService } from '../services/review.service';
 
+@ApiTags('reviews')
 @Controller('reviews')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
@@ -25,6 +35,23 @@ export class ReviewController {
 
   @Get()
   @HttpCode(200)
+  @ApiOperation({ summary: 'List reviews' })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'Current page number. Defaults to 1.',
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'Maximum results per page. Max value: 100. Defaults to 10.',
+  })
+  @ApiOkResponse({
+    type: Object,
+    description: 'Array with page contents and pagination metadata.',
+  })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -39,6 +66,18 @@ export class ReviewController {
 
   @Get(':id')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Get a review by its id' })
+  @ApiParam({ name: 'id', type: Number, required: true })
+  @ApiOkResponse({
+    type: Review,
+    description: 'The found review.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Review not found.',
+    schema: {
+      example: new NotFoundException('Review not found').getResponse(),
+    },
+  })
   findOne(@Param('id') id: string) {
     return this.reviewService.findOne(id);
   }
