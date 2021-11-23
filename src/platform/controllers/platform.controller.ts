@@ -10,7 +10,6 @@ import {
   Res,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -22,7 +21,6 @@ import { Platform } from '../platform.entity';
 
 import { PlatformService } from '../services/platform.service';
 
-@ApiBearerAuth()
 @ApiTags('Platforms')
 @Controller('platforms')
 export class PlatformController {
