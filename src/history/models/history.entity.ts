@@ -31,7 +31,7 @@ export class History {
     item_id: number;
 
 
-    @ApiProperty({ example: '2021-11-22 13:58:27.207', description: 'The date-time that was created' })
+    @ApiProperty({ default: 'Current date', type: Date, description: 'The date-time that was created' })
     @Column({
         name: 'created_at',
         type: 'timestamp',
