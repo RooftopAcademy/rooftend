@@ -9,11 +9,6 @@ export class Profile {
         type : 'bigint'
     })
     id : number
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 7691872 (Add profile module)
     @Column({
         name : 'first_name',
         type : 'character varying',
@@ -34,11 +29,6 @@ export class Profile {
         length : 5
     })
     identificationType : string
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 7691872 (Add profile module)
     @Column({
         name : 'identification_number',
         type : 'character varying',

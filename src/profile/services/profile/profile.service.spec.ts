@@ -15,8 +15,4 @@ describe('ProfileService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 7691872 (Add profile module)

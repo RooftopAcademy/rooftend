@@ -16,8 +16,4 @@ export class ProfileService {
     find(id : string | number) {
         return this.repository.findOne(id)
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7691872 (Add profile module)
