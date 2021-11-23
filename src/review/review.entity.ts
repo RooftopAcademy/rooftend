@@ -1,12 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Type } from 'class-transformer';
+import { User } from 'src/users/entities/user.entity';
+import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
+import { PolymorphicParent } from 'typeorm-polymorphic';
 
 /**
  * Represents a review given by an user to another entity.
  */
 @Entity('reviews')
-export class Review {
+export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: Number,
     description: 'The id of the review.',
@@ -17,15 +26,12 @@ export class Review {
   @Type(() => Number)
   id: number;
 
-  @ApiProperty({
-    type: Number,
-    required: true,
-    description: 'The id of the reviewer.',
-    example: 1,
-  })
-  @Column({ name: 'user_id', type: 'bigint' })
-  @Type(() => Number)
-  userId: number;
+  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, (user) => user.reviews, { eager: true })
+  user: User;
+
+  @PolymorphicParent(() => User)
+  subject: User;
 
   @ApiProperty({
     type: Number,
@@ -35,7 +41,7 @@ export class Review {
   })
   @Column({ name: 'subject_id', type: 'bigint' })
   @Type(() => Number)
-  subjectId: number;
+  entityId: number;
 
   @ApiProperty({
     type: String,
@@ -45,7 +51,7 @@ export class Review {
     example: 'Item',
   })
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
-  subjectType: string;
+  entityType: string;
 
   @ApiProperty({
     type: String,
