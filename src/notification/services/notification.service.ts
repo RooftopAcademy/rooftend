@@ -1,42 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from } from 'rxjs';
-import { Repository } from 'typeorm';
-import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Notification } from '../notification.entity';
 
 @Injectable()
 export class NotificationService {
-    constructor(@InjectRepository(Notification) private notificationRepo: Repository<Notification>) { };
+  constructor(
+    @InjectRepository(Notification)
+    private notificationRepo: Repository<Notification>,
+  ) {}
 
-    findAll(): Promise<Notification[]> {
-        return this.notificationRepo.find();
-    };
+  async findAll(): Promise<Notification[]> {
+    return this.notificationRepo.find();
+  }
 
-    findOne(id: number): Promise<Notification> {
-        return this.notificationRepo.findOne(id);
-    };
+  async findOneById(id: number | string): Promise<Notification> {
+    return this.notificationRepo.findOne(id);
+  }
 
-    create(body: any): Promise<Notification[]> {
-        const notification = this.notificationRepo.create(body);
+  async create(platform: Notification): Promise<Notification> {
+    return this.notificationRepo.save(platform);
+  }
 
-        return this.notificationRepo.save(notification);
-    };
+  async update(
+    id: number | string,
+    notification: Notification,
+  ): Promise<UpdateResult> {
+    return this.notificationRepo.update(id, notification);
+  }
 
-    async update(id: number, body: any): Promise<Notification> {
-        const notofication = await this.notificationRepo.findOne(id);
-
-        if(!notofication) {
-            throw new Error('Notification not found.');
-        };
-
-        this.notificationRepo.merge(notofication, body);
-
-        return this.notificationRepo.save(notofication);
-    };
-
-    async delete(id: number): Promise<Boolean> {
-        await this.notificationRepo.delete(id);
-
-        return true;
-    };
+  async remove(id: number): Promise<DeleteResult> {
+    return this.notificationRepo.delete(id);
+  }
 }

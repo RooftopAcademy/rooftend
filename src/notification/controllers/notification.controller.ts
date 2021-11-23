@@ -1,52 +1,101 @@
-import { Body, Controller, Get, Param, Post, Put, Delete, Res, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Delete,
+  Res,
+  Patch,
+  HttpCode,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('/notification')
 export class NotificationController {
-    constructor(private notificationServices: NotificationService) { };
+  constructor(private notificationServices: NotificationService) {}
 
-    @Get()
-    getAll(): Promise<Notification[]> {
-        try {
-            return this.notificationServices.findAll();
-        } catch(error) {
-            console.log(`Error: ${error}`);
-        };
-    };
+  @Get()
+  getAll() {
+    try {
+      this.notificationServices.findAll().then((data) => {
+        return data;
+      });
+    } catch (error) {
+      console.log(`Error: ${error}`);
+    }
+  }
 
-    @Get(':id')
-    async getOne(@Param('id') id: number, @Res() res): Promise<Notification> {
-        try {
-            return await this.notificationServices.findOne(id);
-        } catch(error) {
-            return res.status(404).end(error.message);
-        };
-    };
+  @Get(':id')
+  async getOne(@Param('id') id: number, @Res() response) {
+    return this.notificationServices
+      .findOneById(id)
+      .then((data) => {
+        if (!data) {
+          response.status(400).end('Platform not found');
+        }
+        return data;
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
+  }
 
-    @Post()
-    create(@Body() body: any): Promise<Notification[]> {
-        try {
-            return this.notificationServices.create(body);
-        } catch(error) {
-            console.log(`Error: ${error}`);
-        };
-    };
+  @Post()
+  @HttpCode(201)
+  async create(
+    @Body() createNotificationDTO,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.notificationServices
+      .create(createNotificationDTO)
+      .then(() => {
+        response.status(201).end('Platform created');
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
+  }
 
-    @Patch(':id')
-    update(@Param('id') id: number, @Body() body: any): Promise<Notification> {
-        try {
-            return this.notificationServices.update(id, body);
-        } catch(error) {
-            console.log(`Error: ${error}`);
-        };
-    };
+  @Patch(':id')
+  @HttpCode(200)
+  update(
+    @Param('id') id: string | number,
+    @Body() createNotificationDTO,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.notificationServices
+      .findOneById(id)
+      .then((data) => {
+        if (!data) {
+          response.status(400).end('Platform not found');
+        }
+        this.notificationServices.update(id, createNotificationDTO);
+        response.status(200).end('Platform updated');
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
+  }
 
-    @Delete(':id')
-    delete(@Param('id') id: number): Promise<Boolean> {
-        try {
-            return this.notificationServices.delete(id);
-        } catch(error) {
-            console.log(`Error: ${error}`);
-        };
-    };
+  @Delete(':id')
+  @HttpCode(204)
+  remove(
+    @Param('id') id: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.notificationServices
+      .findOneById(id)
+      .then((data) => {
+        if (!data) {
+          response.status(400).end('Platform not found');
+        }
+        this.notificationServices.remove(parseInt(id));
+        response.status(200).end('Platform removed');
+      })
+      .catch((err) => {
+        response.status(400).end(err.message);
+      });
+  }
 }
