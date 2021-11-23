@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification } from 'src/entities/notification.entity';
-import { from } from 'rxjs';
+import { Notification } from '../notification.entity';
 import { Repository } from 'typeorm';
 import {
   paginate,
@@ -46,5 +45,11 @@ export class NotificationService {
     await this.notificationRepo.delete(id);
 
     return true;
+  }
+
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Notification>> {
+    return paginate<Notification>(this.notificationRepo, options);
   }
 }
