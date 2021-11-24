@@ -1,5 +1,7 @@
-
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { PhotosEntity } from 'src/photos/models/photos.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Review } from 'src/review/review.entity';
+import { PolymorphicChildren } from 'typeorm-polymorphic';
 
 @Entity()
 export class User {
@@ -20,4 +22,15 @@ export class User {
 
   @Column({ default: false })
   completed: boolean;
+
+  @PolymorphicChildren(() => PhotosEntity, {
+    eager: false,
+  })
+  photos: PhotosEntity[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+  @PolymorphicChildren(() => Review, { eager: false })
+  receivedReviews: Review[];
 }
