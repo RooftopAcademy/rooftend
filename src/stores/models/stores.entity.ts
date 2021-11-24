@@ -12,6 +12,10 @@ import { Banner } from 'src/banners/entities/banners.entity';
 
 @Entity('stores')
 export class StoresEntity {
+  @ApiProperty({
+    type: Number,
+    description: 'Store Id'
+  })
   @PrimaryGeneratedColumn({
     name: 'id',
     type: 'bigint',
