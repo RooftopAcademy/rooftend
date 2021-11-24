@@ -19,7 +19,6 @@ import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -29,9 +28,9 @@ import { UsersModule } from './users/users.module';
       port: parseInt(<string>process.env.DB_HOST),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database : process.env.DB_NAME,
-      autoLoadEntities : true,
-      //synchronize: true,
+      database: process.env.DB_NAME,
+      autoLoadEntities: true,
+      synchronize: false,
     }),
 
     AccountStatusModule,    
