@@ -11,12 +11,12 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
+import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
-import { PhotosModule } from './photos/photos.module';
 
 
 @Module({
@@ -49,5 +49,4 @@ import { PhotosModule } from './photos/photos.module';
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {}
