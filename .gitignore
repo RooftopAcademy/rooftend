@@ -40,3 +40,5 @@ lerna-debug.log*
 .env
 package-lock.json
 package.json
+
+/notes
