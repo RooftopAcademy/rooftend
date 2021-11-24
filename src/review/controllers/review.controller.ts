@@ -41,12 +41,14 @@ export class ReviewController {
     type: Number,
     required: false,
     description: 'Current page number. Defaults to 1.',
+    example: 1,
   })
   @ApiQuery({
     name: 'limit',
     type: Number,
     required: false,
     description: 'Maximum results per page. Max value: 100. Defaults to 10.',
+    example: 10,
   })
   @ApiOkResponse({
     description: 'List of reviews and pagination metadata.',
@@ -113,7 +115,7 @@ export class ReviewController {
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get a review by its id' })
-  @ApiParam({ name: 'id', type: Number, required: true })
+  @ApiParam({ name: 'id', type: Number, required: true, example: 1 })
   @ApiOkResponse({
     type: Review,
     description: 'The found review.',
