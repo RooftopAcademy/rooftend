@@ -28,9 +28,15 @@ import { UsersModule } from './users/users.module';
       port: parseInt(<string>process.env.DB_HOST),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
+<<<<<<< HEAD
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: false,
+=======
+      database : process.env.DB_NAME,
+      autoLoadEntities : true,
+      //synchronize: true,
+>>>>>>> f3e67de6e7cdfe1cb4035a4fe946190be7cd64ba
     }),
 
     AccountStatusModule,    
