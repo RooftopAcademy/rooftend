@@ -15,6 +15,9 @@ import {
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import {
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -26,17 +29,17 @@ import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
 import { Response } from 'express';
 
-@ApiTags('stores')
+@ApiTags('Stores')
 @Controller('stores')
 export class StoresController {
   constructor(private storesService: StoresService) {}
 
   @ApiOperation({
-    summary: 'Get a list of stores'
+    summary: 'Get a list of stores according to the given page and limit'
   })
-  @ApiResponse({
-    status: 200,
-    description: 'A list of stores'
+  @ApiOkResponse({
+    description: 'A list of stores',
+    type: StoresEntity,
   })
   @Get()
   @HttpCode(200)
@@ -53,17 +56,21 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Get store by Id'
+    summary: 'Get store by Id',
+  })
+  @ApiOkResponse({
+    description: 'A store',
+    type: StoresEntity,
+  })
+  @ApiNotFoundResponse({
+    description: '404: Not Found',
+    type: String,
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    description: 'Id of the requested store',
     required: true,
-    example: 8
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'A store'
+    example: 8,
   })
   @Get(':id')
   @HttpCode(200)
@@ -79,11 +86,11 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Create a new store'
+    summary: 'Create a new store',
   })
-  @ApiResponse({
-    status: 201,
-    description: 'The new created store'
+  @ApiCreatedResponse({
+    description: 'The store has been successfully created',
+    type: StoresEntity,
   })
   @Post()
   @HttpCode(201)
@@ -92,17 +99,18 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Update a store'
+    summary: 'Update a store',
   })
   @ApiParam({
     name: 'id',
     type: Number,
     required: true,
-    example: 8
+    example: 8,
   })
   @ApiResponse({
     status: 204,
-    description: 'The updated store'
+    description: 'The store has been successfully updated',
+    type: UpdateResult,
   })
   @Patch(':id')
   @HttpCode(204)
@@ -124,10 +132,10 @@ export class StoresController {
   })
   @ApiResponse({
     status: 204,
-    description: 'The deleted store'
+    description: 'The store has been successfully deleted',
+    type: DeleteResult,
   })
-  @Patch(':id')
-  @Delete()
+  @Delete(':id')
   @HttpCode(204)
   delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.storesService.delete(id);
