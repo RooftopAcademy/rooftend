@@ -13,4 +13,4 @@ import PaymentMethodsService from './services/payment-method.service';
     ]
 })
 
-export class PaymentMethdosModule {}
+export class PaymentMethodsModule {}
