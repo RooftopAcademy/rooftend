@@ -62,6 +62,7 @@ export class StoresEntity {
   })
   @OneToOne(() => User)
   @Column({
+    type: 'bigint',
     name: 'user_id',
   })
   userId: User;
