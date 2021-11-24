@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
 
 @Entity({name: "carts"})
 export class Cart{
@@ -18,16 +19,17 @@ export class Cart{
     @ApiProperty({ type: [Date] })
     updated_at: Date;
 
+    @ManyToOne(() => User, user => user.id) user: User; 
     @Column({name: 'user_id', type: "bigint"})
     @ApiProperty({ type: [Number] })
     userId: number;
 
-    /*Esta mal escrito amount pero es el nombre en la tabla*/
     @Column({type:"double precision"})
     @ApiProperty({ type: [Number] })
-    ammount: number;
+    amount: number;
 
     @Column("varchar", { length: 3 , name: 'currency_code'})
     @ApiProperty({ type: [String] })
     currencyCode: string;
+
 }

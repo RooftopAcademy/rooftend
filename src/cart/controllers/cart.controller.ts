@@ -15,13 +15,13 @@ export class CartController {
 
     @Get()
     @ApiOperation({summary: 'Gets all carts'})
-    getAll(){
+    getAll(): Promise<Cart[]>{
         return this.cartService.findAll();
     }
 
     @Get(':id')
     @ApiOperation({summary: 'Gets one cart by Id'})
-    getOne(@Param('id') id : number){
+    getOne(@Param('id') id : number): Promise<Cart>{
         return this.cartService.findOne(id);
     }
 
@@ -35,13 +35,13 @@ export class CartController {
 
     @Put(':id')
     @ApiOperation({summary: 'Updates cart'})
-    update(@Param('id') id : number, @Body() body : any){
+    update(@Param('id') id : number, @Body() body : any): Promise<Cart>{
         return this.cartService.update(id, body);
     }
 
     @Delete(':id')
     @ApiOperation({summary: 'Deletes cart'})
-    delete(@Param('id') id : number ){
+    delete(@Param('id') id : number ): Promise<Boolean>{
         return this.cartService.delete(id);
     }
 
