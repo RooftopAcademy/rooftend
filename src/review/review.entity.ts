@@ -19,7 +19,6 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: Number,
     description: 'The id of the review.',
-    required: false,
     example: 1,
   })
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -35,14 +34,13 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: User,
     description: `The entity who receives the review.
-    currently the only allowed is User.`,
+    Currently the only allowed is User.`,
   })
   subject: User;
 
   @ApiProperty({
     type: Number,
     description: 'The id of the reviewed entity.',
-    required: true,
     example: 1,
   })
   @Column({ name: 'subject_id', type: 'bigint' })
@@ -52,8 +50,8 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: String,
     maxLength: 10,
-    required: true,
-    description: 'The type of the reviewed entity. Must match an entity name. currently the only valid is "User"',
+    description:
+      'The type of the reviewed entity. Must match an entity name. currently the only valid is "User"',
     example: 'User',
   })
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
@@ -62,9 +60,8 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: String,
     maxLength: 500,
-    required: true,
     description: 'The body of the review.',
-    example: 'This product is very useful.',
+    example: 'Muy buena atención al cliente.',
   })
   @Column({ name: 'comment', type: 'varchar', length: 500 })
   comment: string;
@@ -73,7 +70,6 @@ export class Review implements PolymorphicChildInterface {
     type: Number,
     minimum: 1,
     maximum: 5,
-    required: true,
     description:
       'Integer representing the score the user gave to the reviewed entity.',
   })
@@ -82,7 +78,6 @@ export class Review implements PolymorphicChildInterface {
 
   @ApiProperty({
     type: Date,
-    required: true,
     default: 'now()',
     example: '2021-11-12T01:46:52.589Z',
     description: 'The timestamp of the creation of the review.',
@@ -93,7 +88,6 @@ export class Review implements PolymorphicChildInterface {
 
   @ApiProperty({
     type: Date,
-    required: true,
     default: 'now()',
     example: '2021-11-12T01:46:52.589Z',
     description: 'The timestamp of the creation of the review.',
