@@ -13,10 +13,10 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { AccountStatus } from '../models/account-status.interface';
 import { AccountStatusService } from '../services/account-status.service';
 import { Response } from 'express';
-import { ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../models/account-status.entity';
 
-
+@ApiTags('Account-Status')
 @Controller('account-status')
 export class AccountStatusController {
   constructor(private accountStatusService: AccountStatusService) { }
