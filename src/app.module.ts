@@ -5,14 +5,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PhonesModule } from './phones/phones.module';
 import { AccountStatusModule } from './account-status/account-status.module';
+import { BrandsModule } from './brands/brands.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { UsersModule } from './users/users.module';
-
 
 @Module({
   imports: [
@@ -23,15 +24,17 @@ import { UsersModule } from './users/users.module';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database : process.env.DB_NAME,
-      autoLoadEntities : true,
+      database: process.env.DB_NAME,
+      autoLoadEntities: true,
       // synchronize: true,
     }),
-    ProfileModule,
-    PhonesModule,
+
     AccountStatusModule,
+    BrandsModule,
     FavoritesModule,
+    HistoryModule,
     NotificationModule,
+    PhonesModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
