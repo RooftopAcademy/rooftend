@@ -54,7 +54,7 @@ export class FavoritesController {
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: 'Create Favorite' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 201, description: 'Created.' })
   public create(@Body() body: any) {
     return this.favoritesService.create(body);
   }
@@ -62,7 +62,7 @@ export class FavoritesController {
   @Put(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Update Favorite' })
-  @ApiResponse({ status: 200, description: 'OK.' })
+  @ApiResponse({ status: 204, description: 'Resource updated successfully.' })
   public update(@Param('id') id: number | string, @Body() body: any) {
     return this.favoritesService.update(id, body);
   }
