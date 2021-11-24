@@ -9,11 +9,11 @@ export class ProfileService {
     @InjectRepository(Profile) private repository: Repository<Profile>,
   ) {}
 
-  all() {
+  all(): Promise<Profile[]> {
     return this.repository.find();
   }
 
-  find(id: string | number) {
+  find(id: string | number): Promise<Profile> {
     return this.repository.findOne(id);
   }
 }

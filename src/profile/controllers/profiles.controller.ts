@@ -34,7 +34,7 @@ export class ProfilesController {
 
   @Patch(':id')
   public edit(@Body() body, @Res() res) {
-    return;
+    return res.send(`${body} updated`);
   }
 
   @Delete(':id')
