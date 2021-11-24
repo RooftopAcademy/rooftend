@@ -4,6 +4,7 @@ import {ConfigModule} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CartModule } from './cart/cart.module';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { BrandsModule } from './brands/brands.module';
