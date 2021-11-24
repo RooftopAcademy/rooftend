@@ -15,6 +15,9 @@ import {
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import {
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
   ApiTags,
  } from '@nestjs/swagger';
 
@@ -28,6 +31,13 @@ import { Response } from 'express';
 export class StoresController {
   constructor(private storesService: StoresService) {}
 
+  @ApiOperation({
+    summary: 'Get a list of stores'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A list of stores'
+  })
   @Get()
   @HttpCode(200)
   async getAll(
@@ -42,6 +52,19 @@ export class StoresController {
     });
   }
 
+  @ApiOperation({
+    summary: 'Get store by Id'
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    example: 8
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A store'
+  })
   @Get(':id')
   @HttpCode(200)
   async getOne(
@@ -55,12 +78,32 @@ export class StoresController {
       return res.status(200).send(data).end();
   }
 
+  @ApiOperation({
+    summary: 'Create a new store'
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The new created store'
+  })
   @Post()
   @HttpCode(201)
   create(@Body() store: StoresInterface): Promise<StoresInterface> {
     return this.storesService.create(store);
   }
 
+  @ApiOperation({
+    summary: 'Update a store'
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    example: 8
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'The updated store'
+  })
   @Patch(':id')
   @HttpCode(204)
   update(
@@ -70,6 +113,20 @@ export class StoresController {
     return this.storesService.update(id, store);
   }
 
+  @ApiOperation({
+    summary: 'Delete a store'
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    example: 8
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'The deleted store'
+  })
+  @Patch(':id')
   @Delete()
   @HttpCode(204)
   delete(@Param('id') id: number): Promise<DeleteResult> {
