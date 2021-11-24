@@ -11,14 +11,13 @@ export class Notification {
     })
     id: number;
 
-    /* @Column({
+    @OneToOne(() => User_id)
+    @Column({
         name: 'user_id',
         unsigned: true,
         type: 'bigint',
-    }) */
-    @OneToOne(type => User, user => user.id)
+    })
     user_id: number
-
 
     @Column({
         name: 'action_url',
