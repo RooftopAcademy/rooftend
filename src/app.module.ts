@@ -11,6 +11,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
+import { PhonesModule } from './phones/phones.module';
 import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
@@ -36,10 +37,10 @@ import { QuestionsModule } from './questions/questions.module';
     AccountStatusModule,    
     BrandsModule,
     FavoritesModule,
-    NotificationModule,
     HistoryModule,
     NotificationModule,
     PaymentMethodsModule,
+    PhonesModule,
     PhotosModule,
     PlatformModule,
     ProfileModule,
