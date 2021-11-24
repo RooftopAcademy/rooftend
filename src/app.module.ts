@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { PaymentMethdosModule } from './payment-methods/payment-method.module';
 import { AccountStatusModule } from './account-status/account-status.module';
 import { BrandsModule } from './brands/brands.module';
 import { FavoritesModule } from './favorites/favorites.module';
@@ -40,8 +41,10 @@ import { UsersModule } from './users/users.module';
     ReviewModule,
     ShippingMethodsModule,
     UsersModule,
+    PaymentMethdosModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
+
 export class AppModule {}
