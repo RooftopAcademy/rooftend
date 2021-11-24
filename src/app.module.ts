@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +10,8 @@ import { BrandsModule } from './brands/brands.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
+import { PaymentMethodsModule } from './payment-methods/payment-method.module';
+import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
 import { ReviewModule } from './review/review.module';
@@ -21,12 +24,12 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
+      port: parseInt(<string>process.env.DB_HOST),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: false,
     }),
 
     AccountStatusModule,
@@ -34,7 +37,9 @@ import { UsersModule } from './users/users.module';
     FavoritesModule,
     HistoryModule,
     NotificationModule,
+    PaymentMethodsModule,
     PhonesModule,
+    PhotosModule,
     PlatformModule,
     ProfileModule,
     ReviewModule,
