@@ -6,9 +6,9 @@ import {
   OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Brand } from '../../brands/entities/brands.entity.ts';
-import { User } from '../../users/entities/users.entity.ts';
-import { Banner } from '../../banners/entities/banners.entity.ts';
+import { User } from 'src/users/entities/user.entity';
+import { Brand } from 'src/brands/entities/brands.entity';
+import { Banner } from 'src/banners/entities/banners.entity';
 
 @Entity('stores')
 export class StoresEntity {
@@ -18,6 +18,11 @@ export class StoresEntity {
   })
   id: number;
 
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'Created date'
+  })
   @Column({
     name: 'created_at',
     type: 'timestamptz',
@@ -25,6 +30,11 @@ export class StoresEntity {
   })
   createdAt: Date;
 
+  @ApiProperty({
+    type: String,
+    format: 'date-time',
+    description: 'Updated date'
+  })
   @Column({
     name: 'updated_at',
     type: 'timestamptz',
@@ -33,8 +43,8 @@ export class StoresEntity {
   updatedAt: Date;
 
   @ApiProperty({
-    example: 6549,
-    description: 'The Id of the brand to which the store belongs'
+    type: Brand,
+    description: 'The brand to which the store belongs'
   })
   @OneToOne(() => Brand)
   @JoinColumn({
@@ -43,8 +53,8 @@ export class StoresEntity {
   brandId: Brand;
 
   @ApiProperty({
-    example: 87897,
-    description: 'The Id of the user to which the store belongs'
+    type: User,
+    description: 'The user to who the store belongs'
   })
   @OneToOne(() => User)
   @Column({
@@ -53,8 +63,8 @@ export class StoresEntity {
   userId: User;
 
   @ApiProperty({
-    example: 324579,
-    description: 'The Id of the store\'s banner'
+    type: Banner,
+    description: 'The store\'s banner'
   })
   @OneToOne(() => Banner)
   @Column({
