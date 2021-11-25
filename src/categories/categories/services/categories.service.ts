@@ -8,13 +8,12 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 
-
 @Injectable()
 export class CategoriesService {
   public constructor(
     @InjectRepository(Category) private repository : Repository<Category>
   ){}
-
+  
   async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
     return paginate<Category>(this.repository, options);
   }
