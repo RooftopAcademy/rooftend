@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { HistoryService } from 'src/history/services/history/history.service';
 import { History } from 'src/history/models/history.entity';
 import {
     ApiBearerAuth,
@@ -14,12 +15,11 @@ import { HistoryService } from 'src/history/services/history/history.service';
 export class HistoryController {
     constructor(private readonly historyService : HistoryService) {}
 
-
     @ApiOperation({ summary: 'Get all history' })
     @ApiResponse({
-    status: 200,
-    description: 'A list with all the History',
-    type: History,
+      status: 200,
+      description: 'A list with all the History',
+      type: History,
     })
     @Get()
     @HttpCode(200)
@@ -27,12 +27,11 @@ export class HistoryController {
         return this.historyService.getAll();
     }
 
-
     @ApiOperation({ summary: 'Get a history by id' })
     @ApiResponse({
-    status: 200,
-    description: 'The found History with that id',
-    type: History,
+      status: 200,
+      description: 'The found History with that id',
+      type: History,
     })
     @Get(':id')
     @HttpCode(200)
@@ -43,8 +42,8 @@ export class HistoryController {
     @Post()
     @ApiOperation({ summary: 'Create a history' })
     @ApiResponse({  
-    status: 201,
-    description: 'The history has been created successfully.',
+      status: 201,
+      description: 'The history has been created successfully.',
     })
     @HttpCode(201)
     create(@Body() body : any){
@@ -54,8 +53,8 @@ export class HistoryController {
     @Put(':id')
     @ApiOperation({ summary: 'Update a history' })
     @ApiResponse({
-    status: 200,
-    description: 'The history has been updated successfully.',
+      status: 200,
+      description: 'The history has been updated successfully.',
     })
     @HttpCode(204)
     update(@Param('id') id : number, @Body() body : any){
@@ -65,8 +64,8 @@ export class HistoryController {
     @Delete(':id')
     @ApiOperation({ summary: 'Remove a history' })
     @ApiResponse({
-    status: 200,
-    description: 'The history has been removed successfully.',
+      status: 200,
+      description: 'The history has been removed successfully.',
     })
     @HttpCode(200)
     delete(@Param('id') id){

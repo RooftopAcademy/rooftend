@@ -1,9 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
+
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HistoryModule } from './history/history.module';
+import { ProfileModule } from './profile/profile.module';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { BrandsModule } from './brands/brands.module';
@@ -25,7 +29,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
