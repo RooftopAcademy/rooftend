@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -8,14 +7,13 @@ import {
   Body,
   Delete,
   Patch,
-  Req,
   Res,
   DefaultValuePipe,
   ParseIntPipe,
   Query
 } from '@nestjs/common';
+import { Category } from 'src/categories/categories.entity';
 import { Request } from 'express';
-import {Category} from 'src/categories/categories.entity';
 import { CategoriesService } from '../services/categories.service';
 import  {  Pagination  } from 'nestjs-typeorm-paginate' ;
 
@@ -24,22 +22,34 @@ export class CategoriesController {
 
    public constructor (private readonly categoriesService: CategoriesService) {}
     
-   @Get()
     async index(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise <Pagination<Category>>{
-    limit = limit > 100 ? 100 : limit;
-    return this.categoriesService.paginate({
-      page,
-      limit,
-      route: '/categories',
-    });
-  }
+      @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+      @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    ): Promise <Pagination<Category>>{
+      limit = limit > 100 ? 100 : limit;
+      return this.categoriesService.paginate({
+        page,
+        limit,
+        route: '/categories',
+      });
+    }
+  
     @Get(':id')
-    @HttpCode(201)
-    public findOneById(@Param('id') id:number){}
-    
+    @HttpCode(200)
+    async findOne(@Param('id') id:number, @Res() res){
+      return await this.categoriesService
+      .findOne(id)
+      .then((data)=>{
+          if(!data){
+              res.status(400).end('Category not found');
+          }
+          return data;
+      })
+      .catch((err)=>{
+          return res.status(400).end(err.message);
+      });
+    }
+  
     @Post()
     @HttpCode(201)
     create(@Body() body: any) {
@@ -57,5 +67,4 @@ export class CategoriesController {
     delete(@Param('id') id: number) {
         return this.categoriesService.delete(id);
     }
-  
 }
