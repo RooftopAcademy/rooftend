@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Type } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
+import { User } from '../users/User';
 
 /**
  * Represents a review given by an user to another entity.

@@ -7,8 +7,6 @@ import {
 
 import { ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-
-import { Item } from '../../items/entities/item.entity'
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
@@ -52,9 +50,9 @@ export class Favorite {
   })
   updatedAt: Date;
 
-  @ManyToOne(type => Item, item => item.favorites)
-  item: Item;
+  // @ManyToOne(type => Item, item => item.favorites)
+  // item: Item;
 
-  @ManyToOne(type => User, user => user.favorites)
+  @ManyToOne((type) => User, (user) => user.favorites)
   user: User;
 }
