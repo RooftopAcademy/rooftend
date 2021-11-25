@@ -27,7 +27,10 @@ export class Review implements PolymorphicChildInterface {
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, (user) => user.reviews, { eager: true })
-  @ApiProperty({ type: () => User, description: 'The user who creates the review.' })
+  @ApiProperty({
+    type: () => User,
+    description: 'The user who creates the review.',
+  })
   user: User;
 
   @PolymorphicParent(() => User)

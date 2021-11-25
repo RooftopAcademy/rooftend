@@ -1,24 +1,21 @@
-
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('categories')
 export class Category {
-
   @PrimaryGeneratedColumn({
-    unsigned : true,
-    type : 'smallint'
+    unsigned: true,
+    type: 'smallint',
   })
-  id: number
-  
-  @Column({
-    type : 'character varying',
-    length  : 100
-  })
-  name : string
+  id: number;
 
   @Column({
-      name :'category_id'
+    type: 'character varying',
+    length: 100,
   })
-  category_id : string
+  name: string;
 
+  @Column({
+    name: 'category_id',
+  })
+  category_id: string;
 }
