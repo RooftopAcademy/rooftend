@@ -17,7 +17,7 @@ describe('CartController', () => {
         }),
         update: jest.fn((id, cart) => ({
             id,
-            ...cart,
+            ...cart
         })).mockImplementation()
     }
 
@@ -48,7 +48,7 @@ describe('CartController', () => {
         expect(mockCartService.create).toHaveBeenCalledWith(cart);
     });
 
-    /*it('should update a cart',() => {
+    it('should update a cart',() => {
         const cart1 = {currencyCode: 'ab1', amount: 555, userId : 1, id: 1};
         controller.create(cart1);
         const cart2 = {currencyCode: 'a71', amount: 777, userId: 7};
@@ -61,6 +61,6 @@ describe('CartController', () => {
             userId: cart2.userId,
             });
         expect(mockCartService.update).toHaveBeenCalled();
-    })*/
+    })
 
 });

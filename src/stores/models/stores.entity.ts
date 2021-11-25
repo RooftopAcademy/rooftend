@@ -7,9 +7,9 @@ import {
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/users/entities/user.entity';
-import { Brand } from 'src/brands/entities/brands.entity';
-import { Banner } from 'src/banners/entities/banners.entity';
+import { User } from '../../users/entities/user.entity';
+import { Brand } from '../../brands/entities/brands.entity';
+// import { Banner } from '../../banners/entities/banner.entity';
 
 @Entity('stores')
 export class StoresEntity {
@@ -23,7 +23,6 @@ export class StoresEntity {
   })
   id: number;
 
-
   @ApiProperty({
     type: String,
     format: 'date-time',
@@ -36,7 +35,6 @@ export class StoresEntity {
   })
   createdAt: Date;
 
-
   @ApiProperty({
     type: String,
     format: 'date-time',
@@ -48,7 +46,6 @@ export class StoresEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
-
 
   @ApiProperty({
     type: Brand,
@@ -71,14 +68,14 @@ export class StoresEntity {
   })
   userId: User;
 
-  @ApiProperty({
-    type: Banner,
-    description: 'The store\'s banner'
-  })
-  @OneToOne(() => Banner)
-  @Column({
-    name: 'banner_id',
-    type: 'integer',
-  })
-  bannerId: Banner;
+  // @ApiProperty({
+  //   type: Banner,
+  //   description: 'The store\'s banner'
+  // })
+  // @OneToOne(() => Banner)
+  // @Column({
+  //   name: 'banner_id',
+  //   type: 'integer',
+  // })
+  // bannerId: Banner;
 }
