@@ -1,5 +1,5 @@
-import { ItemEntity } from "src/items/items.entity";
-import { UserEntity } from "src/users/entities/user.entity";
+// import { ItemEntity } from "src/items/items.entity";
+import { User } from "../users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -11,11 +11,11 @@ export class QuestionsEntity {
     })
     id: number;
 
-    @ManyToOne(type => ItemEntity, item => item.questions)
-    item: ItemEntity;
+    // @ManyToOne(type => ItemEntity, item => item.questions)
+    // item: ItemEntity;
 
-    @ManyToOne(type => UserEntity, user => user.questions)
-    user: UserEntity;
+    @ManyToOne(type => User, user => user.questions)
+    user: User;
 
     @Column({
         name: 'question',
