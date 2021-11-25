@@ -17,4 +17,7 @@ export class Phone {
 
   @ManyToOne(() => User, (user) => user.id)
   user: User;
+
+  @Column({ type: 'bigint' })
+  user_id: number;
 }
