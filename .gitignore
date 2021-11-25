@@ -1,6 +1,9 @@
 # compiled output
 /dist
 /node_modules
+package-lock.json
+package.json
+.env
 
 # Logs
 logs
@@ -36,4 +39,6 @@ lerna-debug.log*
 
 .env
 package-lock.json
-package.json 
+package.json
+
+/notes
