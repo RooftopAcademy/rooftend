@@ -1,14 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
+import { ReviewRepository } from '../repositories/review.repository';
 import { Review } from '../review.entity';
 
 @Injectable()
 export class ReviewService {
   constructor(
-    @InjectRepository(Review)
-    private readonly reviewRepository: Repository<Review>,
+    @InjectRepository(ReviewRepository)
+    private readonly reviewRepository: ReviewRepository,
   ) {}
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Review>> {
+    return paginate<Review>(this.reviewRepository, options);
+  }
 
   async findAll(): Promise<Review[]> {
     return this.reviewRepository.find();
