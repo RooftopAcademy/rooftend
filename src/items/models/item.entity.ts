@@ -2,6 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from 'src/users/entities/user.entity';
+import { Brand } from 'src/brands/entities/brands.entity';
+import { Category } from 'src/categories/categories.entity';
 
 @Entity('items')
 export class Items {
@@ -60,7 +62,7 @@ export class Items {
   @ApiProperty({ example: 10, description: 'Item Stock' })
   stock: number;
 
-  //  @ManyToOne(() => Item)
+  @ManyToOne(() => Brand)
   @Column({
     name: 'brand_id'
   })
@@ -74,7 +76,7 @@ export class Items {
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
   userId: number;
 
-  // @ManyToOne(() => Category)
+  @ManyToOne(() => Category)
   @Column({
     name: 'category_id',
   })
