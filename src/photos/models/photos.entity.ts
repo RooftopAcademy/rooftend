@@ -1,35 +1,83 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
+import { PolymorphicParent } from 'typeorm-polymorphic';
+import { User } from 'src/users/entities/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'photos' })
-export class PhotosEntity {
+export class PhotosEntity implements PolymorphicChildInterface {
+  @ApiProperty({ example: 1, type: Number, description: 'PK' })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({
+    example: '2003-01-01 2:00:00',
+    type: Date,
+    format: 'date-time',
+    description: 'Creation date',
+  })
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
   })
   createdAt: Date;
 
-  @Column({ type: 'varchar', length: 200 })
+  @ApiProperty({
+    example: 'galery/items/yellow_one.jpg',
+    type: String,
+    description: 'Route to the photo',
+  })
+  @Column({ type: 'varchar', length: 200, nullable: false })
   url: string;
 
-  @Column({ type: 'smallint' })
+  @ApiProperty({ example: 150, type: Number, description: "photo's width" })
+  @Column({ type: 'smallint', nullable: false })
   width: number;
 
-  @Column({ type: 'smallint' })
+  @ApiProperty({ example: 150, type: Number, description: "photo's height" })
+  @Column({ type: 'smallint', nullable: false })
   height: number;
 
-  @Column({ type: 'smallint' })
+  @ApiProperty({ example: 150, type: Number, description: "photo's size" })
+  @Column({ type: 'smallint', nullable: false })
   size: number;
 
-  @Column({ type: 'integer', name: 'subject_id' })
-  subjectId: number;
+  @PolymorphicParent(() => [User]) // Also items could be a parent
+  subject: User;
 
-  @Column({ type: 'varchar', length: 100, name: 'subject_type' })
-  subjectType: string;
+  @ApiProperty({
+    example: 12,
+    type: Number,
+    description: 'associated entity id',
+  })
+  @Column({ type: 'integer', name: 'subject_id', nullable: false })
+  entityId: number;
 
-  @Column({ type: 'varchar', length: 200, name: 'redirect_url' })
+  @ApiProperty({
+    example: 'user',
+    type: String,
+    description: 'associated entity name',
+  })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    name: 'subject_type',
+    nullable: false,
+  })
+  entityType: string;
+
+  @ApiProperty({
+    example: 'galery/items/yellow_one.jpg',
+    type: String,
+    description: 'url to redirect the user',
+  })
+  @Column({
+    type: 'varchar',
+    length: 200,
+    name: 'redirect_url',
+    nullable: true,
+  })
   redirectUrl: string;
 }
