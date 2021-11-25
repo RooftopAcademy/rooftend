@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from "src/users/entities/user.entity";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate } from "typeorm";
+import { User } from "../../entity/User";
 
 @Entity({name: "carts"})
 export class Cart{
@@ -19,7 +19,12 @@ export class Cart{
     @ApiProperty({ type: [Date] })
     updated_at: Date;
 
-    @ManyToOne(() => User, user => user.id) user: User; 
+    @BeforeUpdate()
+    updateTimeStamp(){
+        this.updated_at = new Date;
+    }
+
+    @ManyToOne(type => User, user => user.id) user: User; 
     @Column({name: 'user_id', type: "bigint"})
     @ApiProperty({ type: [Number] })
     userId: number;
