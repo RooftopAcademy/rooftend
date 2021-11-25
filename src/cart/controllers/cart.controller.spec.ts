@@ -15,10 +15,12 @@ describe('CartController', () => {
                 ...cart
             }
         }),
-        update: jest.fn((id, cart) => ({
+        update: jest.fn().mockImplementation((id,cart) => ({
             id,
-            ...cart
-        })).mockImplementation()
+            created_at: Date.now(),
+            updated_at: Date.now(),
+            ...cart,
+        })),
     }
 
     beforeEach(async () =>{
@@ -49,16 +51,14 @@ describe('CartController', () => {
     });
 
     it('should update a cart',() => {
-        const cart1 = {currencyCode: 'ab1', amount: 555, userId : 1, id: 1};
-        controller.create(cart1);
-        const cart2 = {currencyCode: 'a71', amount: 777, userId: 7};
-        expect(controller.update(1, cart2)).toEqual({
+        const cart = {currencyCode: 'a71', amount: 777, userId: 7};
+        expect(controller.update(1, cart)).toEqual({
             id: 1,
             created_at: expect.any(Number),
             updated_at: expect.any(Number),
-            amount: cart2.amount,
-            currencyCode : cart2.currencyCode,
-            userId: cart2.userId,
+            amount: cart.amount,
+            currencyCode : cart.currencyCode,
+            userId: cart.userId,
             });
         expect(mockCartService.update).toHaveBeenCalled();
     })
