@@ -71,6 +71,7 @@ export class PlatformController {
   @ApiResponse({
     status: 201,
     description: 'The platform has been created successfully.',
+    type: Platform,
   })
   @ApiBadRequestResponse({
     description: 'The platform could not be created',

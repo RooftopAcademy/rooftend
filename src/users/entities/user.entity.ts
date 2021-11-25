@@ -1,9 +1,9 @@
-import { PhotosEntity } from 'src/photos/models/photos.entity';
+import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn, ManyToOne, JoinTable } from 'typeorm';
-import { Review } from 'src/review/review.entity';
+import { Review } from '../../review/review.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountStatusEntity } from 'src/account-status/models/account-status.entity';
+import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 
 @Entity('users')
 export class User {
@@ -70,4 +70,8 @@ export class User {
 
   @PolymorphicChildren(() => Review, { eager: false })
   receivedReviews: Review[];
+
+  questions : []
+
+  favorites : []
 }

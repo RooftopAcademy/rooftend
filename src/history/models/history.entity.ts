@@ -1,5 +1,5 @@
-import { User } from "src/users/entities/user.entity";
-import { Item } from "src/items/entities/item.entity";
+import { User } from "../../users/entities/user.entity";
+// import { Item } from "../../items/entities/item.entity";
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -21,14 +21,14 @@ export class History {
     @ApiProperty({ example: 1, description: 'The user that has the history' })
     user_id: number;
 
-    @OneToOne(() => Item)
-    @Column({
-      name:'item_id',
-      type: 'bigint',
-      unsigned: true,
-    })
-    @ApiProperty({ example: 1, description: 'The item that the user visited' })
-    item_id: number;
+    // @OneToOne(() => Item)
+    // @Column({
+    //   name:'item_id',
+    //   type: 'bigint',
+    //   unsigned: true,
+    // })
+    // @ApiProperty({ example: 1, description: 'The item that the user visited' })
+    // item_id: number;
 
     @ApiProperty({ default: 'Current date', type: Date, description: 'The date-time that was created' })
     @Column({

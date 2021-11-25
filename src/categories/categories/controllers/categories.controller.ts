@@ -12,7 +12,7 @@ import {
   ParseIntPipe,
   Query
 } from '@nestjs/common';
-import { Category } from 'src/categories/categories.entity';
+import { Category } from '../../categories.entity';
 import { Request } from 'express';
 import { CategoriesService } from '../services/categories.service';
 import  {  Pagination  } from 'nestjs-typeorm-paginate' ;

@@ -1,5 +1,5 @@
 import { Body, Controller, DefaultValuePipe, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Query, Res } from '@nestjs/common';
-import { QuestionsService } from 'src/questions/services/questions.service';
+import { QuestionsService } from '../../questions/services/questions.service';
 import { DeleteResult } from 'typeorm';
 import { Response } from 'express';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
