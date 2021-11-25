@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
-import { ItemsInterface } from 'src/items/models/item.interface';
+import { ItemsInterface } from 'src/items/entities/item.interface';
 import { ItemsService } from 'src/items/services/items.service';
-import { Items } from '../models/item.entity';
+import { Items } from '../entities/item.entity';
 
 import {
   ApiOperation,
