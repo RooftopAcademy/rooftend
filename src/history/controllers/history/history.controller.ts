@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { History } from 'src/history/models/history.entity';
 import { HistoryService } from 'src/history/services/history/history.service';
 import { History } from 'src/history/models/history.entity';
 import {
@@ -8,7 +10,6 @@ import {
     ApiTags,
   } from '@nestjs/swagger';
 import { HistoryService } from 'src/history/services/history/history.service';
-
 
 @ApiTags('history')
 @Controller('history')
@@ -23,8 +24,16 @@ export class HistoryController {
     })
     @Get()
     @HttpCode(200)
-    getAll(){
-        return this.historyService.getAll();
+    async getAll(
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+      ): Promise<Pagination<History>> {
+        limit = limit > 100 ? 100 : limit;
+        return this.historyService.paginate({
+          page,
+          limit,
+          route: '/history',
+        });
     }
 
     @ApiOperation({ summary: 'Get a history by id' })
