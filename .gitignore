@@ -4,7 +4,7 @@ node_modules/
 build/
 tmp/
 temp/
-=======
+
 # compiled output
 /dist
 /node_modules
