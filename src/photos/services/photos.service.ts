@@ -4,6 +4,11 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { PhotosEntity } from '../models/photos.entity';
 import { PhotosInterface } from '../models/photos.interface';
 import { Observable, from } from 'rxjs';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 import { PhotosRepository } from '../repositories/photos.repository';
 
 @Injectable()
@@ -13,6 +18,12 @@ export class PhotosService {
     private readonly photosRepository: PhotosRepository,
   ) {}
 
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<PhotosEntity>> {
+    return paginate<PhotosEntity>(this.photosRepository, options);
+  }
+
   create(photo: PhotosInterface): Observable<PhotosInterface> {
     return from(this.photosRepository.save(photo));
   }
@@ -21,8 +32,8 @@ export class PhotosService {
     return from(this.photosRepository.find());
   }
 
-  findOne(id: string | number): Observable<PhotosEntity> {
-    return from(this.photosRepository.findOne(id));
+  findOne(id: string | number): Promise<PhotosEntity> {
+    return this.photosRepository.findOne(id);
   }
 
   update(id: number, body: any): Observable<UpdateResult> {

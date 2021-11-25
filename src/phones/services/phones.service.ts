@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Phone } from '../entities/phone.entity';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class PhonesService {
@@ -39,5 +44,9 @@ export class PhonesService {
     } catch (e) {
       return 'Phone not found';
     }
+  }
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Phone>> {
+    return paginate<Phone>(this.phoneRepository, options);
   }
 }

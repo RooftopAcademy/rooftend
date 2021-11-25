@@ -35,7 +35,7 @@ export class StoresController {
   constructor(private storesService: StoresService) {}
 
   @ApiOperation({
-    summary: 'Get a list of stores according to the given page and limit'
+    summary: 'Get a list of stores'
   })
   @ApiOkResponse({
     description: 'A list of stores',
@@ -84,7 +84,7 @@ export class StoresController {
 
       return res.status(200).send(data).end();
   }
-
+  
   @ApiOperation({
     summary: 'Create a new store',
   })
@@ -97,7 +97,7 @@ export class StoresController {
   create(@Body() store: StoresInterface): Promise<StoresInterface> {
     return this.storesService.create(store);
   }
-
+  
   @ApiOperation({
     summary: 'Update a store',
   })

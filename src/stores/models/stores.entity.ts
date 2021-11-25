@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
 } from 'typeorm';
+
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
 import { Brand } from 'src/brands/entities/brands.entity';
@@ -22,6 +23,7 @@ export class StoresEntity {
   })
   id: number;
 
+
   @ApiProperty({
     type: String,
     format: 'date-time',
@@ -34,6 +36,7 @@ export class StoresEntity {
   })
   createdAt: Date;
 
+
   @ApiProperty({
     type: String,
     format: 'date-time',
@@ -45,6 +48,7 @@ export class StoresEntity {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
 
   @ApiProperty({
     type: Brand,
@@ -74,6 +78,7 @@ export class StoresEntity {
   @OneToOne(() => Banner)
   @Column({
     name: 'banner_id',
+    type: 'integer',
   })
   bannerId: Banner;
 }

@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'phones' })
 export class Phone {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column('character varying', { length: 4 })
@@ -14,5 +15,9 @@ export class Phone {
   @Column('character varying', { length: 10 })
   phone_number: string;
 
+  @ManyToOne(() => User, (user) => user.id)
+  user: User;
+
+  @Column({ type: 'bigint' })
   user_id: number;
 }
