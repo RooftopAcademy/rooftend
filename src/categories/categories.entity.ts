@@ -1,5 +1,5 @@
 
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('categories')
 export class Category {
@@ -16,9 +16,13 @@ export class Category {
   })
   name : string
 
-  @Column({
-      name :'category_id'
+  @ManyToOne(()=>Category,(category)=>category.id )
+  @JoinColumn({
+    name :'category_id'
   })
   category_id : string
+
+  @OneToMany(()=>Category,(category)=>category.id)
+  categories:Category[]
 
 }
