@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { History } from 'src/history/models/history.entity';
+import { 
+    IPaginationOptions, 
+    paginate, 
+    Pagination 
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class HistoryService {
@@ -33,4 +38,8 @@ export class HistoryService {
         await this.historyRepo.delete(id);
         return true;
     }
+
+    async paginate(options: IPaginationOptions): Promise<Pagination<History>> {
+        return paginate<History>(this.historyRepo, options);
+      }
 }
