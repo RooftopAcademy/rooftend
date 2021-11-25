@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { PhonesModule } from './phones/phones.module';
 import { AccountStatusModule } from './account-status/account-status.module';
 import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
@@ -55,7 +55,6 @@ import { UsersModule } from './users/users.module';
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
-    StoresModule,
   ],
   
   controllers: [AppController],
