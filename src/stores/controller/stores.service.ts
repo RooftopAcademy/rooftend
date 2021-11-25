@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { StoresInterface } from '../models/stores.interface';
 import { StoresEntity } from '../models/stores.entity';
 import { DeleteResult } from 'typeorm/browser';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class StoresService {
@@ -12,11 +17,13 @@ export class StoresService {
     private readonly storesRepository: Repository<StoresEntity>,
   ) {}
 
-  getAll(): Promise<StoresInterface[]> {
-    return this.storesRepository.find();
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<StoresInterface>> {
+    return paginate<StoresInterface>(this.storesRepository, options);
   }
 
-  getOne(id: number): Promise<StoresInterface> {
+  getOne(id: string | number): Promise<StoresEntity> {
     return this.storesRepository.findOne(id);
   }
 
@@ -26,11 +33,9 @@ export class StoresService {
 
   async update(
     id: number,
-    newStore: StoresInterface,
-  ): Promise<StoresInterface> {
-    const store = await this.storesRepository.findOne(id);
-    this.storesRepository.merge(store, newStore);
-    return this.storesRepository.save(store);
+    store: StoresInterface,
+  ): Promise<UpdateResult> {
+    return this.storesRepository.update(id, store);
   }
 
   delete(id: number): Promise<DeleteResult> {

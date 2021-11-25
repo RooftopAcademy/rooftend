@@ -16,7 +16,7 @@ export class StoresEntity {
   createdAt: Date;
 
   @Column({
-    name: 'created_at',
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
@@ -24,19 +24,19 @@ export class StoresEntity {
 
   @Column({
     name: 'brand_id',
-    type: 'bigint',
+    type: 'integer',
   })
   brandId: number;
 
   @Column({
     name: 'user_id',
-    type: 'bigint',
+    type: 'integer',
   })
   userId: number;
 
   @Column({
     name: 'banner_id',
-    type: 'bigint',
+    type: 'integer',
   })
   bannerId: number;
 }
