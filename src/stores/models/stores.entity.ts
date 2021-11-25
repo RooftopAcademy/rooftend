@@ -35,17 +35,23 @@ export class StoresEntity {
   @JoinColumn({
     name: 'brand_id',
   })
-  brandId: Brand;
+  @Column({
+    name: 'brand_id',
+    type: 'integer',
+  })
+  brandId: number;
 
   @OneToOne(() => User)
   @Column({
     name: 'user_id',
+    type: 'integer',
   })
-  userId: User;
+  userId: number;
 
   @OneToOne(() => Banner)
   @Column({
     name: 'banner_id',
+    type: 'integer',
   })
-  bannerId: Banner;
+  bannerId: number;
 }

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import {ProfileService} from './services/profile/profile.service';
+import { ProfileService } from './services/profile/profile.service';
 import { ProfilesController } from './controllers/profiles.controller';
-import {Profile} from './profile.entity'
-import {TypeOrmModule} from '@nestjs/typeorm'
+import { Profile } from './profile.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   providers: [ProfileService],
@@ -12,3 +12,4 @@ import {TypeOrmModule} from '@nestjs/typeorm'
   ]
 })
 export class ProfileModule {}
+
