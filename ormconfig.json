@@ -2,9 +2,9 @@
    "type": "postgres",
    "host": "localhost",
    "port": 5432,
-   "username": "irton",
-   "password": "9371",
-   "database": "rooftop_backend",
+   "username": "admin",
+   "password": "5432",
+   "database": "database",
    "synchronize": true,
    "logging": false,
    "entities": [
