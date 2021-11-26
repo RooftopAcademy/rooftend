@@ -40,6 +40,7 @@ import { UsersModule } from './users/users.module';
 
     AccountStatusModule,
     BrandsModule,
+    CartModule,
     CategoriesModule,
     FavoritesModule,
     HistoryModule,
@@ -54,10 +55,8 @@ import { UsersModule } from './users/users.module';
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
-    StoresModule,
-    CartModule,
   ],
-
+  
   controllers: [AppController],
   providers: [AppService],
 })
