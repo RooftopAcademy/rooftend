@@ -17,11 +17,9 @@ export class StoresService {
     private readonly storesRepository: Repository<StoresEntity>,
   ) {}
 
-  async paginate(
-    options: IPaginationOptions,
-  ): Promise<Pagination<StoresInterface>> {
-    return paginate<StoresInterface>(this.storesRepository, options);
-  }
+  // async paginate(options: IPaginationOptions) {
+  //   return paginate<StoresInterface>(this.storesRepository, options);
+  // }
 
   getOne(id: string | number): Promise<StoresEntity> {
     return this.storesRepository.findOne(id);
@@ -31,10 +29,7 @@ export class StoresService {
     return this.storesRepository.save(store);
   }
 
-  async update(
-    id: number,
-    store: StoresInterface,
-  ): Promise<UpdateResult> {
+  async update(id: number, store: StoresInterface): Promise<UpdateResult> {
     return this.storesRepository.update(id, store);
   }
 

@@ -11,19 +11,20 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
   Query,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
+import { CategoriesService } from '../services/categories.service';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from '../../categories.entity';
 import { Response } from 'express';
-import { CategoriesService } from '../services/categories.service';
 import  {  Pagination  } from 'nestjs-typeorm-paginate' ;
 import { ApiOperation, ApiTags ,ApiParam, ApiOkResponse,ApiNotFoundResponse} from '@nestjs/swagger';
 import { send } from 'process';
+
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
-
-   public constructor (private readonly categoriesService: CategoriesService) {}
+  public constructor(private readonly categoriesService: CategoriesService) {}
     
     async index(
       @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,

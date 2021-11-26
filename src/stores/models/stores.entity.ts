@@ -7,15 +7,14 @@ import {
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from 'src/users/entities/user.entity';
-import { Brand } from 'src/brands/entities/brands.entity';
-import { Banner } from 'src/banners/entities/banners.entity';
+import { Brand } from '../../brands/entities/brands.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('stores')
 export class StoresEntity {
   @ApiProperty({
     type: Number,
-    description: 'Store Id'
+    description: 'Store Id',
   })
   @PrimaryGeneratedColumn({
     name: 'id',
@@ -23,11 +22,10 @@ export class StoresEntity {
   })
   id: number;
 
-
   @ApiProperty({
     type: String,
     format: 'date-time',
-    description: 'Created date'
+    description: 'Created date',
   })
   @Column({
     name: 'created_at',
@@ -36,11 +34,10 @@ export class StoresEntity {
   })
   createdAt: Date;
 
-
   @ApiProperty({
     type: String,
     format: 'date-time',
-    description: 'Updated date'
+    description: 'Updated date',
   })
   @Column({
     name: 'updated_at',
@@ -49,10 +46,9 @@ export class StoresEntity {
   })
   updatedAt: Date;
 
-
   @ApiProperty({
     type: Brand,
-    description: 'The brand to which the store belongs'
+    description: 'The brand to which the store belongs',
   })
   @OneToOne(() => Brand)
   @JoinColumn({
@@ -62,7 +58,7 @@ export class StoresEntity {
 
   @ApiProperty({
     type: User,
-    description: 'The user to who the store belongs'
+    description: 'The user to who the store belongs',
   })
   @OneToOne(() => User)
   @Column({
@@ -71,14 +67,14 @@ export class StoresEntity {
   })
   userId: User;
 
-  @ApiProperty({
-    type: Banner,
-    description: 'The store\'s banner'
-  })
-  @OneToOne(() => Banner)
-  @Column({
-    name: 'banner_id',
-    type: 'integer',
-  })
-  bannerId: Banner;
+  // @ApiProperty({
+  //   type: Banner,
+  //   description: "The store's banner",
+  // })
+  // @OneToOne(() => Banner)
+  // @Column({
+  //   name: 'banner_id',
+  //   type: 'integer',
+  // })
+  // bannerId: Banner;
 }

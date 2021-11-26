@@ -13,7 +13,6 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -22,7 +21,7 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
- } from '@nestjs/swagger';
+} from '@nestjs/swagger';
 
 import { StoresService } from './stores.service';
 import { StoresInterface } from '../models/stores.interface';
@@ -35,7 +34,7 @@ export class StoresController {
   constructor(private storesService: StoresService) {}
 
   @ApiOperation({
-    summary: 'Get a list of stores'
+    summary: 'Get a list of stores',
   })
   @ApiOkResponse({
     description: 'A list of stores',
@@ -46,13 +45,13 @@ export class StoresController {
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ): Promise<Pagination<StoresInterface>> {
+  ) {
     limit = limit > 100 ? 100 : limit;
-    return this.storesService.paginate({
-      page,
-      limit,
-      route: '/stores',
-    });
+    // return this.storesService.paginat({
+    //   page,
+    //   limit,
+    //   route: '/stores',
+    // });
   }
 
   @ApiOperation({
@@ -77,14 +76,14 @@ export class StoresController {
   async getOne(
     @Param('id') id: number,
     @Res() res: Response,
-    ): Promise<StoresEntity | void> {
-      const data = await this.storesService.getOne(id);
+  ): Promise<StoresEntity | void> {
+    const data = await this.storesService.getOne(id);
 
-      if (!data) return res.status(404).end('404');
+    if (!data) return res.status(404).end('404');
 
-      return res.status(200).send(data).end();
+    return res.status(200).send(data).end();
   }
-  
+
   @ApiOperation({
     summary: 'Create a new store',
   })
@@ -97,7 +96,7 @@ export class StoresController {
   create(@Body() store: StoresInterface): Promise<StoresInterface> {
     return this.storesService.create(store);
   }
-  
+
   @ApiOperation({
     summary: 'Update a store',
   })
@@ -122,13 +121,13 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Delete a store'
+    summary: 'Delete a store',
   })
   @ApiParam({
     name: 'id',
     type: Number,
     required: true,
-    example: 8
+    example: 8,
   })
   @ApiResponse({
     status: 204,

@@ -4,7 +4,7 @@ import { IsString, IsDate, IsInt } from 'class-validator';
 export class CreatePlatformDTO {
   @ApiProperty({
     description: 'The platform id',
-    type: BigInt,
+    type: Number,
   })
   @IsInt()
   id: number;
