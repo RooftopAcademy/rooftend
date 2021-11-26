@@ -2,10 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsDate, IsInt } from 'class-validator';
 
 export class CreatePlatformDTO {
+<<<<<<< HEAD
   // @ApiProperty({
   //   description: 'The platform id',
   //   type: BigInt,
   // })
+=======
+  @ApiProperty({
+    description: 'The platform id',
+    type: Number,
+  })
+>>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
   @IsInt()
   id: number;
 

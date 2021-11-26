@@ -5,17 +5,21 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
 } from 'typeorm';
-
 import { ApiProperty } from '@nestjs/swagger';
+<<<<<<< HEAD
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 // import { Banner } from '../../banners/entities/banner.entity';
+=======
+import { Brand } from '../../brands/entities/brands.entity';
+import { User } from '../../users/entities/user.entity';
+>>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 
 @Entity('stores')
 export class StoresEntity {
   @ApiProperty({
     type: Number,
-    description: 'Store Id'
+    description: 'Store Id',
   })
   @PrimaryGeneratedColumn({
     name: 'id',
@@ -26,7 +30,7 @@ export class StoresEntity {
   @ApiProperty({
     type: String,
     format: 'date-time',
-    description: 'Created date'
+    description: 'Created date',
   })
   @Column({
     name: 'created_at',
@@ -38,7 +42,7 @@ export class StoresEntity {
   @ApiProperty({
     type: String,
     format: 'date-time',
-    description: 'Updated date'
+    description: 'Updated date',
   })
   @Column({
     name: 'updated_at',
@@ -49,7 +53,7 @@ export class StoresEntity {
 
   @ApiProperty({
     type: Brand,
-    description: 'The brand to which the store belongs'
+    description: 'The brand to which the store belongs',
   })
   @OneToOne(() => Brand)
   @JoinColumn({
@@ -59,7 +63,7 @@ export class StoresEntity {
 
   @ApiProperty({
     type: User,
-    description: 'The user to who the store belongs'
+    description: 'The user to who the store belongs',
   })
   @OneToOne(() => User)
   @Column({
@@ -70,7 +74,10 @@ export class StoresEntity {
 
   // @ApiProperty({
   //   type: Banner,
+<<<<<<< HEAD
   //   description: 'The store\'s banner'
+=======
+>>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
   // })
   // @OneToOne(() => Banner)
   // @Column({

@@ -7,9 +7,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Type } from 'class-transformer';
+<<<<<<< HEAD
 import { User } from '../users/entities/user.entity';
+=======
+>>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
+import { User } from '../users/entities/user.entity';
 
 /**
  * Represents a review given by an user to another entity.
@@ -27,12 +31,15 @@ export class Review implements PolymorphicChildInterface {
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, (user) => user.reviews, { eager: true })
-  @ApiProperty({ type: User, description: 'The user who creates the review.' })
+  @ApiProperty({
+    type: () => User,
+    description: 'The user who creates the review.',
+  })
   user: User;
 
   @PolymorphicParent(() => User)
   @ApiProperty({
-    type: User,
+    type: () => User,
     description: `The entity who receives the review.
     Currently the only allowed is User.`,
   })

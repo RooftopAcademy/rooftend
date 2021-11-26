@@ -1,23 +1,46 @@
+<<<<<<< HEAD
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+=======
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+>>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 
 @Entity('categories')
 export class Category {
-
+  @ApiProperty({
+    type:Number,
+    description: 'The id of the category',
+    example: 1,
+  })
   @PrimaryGeneratedColumn({
-    unsigned : true,
-    type : 'smallint'
+    unsigned: true,
+    type: 'smallint',
   })
-  id: number
+  id: number;
   
-  @Column({
-    type : 'character varying',
-    length  : 100
+  @ApiProperty({
+    type:String,
+    maxLength:100,
+    description: 'The name of the category',
+    example: 'technology',
   })
-  name : string
-
   @Column({
-      name :'category_id'
+    type: 'character varying',
+    length: 100,
   })
-  category_id : string
+  name: string;
 
+  @ManyToOne(()=>Category,(category)=>category.id)
+  @ApiProperty({
+    type:Number,
+    description: 'Category_id is related to category',
+    example: 'technology',
+  })
+  @Column({
+    name: 'category_id',
+  })
+  category_id: string;
+
+  @OneToMany(()=>Category,(category)=>category.id)
+  categories:Category[]
 }

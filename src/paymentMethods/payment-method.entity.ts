@@ -1,46 +1,43 @@
+/* eslint-disable prettier/prettier */
 import {
-  Column,
-  CreateDateColumn,
   Entity,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
+  Column,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class QuestionsEntity {
+@Entity({
+  name: 'payment_methods',
+})
+export default class PaymentMethod {
   @PrimaryGeneratedColumn({
     unsigned: true,
     type: 'bigint',
   })
   id: number;
 
-  // @ManyToOne(type => ItemEntity, item => item.questions)
-  // item: ItemEntity;
-
-  // @ManyToOne(type => UserEntity, user => user.questions)
-  // user: UserEntity;
-
   @Column({
-    name: 'question',
+    name: 'name',
     type: 'character varying',
+    length: 15,
     nullable: false,
   })
-  questionContent: string;
+  name: string;
 
   @Column({
-    name: 'answer',
+    name: 'type',
     type: 'character varying',
-    nullable: true,
+    length: 15,
+    nullable: false,
   })
-  answer: string;
+  type: string;
 
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   created_at: Date;
 
@@ -48,6 +45,7 @@ export class QuestionsEntity {
     name: 'updated_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   updated_at: Date;
 }

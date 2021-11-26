@@ -1,12 +1,20 @@
-import { Controller, Get, Param, Body, Post, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Body,
+  Post,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
 
 @ApiHeader({
-    name: 'RooftopApi',
-    description: 'Rooftop Api Documentation',
-  })
+  name: 'RooftopApi',
+  description: 'Rooftop Api Documentation',
+})
 @ApiTags('carts')
 @Controller('carts')
 export class CartController {

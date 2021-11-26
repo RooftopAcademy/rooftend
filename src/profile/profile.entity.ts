@@ -3,17 +3,17 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity({ name: 'profiles' })
 export class Profile {
   @PrimaryGeneratedColumn({
-      unsigned: true,
-      type : 'bigint'
+    unsigned: true,
+    type: 'bigint',
   })
-  id : number
+  id: number;
 
   @Column({
-      name : 'first_name',
-      type : 'character varying',
-      length : 100
+    name: 'first_name',
+    type: 'character varying',
+    length: 100,
   })
-  firstName : string
+  firstName: string;
 
   @Column({
     name: 'last_name',
