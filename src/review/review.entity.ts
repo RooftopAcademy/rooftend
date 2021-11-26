@@ -7,10 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Type } from 'class-transformer';
-<<<<<<< HEAD
-import { User } from '../users/entities/user.entity';
-=======
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
 import { User } from '../users/entities/user.entity';

@@ -7,11 +7,6 @@ import {
 
 import { ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-<<<<<<< HEAD
-
-// import { Item } from '../../items/entities/item.entity'
-=======
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import { User } from '../../users/entities/user.entity';
 
 @Entity()

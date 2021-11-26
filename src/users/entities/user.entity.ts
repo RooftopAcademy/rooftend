@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import { PhotosEntity } from '../../photos/models/photos.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn, ManyToOne, JoinTable } from 'typeorm';
-import { Review } from '../../review/review.entity';
-import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { ApiProperty } from '@nestjs/swagger';
-import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
-=======
 import {
   Entity,
   Column,
@@ -21,7 +13,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 
 @Entity('users')
 export class User {
@@ -86,13 +77,7 @@ export class User {
   @PolymorphicChildren(() => Review, { eager: false })
   receivedReviews: Review[];
 
-<<<<<<< HEAD
-  questions : []
-
-  favorites : []
-=======
   entities: [];
 
   favorites: [];
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 }

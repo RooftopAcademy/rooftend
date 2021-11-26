@@ -1,10 +1,6 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-<<<<<<< HEAD
-import { User } from '../../users/entities/user.entity'
-=======
 import { User } from '../../users/entities/user.entity';
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 
 @Entity({
   name: 'notification',

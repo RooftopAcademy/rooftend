@@ -13,11 +13,6 @@ import {
   Query,
   NotFoundException,
 } from '@nestjs/common';
-<<<<<<< HEAD
-import { Category } from '../../categories.entity';
-import { Request } from 'express';
-=======
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import { CategoriesService } from '../services/categories.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from '../../categories.entity';

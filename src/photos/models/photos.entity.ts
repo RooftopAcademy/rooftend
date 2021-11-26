@@ -1,10 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
-<<<<<<< HEAD
-import { User } from '../../users/entities/user.entity';
-=======
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 

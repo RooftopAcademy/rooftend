@@ -1,11 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-<<<<<<< HEAD
-import { Category } from '../../categories.entity';
-=======
-
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 import {
   paginate,
   Pagination,

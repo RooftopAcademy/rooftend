@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-import { Body, Controller, DefaultValuePipe, Delete, Get, HttpCode, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
-import { HistoryService } from '../../services/history/history.service';
-import { History } from '../../models/history.entity';
-
-import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
-  } from '@nestjs/swagger';
-=======
 import {
   Body,
   Controller,
@@ -28,7 +15,6 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HistoryService } from '../../services/history/history.service';
 import { History } from '../../models/history.entity';
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 
 @ApiTags('history')
 @Controller('history')

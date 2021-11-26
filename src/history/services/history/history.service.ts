@@ -1,18 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-<<<<<<< HEAD
-import { History } from '../../models/history.entity';
-import { 
-    IPaginationOptions, 
-    paginate, 
-    Pagination 
-=======
 import {
   IPaginationOptions,
   paginate,
   Pagination,
->>>>>>> bbb407f8efef3984e93a845355b607a40b2b527e
 } from 'nestjs-typeorm-paginate';
 import { History } from '../../models/history.entity';
 
