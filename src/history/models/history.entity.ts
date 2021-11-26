@@ -29,6 +29,7 @@ export class History {
   // @ApiProperty({ example: 1, description: 'The item that the user visited' })
   // item_id: number;
 
+
   @ApiProperty({
     default: 'Current date',
     type: Date,

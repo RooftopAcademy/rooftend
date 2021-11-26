@@ -38,25 +38,17 @@ export class UserController {
     type: User,
   })
   @Get()
-  @HttpCode(200)
-  getAll() {
-    return this.userService.findAll().then((data) => {
-      return data;
-    });
-  }
-
-  @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ) {
-    limit = limit > 100 ? 100 : limit;
-    return this.userService.paginate({
-      page,
-      limit,
-      route: '/users',
-    });
-  }
+      limit = limit > 100 ? 100 : limit;
+      return this.userService.paginate({
+        page,
+        limit,
+        route: '/users',
+      });
+    }
 
   @ApiOperation({ summary: 'Get a user by id' })
   @ApiResponse({
