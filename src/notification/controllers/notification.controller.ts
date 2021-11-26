@@ -9,7 +9,7 @@ import {
     ApiTags,
   } from '@nestjs/swagger';
 
-@ApiTags('notifications')
+@ApiTags('Notifications')
 @Controller('/notification')
 export class NotificationController {
   constructor(private notificationServices: NotificationService) {}
