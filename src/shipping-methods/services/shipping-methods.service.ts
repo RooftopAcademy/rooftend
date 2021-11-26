@@ -12,23 +12,26 @@ export class ShippingMethodsService {
 
   findAll() {
     //return this.shippingMethodsRepo.find();
-    return [{
-      id: 1,
-      name: "",
-      photoId: 1
-    },{
-      id: 2,
-      name: "",
-      photoId: 2
-    }];
+    return [
+      {
+        id: 1,
+        name: '',
+        photoId: 1,
+      },
+      {
+        id: 2,
+        name: '',
+        photoId: 2,
+      },
+    ];
   }
 
   findOne(id: number) {
     //return this.shippingMethodsRepo.findOne(id);
     return {
       id: id,
-      name: "",
-      photoId: 1
+      name: '',
+      photoId: 1,
     };
   }
 
@@ -43,10 +46,10 @@ export class ShippingMethodsService {
     // newShippingMethod.photoId = body.photoId;
 
     // return this.shippingMethodsRepo.save(newShippingMethod);
-    return "Método de Envío Creado";
+    return 'Método de Envío Creado';
   }
 
-  async update(id: number, body:any) {
+  async update(id: number, body: any) {
     //const shippingMethod = await this.findOne(id);
     //this.shippingMethodsRepo.merge(shippingMethod, body);
     //return this.shippingMethodsRepo.save(shippingMethod);
@@ -55,6 +58,6 @@ export class ShippingMethodsService {
 
   async delete(id: number) {
     //await this.shippingMethodsRepo.delete(id);
-    return "Eliminado";
+    return 'Eliminado';
   }
 }

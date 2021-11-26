@@ -10,6 +10,6 @@ import { ShippingMethod } from './shipping-method.entity';
     TypeOrmModule.forFeature([ShippingMethod])
   ],
   providers: [ShippingMethodsService],
-  controllers: [ShippingMethodsController]
+  controllers: [ShippingMethodsController],
 })
 export class ShippingMethodsModule {}
