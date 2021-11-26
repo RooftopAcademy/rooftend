@@ -21,6 +21,12 @@ describe('CartController', () => {
             updated_at: Date.now(),
             ...cart,
         })),
+        findOne: jest.fn().mockImplementation((id, cart) => ({
+            id,
+            created_at: Date.now(),
+            updated_at: Date.now(),
+            ...cart,
+        })),
     }
 
     beforeEach(async () =>{
