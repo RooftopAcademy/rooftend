@@ -6,7 +6,7 @@ import { User } from "../../users/entities/user.entity";
 export class Cart {
   /*@PrimaryColumn()*/
   @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
-  @ApiProperty({ type: [Number] })
+  @ApiProperty({ type: [Number] , readOnly:true})
   id: number;
 
   /*@Column('timestamp with time zone', { name: 'created_at', nullable: false, default: () => '((CURRENT_TIMESTAMP))' })  */
@@ -36,7 +36,6 @@ export class Cart {
 
     @ManyToOne(type => User, user => user.id) user: User; 
     @Column({name: 'user_id', type: "bigint"})
-    @ApiProperty({ type: [Number] })
     userId: number;
 
     @Column({type:"double precision"})

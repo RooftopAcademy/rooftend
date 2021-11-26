@@ -15,7 +15,7 @@ import { CartService } from '../services/cart.service';
   name: 'RooftopApi',
   description: 'Rooftop Api Documentation',
 })
-@ApiTags('carts')
+@ApiTags('Carts')
 @Controller('carts')
 export class CartController {
 
