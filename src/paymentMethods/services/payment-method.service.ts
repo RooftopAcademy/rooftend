@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable prettier/prettier */
 import { Body, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import PaymentMethod from '../payment-method.entity';
-import { PaymentMethodDto } from '../dto/create-payment-method.dto';
+import { PaymentMethodDto } from '../../payment-methods/dto/create-payment-method.dto';
 
 @Injectable()
 export default class PaymentMethodsService {
@@ -12,8 +14,8 @@ export default class PaymentMethodsService {
     private readonly repository: Repository<PaymentMethod>,
   ) {}
 
-  all(): Promise<PaymentMethod[]> {
-    return this.repository.find();
+  async all(): Promise<PaymentMethod[]> {
+    return await this.repository.find();
   }
 
   find(id: number): Promise<PaymentMethod> {

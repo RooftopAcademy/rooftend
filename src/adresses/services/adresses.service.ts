@@ -1,26 +1,24 @@
-import {Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AdressesService {
+  findAll(): [] {
+    return [];
+  }
 
-    findAll(): []{
-        return []
-    }
+  public find(id: string): string {
+    return `item ${id} found`;
+  }
 
-    public find(id:string) : string{
-        return `item ${id} found`
-    }
+  edit(id: string): string {
+    return `item ${id} edited`;
+  }
 
-    edit(id:string) : string{
-        return `item ${id} edited`
-    }
+  delete(id: string): string {
+    return `item ${id} removed`;
+  }
 
-    delete(id: string) : string{
-        return `item ${id} removed`
-    }
-
-    create(body: Body) : string{
-        return 'item created'
-    }
-
+  create(body: Body): string {
+    return 'item created';
+  }
 }

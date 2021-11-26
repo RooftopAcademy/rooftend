@@ -7,19 +7,24 @@ describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;
 
   let mockPaymentMethodRepo = {
-    create: jest.fn(dto => dto),
-    save: jest.fn(paymentMethod => Promise.resolve({
-      id: Date.now(),
-      ...paymentMethod
-    }))
-  }
+    create: jest.fn((dto) => dto),
+    save: jest.fn((paymentMethod) =>
+      Promise.resolve({
+        id: Date.now(),
+        ...paymentMethod,
+      }),
+    ),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PaymentMethodsService, {
-        provide: getRepositoryToken(PaymentMethod),
-        useValue: mockPaymentMethodRepo
-      }],
+      providers: [
+        PaymentMethodsService,
+        {
+          provide: getRepositoryToken(PaymentMethod),
+          useValue: mockPaymentMethodRepo,
+        },
+      ],
     }).compile();
 
     service = module.get<PaymentMethodsService>(PaymentMethodsService);
@@ -30,11 +35,10 @@ describe('PaymentMethodsService', () => {
   });
 
   it('should create a new payment method record and return that', async () => {
-    const dto = {name: 'Cash', type: 'CASH'};
+    const dto = { name: 'Cash', type: 'CASH' };
     expect(await service.create(dto)).toEqual({
       id: expect.any(Number),
-      ...dto
-    })
-  })
-
+      ...dto,
+    });
+  });
 });

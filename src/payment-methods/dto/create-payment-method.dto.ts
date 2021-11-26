@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
 export class PaymentMethodDto {
-    name: string;
-    type: string
+  name: string;
+  type: string;
 }

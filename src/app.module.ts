@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
@@ -36,11 +35,12 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
 
-    AccountStatusModule,    
+    AccountStatusModule,
     BrandsModule,
+    CartModule,
     CategoriesModule,
     FavoritesModule,
     HistoryModule,
@@ -55,8 +55,6 @@ import { UsersModule } from './users/users.module';
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
-    StoresModule,
-    CartModule,
   ],
   
   controllers: [AppController],
