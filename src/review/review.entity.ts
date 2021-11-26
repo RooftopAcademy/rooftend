@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
 import { User } from '../users/entities/user.entity';
@@ -42,22 +42,12 @@ export class Review implements PolymorphicChildInterface {
   })
   subject: User;
 
-  @ApiProperty({
-    type: Number,
-    description: 'The id of the reviewed entity.',
-    example: 1,
-  })
+  @Exclude({ toPlainOnly: true })
   @Column({ name: 'subject_id', type: 'bigint' })
   @Type(() => Number)
   entityId: number;
 
-  @ApiProperty({
-    type: String,
-    maxLength: 10,
-    description:
-      'The type of the reviewed entity. Must match an entity name. currently the only valid is "User"',
-    example: 'User',
-  })
+  @Exclude({ toPlainOnly: true })
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
   entityType: string;
 
