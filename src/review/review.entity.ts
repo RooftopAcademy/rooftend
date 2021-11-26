@@ -19,6 +19,7 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: Number,
     description: 'The id of the review.',
+    readOnly: true,
     example: 1,
   })
   @PrimaryGeneratedColumn({ type: 'bigint' })
