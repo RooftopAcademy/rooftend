@@ -1,4 +1,4 @@
-
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -27,6 +27,7 @@ export class Category {
   })
   name : string
 
+  @ManyToOne(()=>Category,(category)=>category.id)
   @ApiProperty({
     type:Number,
     description: 'Category_id is related to category',
@@ -37,4 +38,6 @@ export class Category {
   })
   category_id : string
 
+  @OneToMany(()=>Category,(category)=>category.id)
+  categories:Category[]
 }
