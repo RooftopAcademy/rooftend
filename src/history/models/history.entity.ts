@@ -20,16 +20,6 @@ export class History {
   @ApiProperty({ example: 1, description: 'The user that has the history' })
   user_id: number;
 
-<<<<<<< HEAD
-    // @OneToOne(() => Item)
-    // @Column({
-    //   name:'item_id',
-    //   type: 'bigint',
-    //   unsigned: true,
-    // })
-    // @ApiProperty({ example: 1, description: 'The item that the user visited' })
-    // item_id: number;
-=======
   // @OneToOne(() => Item)
   // @Column({
   //   name:'item_id',
@@ -38,7 +28,7 @@ export class History {
   // })
   // @ApiProperty({ example: 1, description: 'The item that the user visited' })
   // item_id: number;
->>>>>>> c2b569d808431c85e136056f7d481faf032ba091
+
 
   @ApiProperty({
     default: 'Current date',

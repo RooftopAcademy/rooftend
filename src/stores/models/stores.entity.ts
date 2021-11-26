@@ -68,11 +68,6 @@ export class StoresEntity {
 
   // @ApiProperty({
   //   type: Banner,
-<<<<<<< HEAD
-  //   description: 'The store\'s banner'
-=======
-  //   description: "The store's banner",
->>>>>>> c2b569d808431c85e136056f7d481faf032ba091
   // })
   // @OneToOne(() => Banner)
   // @Column({
