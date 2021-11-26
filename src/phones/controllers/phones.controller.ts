@@ -10,7 +10,14 @@ import {
   DefaultValuePipe,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PhonesService } from '../services/phones.service';
 import { Phone } from '../entities/phone.entity';
 
@@ -25,6 +32,17 @@ export class PhonesController {
     status: 200,
     description: 'The phones found',
     type: [Phone],
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number, by default is 1',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Limit of phones to return, max is 10',
   })
   getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -41,6 +59,11 @@ export class PhonesController {
   @Get(':id')
   @ApiOperation({ summary: 'Get phone by id' })
   @ApiResponse({ status: 200, description: 'The phone found', type: Phone })
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    description: 'Phone id',
+  })
   getOne(@Param('id') id: number) {
     return this.phonesService.findOne(id);
   }
@@ -48,7 +71,8 @@ export class PhonesController {
   @Post()
   @ApiOperation({ summary: 'Create phone' })
   @ApiResponse({ status: 201, description: 'Phone created' })
-  create(@Body() bodyParams: any) {
+  @ApiBody({ type: Phone })
+  create(@Body() bodyParams: Phone) {
     return this.phonesService.create(bodyParams);
   }
 
