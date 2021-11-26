@@ -1,6 +1,5 @@
-import { Banner } from "src/banners/entities/banners.entity";
-import { Brand } from "src/brands/entities/brands.entity";
-import { User } from "src/users/entities/user.entity";
+import { Brand } from '../../brands/entities/brands.entity';
+import { User } from '../../users/entities/user.entity';
 
 export interface StoresInterface {
   id?: number;
@@ -8,5 +7,5 @@ export interface StoresInterface {
   updatedAt?: Date;
   brandId?: Brand;
   userId?: User;
-  bannerId?: Banner;
+  // bannerId?: Banner;
 }

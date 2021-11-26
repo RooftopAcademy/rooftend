@@ -6,23 +6,25 @@ describe('UserController', () => {
   let controller: UserController;
 
   const mockUserService = {
-    create: jest.fn(user =>{
-        return {
-            
-            ...user
-        };
+    create: jest.fn((user) => {
+      return {
+        ...user,
+      };
     }),
-    update: jest.fn((id,user) =>({
-        id,
-        ...user
-    }))
-  }
+    update: jest.fn((id, user) => ({
+      id,
+      ...user,
+    })),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [UserService]
-    }).overrideProvider(UserService).useValue(mockUserService).compile();
+      providers: [UserService],
+    })
+      .overrideProvider(UserService)
+      .useValue(mockUserService)
+      .compile();
 
     controller = module.get<UserController>(UserController);
   });
@@ -31,41 +33,38 @@ describe('UserController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create a user', () =>{
-
+  it('should create a user', () => {
     const user = {
-        id: 1,
-        username: 'Pablo',
-        password: 'asd',
-        email: 'asd@gmail.com',
-        account_status: 1
-    }
+      id: 1,
+      username: 'Pablo',
+      password: 'asd',
+      email: 'asd@gmail.com',
+      account_status: 1,
+    };
 
     expect(controller.create(user)).toEqual({
-            id: 1,
-            username: 'Pablo',
-            password: 'asd',
-            email: 'asd@gmail.com',
-            account_status: 1
-        })
+      id: 1,
+      username: 'Pablo',
+      password: 'asd',
+      email: 'asd@gmail.com',
+      account_status: 1,
+    });
 
-    expect(mockUserService.create).toHaveBeenCalledWith(user)
-  })
+    expect(mockUserService.create).toHaveBeenCalledWith(user);
+  });
 
   it('should update a user', () => {
     const user = {
-        id: 1,
-        username: 'Pablo',
-        password: 'asd',
-        email: 'asd@gmail.com',
-        account_status: 1
+      id: 1,
+      username: 'Pablo',
+      password: 'asd',
+      email: 'asd@gmail.com',
+      account_status: 1,
     };
 
-  expect(controller.update(1,user)).toEqual({
+    expect(controller.update(1, user)).toEqual({
       id: 1,
-      ...user
-  })
-
-})
-
+      ...user,
+    });
+  });
 });

@@ -7,33 +7,32 @@ import { PaymentMethodDto } from '../dto/create-payment-method.dto';
 
 @Injectable()
 export default class PaymentMethodsService {
+  constructor(
+    @InjectRepository(PaymentMethod)
+    private readonly repository: Repository<PaymentMethod>,
+  ) {}
 
-    constructor(
-        @InjectRepository(PaymentMethod) private readonly repository: Repository<PaymentMethod>
-    ) {}
+  all(): Promise<PaymentMethod[]> {
+    return this.repository.find();
+  }
 
-    all() : Promise<PaymentMethod[]> {
-        return this.repository.find();
-    }
+  find(id: number): Promise<PaymentMethod> {
+    return this.repository.findOne(id);
+  }
 
-    find(id : number) : Promise<PaymentMethod> {
-        return this.repository.findOne(id);
-    }
+  create(@Body() body: PaymentMethodDto): Promise<PaymentMethod> {
+    const paymentMethod = this.repository.create(body);
 
-    create(@Body() body : PaymentMethodDto) : Promise<PaymentMethod> {
+    return this.repository.save(paymentMethod);
+  }
 
-        const paymentMethod = this.repository.create(body);
+  async update(id: number, body: PaymentMethodDto): Promise<PaymentMethod> {
+    const paymentMethod = await this.find(id);
+    this.repository.merge(paymentMethod, body);
+    return this.repository.save(paymentMethod);
+  }
 
-        return this.repository.save(paymentMethod);
-    }
-
-    async update(id: number, body: PaymentMethodDto) : Promise<PaymentMethod> {
-        const paymentMethod = await this.find(id);
-        this.repository.merge(paymentMethod, body);
-        return this.repository.save(paymentMethod);
-    }
-
-    async delete(id: number) : Promise<void> {
-        await this.repository.delete(id);
-    }
+  async delete(id: number): Promise<void> {
+    await this.repository.delete(id);
+  }
 }
