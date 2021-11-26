@@ -29,5 +29,11 @@ export class Phone {
   phone_number: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  @Column({ type: 'bigint', nullable: true })
+  @ApiProperty({
+    example: '1234678',
+    description: 'User id',
+    type: 'bigint',
+  })
+  user_id: number;
 }
