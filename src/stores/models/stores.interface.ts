@@ -1,5 +1,5 @@
 import { Brand } from '../../brands/entities/brands.entity';
-import { User } from '../../users/User';
+import { User } from '../../users/entities/user.entity';
 
 export interface StoresInterface {
   id?: number;

@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('categories')
 export class Category {
@@ -10,10 +9,10 @@ export class Category {
     example: 1,
   })
   @PrimaryGeneratedColumn({
-    unsigned : true,
-    type : 'smallint'
+    unsigned: true,
+    type: 'smallint',
   })
-  id: number
+  id: number;
   
   @ApiProperty({
     type:String,
@@ -22,10 +21,10 @@ export class Category {
     example: 'technology',
   })
   @Column({
-    type : 'character varying',
-    length  : 100
+    type: 'character varying',
+    length: 100,
   })
-  name : string
+  name: string;
 
   @ManyToOne(()=>Category,(category)=>category.id)
   @ApiProperty({
@@ -34,9 +33,9 @@ export class Category {
     example: 'technology',
   })
   @Column({
-      name :'category_id'
+    name: 'category_id',
   })
-  category_id : string
+  category_id: string;
 
   @OneToMany(()=>Category,(category)=>category.id)
   categories:Category[]
