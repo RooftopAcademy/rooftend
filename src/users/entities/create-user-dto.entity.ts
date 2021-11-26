@@ -36,6 +36,4 @@ export class CreateUserDTO {
   })
   @IsString()
   account_status: string;
-
-  
 }

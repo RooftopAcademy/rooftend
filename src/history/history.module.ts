@@ -5,10 +5,8 @@ import { History } from './models/history.entity';
 import { HistoryService } from './services/history/history.service';
 
 @Module({
-  imports:[
-    TypeOrmModule.forFeature([History])
-  ],
   providers: [HistoryService],
-  controllers: [HistoryController]
+  controllers: [HistoryController],
+  imports: [TypeOrmModule.forFeature([History])],
 })
 export class HistoryModule {}

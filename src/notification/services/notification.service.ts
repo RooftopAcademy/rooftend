@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notification } from '../notification.entity';
 import { Repository } from 'typeorm';
+import { Notification } from '../entities/notification.entity';
 import {
   paginate,
   Pagination,

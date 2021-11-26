@@ -7,13 +7,13 @@ export class Profile {
     type: 'bigint',
   })
   id: number;
-  
+
   @Column({
-      name : 'first_name',
-      type : 'character varying',
-      length : 100
+    name: 'first_name',
+    type: 'character varying',
+    length: 100,
   })
-  firstName : string
+  firstName: string;
 
   @Column({
     name: 'last_name',
@@ -21,13 +21,6 @@ export class Profile {
     length: 100,
   })
   lastName: string;
-
-  @Column({
-      name : 'identification_type',
-      type : 'character varying',
-      length : 5
-  })
-  identificationType : string
 
   @Column({
     name: 'identification_type',

@@ -6,12 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PhonesService } from '../services/phones.service';
 import { Phone } from '../entities/phone.entity';
 
-@ApiTags('phones')
+@ApiTags('Phones')
 @Controller('phones')
 export class PhonesController {
   constructor(private phonesService: PhonesService) {}
@@ -23,8 +26,16 @@ export class PhonesController {
     description: 'The phones found',
     type: [Phone],
   })
-  getAll() {
-    return this.phonesService.findAll();
+  getAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.phonesService.paginate({
+      page,
+      limit,
+      route: '/phones',
+    });
   }
 
   @Get(':id')
