@@ -6,7 +6,8 @@ import { CartService } from "./cart.service";
 describe('CartService', () => {
     let service: CartService;
     const mockCartRepository = {
-        
+        create: jest.fn().mockImplementation(cart => cart),
+        save: jest.fn().mockImplementation(cart => Promise.resolve({id: Date.now(), created_at: Date.now(), updated_at: Date.now(), ...cart}))
     }
 
     beforeEach(async () =>{
@@ -23,4 +24,16 @@ describe('CartService', () => {
     it('should be defined', () =>{
         expect(service).toBeDefined();
     });
+
+    it('should create a new cart and return it', async () =>{
+        const cart = {currencyCode: 'ab1', amount: 555, userId : 1};
+        expect(await service.create(cart)).toEqual({
+            id: expect.any(Number),
+            currencyCode: cart.currencyCode,
+            amount: cart.amount,
+            userId: cart.userId,
+            created_at: expect.any(Number),
+            updated_at: expect.any(Number),
+        })
+    })
 });
