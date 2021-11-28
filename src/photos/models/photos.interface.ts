@@ -5,7 +5,7 @@ export interface PhotosInterface {
   width: number;
   height: number;
   size: number;
-  subjectId: number;
-  subjectType: string;
+  entityId: number;
+  entityType: string;
   redirectUrl?: string;
 }
