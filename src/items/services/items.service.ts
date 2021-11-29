@@ -1,29 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Items } from 'src/items/entities/item.entity';
-import { ItemsInterface } from 'src/items/entities/item.interface';
+import { Item } from 'src/items/entities/items.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ItemsService {
   constructor(
-    @InjectRepository(Items)
-    private readonly ItemsRepo: Repository<Items>,
+    @InjectRepository(Item)
+    private readonly ItemsRepo: Repository<Item>,
   ) { }
 
-  findAll(): Promise<ItemsInterface[]> {
+  findAll(): Promise<Item[]> {
     return this.ItemsRepo.find();
   }
 
-  findOne(id: number): Promise<ItemsInterface> {
+  findOne(id: number): Promise<Item> {
     return this.ItemsRepo.findOne(id);
   }
 
-  create(body: any): Promise<ItemsInterface> {
+  create(body: any): Promise<Item> {
     return this.ItemsRepo.save(body);
   }
 
-  async update(id: number, body: any): Promise<ItemsInterface> {
+  async update(id: number, body: any): Promise<Item> {
     const item = await this.findOne(id);
     this.ItemsRepo.merge(item, body);
     return this.ItemsRepo.save(item);
