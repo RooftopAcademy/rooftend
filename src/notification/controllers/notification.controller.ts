@@ -16,17 +16,17 @@ import { Notification } from '../entities/notification.entity';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Notifications')
-@Controller('/notification')
+@Controller('/notifications')
 export class NotificationController {
   constructor(private notificationServices: NotificationService) {}
 
   @Get()
   @ApiOperation({
-    summary: 'Get all notifications',
+    summary: 'Get all notifications.',
   })
   @ApiResponse({
     status: 200,
-    description: 'The found record',
+    description: 'The found record.',
   })
   getAll(
     @Query('page') page: number = 1,
@@ -38,34 +38,34 @@ export class NotificationController {
       return this.notificationServices.paginate({
         page,
         limit,
-        route: '/notification',
+        route: '/notifications',
       });
     } catch (error) {
       return res.status(404).end(error.message);
     }
   }
   @ApiOperation({
-    summary: 'gets a record that matches the specified id',
+    summary: 'Gets a record that matches the specified id.',
   })
   @ApiResponse({
     status: 200,
-    description: 'The found record',
+    description: 'The found record.',
   })
   @Get(':id')
-  async getOne(@Param('id') id: number, @Res() res) {
+  async getOne(@Param('id') id: number, res: Response) {
     try {
       return await this.notificationServices.findOne(id);
-    } catch (error) {
-      return res.status(404).end(error.message);
+    } catch(error) {
+      return res.status(404).json({ message: `${error}` });
     }
   }
 
   @ApiOperation({
-    summary: 'a notification is created',
+    summary: 'A notification is created.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Created notification',
+    description: 'Created notification.',
   })
   @Post()
   create(@Body() body: any, res: Response) {
@@ -77,27 +77,27 @@ export class NotificationController {
   }
 
   @ApiOperation({
-    summary: 'A specific notification is updated',
+    summary: 'A specific notification is updated.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Updated notification',
+    description: 'Updated notification.',
   })
   @Put(':id')
   update(@Param('id') id: number, @Body() body: any, res: Response) {
     try {
       return this.notificationServices.update(id, body);
     } catch (error) {
-      return res.status(404).end(error.message);
+      return res.status(404).json({ message: `${error}` });
     }
   }
 
   @ApiOperation({
-    summary: 'A specific notification is deleted',
+    summary: 'A specific notification is deleted.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Deleted notification',
+    description: 'Deleted notification.',
   })
   @Delete(':id')
   delete(@Param('id') id: number, res: Response): Promise<Boolean> | any {
