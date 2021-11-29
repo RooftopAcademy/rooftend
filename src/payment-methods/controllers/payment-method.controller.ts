@@ -65,11 +65,16 @@ export default class PaymentMethodsController {
     @Param('id') id: number,
     @Res({ passthrough: true }) response,
   ): Promise<PaymentMethod> {
-    const payment_method: PaymentMethod = await this.service.find(id);
-
-    if (payment_method) return response.status(200).send(payment_method).end();
-
-    return response.status(404).end('Not found');
+    try {
+      const payment_method = await this.service.find(id);
+      
+      if (payment_method) { return payment_method }
+      
+      response.status(404).end();
+      
+    } catch (error) {
+      response.status(404).json({ message: `${error}` });
+    }
   }
 
   @Post('*')
