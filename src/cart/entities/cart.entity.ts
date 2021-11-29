@@ -22,7 +22,8 @@ export class Cart {
   @ApiProperty({ 
     name: "created_at",
     type: "string" ,
-    format: "date-time"
+    format: "date-time",
+    readOnly:true
   })
   created_at: Date;
 
@@ -35,7 +36,8 @@ export class Cart {
   @ApiProperty({ 
     name: "updated_at",
     type: "string" ,
-    format: "date-time"
+    format: "date-time",
+    readOnly:true
   })
   updated_at: Date;
 
@@ -47,6 +49,12 @@ export class Cart {
   @ManyToOne(type => User, user => user.id) user: User; 
   @Column({name: 'user_id', type: "bigint"})
   @JoinColumn({ name: 'user_id' })
+  @ApiProperty({ 
+    name: "userId",
+    type: "integer",
+    example: 1,
+    description: "Id of the user the Cart belongs to"
+  })
   userId: number;
 
   @Column({type:"double precision"})
@@ -61,7 +69,7 @@ export class Cart {
 
   @Column("varchar", { length: 3 , name: 'currency_code'})
   @ApiProperty({
-    name: "currency_code",
+    name: "currencyCode",
     required: true, 
     type: "string",
     example: "ab6",

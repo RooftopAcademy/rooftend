@@ -56,6 +56,9 @@ export class CartController {
         type: "integer",
         required: true
     })
+    @ApiBody({
+        type: Cart
+    })
     @ApiOperation({summary: 'Updates cart'})
     @ApiResponse({status: 201, description: 'Cart succesfully updated'})
     update(@Param('id') id : number, @Body() body : any): Promise<Cart>{
@@ -68,7 +71,7 @@ export class CartController {
         type: "integer",
         required: true
     })
-    @ApiOperation({summary: 'Deletes cart'})
+    @ApiOperation({summary: 'Deletes a cart that matches the given id'})
     @ApiResponse({status: 204, description: 'Cart succesfully deleted'})
     @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
     delete(@Param('id') id : number ): Promise<Boolean>{
