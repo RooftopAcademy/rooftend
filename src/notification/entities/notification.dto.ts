@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateNotificationDto {
+export class NotificationDto {
     @ApiProperty({
         description: 'The id of user.',
         type: Number
