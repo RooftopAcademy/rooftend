@@ -3,13 +3,6 @@ import { IsString, IsDate, IsInt } from 'class-validator';
 
 export class CreatePlatformDTO {
   @ApiProperty({
-    description: 'The platform id',
-    type: 'integer',
-  })
-  @IsInt()
-  id: number;
-
-  @ApiProperty({
     description: 'The date when the platform is created',
     default: 'Current date',
     type: 'date',
