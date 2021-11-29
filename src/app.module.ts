@@ -56,7 +56,7 @@ import { UsersModule } from './users/users.module';
     StoresModule,
     UsersModule,
   ],
-  
+
   controllers: [AppController],
   providers: [AppService],
 })
