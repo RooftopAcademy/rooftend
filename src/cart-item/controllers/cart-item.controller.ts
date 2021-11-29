@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
-import { cartItemInterface } from 'src/cart-item/models/cart-item.interface';
-import { CartItemService } from 'src/cart-item/services/cart-item.service';
-import { cartItem } from '../models/cart-item.entity';
+import { CartItemService } from '../services/cart-item.service';
+import { CartItem } from '../entities/cart-item.entity';
 
 import {
   ApiOperation,
@@ -19,11 +18,11 @@ export class CartItemController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the cart items',
-    type: cartItem,
+    type: CartItem,
   })
   @Get()
   @HttpCode(200)
-  getAll(): Promise<cartItemInterface[]> {
+  getAll(): Promise<CartItem[]> {
     return this.cartItemService.findAll();
   }
 
@@ -31,11 +30,11 @@ export class CartItemController {
   @ApiResponse({
     status: 200,
     description: 'A Cart Item found with the passed ID',
-    type: cartItem,
+    type: CartItem,
   })
   @Get(':id')
   @HttpCode(200)
-  getOne(@Param('id') id: number): Promise<cartItemInterface> {
+  getOne(@Param('id') id: number): Promise<CartItem> {
     return this.cartItemService.findOne(id);
   }
 
@@ -43,14 +42,14 @@ export class CartItemController {
   @ApiResponse({
     status: 201,
     description: 'The created cart item',
-    type: cartItem,
+    type: CartItem,
   })
   @ApiBadRequestResponse({
     description: 'The cart item could not be created',
   })
   @Post()
   @HttpCode(201)
-  create(@Body() body: any): Promise<cartItemInterface> {
+  create(@Body() body: any): Promise<CartItem> {
     return this.cartItemService.create(body);
   }
 
@@ -58,14 +57,14 @@ export class CartItemController {
   @ApiResponse({
     status: 204,
     description: 'The updated cart item',
-    type: cartItem,
+    type: CartItem,
   })
   @ApiBadRequestResponse({
     description: 'The cart item could not be updated',
   })
   @Put(':id')
   @HttpCode(204)
-  update(@Param('id') id: number, @Body() body: any): Promise<cartItemInterface> {
+  update(@Param('id') id: number, @Body() body: any): Promise<CartItem> {
     return this.cartItemService.update(id, body);
   }
 
