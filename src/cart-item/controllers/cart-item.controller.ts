@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { CartItemService } from '../services/cart-item.service';
 import { CartItem } from '../entities/cart-item.entity';
 
@@ -18,7 +18,7 @@ export class CartItemController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the cart items',
-    type: CartItem,
+    type: [CartItem],
   })
   @Get()
   @HttpCode(200)
@@ -62,7 +62,7 @@ export class CartItemController {
   @ApiBadRequestResponse({
     description: 'The cart item could not be updated',
   })
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(204)
   update(@Param('id') id: number, @Body() body: any): Promise<CartItem> {
     return this.cartItemService.update(id, body);

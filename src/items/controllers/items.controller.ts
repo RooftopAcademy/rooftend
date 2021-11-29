@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 
@@ -18,7 +18,7 @@ export class ItemsController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the items',
-    type: Item,
+    type: [Item],
   })
   @Get()
   @HttpCode(200)
@@ -62,7 +62,7 @@ export class ItemsController {
   @ApiBadRequestResponse({
     description: 'The item could not be updated',
   })
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(204)
   update(@Param('id') id: number, @Body() body: any): Promise<Item> {
     return this.ItemsService.update(id, body);
