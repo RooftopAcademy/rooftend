@@ -10,4 +10,4 @@ import PaymentMethodsService from './services/payment-method.service';
   controllers: [PaymentMethodsController],
   imports: [TypeOrmModule.forFeature([PaymentMethod])],
 })
-export class PaymentMethodsModule {}
+export class PaymentMethdosModule {}

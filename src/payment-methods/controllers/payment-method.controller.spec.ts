@@ -6,24 +6,24 @@ describe('PaymentMethodsController', () => {
   let controller: PaymentMethodsController;
 
   const mockPaymentMethodsService = {
-    create: jest.fn(dto => {
+    create: jest.fn((dto) => {
       return {
         id: Date.now(),
-        ...dto
+        ...dto,
       };
     }),
     update: jest.fn((id, dto) => {
       return {
         id,
-        ...dto
-      }
-    })
-  }
+        ...dto,
+      };
+    }),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PaymentMethodsController],
-      providers: [PaymentMethodsService]
+      providers: [PaymentMethodsService],
     })
       .overrideProvider(PaymentMethodsService)
       .useValue(mockPaymentMethodsService)
@@ -37,25 +37,23 @@ describe('PaymentMethodsController', () => {
   });
 
   it('should create a payment method', () => {
-    const dto = {name: 'Cash', type: 'CASH'};
-    expect(controller.create(dto))
-    .toEqual({
+    const dto = { name: 'Cash', type: 'CASH' };
+    expect(controller.create(dto)).toEqual({
       id: expect.any(Number),
       name: 'Cash',
-      type: 'CASH'
-    })
-  
-  expect(mockPaymentMethodsService.create).toHaveBeenCalledWith(dto);
-  })
-
-  it('should update a payment method', () => {
-    const dto = {name: 'Cash', type: 'CASH'};
-    expect(controller.update(1, dto)).toEqual({
-      id: 1,
-      ...dto
+      type: 'CASH',
     });
 
-  expect(mockPaymentMethodsService.update).toHaveBeenCalledWith(1, dto);
-  })
+    expect(mockPaymentMethodsService.create).toHaveBeenCalledWith(dto);
+  });
 
+  it('should update a payment method', () => {
+    const dto = { name: 'Cash', type: 'CASH' };
+    expect(controller.update(1, dto)).toEqual({
+      id: 1,
+      ...dto,
+    });
+
+    expect(mockPaymentMethodsService.update).toHaveBeenCalledWith(1, dto);
+  });
 });

@@ -13,7 +13,7 @@ import {
 export class Platform {
   @ApiProperty({
     description: 'Platform Id number',
-    type: BigInt,
+    type: Number,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,

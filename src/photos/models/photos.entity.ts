@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
-import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity implements PolymorphicChildInterface {

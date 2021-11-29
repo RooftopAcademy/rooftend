@@ -6,10 +6,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Type } from 'class-transformer';
-import { User } from '../users/entities/user.entity';
+import { Exclude, Type } from 'class-transformer';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { PolymorphicParent } from 'typeorm-polymorphic';
+import { User } from '../users/entities/user.entity';
 
 /**
  * Represents a review given by an user to another entity.
@@ -19,6 +19,7 @@ export class Review implements PolymorphicChildInterface {
   @ApiProperty({
     type: Number,
     description: 'The id of the review.',
+    readOnly: true,
     example: 1,
   })
   @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -27,33 +28,26 @@ export class Review implements PolymorphicChildInterface {
 
   @JoinColumn({ name: 'user_id' })
   @ManyToOne(() => User, (user) => user.reviews, { eager: true })
-  @ApiProperty({ type: User, description: 'The user who creates the review.' })
+  @ApiProperty({
+    type: () => User,
+    description: 'The user who creates the review.',
+  })
   user: User;
 
   @PolymorphicParent(() => User)
   @ApiProperty({
-    type: User,
+    type: () => User,
     description: `The entity who receives the review.
     Currently the only allowed is User.`,
   })
   subject: User;
 
-  @ApiProperty({
-    type: Number,
-    description: 'The id of the reviewed entity.',
-    example: 1,
-  })
+  @Exclude({ toPlainOnly: true })
   @Column({ name: 'subject_id', type: 'bigint' })
   @Type(() => Number)
   entityId: number;
 
-  @ApiProperty({
-    type: String,
-    maxLength: 10,
-    description:
-      'The type of the reviewed entity. Must match an entity name. currently the only valid is "User"',
-    example: 'User',
-  })
+  @Exclude({ toPlainOnly: true })
   @Column({ name: 'subject_type', type: 'varchar', length: 10 })
   entityType: string;
 
