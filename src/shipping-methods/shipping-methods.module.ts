@@ -8,6 +8,6 @@ import { ShippingMethodsController } from './controllers/shipping-methods.contro
   //   TypeOrmModule.forFeature([ShippingMethod])
   // ],
   providers: [ShippingMethodsService],
-  controllers: [ShippingMethodsController]
+  controllers: [ShippingMethodsController],
 })
 export class ShippingMethodsModule {}
