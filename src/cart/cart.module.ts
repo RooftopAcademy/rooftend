@@ -9,4 +9,4 @@ import { Cart } from './entities/cart.entity';
   providers: [CartService],
   controllers: [CartController],
 })
-export class CartModule {}
+export class CartModule { }

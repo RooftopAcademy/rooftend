@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from "@nestjs/swagger";
 
-import { Cart } from "src/cart/entities/cart.entity";
-import { Items } from 'src/items/models/item.entity';
+import { Cart } from "../../cart/entities/cart.entity";
+import { Item } from '../../items/entities/items.entity';
 
 @Entity('cart_item')
-export class cartItem {
+export class CartItem {
   @PrimaryGeneratedColumn({
     unsigned: true,
     type: 'bigint'
@@ -41,7 +41,7 @@ export class cartItem {
   @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Cart Item's last update date" })
   updatedAt: Date;
 
-  @ManyToOne(() => Items)
+  @ManyToOne(() => Item)
   @Column({
     name: 'item_id'
   })

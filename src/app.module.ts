@@ -23,6 +23,8 @@ import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { ItemsModule } from './items/items.module';
+import { CartItemModule } from './cart-item/cart-item.module';
 
 @Module({
   imports: [
@@ -35,7 +37,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      //synchronize: true,
     }),
 
     AccountStatusModule,
@@ -55,9 +57,11 @@ import { UsersModule } from './users/users.module';
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
+    ItemsModule,
+    CartItemModule
   ],
-  
+
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

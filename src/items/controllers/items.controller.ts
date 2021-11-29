@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
-import { ItemsInterface } from 'src/items/entities/item.interface';
-import { ItemsService } from 'src/items/services/items.service';
-import { Items } from '../entities/item.entity';
+import { ItemsService } from '../services/items.service';
+import { Item } from '../entities/items.entity';
 
 import {
   ApiOperation,
@@ -19,11 +18,11 @@ export class ItemsController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the items',
-    type: Items,
+    type: Item,
   })
   @Get()
   @HttpCode(200)
-  getAll(): Promise<ItemsInterface[]> {
+  getAll(): Promise<Item[]> {
     return this.ItemsService.findAll();
   }
 
@@ -31,11 +30,11 @@ export class ItemsController {
   @ApiResponse({
     status: 200,
     description: 'A Item found with the passed ID',
-    type: Items,
+    type: Item,
   })
   @Get(':id')
   @HttpCode(200)
-  getOne(@Param('id') id: number): Promise<ItemsInterface> {
+  getOne(@Param('id') id: number): Promise<Item> {
     return this.ItemsService.findOne(id);
   }
 
@@ -43,14 +42,14 @@ export class ItemsController {
   @ApiResponse({
     status: 201,
     description: 'The created item',
-    type: Items,
+    type: Item,
   })
   @ApiBadRequestResponse({
     description: 'The item could not be created',
   })
   @Post()
   @HttpCode(201)
-  create(@Body() body: any): Promise<ItemsInterface> {
+  create(@Body() body: any): Promise<Item> {
     return this.ItemsService.create(body);
   }
 
@@ -58,14 +57,14 @@ export class ItemsController {
   @ApiResponse({
     status: 204,
     description: 'The updated item',
-    type: Items,
+    type: Item,
   })
   @ApiBadRequestResponse({
     description: 'The item could not be updated',
   })
   @Put(':id')
   @HttpCode(204)
-  update(@Param('id') id: number, @Body() body: any): Promise<ItemsInterface> {
+  update(@Param('id') id: number, @Body() body: any): Promise<Item> {
     return this.ItemsService.update(id, body);
   }
 

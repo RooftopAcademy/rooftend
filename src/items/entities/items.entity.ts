@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from 'src/users/entities/user.entity';
-import { Brand } from 'src/brands/entities/brands.entity';
-import { Category } from 'src/categories/categories.entity';
+import { User } from '../../users/entities/user.entity';
+import { Brand } from '../../brands/entities/brands.entity';
+import { Category } from '../../categories/categories.entity';
 
 @Entity('items')
-export class Items {
+export class Item {
   @PrimaryGeneratedColumn({
     unsigned: true,
     type: 'bigint'
