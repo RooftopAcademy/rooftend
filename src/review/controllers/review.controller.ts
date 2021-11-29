@@ -27,7 +27,7 @@ import { Review } from '../review.entity';
 
 import { ReviewService } from '../services/review.service';
 
-@ApiTags('reviews')
+@ApiTags('Reviews')
 @Controller('reviews')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
