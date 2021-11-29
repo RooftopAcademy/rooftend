@@ -22,7 +22,7 @@ import PaymentMethodsService from '../services/payment-method.service';
 import PaymentMethodDto from '../dto/create-payment-method.dto';
 
 @ApiTags('Payment Methods')
-@Controller('payment')
+@Controller('payment-methods')
 export default class PaymentMethodsController {
   constructor(private readonly service: PaymentMethodsService) {}
 
