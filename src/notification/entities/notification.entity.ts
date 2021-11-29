@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 
@@ -19,6 +19,7 @@ export class Notification {
     type: 'bigint',
   })
   @OneToOne((type) => User, (user) => user.id)
+  @JoinColumn({ referencedColumnName : "id" })
   user_id: number;
 
   @ApiProperty({
