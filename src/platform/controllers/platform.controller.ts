@@ -32,7 +32,7 @@ export class PlatformController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the platforms',
-    type: Platform,
+    type: [Platform],
   })
   @Get()
   @HttpCode(200)
