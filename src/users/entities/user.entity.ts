@@ -13,6 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
+import { Notification } from '../../notification/entities/notification.entity';
 
 @Entity('users')
 export class User {
@@ -80,4 +81,20 @@ export class User {
   entities: [];
 
   favorites: [];
+
+  @ApiProperty({
+    example: 1,
+    description: 'Description the notification',
+  })
+  @Column({
+    name: 'notification_id',
+    unsigned: true,
+    type: 'string'
+  })
+  @OneToMany(type => Notification, notification => notification.id)
+  @JoinColumn({
+    referencedColumnName: 'id'
+  })
+  notification_id: number
+
 }
