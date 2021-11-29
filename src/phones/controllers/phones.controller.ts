@@ -79,6 +79,13 @@ export class PhonesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update phone' })
   @ApiResponse({ status: 200, description: 'Phone updated' })
+  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Phone id to be updated',
+  })
+  @ApiBody({ type: Phone })
   update(@Param('id') id: number, @Body() bodyParams: any) {
     return this.phonesService.update(id, bodyParams);
   }
@@ -86,6 +93,12 @@ export class PhonesController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete phone' })
   @ApiResponse({ status: 200, description: 'Phone deleted' })
+  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Phone id to be deleted',
+  })
   delete(@Param('id') id: number) {
     return this.phonesService.delete(id);
   }
