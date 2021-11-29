@@ -15,40 +15,42 @@ import { CartService } from '../services/cart.service';
   name: 'RooftopApi',
   description: 'Rooftop Api Documentation',
 })
-@ApiTags('carts')
+@ApiTags('Carts')
 @Controller('carts')
 export class CartController {
-  constructor(private cartService: CartService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Gets all carts' })
-  getAll() {
-    return this.cartService.findAll();
-  }
+    constructor( private cartService : CartService ){}
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Gets one cart by Id' })
-  getOne(@Param('id') id: number) {
-    return this.cartService.findOne(id);
-  }
+    @Get()
+    @ApiOperation({summary: 'Gets all carts'})
+    getAll(): Promise<Cart[]>{
+        return this.cartService.findAll();
+    }
 
-  @Post()
-  @ApiOperation({ summary: 'Creates cart' })
-  @ApiResponse({ status: 201, description: 'Cart succesfully created' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  create(@Body() body: any): Promise<Cart> {
-    return this.cartService.create(body);
-  }
+    @Get(':id')
+    @ApiOperation({summary: 'Gets one cart by Id'})
+    getOne(@Param('id') id : number): Promise<Cart>{
+        return this.cartService.findOne(id);
+    }
 
-  @Put(':id')
-  @ApiOperation({ summary: 'Updates cart' })
-  update(@Param('id') id: number, @Body() body: any) {
-    return this.cartService.update(id, body);
-  }
+    @Post()
+    @ApiOperation({summary: 'Creates cart'})
+    @ApiResponse({status: 201, description: 'Cart succesfully created'})
+    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    create (@Body() body : any): Promise<Cart>{
+        return this.cartService.create(body);
+    }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Deletes cart' })
-  delete(@Param('id') id: number) {
-    return this.cartService.delete(id);
-  }
+    @Put(':id')
+    @ApiOperation({summary: 'Updates cart'})
+    update(@Param('id') id : number, @Body() body : any): Promise<Cart>{
+        return this.cartService.update(id, body);
+    }
+
+    @Delete(':id')
+    @ApiOperation({summary: 'Deletes cart'})
+    delete(@Param('id') id : number ): Promise<Boolean>{
+        return this.cartService.delete(id);
+    }
+
 }

@@ -1,17 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { ApiProperty } from "@nestjs/swagger";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn } from "typeorm";
+import { User } from "../../users/entities/user.entity";
 
 @Entity({ name: 'carts' })
 export class Cart {
   /*@PrimaryColumn()*/
   @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
-  @ApiProperty({ type: [Number] })
+  @ApiProperty({ type: [Number] , readOnly:true})
   id: number;
 
   /*@Column('timestamp with time zone', { name: 'created_at', nullable: false, default: () => '((CURRENT_TIMESTAMP))' })  */
@@ -34,16 +29,22 @@ export class Cart {
   @ApiProperty({ type: [Date] })
   updated_at: Date;
 
-  @Column({ name: 'user_id', type: 'bigint' })
-  @ApiProperty({ type: [Number] })
-  userId: number;
+    @BeforeUpdate()
+    updateTimeStamp(){
+        this.updated_at = new Date;
+    }
 
-  /*Esta mal escrito amount pero es el nombre en la tabla*/
-  @Column({ type: 'double precision' })
-  @ApiProperty({ type: [Number] })
-  ammount: number;
+    @ManyToOne(type => User, user => user.id) user: User; 
+    @Column({name: 'user_id', type: "bigint"})
+    @JoinColumn({ name: 'user_id' })
+    userId: number;
 
-  @Column('varchar', { length: 3, name: 'currency_code' })
-  @ApiProperty({ type: [String] })
-  currencyCode: string;
+    @Column({type:"double precision"})
+    @ApiProperty({ type: [Number] })
+    amount: number;
+
+    @Column("varchar", { length: 3 , name: 'currency_code'})
+    @ApiProperty({ type: [String] })
+    currencyCode: string;
+
 }

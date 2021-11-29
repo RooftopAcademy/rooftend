@@ -1,11 +1,12 @@
 import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiProperty,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'; /* eslint-disable prettier/prettier */
 import {
-  Body,
   Controller,
   Delete,
   Get,
@@ -15,7 +16,7 @@ import {
   Put,
   Res,
 } from '@nestjs/common';
-import { PaymentMethodDto } from '../dto/create-payment-method.dto';
+import { Response } from 'express';
 import PaymentMethod from '../payment-method.entity';
 import PaymentMethodsService from '../services/payment-method.service';
 
@@ -25,6 +26,9 @@ export default class PaymentMethodsController {
   constructor(private readonly service: PaymentMethodsService) {}
 
   @Get()
+  @ApiOperation({
+    summary: "Returns all the payment methods available"
+  })
   @ApiResponse({
     status: 200,
     description: 'All the payment methods found',
@@ -35,14 +39,25 @@ export default class PaymentMethodsController {
 
     if (payment_methods) return payment_methods;
 
-    return response.status(404).end();
+    return response.status(404).end('Not found');
   }
 
   @Get(':id')
-  @ApiResponse({
+  @ApiOperation({
+    summary: "Returns the payment method matching the id parameter"
+  })
+  @ApiOkResponse({
     status: 200,
-    description: 'The payment methods found',
+    description: 'The payment method found',
     type: PaymentMethod,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
+  })
+  @ApiParam({
+    name: 'id',
+    format: 'number'
   })
   async find(
     @Param('id') id: number,
@@ -50,39 +65,35 @@ export default class PaymentMethodsController {
   ): Promise<PaymentMethod> {
     const payment_method: PaymentMethod = await this.service.find(id);
 
-    if (payment_method) return payment_method;
+    if (payment_method) return response.status(200).send(payment_method).end();
 
-    return response.status(404).end();
+    return response.status(404).end('Not found');
   }
 
-  @Post()
+  @Post('*')
   @ApiResponse({
-    status: 201,
-    description: 'The payment method that was just created',
-    type: PaymentMethod,
+    status: 403,
+    description: 'Forbidden',
   })
-  @HttpCode(201)
-  create(@Body() body: PaymentMethodDto): Promise<PaymentMethod> {
-    return this.service.create(body);
-  }
+  @HttpCode(403)
+  create(@Res() res : Response): void 
+    { return res.status(403).end('Forbidden'); }
 
-  @Put(':id')
+  @Put('*')
   @ApiResponse({
-    status: 201,
-    description: 'The payment method that was just updated',
-    type: PaymentMethod,
+    status: 403,
+    description: 'Forbidden',
   })
-  @HttpCode(204)
-  update(@Param('id') id: number, @Body() body: PaymentMethodDto) {
-    return this.service.update(id, body);
-  }
+  @HttpCode(403)
+  update(@Res() res: Response)
+    { return res.status(403).end('Forbidden'); }
 
-  @Delete(':id')
+  @Delete('*')
   @ApiResponse({
-    status: 200,
+    status: 403,
+    description: 'Forbidden',
   })
-  @HttpCode(200)
-  delete(@Param('id') id: number): Promise<void> {
-    return this.service.delete(id);
-  }
+  @HttpCode(403)
+  delete(@Res() res: Response) : void 
+    { return res.status(403).end('Forbidden'); }
 }
