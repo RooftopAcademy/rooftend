@@ -14,8 +14,10 @@ import {
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  ApiParam,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { User } from '../../users/entities/user.entity';
 import { CreatePlatformDTO } from '../create-platform-dto.entity';
 import { Platform } from '../platform.entity';
 
@@ -45,6 +47,11 @@ export class PlatformController {
     status: 200,
     description: 'The found platform with that id',
     type: Platform,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
   })
   @Get(':id')
   @HttpCode(200)
@@ -97,6 +104,11 @@ export class PlatformController {
     status: 200,
     description: 'The platform has been updated successfully.',
   })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+  })
   @ApiBadRequestResponse({
     description: 'The platform could not be updated',
   })
@@ -125,6 +137,11 @@ export class PlatformController {
   @ApiResponse({
     status: 200,
     description: 'The platform has been removed successfully.',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
   })
   @ApiBadRequestResponse({
     description: 'The platform could not be removed',
