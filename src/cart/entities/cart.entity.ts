@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 
 @Entity({ name: 'carts' })
@@ -36,6 +36,7 @@ export class Cart {
 
     @ManyToOne(type => User, user => user.id) user: User; 
     @Column({name: 'user_id', type: "bigint"})
+    @JoinColumn({ name: 'user_id' })
     userId: number;
 
     @Column({type:"double precision"})
