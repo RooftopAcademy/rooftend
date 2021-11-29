@@ -12,8 +12,8 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
-  Put,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -81,7 +81,7 @@ export default class PaymentMethodsController {
   create(@Res() res : Response): void 
     { return res.status(403).end('Forbidden'); }
 
-  @Put('*')
+  @Patch('*')
   @ApiResponse({
     status: 403,
     description: 'Forbidden',
