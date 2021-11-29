@@ -5,7 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
+import { CartItemModule } from './cart-item/cart-item.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { ItemsModule } from './items/items.module';
 import { NotificationModule } from './notification/notification.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
@@ -22,8 +24,8 @@ import { UsersModule } from './users/users.module';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database : process.env.DB_NAME,
-      autoLoadEntities : true,
+      database: process.env.DB_NAME,
+      autoLoadEntities: true,
       // synchronize: true,
     }),
 
@@ -35,8 +37,10 @@ import { UsersModule } from './users/users.module';
     ReviewModule,
     ShippingMethodsModule,
     UsersModule,
+    CartItemModule,
+    ItemsModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
