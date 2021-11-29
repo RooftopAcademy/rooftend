@@ -3,33 +3,40 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private userRepo: Repository<User>){
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-    }
+  async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
+    return paginate<User>(this.userRepo, options);
+  }
 
-    findOne(id: number){
-        this.userRepo.findOne(id);
-    }
+  findOne(id: number): Promise<User> {
+    return this.userRepo.findOne(id);
+  }
 
-    findAll(){
-        this.userRepo.find();
-    }
+  findAll() {
+    return this.userRepo.find();
+  }
 
-    create(body: any){
-        const newUser = this.userRepo.create(body);
-        return this.userRepo.save(newUser);
-    }
+  create(body: any) {
+    const newUser = this.userRepo.create(body);
+    return this.userRepo.save(newUser);
+  }
 
-    async update(id: number, body: any){
-        const user = await this.userRepo.findOne(id);
-        this.userRepo.merge(user,body);
-        return this.userRepo.save(user);
-    }
+  async update(id: number, body: any): Promise<User> {
+    const user = await this.userRepo.findOne(id);
+    this.userRepo.merge(user, body);
+    return this.userRepo.save(user);
+  }
 
-    async delete(id: number){
-        await this.userRepo.delete(id)
-        return true;
-    }
+  delete(id: number) {
+    return this.userRepo.delete(id);
+  }
 }

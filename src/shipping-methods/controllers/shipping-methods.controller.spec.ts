@@ -9,7 +9,9 @@ describe('ShippingMethodsController', () => {
       controllers: [ShippingMethodsController],
     }).compile();
 
-    controller = module.get<ShippingMethodsController>(ShippingMethodsController);
+    controller = module.get<ShippingMethodsController>(
+      ShippingMethodsController,
+    );
   });
 
   it('should be defined', () => {

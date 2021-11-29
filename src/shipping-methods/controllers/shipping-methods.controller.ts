@@ -1,9 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
 @Controller('shipping-methods')
 export class ShippingMethodsController {
-
   constructor(
     private shippingMethodsService: ShippingMethodsService
   ) { }
@@ -52,5 +60,4 @@ export class ShippingMethodsController {
   ) {
     return this.shippingMethodsService.delete(id);
   }
-
 }
