@@ -15,6 +15,7 @@ export default class PaymentMethod {
     example: 1,
     description: 'Payment method ID number',
     type: Number,
+    readOnly: true,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,
@@ -52,6 +53,7 @@ export default class PaymentMethod {
     example: '2021-11-15 17:32:19.537+00',
     description: 'The timestamp when the the payment method was created',
     type: Date,
+    readOnly: true,
   })
   @CreateDateColumn({
     name: 'created_at',
@@ -65,6 +67,7 @@ export default class PaymentMethod {
     description:
       'The timestamp when the the payment method was updated for the last time',
     type: Date,
+    readOnly: true,
   })
   @UpdateDateColumn({
     name: 'updated_at',
