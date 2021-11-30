@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsDate, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreatePlatformDTO {
   @ApiProperty({
@@ -7,6 +7,7 @@ export class CreatePlatformDTO {
     type: 'string',
   })
   @IsString()
+  @IsNotEmpty()
   countryCode: string;
 
   @ApiProperty({
@@ -14,6 +15,7 @@ export class CreatePlatformDTO {
     type: 'string',
   })
   @IsString()
+  @IsNotEmpty()
   currencyCode: string;
 
   @ApiProperty({
@@ -21,6 +23,7 @@ export class CreatePlatformDTO {
     type: 'string',
   })
   @IsString()
+  @IsNotEmpty()
   langCode: string;
 
   @ApiProperty({
@@ -28,5 +31,6 @@ export class CreatePlatformDTO {
     type: 'string',
   })
   @IsString()
+  @IsNotEmpty()
   phoneCountryCode: string;
 }
