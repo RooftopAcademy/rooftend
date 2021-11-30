@@ -8,6 +8,8 @@ import {
   Patch,
   Post,
   Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -22,6 +24,7 @@ import { CreatePlatformDTO } from '../create-platform-dto.entity';
 import { Platform } from '../platform.entity';
 
 import { PlatformService } from '../services/platform.service';
+import { UpdatePlatformDTO } from '../update-platform-dto.entity';
 
 @ApiTags('Platforms')
 @Controller('platforms')
@@ -73,6 +76,7 @@ export class PlatformController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a platform' })
   @ApiResponse({
@@ -84,11 +88,11 @@ export class PlatformController {
     description: 'The platform could not be created',
   })
   async create(
-    @Body() createPlatformDTO: CreatePlatformDTO,
+    @Body() createPlatform: CreatePlatformDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.platformService
-      .create(createPlatformDTO)
+      .create(createPlatform)
       .then(() => {
         response.status(201).end('Platform created');
       })
@@ -98,6 +102,7 @@ export class PlatformController {
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiOperation({ summary: 'Update a platform' })
   @ApiResponse({
@@ -114,16 +119,12 @@ export class PlatformController {
   })
   update(
     @Param('id') id: string | number,
-    @Body() createPlatformDTO: CreatePlatformDTO,
+    @Body() updatePlatform: UpdatePlatformDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.platformService
-      .findOneById(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('Platform not found');
-        }
-        this.platformService.update(id, createPlatformDTO);
+      .update(id, updatePlatform)
+      .then(() => {
         response.status(200).end('Platform updated');
       })
       .catch((err) => {
