@@ -35,7 +35,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      // synchronize: true,
     }),
 
     AccountStatusModule,
@@ -56,7 +56,7 @@ import { UsersModule } from './users/users.module';
     StoresModule,
     UsersModule,
   ],
-  
+
   controllers: [AppController],
   providers: [AppService],
 })
