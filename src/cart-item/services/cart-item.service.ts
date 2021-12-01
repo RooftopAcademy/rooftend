@@ -10,26 +10,37 @@ export class CartItemService {
     private readonly cartItemRepo: Repository<CartItem>,
   ) { }
 
-  findAll(): Promise<CartItem[]> {
-    return this.cartItemRepo.find();
+  findAll(cartId: number): Promise<CartItem[]> {
+    return this.cartItemRepo.find({
+      cartId: cartId,
+    });
   }
 
-  findOne(id: number): Promise<CartItem> {
-    return this.cartItemRepo.findOne(id);
+  findOne(cartId: number, itemId: number): Promise<CartItem> {
+    return this.cartItemRepo.findOne({
+      cartId,
+      itemId,
+    });
   }
 
-  create(body: any): Promise<CartItem> {
+  create(cartId: number, itemId: number, body: any): Promise<CartItem> {
+    this.cartItemRepo.merge(body, { cartId, itemId });
     return this.cartItemRepo.save(body);
   }
 
-  async update(id: number, body: any): Promise<CartItem> {
-    const cartItem = await this.findOne(id);
+  async update(cartId: number, itemId: number, body: any): Promise<CartItem> {
+    const cartItem = await this.cartItemRepo.findOne({
+      cartId,
+      itemId,
+    });
     this.cartItemRepo.merge(cartItem, body);
     return this.cartItemRepo.save(cartItem);
   }
 
-  async delete(id: number): Promise<boolean> {
-    await this.cartItemRepo.delete(id);
-    return true;
+  delete(cartId: number, itemId: number): void {
+    this.cartItemRepo.delete({
+      itemId,
+      cartId,
+    });
   }
 }
