@@ -5,33 +5,32 @@ import { Cart } from '../entities/cart.entity';
 
 @Injectable()
 export class CartService {
-  constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
 
-  findAll(): Promise<Cart[]> {
-    return this.cartRepo.find();
-  }
+    constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {
+    }
 
-  findOne(id: number): Promise<Cart> {
-    return this.cartRepo.findOne(id);
-  }
+    findAll() : Promise<Cart[]>{
+        return this.cartRepo.find();
+    }
 
-  create(body: any): Promise<Cart> {
-    const newCart = this.cartRepo.create({
-      ammount: body.ammount,
-      userId: body.userId,
-      currencyCode: body.currencyCode,
-    });
-    return this.cartRepo.save(newCart);
-  }
+    findOne(id: number) : Promise<Cart>{
+        return this.cartRepo.findOne(id);
+    }
 
-  async update(id: number, body: any): Promise<Cart> {
-    const cart = await this.cartRepo.findOne(id);
-    this.cartRepo.merge(cart, body);
-    return this.cartRepo.save(cart);
-  }
+    create(body: any) : Promise<Cart>{
+        const newCart = this.cartRepo.create({ amount: body.amount, userId: body.userId, currencyCode: body.currencyCode});
+        return this.cartRepo.save(newCart);
+    }
 
-  async delete(id: number): Promise<boolean> {
-    await this.cartRepo.delete(id);
-    return true;
-  }
+    async update(id: number, body: any) : Promise<Cart>{
+        const cart = await this.cartRepo.findOne(id);
+        this.cartRepo.merge(cart, body);
+        return this.cartRepo.save(cart);
+    }
+
+    async delete(id: number) : Promise<boolean>{
+        await this.cartRepo.delete(id);
+        return true;
+    }
+
 }
