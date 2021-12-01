@@ -6,20 +6,29 @@ import {
   HttpCode,
   Param,
   Post,
-  Put,
+  Patch,
   ParseIntPipe,
   DefaultValuePipe,
   Query,
   Res,
 } from '@nestjs/common';
 
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 
 import { Response } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { FavoritesService } from '../services/favorites.service';
 
 import { Favorite } from '../entities/favorite.entity';
+import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -29,12 +38,51 @@ export class FavoritesController {
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get a result page with 10 records' })
-  @ApiResponse({ status: 200, description: 'OK.' })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'Current page number. Default value: 1.',
+    example: 1,
+  })
+  @ApiOkResponse({
+    description: 'List with maximum 10 favorites records.',
+    schema: {
+      example: {
+        "items": [
+          {
+            "id": "1",
+            "user_id": "41",
+            "item_id": "123",
+            "updatedAt": "2021-11-30T22:38:03.313Z"
+          },
+          {
+            "id": "2",
+            "user_id": "1",
+            "item_id": "1",
+            "updatedAt": "2021-11-30T22:38:28.517Z"
+          },
+        ],
+        "meta": {
+          "totalItems": 6,
+          "itemCount": 2,
+          "itemsPerPage": 10,
+          "currentPage": 10,
+        },
+        "links": {
+          "first": "/favorites?limit=10",
+          "previous": "",
+          "next": "",
+          "last": "/favorites?page=1&limit=10"
+        }
+      },
+    }
+  })
   public async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Favorite>> {
-    limit = limit > 100 ? 100 : limit;
+    limit = limit > 10 ? 10 : limit;
     return this.favoritesService.paginate({
       page,
       limit,
@@ -43,31 +91,48 @@ export class FavoritesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get the record according to the id entered' })
-  @ApiResponse({ status: 200, description: 'OK.', type: Favorite })
-  public async getById(@Param('id') id: number | string, @Res() res: Response) {
-    const response = await this.favoritesService.getById(id);
-    if (response) return res.status(200).send(response).end();
-    return res.status(404).end('Not Found');
+  @HttpCode(403)
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  public async getById(@Res() res: Response) {
+    return res.status(403).end('Forbiden.');
   }
 
   @Post()
   @HttpCode(201)
+  @ApiBody({
+    type: CreateFavoriteDto,
+  })
+  @ApiOkResponse({
+    description: 'The ',
+    schema: {
+      example: {
+        "id": "16",
+        "item_id": 1111,
+        "updatedAt": "2021-12-01T03:32:12.128Z"
+      },
+    }
+  })
   @ApiOperation({ summary: 'Create Favorite' })
-  @ApiResponse({ status: 201, description: 'Created.' })
-  public create(@Body() body: any) {
-    return this.favoritesService.create(body);
+  @ApiCreatedResponse({ description: 'The record has been successfully created.'})
+  public create(@Body() createFavoriteDto: CreateFavoriteDto) {
+    return this.favoritesService.create(createFavoriteDto);
   }
 
-  @Put(':id')
-  @HttpCode(204)
-  @ApiOperation({ summary: 'Update Favorite' })
-  @ApiResponse({ status: 204, description: 'Resource updated successfully.' })
-  public update(@Param('id') id: number | string, @Body() body: any) {
-    return this.favoritesService.update(id, body);
+  @Patch(':id')
+  @HttpCode(403)
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  public update(@Res() res: Response) {
+    return res.status(403).end('Forbiden.');
   }
 
   @Delete(':id')
+  @ApiQuery({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'The ID of the record to delete',
+    example: 1,
+  })
   @HttpCode(200)
   @ApiOperation({ summary: 'Delete Favorite' })
   @ApiResponse({ status: 200, description: 'OK.' })
