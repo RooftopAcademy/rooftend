@@ -20,7 +20,7 @@ export class Cart {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ 
-    name: "created_at",
+    name: "createdAt",
     type: "string" ,
     format: "date-time",
     readOnly:true
@@ -34,7 +34,7 @@ export class Cart {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ 
-    name: "updated_at",
+    name: "updatedAt",
     type: "string" ,
     format: "date-time",
     readOnly:true
