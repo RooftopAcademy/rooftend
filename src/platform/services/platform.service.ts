@@ -28,7 +28,7 @@ export class PlatformService {
     const platform = await this.platformRepository.findOne(id);
 
     if (!platform) {
-      throw new NotFoundException('Task not found');
+      throw new NotFoundException('Platform not found');
     }
 
     return platform;
@@ -68,7 +68,7 @@ export class PlatformService {
 
     this.platformRepository.update(id, platform);
 
-    return { message: 'Task Updated' };
+    return { message: 'Platform Updated' };
   }
 
   async remove(id: string | number): Promise<{
@@ -78,7 +78,7 @@ export class PlatformService {
 
     await this.platformRepository.update(id, { deletedAt: new Date() });
 
-    return { message: 'Task Removed' };
+    return { message: 'Platform Removed' };
   }
 
   async exists(
