@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "kolo22026411",
-   "database": "rooftop",
+   "database": "rooftop-db",
    "synchronize": true,
    "logging": false,
    "entities": [
