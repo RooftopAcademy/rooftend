@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePlatformDTO } from '../create-platform-dto.entity';
-import { Platform } from '../platform.entity';
-import { UpdatePlatformDTO } from '../update-platform-dto.entity';
+import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
+import { Platform } from '../entities/platform.entity';
+import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
 
 @Injectable()
 export class PlatformService {

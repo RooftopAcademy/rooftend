@@ -17,11 +17,11 @@ import {
   ApiBadRequestResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { CreatePlatformDTO } from '../create-platform-dto.entity';
-import { Platform } from '../platform.entity';
+import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
+import { Platform } from '../entities/platform.entity';
 
 import { PlatformService } from '../services/platform.service';
-import { UpdatePlatformDTO } from '../update-platform-dto.entity';
+import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
 
 @ApiTags('Platforms')
 @Controller('platforms')
