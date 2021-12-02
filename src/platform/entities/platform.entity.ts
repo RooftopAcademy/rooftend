@@ -48,6 +48,19 @@ export class Platform {
   updatedAt: Date;
 
   @ApiProperty({
+    description: 'The date when the platform has been soft deleted',
+    default: null,
+    type: 'date',
+    format: 'date-time',
+  })
+  @UpdateDateColumn({
+    name: 'deleted_at',
+    type: 'timestamptz',
+    default: null,
+  })
+  deletedAt: Date;
+
+  @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
     type: 'string',
   })

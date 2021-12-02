@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
 import { Platform } from '../entities/platform.entity';
 import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
@@ -17,7 +17,11 @@ export class PlatformService {
   ) {}
 
   async findAll(): Promise<Platform[]> {
-    return await this.platformRepository.find();
+    return await this.platformRepository.find({
+      where: {
+        deletedAt: IsNull(),
+      },
+    });
   }
 
   async findOneById(id: number | string): Promise<Platform> {
@@ -71,7 +75,7 @@ export class PlatformService {
   }> {
     await this.findOneById(id);
 
-    await this.platformRepository.delete(id);
+    await this.platformRepository.update(id, { deletedAt: new Date() });
 
     return { message: 'Task Removed' };
   }
@@ -80,7 +84,7 @@ export class PlatformService {
     platform: CreatePlatformDTO | UpdatePlatformDTO,
   ): Promise<number | null> {
     const foundPlatform = await this.platformRepository.findOne(platform);
-    if (foundPlatform) {
+    if (foundPlatform && foundPlatform.deletedAt == null) {
       return foundPlatform.id;
     }
     return null;
