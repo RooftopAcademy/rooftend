@@ -41,7 +41,8 @@ export class PlatformService {
       throw new ConflictException('The platform already exists');
     }
 
-    await this.platformRepository.save(platform);
+    const newPlatform = this.platformRepository.create(platform);
+    await this.platformRepository.save(newPlatform);
 
     return {
       message: 'Platform Created',
@@ -83,8 +84,16 @@ export class PlatformService {
   async exists(
     platform: CreatePlatformDTO | UpdatePlatformDTO,
   ): Promise<number | null> {
-    const foundPlatform = await this.platformRepository.findOne(platform);
-    if (foundPlatform && foundPlatform.deletedAt == null) {
+    const foundPlatform = await this.platformRepository.findOne({
+      where: {
+        countryCode: platform.countryCode,
+        currencyCode: platform.currencyCode,
+        langCode: platform.langCode,
+        phoneCountryCode: platform.phoneCountryCode,
+        deletedAt: IsNull(),
+      },
+    });
+    if (foundPlatform) {
       return foundPlatform.id;
     }
     return null;
