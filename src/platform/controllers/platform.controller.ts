@@ -69,7 +69,7 @@ export class PlatformController {
   @ApiBadRequestResponse({
     description: 'The platform could not be created',
   })
-  async create(@Body() createPlatform: CreatePlatformDTO) {
+  create(@Body() createPlatform: CreatePlatformDTO) {
     return this.platformService.create(createPlatform);
   }
 
