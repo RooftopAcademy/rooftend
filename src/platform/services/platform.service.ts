@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
 import { Platform } from '../entities/platform.entity';
 import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
