@@ -20,7 +20,7 @@ import { CustomMessagesService } from '../services/custom-messages.service';
 import { CreateCustomMessageDTO } from '../entities/create-custom-messages.dto';
 import { CustomMessage } from '../entities/custom-messages.entity';
 import { GetCustomMessageDTO } from '../entities/get-custom-messages.dto';
-import { UpdateCustomMessageDTO } from '../entities/update-custom-messages.dto copy';
+import { UpdateCustomMessageDTO } from '../entities/update-custom-messages.dto';
 
 @Controller('custom-messages')
 export class CustomMessagesController {
