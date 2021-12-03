@@ -13,6 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
+import { Search } from '../../search/search.entity';
 
 @Entity('users')
 export class User {
@@ -80,4 +81,7 @@ export class User {
   entities: [];
 
   favorites: [];
+
+  @OneToMany(() => Search, (search) => search.user)
+  searches: Search[];
 }
