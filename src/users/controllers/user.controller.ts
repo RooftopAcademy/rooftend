@@ -133,7 +133,7 @@ export class UserController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Remove a user' })
   @ApiResponse({
-    status: 204,
+    status: 200,
     description: 'The user has been removed successfully.',
   })
   @ApiBadRequestResponse({
@@ -150,7 +150,7 @@ export class UserController {
           response.status(404).end('User not found');
         } else {
           this.userService.delete(id);
-          response.status(204).end('User removed');
+          response.status(200).end('User removed');
         }
       })
       .catch((err) => {
