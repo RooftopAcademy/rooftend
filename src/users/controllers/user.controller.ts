@@ -119,9 +119,10 @@ export class UserController {
       .then((data) => {
         if (!data) {
           response.status(400).end('user not found');
+        } else {
+          this.userService.update(id, createUserDTO);
+          response.status(200).end('user updated');
         }
-        this.userService.update(id, createUserDTO);
-        response.status(200).end('user updated');
       })
       .catch((err) => {
         response.status(400).end(err.message);
@@ -132,7 +133,7 @@ export class UserController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Remove a user' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'The user has been removed successfully.',
   })
   @ApiBadRequestResponse({
@@ -146,10 +147,11 @@ export class UserController {
       .findOne(id)
       .then((data) => {
         if (!data) {
-          response.status(400).end('User not found');
+          response.status(404).end('User not found');
+        } else {
+          this.userService.delete(id);
+          response.status(204).end('User removed');
         }
-        this.userService.delete(id);
-        response.status(200).end('User removed');
       })
       .catch((err) => {
         response.status(400).end(err.message);
