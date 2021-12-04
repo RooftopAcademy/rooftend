@@ -47,7 +47,9 @@ export class CartController {
     @ApiResponse({status: 201, description: 'Cart succesfully created'})
     @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
     create (@Body() body : any): Promise<Cart>{
+        console.log(body);
         return this.cartService.create(body);
+
     }
 
     @Put(':id')
@@ -77,9 +79,12 @@ export class CartController {
     @ApiResponse({status: 204, description: 'Cart succesfully deleted'})
     @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
     @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    delete(@Param('id') id : number ): Promise<Boolean>{
+    delete(@Param('id') id : number ): Promise<void>{
         return this.cartService.delete(id);
     }
 
+    
+
 }
+
 

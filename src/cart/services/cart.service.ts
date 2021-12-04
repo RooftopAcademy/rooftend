@@ -18,7 +18,9 @@ export class CartService {
     }
 
     create(body: any) : Promise<Cart>{
+        console.log(body.cartItemsId);
         const newCart = this.cartRepo.create({ amount: body.amount, userId: body.userId, currencyCode: body.currencyCode});
+        console.log(body.cartItemsId);
         return this.cartRepo.save(newCart);
     }
 
@@ -28,9 +30,8 @@ export class CartService {
         return this.cartRepo.save(cart);
     }
 
-    async delete(id: number) : Promise<boolean>{
+    async delete(id: number) : Promise<void>{
         await this.cartRepo.delete(id);
-        return true;
     }
 
 }
