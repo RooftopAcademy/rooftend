@@ -13,7 +13,7 @@ import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { HelpsModule } from './helps/helps.module';
+import { HelpsModule } from './helps/help.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
