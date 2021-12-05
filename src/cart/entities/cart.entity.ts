@@ -48,15 +48,15 @@ export class Cart {
       this.updatedAt = new Date;
   }
 
-  @ManyToOne(type => User, user => user.id) user: User
-  @JoinColumn({name: "user_id", referencedColumnName:"id"})
+  @ManyToOne(type => User)
+  @JoinColumn({name: "user_id"})
   @ApiProperty({ 
     name: "userId",
     type: "integer",
     example: 1,
     description: "Id of the user the Cart belongs to"
   })
-  userId: number;
+  userId: User;
 
   @Column({type:"double precision"})
   @ApiProperty({ 

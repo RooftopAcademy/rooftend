@@ -47,9 +47,7 @@ export class CartController {
     @ApiResponse({status: 201, description: 'Cart succesfully created'})
     @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
     create (@Body() body : any): Promise<Cart>{
-        console.log(body);
         return this.cartService.create(body);
-
     }
 
     @Put(':id')
