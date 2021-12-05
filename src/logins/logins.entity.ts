@@ -1,4 +1,5 @@
-import {Entity, Column,PrimaryGeneratedColumn,CreateDateColumn} from 'typeorm';
+import {Entity, Column,PrimaryGeneratedColumn,CreateDateColumn, ManyToOne} from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 
 @Entity ('logins')
@@ -20,7 +21,6 @@ export class Login {
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',
       })
-    // @ApiProperty({ type: [Date] })
     created_at: Date;
 
     @Column({
@@ -40,6 +40,7 @@ export class Login {
         })
     geolocation: string;
 
+    @ManyToOne(()=>User)
     @Column({
         name: 'user_id',
       })
