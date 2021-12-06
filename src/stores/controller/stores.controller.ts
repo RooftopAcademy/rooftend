@@ -11,22 +11,28 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
-import { DeleteResult, UpdateResult } from 'typeorm';
 import {
+  DeleteResult,
+  UpdateResult,
+} from 'typeorm';
+import {
+  ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { StoresService } from './stores.service';
-import { StoresInterface } from '../models/stores.interface';
-import { StoresEntity } from '../models/stores.entity';
+import { CreateStoreDto } from '../models/create-store.dto';
+import { ReadStoreDto } from '../models/read-store.dto';
 import { Response } from 'express';
+import { StoresService } from './stores.service';
 
 @ApiTags('Stores')
 @Controller('stores')
@@ -38,7 +44,42 @@ export class StoresController {
   })
   @ApiOkResponse({
     description: 'A list of stores',
-    type: StoresEntity,
+    schema: {
+      example: {
+        "items": [
+            {
+                "id": "23",
+                "username": "miUsuario",
+                "brand": "Xiaomi"
+            }
+        ],
+        "meta": {
+            "totalItems": 1,
+            "itemCount": 1,
+            "itemsPerPage": 10,
+            "totalPages": 1,
+            "currentPage": 1
+        },
+        "links": {
+            "first": "/stores?limit=10",
+            "previous": "",
+            "next": "",
+            "last": "/stores?page=1&limit=10"
+        }
+      }
+    }
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Requiered page',
+    required: false,
+    example: 3,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of results per page',
+    required: false,
+    example: 25,
   })
   @Get()
   @HttpCode(200)
@@ -47,11 +88,11 @@ export class StoresController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
-    // return this.storesService.paginat({
-    //   page,
-    //   limit,
-    //   route: '/stores',
-    // });
+    return this.storesService.paginate({
+      page,
+      limit,
+      route: '/stores',
+    });
   }
 
   @ApiOperation({
@@ -59,11 +100,17 @@ export class StoresController {
   })
   @ApiOkResponse({
     description: 'A store',
-    type: StoresEntity,
+    type: ReadStoreDto,
   })
   @ApiNotFoundResponse({
     description: '404: Not Found',
-    type: String,
+    schema: {
+      example: {
+        "statusCode": 404,
+        "message": "Store not found",
+        "error": "Not Found"
+      }
+    }
   })
   @ApiParam({
     name: 'id',
@@ -76,10 +123,10 @@ export class StoresController {
   async getOne(
     @Param('id') id: number,
     @Res() res: Response,
-  ): Promise<StoresEntity | void> {
+  ): Promise<ReadStoreDto | void> {
     const data = await this.storesService.getOne(id);
 
-    if (!data) return res.status(404).end('404');
+    if (!data) throw new NotFoundException('Store not found');
 
     return res.status(200).send(data).end();
   }
@@ -89,12 +136,18 @@ export class StoresController {
   })
   @ApiCreatedResponse({
     description: 'The store has been successfully created',
-    type: StoresEntity,
+    type: CreateStoreDto,
+  })
+  @ApiBody({
+    type: CreateStoreDto,
+    required: true,
   })
   @Post()
   @HttpCode(201)
-  create(@Body() store: StoresInterface): Promise<StoresInterface> {
-    return this.storesService.create(store);
+  async create(
+    @Body() createStoreDto: CreateStoreDto,
+  ): Promise<CreateStoreDto> {
+    return this.storesService.create(createStoreDto);
   }
 
   @ApiOperation({
@@ -109,19 +162,43 @@ export class StoresController {
   @ApiResponse({
     status: 204,
     description: 'The store has been successfully updated',
-    type: UpdateResult,
+  })
+  @ApiNotFoundResponse({
+    description: '404: Not Found',
+    schema: {
+      example: {
+        "statusCode": 404,
+        "message": "Store not found",
+        "error": "Not Found"
+      }
+    }
+  })
+  @ApiBody({
+    type: CreateStoreDto,
+    required: true,
   })
   @Patch(':id')
   @HttpCode(204)
   update(
     @Param('id') id: number,
-    @Body() store: StoresInterface,
+    @Body() store: CreateStoreDto,
   ): Promise<UpdateResult> {
+    console.log(store);
     return this.storesService.update(id, store);
   }
 
   @ApiOperation({
     summary: 'Delete a store',
+  })
+  @ApiNotFoundResponse({
+    description: '404: Not Found',
+    schema: {
+      example: {
+        "statusCode": 404,
+        "message": "Store not found",
+        "error": "Not Found"
+      }
+    }
   })
   @ApiParam({
     name: 'id',
@@ -132,7 +209,6 @@ export class StoresController {
   @ApiResponse({
     status: 204,
     description: 'The store has been successfully deleted',
-    type: DeleteResult,
   })
   @Delete(':id')
   @HttpCode(204)
