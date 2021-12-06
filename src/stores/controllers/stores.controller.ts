@@ -183,7 +183,6 @@ export class StoresController {
     @Param('id') id: number,
     @Body() store: CreateStoreDto,
   ): Promise<UpdateResult> {
-    console.log(store);
     return this.storesService.update(id, store);
   }
 
