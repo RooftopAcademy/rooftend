@@ -1,42 +1,105 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
-import { Favorite } from '../entities/favorite.entity';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
-
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
-import { ResCreateFavoriteDto } from '../dto/res-create-favorite.dto';
+import { Favorite } from '../entities/favorite.entity';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
-    private readonly favoritesRepo: Repository<Favorite>,
+    private readonly favoritesRepo: Repository<Favorite>
   ) {}
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<Favorite>> {
-    return paginate<Favorite>(this.favoritesRepo, options);
-  }
+  async paginate({ page, limit }: IPaginationOptions, token: number) {
+    let countFavorites = await this.favoritesRepo.query(`
+      SELECT
+        COUNT(*)
+      FROM
+        favorite
+    `);
 
-  create(createFavoriteDto: CreateFavoriteDto): Promise<ResCreateFavoriteDto> {
-    const newFavorite = this.favoritesRepo.create(createFavoriteDto);
-    const res = this.favoritesRepo.save(newFavorite);
-    let response: ResCreateFavoriteDto
-    return res.then(i => 
-      response = {
-        "id": i.id,
-        "item_id": i.item_id,
-        "updatedAt": i.updatedAt
+    const totalFavorites = Number(countFavorites[0].count);
+    const totalPages = Math.ceil(totalFavorites / Number(limit));
+
+    let favorites = await this.favoritesRepo.query(`
+      SELECT
+        favorite.id,
+        items.title,
+        items.description,
+        items.price,
+        items.stock,
+        url
+      FROM
+        photos, items
+      LEFT JOIN
+        favorite
+      ON
+        favorite.item_id = items.id
+      WHERE
+        favorite.user_id = ${token}
+      AND
+        photos.subject_type = 'item'
+      AND
+        photos.subject_id = items.id
+      LIMIT
+        ${Number(limit)}
+      OFFSET
+        ${(Number(page) - 1) * Number(limit)}
+    `);
+
+    favorites = favorites.map(({
+        id,
+        url,
+        title,
+        description,
+        price,
+        stock
+    }) => {
+      return({
+        "id": id,
+        "item": {
+          "photos": url,
+          "title": title,
+          "description": description,
+          "price": price,
+          "stock": stock,
+        }
+      })
+    });
+
+    const response = ({
+      "items": [
+        ...favorites
+      ],
+      "meta": {
+        "totalItems": totalFavorites,
+        "itemCount": favorites.length,
+        "itemsPerPage": limit,
+        "totalPages": totalPages,
+        "currentPage": Number(page)
+      },
+      "links": {
+        "first": `/favorites`,
+        "previous": "",
+        "next": `/favorites?page=${Number(page) + 1}`,
+        "last": `/favorites?page=${totalPages}`
       }
-    )
+    });
+
+    return response;
   }
 
-  async delete(id: number | string): Promise<void> {
+  async create(createFavoriteDto: CreateFavoriteDto, token: number): Promise<void> {
+    const preFavorite = { ...createFavoriteDto, "user_id": token };
+    const newFavorite = this.favoritesRepo.create(preFavorite);
+    await this.favoritesRepo.save(newFavorite);
+    return;
+  }
+
+  async delete( id: number ): Promise<void> {
     await this.favoritesRepo.delete(id);
     return;
   }
