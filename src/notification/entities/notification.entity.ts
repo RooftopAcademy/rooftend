@@ -34,8 +34,8 @@ export class Notification {
   action_url: string;
 
   @ApiProperty({
-    example: 'Shipping notification.',
-    description: 'Your purchase is on the way.',
+    example: 'Your purchase is on the way.',
+    description: 'Shipping notification.',
   })
   @Column({
     name: 'Title.',
