@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateSavedItemDto } from '../dto/createSavedItemDto';
+import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
 import { SavedItemsEntity } from '../entities/savedItems.entity';
 
 @Injectable()
@@ -14,12 +16,13 @@ export class SavedItemsService {
     return this.savedItemsRepo.find();
   }
 
-  createSavedItem(savedItem: SavedItemsEntity) {
-    return this.savedItemsRepo.save(savedItem);
+  createSavedItem(createSavedItemDto: CreateSavedItemDto) {
+    const newSavedItem = this.savedItemsRepo.create(createSavedItemDto);
+    return this.savedItemsRepo.save(newSavedItem);
   }
 
-  updateSavedItem(savedItem: SavedItemsEntity) {
-    return this.savedItemsRepo.save(savedItem);
+  updateSavedItem(id: number, updateSavedItemDto: UpdateSavedItemDto) {
+    return this.savedItemsRepo.update(id, updateSavedItemDto);
   }
 
   removeSavedItem(id: number) {

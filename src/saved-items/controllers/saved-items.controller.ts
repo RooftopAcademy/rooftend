@@ -3,35 +3,60 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
-import { DeleteResult } from 'typeorm';
-import { SavedItemsEntity } from '../entities/savedItems.entity';
+import { Response } from 'express';
+import { CreateSavedItemDto } from '../dto/createSavedItemDto';
 import { SavedItemsService } from '../services/saved-items.service';
+import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
 
 @Controller('saved')
 export class SavedItemsController {
   constructor(private readonly savedItemsService: SavedItemsService) {}
 
   @Get()
-  findAll(): Promise<SavedItemsEntity[]> {
-    return this.savedItemsService.getAllSavedItems();
+  findAll(@Res() res: Response) {
+    this.savedItemsService.getAllSavedItems().then((savedItems) => {
+      res.status(HttpStatus.OK).json(savedItems);
+    });
   }
 
   @Post()
-  create(@Body() savedItems: SavedItemsEntity): Promise<SavedItemsEntity> {
-    return this.savedItemsService.createSavedItem(savedItems);
+  create(@Res() res: Response, @Body() createSavedItemDto: CreateSavedItemDto) {
+    this.savedItemsService
+      .createSavedItem(createSavedItemDto)
+      .then((savedItem) => {
+        res
+          .status(HttpStatus.CREATED)
+          .json({ 'Successfully created': savedItem });
+      });
   }
 
   @Patch(':id')
-  update(@Body() savedItems: SavedItemsEntity): Promise<SavedItemsEntity> {
-    return this.savedItemsService.updateSavedItem(savedItems);
+  update(
+    @Res() res: Response,
+    @Param('id') id: number,
+    @Body() updateSavedItemDto: UpdateSavedItemDto,
+  ) {
+    this.savedItemsService
+      .updateSavedItem(id, updateSavedItemDto)
+      .then((savedItem) => {
+        res
+          .status(HttpStatus.OK)
+          .json({ message: `item with id ${id} updated successfully` });
+      });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<DeleteResult> {
-    return this.savedItemsService.removeSavedItem(id);
+  remove(@Res() res: Response, @Param('id') id: number) {
+    this.savedItemsService.removeSavedItem(id).then(() => {
+      res.status(HttpStatus.OK).json({
+        message: `item with id ${id} deleted successfully`,
+      });
+    });
   }
 }
