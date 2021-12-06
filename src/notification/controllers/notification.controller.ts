@@ -70,7 +70,7 @@ export class NotificationController {
     try {
       return await this.notificationServices.findOne(id);
     } catch(error) {
-      return res.status(404).json({ message: `${error}` });
+      return res.status(404).end(error.message);
     }
   }
 
@@ -116,7 +116,7 @@ export class NotificationController {
     try {
       return this.notificationServices.update(id, NotificationDto);
     } catch (error) {
-      return res.status(404).json({ message: `${error}` });
+      return res.status(404).end(error.message);
     }
   }
 
