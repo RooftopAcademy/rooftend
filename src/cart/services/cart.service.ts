@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
+import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
 
 @Injectable()
@@ -32,6 +33,13 @@ export class CartService {
 
     async delete(id: number) : Promise<void>{
         await this.cartRepo.delete(id);
+    }
+
+    async getCartItems(id: number){
+        const cartItemsRepo = await getRepository(CartItem);
+        return cartItemsRepo.find({
+            cartId: id
+        });
     }
 
 }
