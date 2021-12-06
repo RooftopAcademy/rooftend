@@ -25,6 +25,7 @@ import { ReviewModule } from './review/review.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { SavedItemsModule } from './saved-items/saved-items.module';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
 
     AccountStatusModule,
@@ -56,12 +57,13 @@ import { UsersModule } from './users/users.module';
     ReviewModule,
     ShippingMethodsModule,
     StoresModule,
+    SavedItemsModule,
     UsersModule,
     CartItemModule,
-    ItemsModule
+    ItemsModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
