@@ -15,9 +15,7 @@ import { SavedItemsService } from '../services/saved-items.service';
 import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
 import {
   ApiCreatedResponse,
-  ApiHideProperty,
   ApiOperation,
-  ApiProperty,
   ApiResponse,
   ApiTags,
   getSchemaPath,
