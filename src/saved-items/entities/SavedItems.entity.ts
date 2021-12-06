@@ -21,7 +21,7 @@ export class SavedItemsEntity {
   })
   @ManyToMany(() => Item)
   @JoinTable()
-  itemId: Item[];
+  itemId: number;
 
   @Column({
     type: 'bigint',
@@ -29,7 +29,7 @@ export class SavedItemsEntity {
   })
   @ManyToMany(() => User)
   @JoinTable()
-  userId: User[];
+  userId: number;
 
   @Column({
     type: 'int',
