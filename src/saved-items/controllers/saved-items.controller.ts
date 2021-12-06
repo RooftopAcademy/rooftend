@@ -13,12 +13,29 @@ import { Response } from 'express';
 import { CreateSavedItemDto } from '../dto/createSavedItemDto';
 import { SavedItemsService } from '../services/saved-items.service';
 import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
+import {
+  ApiCreatedResponse,
+  ApiHideProperty,
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
+import { SavedItemsEntity } from '../entities/savedItems.entity';
 
+@ApiTags('Saved')
 @Controller('saved')
 export class SavedItemsController {
   constructor(private readonly savedItemsService: SavedItemsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all saved items' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns all saved items',
+    type: [SavedItemsEntity],
+  })
   findAll(@Res() res: Response) {
     this.savedItemsService.getAllSavedItems().then((savedItems) => {
       res.status(HttpStatus.OK).json(savedItems);
@@ -26,36 +43,88 @@ export class SavedItemsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Add a new saved item' })
+  @ApiCreatedResponse({
+    description: 'The saved item has been successfully created.',
+    schema: {
+      example: {
+        message: 'Successfully created',
+        item: { id: 1, itemId: 1, userId: 1, quantity: 1, price: 100 },
+      },
+      properties: {
+        message: {
+          type: 'String',
+          description: 'message for successful creation',
+          example: 'Successfully created',
+        },
+        item: { $ref: getSchemaPath(SavedItemsEntity) },
+      },
+    },
+  })
   create(@Res() res: Response, @Body() createSavedItemDto: CreateSavedItemDto) {
     this.savedItemsService
       .createSavedItem(createSavedItemDto)
       .then((savedItem) => {
         res
           .status(HttpStatus.CREATED)
-          .json({ 'Successfully created': savedItem });
+          .json({ message: 'Successfully created', item: savedItem });
       });
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a saved item' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The saved item has been successfully updated.',
+    schema: {
+      example: {
+        message: 'item with id 5 updated successfully',
+      },
+      properties: {
+        message: {
+          type: 'String',
+          description: 'message for successful update',
+          example: 'item with id 5 updated successfully',
+        },
+      },
+    },
+  })
   update(
     @Res() res: Response,
-    @Param('id') id: number,
+    @Param() params,
     @Body() updateSavedItemDto: UpdateSavedItemDto,
   ) {
     this.savedItemsService
-      .updateSavedItem(id, updateSavedItemDto)
+      .updateSavedItem(params.id, updateSavedItemDto)
       .then((savedItem) => {
         res
           .status(HttpStatus.OK)
-          .json({ message: `item with id ${id} updated successfully` });
+          .json({ message: `item with id ${params.id} updated successfully` });
       });
   }
 
   @Delete(':id')
-  remove(@Res() res: Response, @Param('id') id: number) {
-    this.savedItemsService.removeSavedItem(id).then(() => {
+  @ApiOperation({ summary: 'Delete a saved item' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The saved item has been successfully deleted.',
+    schema: {
+      example: {
+        message: 'item with id 5 deleted successfully',
+      },
+      properties: {
+        message: {
+          type: 'String',
+          description: 'message for successful deletion',
+          example: 'item with id 5 deleted successfully',
+        },
+      },
+    },
+  })
+  remove(@Res() res: Response, @Param() params) {
+    this.savedItemsService.removeSavedItem(params.id).then(() => {
       res.status(HttpStatus.OK).json({
-        message: `item with id ${id} deleted successfully`,
+        message: `item with id ${params.id} deleted successfully`,
       });
     });
   }
