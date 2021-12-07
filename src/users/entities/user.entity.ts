@@ -89,7 +89,7 @@ export class User {
   @Column({
     name: 'notification_id',
     unsigned: true,
-    type: 'string'
+    type: Number
   })
   @OneToMany(type => Notification, notification => notification.id)
   @JoinColumn({
