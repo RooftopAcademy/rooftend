@@ -1,7 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsInt } from 'class-validator';
 
 export class createBrandDTO {
+  @IsInt()
+  @ApiProperty({
+    example: 123,
+    description: 'The id of the brand',
+    type: Number,
+  })
+  id: number;
+
   @IsString()
   @ApiProperty({
     example: '',
@@ -10,11 +18,11 @@ export class createBrandDTO {
   })
   name: string;
 
-  @IsString()
+  @IsInt()
   @ApiProperty({
-    example: '',
+    example: 123,
     description: 'The logo of the brand',
-    type: String,
+    type: Number,
   })
-  photoId: string;
+  photoId: number;
 }
