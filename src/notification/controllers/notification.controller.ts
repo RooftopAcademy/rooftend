@@ -6,8 +6,9 @@ import {
   Post,
   Put,
   Delete,
-  Res,
   Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -36,8 +37,8 @@ export class NotificationController {
 
   })
   getAll(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
     res: Response,
   ): Promise<Pagination<Notification>> | any {
     try {
