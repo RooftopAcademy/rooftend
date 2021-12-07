@@ -14,7 +14,15 @@ import { Response } from 'express';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { NotificationService } from '../services/notification.service';
 import { Notification } from '../entities/notification.entity';
-import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { 
+  ApiBody, 
+  ApiCreatedResponse, 
+  ApiNotFoundResponse, 
+  ApiOkResponse, 
+  ApiOperation, 
+  ApiResponse, 
+  ApiTags 
+} from '@nestjs/swagger';
 import { NotificationDto } from '../entities/notification.dto';
 
 @ApiTags('Notifications')
@@ -34,7 +42,6 @@ export class NotificationController {
   @ApiNotFoundResponse({
     status: 404,
     description: 'No resources found',
-
   })
   getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
@@ -62,9 +69,6 @@ export class NotificationController {
   @ApiNotFoundResponse({
     status: 404,
     description: 'The specified notification was not found.',
-  })
-  @ApiBody({
-    type: Notification
   })
   @Get(':id')
   async getOne(@Param('id') id: number, res: Response) {
@@ -133,9 +137,6 @@ export class NotificationController {
     description: 'The specified notification was not found.',
   })
   @Delete(':id')
-  @ApiBody({
-    type: Notification
-  })
   delete(@Param('id') id: number, res: Response): Promise<Boolean> | any {
     try {
       return this.notificationServices.delete(id);
