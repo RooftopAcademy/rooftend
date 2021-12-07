@@ -14,6 +14,7 @@ import { AccountStatusEntity } from '../../account-status/models/account-status.
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
 import { Notification } from '../../notification/entities/notification.entity';
+import { Search } from '../../search/search.entity';
 
 @Entity('users')
 export class User {
@@ -97,4 +98,6 @@ export class User {
   })
   notification_id: number
 
+  @OneToMany(() => Search, (search) => search.user)
+  searches: Search[];
 }

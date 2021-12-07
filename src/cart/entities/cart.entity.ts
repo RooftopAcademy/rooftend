@@ -1,49 +1,81 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { ApiProperty } from "@nestjs/swagger";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn } from "typeorm";
+import { User } from "../../users/entities/user.entity";
 
 @Entity({ name: 'carts' })
 export class Cart {
-  /*@PrimaryColumn()*/
+  
   @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
-  @ApiProperty({ type: [Number] })
+  @ApiProperty({ 
+    name: "id",
+    type: "integer" ,
+    readOnly:true
+  })
   id: number;
 
-  /*@Column('timestamp with time zone', { name: 'created_at', nullable: false, default: () => '((CURRENT_TIMESTAMP))' })  */
   @CreateDateColumn({
     name: 'created_at',
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ type: [Date] })
+  @ApiProperty({ 
+    name: "created_at",
+    type: "string" ,
+    format: "date-time",
+    readOnly:true
+  })
   created_at: Date;
 
-  /*@Column('timestamp with time zone', { name: 'updated_at', nullable: false, default: () => 'CURRENT_TIMESTAMP' })  */
   @UpdateDateColumn({
     name: 'updated_at',
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ type: [Date] })
+  @ApiProperty({ 
+    name: "updated_at",
+    type: "string" ,
+    format: "date-time",
+    readOnly:true
+  })
   updated_at: Date;
 
-  @Column({ name: 'user_id', type: 'bigint' })
-  @ApiProperty({ type: [Number] })
+  @BeforeUpdate()
+  updateTimeStamp(){
+      this.updated_at = new Date;
+  }
+
+  @ManyToOne(type => User, user => user.id) user: User; 
+  @Column({name: 'user_id', type: "bigint"})
+  @JoinColumn({ name: 'user_id' })
+  @ApiProperty({ 
+    name: "userId",
+    type: "integer",
+    example: 1,
+    description: "Id of the user the Cart belongs to"
+  })
   userId: number;
 
-  /*Esta mal escrito amount pero es el nombre en la tabla*/
-  @Column({ type: 'double precision' })
-  @ApiProperty({ type: [Number] })
-  ammount: number;
+  @Column({type:"double precision"})
+  @ApiProperty({ 
+    name: "amount",
+    type: "integer",
+    required: true,
+    example: "666",
+    description: "Item amount in this cart"
+  })
+  amount: number;
 
-  @Column('varchar', { length: 3, name: 'currency_code' })
-  @ApiProperty({ type: [String] })
+  @Column("varchar", { length: 3 , name: 'currency_code'})
+  @ApiProperty({
+    name: "currencyCode",
+    required: true, 
+    type: "string",
+    example: "ab6",
+    description: "Currency code of the user location",
+    maxLength: 3
+  })
   currencyCode: string;
+
 }

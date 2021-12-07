@@ -23,14 +23,16 @@ import {
   ApiBadRequestResponse,
   ApiTags,
   ApiOperation,
+  ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 
-@ApiTags('photos')
+@ApiTags('Photos')
 @Controller('photos')
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
-  @ApiCreatedResponse({ description: 'create new photo' })
+  @ApiCreatedResponse({ type: PhotosEntity, description: 'Created a new photo' })
   @ApiOperation({ summary: 'Create a photo' })
   @ApiBody({ type: PhotosEntity })
   @Post()
@@ -39,6 +41,20 @@ export class PhotosController {
   }
 
   @ApiOperation({ summary: 'Return all photos' })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'Number of the page',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'Max number of results (10 by default)',
+    example: 10,
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns all photos',
@@ -58,6 +74,7 @@ export class PhotosController {
   }
 
   @ApiOperation({ summary: 'Get a given photo' })
+  @ApiParam({ name: 'id', type: Number, required: true })
   @ApiResponse({
     status: 200,
     description: 'Returns a given photo',
@@ -68,7 +85,7 @@ export class PhotosController {
     status: 404,
   })
   @Get(':id')
-  public findOne(@Param('id') id, @Res() res): void {
+  public findOne(@Param('id') id: number, @Res() res): void {
     this.photosService
       .findOne(id)
       .then((data) => {
