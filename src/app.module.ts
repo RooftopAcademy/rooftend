@@ -22,6 +22,7 @@ import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
 import { QuestionsModule } from './questions/questions.module';
 import { ReviewModule } from './review/review.module';
+import { SearchModule } from './search/search.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
@@ -54,11 +55,12 @@ import { UsersModule } from './users/users.module';
     ProfileModule,
     QuestionsModule,
     ReviewModule,
+    SearchModule,
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
     CartItemModule,
-    ItemsModule
+    ItemsModule,
   ],
 
   controllers: [AppController],
