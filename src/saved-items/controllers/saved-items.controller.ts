@@ -34,10 +34,12 @@ export class SavedItemsController {
     description: 'Returns all saved items',
     type: [SavedItemsEntity],
   })
-  findAll(@Res() res: Response) {
-    this.savedItemsService.getAllSavedItems().then((savedItems) => {
-      res.status(HttpStatus.OK).json(savedItems);
-    });
+  async findAll(
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<SavedItemsEntity[]> {
+    const data = await this.savedItemsService.getAllSavedItems();
+    res.status(HttpStatus.OK);
+    return data;
   }
 
   @Post()
