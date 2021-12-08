@@ -82,4 +82,7 @@ export class Item {
   })
   @ApiProperty({ example: 999, description: 'Id of the Item Category' })
   categoryId: number;
+
+  // @OneToMany(() => Offer, offer => offer.item)
+  // offers: Offer[];
 }
