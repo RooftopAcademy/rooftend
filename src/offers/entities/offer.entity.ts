@@ -58,8 +58,8 @@ export class Offer {
 
     @Column({
         name: 'promotion_type',
-        type: 'text',
-        // enum: 'string',
+        type: 'enum',
+        enum: PromotionType,
         nullable: false,
         default: PromotionType.DEAL_OF_THE_DAY,
     })

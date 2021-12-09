@@ -1,11 +1,7 @@
-import { isEnum } from "class-validator";
-import { Offer, PromotionType } from "../entities/offer.entity";
+import { IsEnum } from "class-validator";
+import { PromotionType } from "../entities/offer.entity";
 
 export class PromotionTypeDto {
-    // @isEnum({
-        // LIGHTENING_DEAL: 'LIGHTENING_DEAL',
-        // DEAL_OF_THE_DAY: 'DEAL_OF_THE_DAY',
-    // })
-    @isEnum(PromotionType)
+    @IsEnum(PromotionType)
     promotionType: PromotionType
 }

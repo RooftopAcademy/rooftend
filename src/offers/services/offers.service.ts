@@ -5,8 +5,7 @@ import {
   paginate,
 } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { CreateOfferDto } from '../dto/create-offer.dto';
-import { UpdateOfferDto } from '../dto/update-offer.dto';
+import { PromotionTypeDto } from '../dto/promotion-type.dto';
 import { Offer } from '../entities/offer.entity';
 
 @Injectable()
@@ -16,19 +15,18 @@ export class OffersService {
     private readonly offersRepository: Repository<Offer>,
   ) {}
 
-  async paginate(options: IPaginationOptions) {
-    return paginate<Offer>(this.offersRepository, options);
-  }
-
-  create(createOfferDto: CreateOfferDto) {
-    return 'This action adds a new offer';
-  }
-
-  update(id: number, updateOfferDto: UpdateOfferDto) {
-    return `This action updates a #${id} offer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} offer`;
+  async paginate(options: IPaginationOptions, promotionType?: PromotionTypeDto) {
+    return paginate<Offer>(this.offersRepository.createQueryBuilder('offer')
+      .leftJoinAndSelect('offer.item_id', 'item')
+      .select([
+        'item.title AS "itemTitle"',
+        'item.price AS "regularPrice"',
+        'offer.discount AS "discountRate"',
+        'offer.final_price AS "finalPrice"',
+      ])
+      .where('now() BETWEEN offer.start_at AND offer.end_at')
+      .andWhere('offer.promotion_type = ":promotionType"', { promotionType }),
+      options,
+    );
   }
 }
