@@ -7,7 +7,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { OffersService } from '../services/offers.service';
-import { PromotionTypeDto } from '../dto/promotion-type.dto';
+import { PromotionType } from '../entities/offer.entity';
+import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
 import { ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Offers')
@@ -18,7 +19,7 @@ export class OffersController {
   @Get()
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('promotion_type') promotionType: PromotionTypeDto,
+    @Query('promotion_type', PromotionTypeValidationPipe) promotionType?: PromotionType,
   ) {
     const ITEMS_LIMIT: number = 50;
     return this.offersService.paginate({

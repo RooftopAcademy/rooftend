@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from '../../users/entities/user.entity';
@@ -63,25 +63,25 @@ export class Item {
   stock: number;
 
   @ManyToOne(() => Brand)
-  @Column({
+  @JoinColumn({
     name: 'brand_id'
   })
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
-  brandId: number;
+  brandId: Brand;
 
   @ManyToOne(() => User)
-  @Column({
+  @JoinColumn({
     name: 'user_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: number;
+  userId: User;
 
   @ManyToOne(() => Category)
-  @Column({
+  @JoinColumn({
     name: 'category_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the Item Category' })
-  categoryId: number;
+  categoryId: Category;
 
   // @OneToMany(() => Offer, offer => offer.item)
   // offers: Offer[];
