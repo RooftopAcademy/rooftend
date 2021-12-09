@@ -19,10 +19,10 @@ export class OffersService {
 
   async paginate(options: IPaginationOptions, promotionType?: PromotionType) {
     const selection: string[] = [
-        'item.title AS "itemTitle"',
-        'item.price AS "regularPrice"',
-        'offer.discount AS "discountRate"',
-        'offer.final_price AS "finalPrice"',
+      'item.title AS "itemTitle"',
+      'item.price AS "regularPrice"',
+      'offer.discount AS "discountRate"',
+      'offer.final_price AS "finalPrice"',
     ]
     const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
     const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;

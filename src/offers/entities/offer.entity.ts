@@ -1,65 +1,69 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Item } from "../../items/entities/items.entity";
 
 export enum PromotionType {
-    LIGHTENING_DEAL = 'LIGHTENING_DEAL',
-    DEAL_OF_THE_DAY = 'DEAL_OF_THE_DAY',
+  LIGHTENING_DEAL = 'LIGHTENING_DEAL',
+  DEAL_OF_THE_DAY = 'DEAL_OF_THE_DAY',
 }
 
 @Entity('offers')
 export class Offer {
-    @PrimaryGeneratedColumn({
-        name: 'id',
-        type: 'bigint',
-    })
-    id: number;
+  @ApiProperty({
 
-    @Column({
-        name: 'created_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date;
+  })
+  @PrimaryGeneratedColumn({
+    name: 'id',
+    type: 'bigint',
+  })
+  id: number;
 
-    @ManyToOne(() => Item)
-    @JoinColumn({
-        name: 'item_id',
-    })
-    item: Item;
+  @Column({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
-    @Column({
-        name: 'start_at',
-        type: 'timestamptz',
-        nullable: false,
-    })
-    startAt: Date;
+  @ManyToOne(() => Item)
+  @JoinColumn({
+    name: 'item_id',
+  })
+  item: Item;
 
-    @Column({
-        name: 'end_at',
-        type: 'timestamptz',
-        nullable: false,
-    })
-    endAt: Date;
+  @Column({
+    name: 'start_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
+  startAt: Date;
 
-    @Column({
-        type: 'smallint',
-        nullable: false,
-    })
-    discount: number;
+  @Column({
+    name: 'end_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
+  endAt: Date;
 
-    @Column({
-        name: 'final_price',
-        type: 'float',
-        nullable: false,
-    })
-    finalPrice: number;
+  @Column({
+    type: 'smallint',
+    nullable: false,
+  })
+  discount: number;
 
-    @Column({
-        name: 'promotion_type',
-        type: 'enum',
-        enum: PromotionType,
-        nullable: false,
-        default: PromotionType.DEAL_OF_THE_DAY,
-    })
-    promotionType: PromotionType;
+  @Column({
+    name: 'final_price',
+    type: 'float',
+    nullable: false,
+  })
+  finalPrice: number;
+
+  @Column({
+    name: 'promotion_type',
+    type: 'enum',
+    enum: PromotionType,
+    nullable: false,
+    default: PromotionType.DEAL_OF_THE_DAY,
+  })
+  promotionType: PromotionType;
 }
