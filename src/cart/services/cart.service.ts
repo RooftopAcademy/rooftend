@@ -19,9 +19,7 @@ export class CartService {
     }
 
     create(body: any) : Promise<Cart>{
-        console.log(body.cartItemsId);
         const newCart = this.cartRepo.create({ amount: body.amount, userId: body.userId, currencyCode: body.currencyCode});
-        console.log(body.cartItemsId);
         return this.cartRepo.save(newCart);
     }
 

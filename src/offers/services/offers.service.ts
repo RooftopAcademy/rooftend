@@ -4,6 +4,7 @@ import {
   IPaginationOptions,
   paginateRaw,
 } from 'nestjs-typeorm-paginate';
+import { of } from 'rxjs';
 import { Repository } from 'typeorm';
 import { PromotionTypeDto } from '../dto/promotion-type.dto';
 import { Offer } from '../entities/offer.entity';
@@ -31,5 +32,10 @@ export class OffersService {
       .where((promotionType) ? promotionTypeCondition : dateCondition),
       options,
     )
+  }
+
+  getOffer(id:number): Promise<Offer>{
+    const offer = this.offersRepository.findOne(id);
+    return offer;
   }
 }

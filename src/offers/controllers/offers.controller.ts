@@ -2,6 +2,7 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Param,
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
@@ -23,5 +24,11 @@ export class OffersController {
       limit: ITEMS_LIMIT,
       route: '/offers',
     }, promotionType)
+  }
+
+  @Get(":id")
+  async getSoldOffers(@Param('id') id: number,):Promise<number>{
+    const soldOffersPercentage = await this.offersService.getOffer(id);
+    return soldOffersPercentage.initialStock -soldOffersPercentage.soldStock
   }
 }

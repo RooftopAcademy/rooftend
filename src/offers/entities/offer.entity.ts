@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Item } from "../../items/entities/items.entity";
+import { IPostgresInterval } from 'postgres-interval';
 
 export enum PromotionType {
     LIGHTENING_DEAL = 'LIGHTENING_DEAL',
@@ -79,4 +80,9 @@ export class Offer {
     })
     soldStock: number;
 
+    @Column({
+        name: 'offer_expiration_time',
+        type: 'time',
+    })
+    offerExpirationTime: Date ;
 }
