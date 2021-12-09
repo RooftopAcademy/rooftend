@@ -5,8 +5,10 @@ import {
   paginateRaw,
 } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { PromotionTypeDto } from '../dto/promotion-type.dto';
-import { Offer } from '../entities/offer.entity';
+import {
+  Offer,
+  PromotionType,
+} from '../entities/offer.entity';
 
 @Injectable()
 export class OffersService {
@@ -15,7 +17,7 @@ export class OffersService {
     private readonly offersRepository: Repository<Offer>,
   ) {}
 
-  async paginate(options: IPaginationOptions, promotionType?: PromotionTypeDto) {
+  async paginate(options: IPaginationOptions, promotionType?: PromotionType) {
     const selection: string[] = [
         'item.title AS "itemTitle"',
         'item.price AS "regularPrice"',
