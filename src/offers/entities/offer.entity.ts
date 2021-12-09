@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Item } from "../../items/entities/items.entity";
 
 export enum PromotionType {
@@ -22,10 +22,8 @@ export class Offer {
     createdAt: Date;
 
     @ManyToOne(() => Item)
-    @Column({
+    @JoinColumn({
         name: 'item_id',
-        type: 'bigint',
-        nullable: false,
     })
     item: Item;
 

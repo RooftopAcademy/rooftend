@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { 
   IPaginationOptions,
-  paginate,
+  paginateRaw,
 } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
 import { PromotionTypeDto } from '../dto/promotion-type.dto';
@@ -16,17 +16,20 @@ export class OffersService {
   ) {}
 
   async paginate(options: IPaginationOptions, promotionType?: PromotionTypeDto) {
-    return paginate<Offer>(this.offersRepository.createQueryBuilder('offer')
-      .leftJoinAndSelect('offer.item_id', 'item')
-      .select([
+    const selection: string[] = [
         'item.title AS "itemTitle"',
         'item.price AS "regularPrice"',
         'offer.discount AS "discountRate"',
         'offer.final_price AS "finalPrice"',
-      ])
-      .where('now() BETWEEN offer.start_at AND offer.end_at')
-      .andWhere('offer.promotion_type = ":promotionType"', { promotionType }),
+    ]
+    const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
+    const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;
+
+    return paginateRaw<Offer>(this.offersRepository.createQueryBuilder('offer')
+      .leftJoinAndSelect('offer.item', 'item')
+      .select(selection)
+      .where((promotionType) ? promotionTypeCondition : dateCondition),
       options,
-    );
+    )
   }
 }
