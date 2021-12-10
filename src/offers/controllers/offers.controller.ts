@@ -16,6 +16,7 @@ import {
 import { OffersService } from '../services/offers.service';
 import { PromotionType } from '../entities/offer.entity';
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
+import { paginate } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Offers')
 @Controller('offers')
@@ -87,10 +88,13 @@ export class OffersController {
     @Query('promotion_type', PromotionTypeValidationPipe) promotionType?: PromotionType,
   ) {
     const ITEMS_LIMIT: number = 50;
-    return this.offersService.paginate({
+    const paginateOptions = {
       page,
       limit: ITEMS_LIMIT,
       route: '/offers',
-    }, promotionType)
+    };
+    return (promotionType)
+      ? this.offersService.paginate(paginateOptions, promotionType)
+      : this.offersService.paginate(paginateOptions);
   }
 }
