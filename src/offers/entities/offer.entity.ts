@@ -11,7 +11,9 @@ export enum PromotionType {
 @Entity('offers')
 export class Offer {
     @ApiProperty({
-
+        name: "id",
+        type: "integer" ,
+        readOnly:true
     })
     @PrimaryGeneratedColumn({
     name: 'id',

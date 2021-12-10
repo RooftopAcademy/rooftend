@@ -19,11 +19,14 @@ export class OffersService {
   ) {}
 
   async paginate(options: IPaginationOptions, promotionType?: PromotionType) {
+
     const selection: string[] = [
       'item.title AS "itemTitle"',
       'item.price AS "regularPrice"',
       'offer.discount AS "discountRate"',
       'offer.final_price AS "finalPrice"',
+      '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
+      '(offer.end_at - NOW()) AS "offerTimeLeft" '
     ]
     const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
     const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;
@@ -39,5 +42,6 @@ export class OffersService {
   getOffer(id:number): Promise<Offer>{
     const offer = this.offersRepository.findOne(id);
     return offer;
-  }
+  } 
+
 }
