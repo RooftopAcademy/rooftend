@@ -31,7 +31,17 @@ export class OffersController {
                 "itemTitle": "Notebook Xiaomi AMD Ryzen 7",
                 "regularPrice": 230000,
                 "discountRate": 25,
-                "finalPrice": 150000
+                "finalPrice": 150000,
+                "offerStartTime": "2021-12-01T03:00:00.000Z",
+                "offerEndTime": "2021-12-28T03:00:00.000Z",
+                "soldPercentage": 50,
+                "offerTimeLeft": {
+                  "days": 17,
+                  "hours": 10,
+                  "minutes": 26,
+                  "seconds": 13,
+                  "milliseconds": 645.123
+                }
             },
             {
                 "itemTitle": "Notebook Xiaomi AMD Ryzen 7",
