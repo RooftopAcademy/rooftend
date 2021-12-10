@@ -1,5 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn
+  } from "typeorm";
+
 import { Item } from "../../items/entities/items.entity";
 
 export enum PromotionType {
