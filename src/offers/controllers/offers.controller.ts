@@ -77,7 +77,7 @@ export class OffersController {
   })
   @ApiQuery({
     name: 'promotion_type',
-    description: 'Promotion type: DEAL_OF_THE_DAY or LIGHTENING_DEAL',
+    description: 'Promotion type: DEAL_OF_THE_DAY or LIGHTNING_DEAL',
     required: false,
     example: 'DEAL_OF_THE_DAY',
   })

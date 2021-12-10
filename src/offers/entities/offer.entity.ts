@@ -10,7 +10,7 @@ import {
 import { Item } from "../../items/entities/items.entity";
 
 export enum PromotionType {
-  LIGHTENING_DEAL = 'LIGHTENING_DEAL',
+  LIGHTNING_DEAL = 'LIGHTNING_DEAL',
   DEAL_OF_THE_DAY = 'DEAL_OF_THE_DAY',
 }
 
@@ -102,7 +102,7 @@ export class Offer {
 
   @ApiProperty({
     type: PromotionType,
-    description: 'Promotion type: DEAL_OF_THE_DAY or LIGHTENING_DEAL',
+    description: 'Promotion type: DEAL_OF_THE_DAY or LIGHTNING_DEAL',
     example: 'DEAL_OF_THE_DAY',
   })
   @Column({
