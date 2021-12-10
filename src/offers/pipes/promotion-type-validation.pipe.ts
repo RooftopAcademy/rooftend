@@ -4,6 +4,7 @@ import {
   PipeTransform
 } from '@nestjs/common';
 import { isDefined, isEnum } from 'class-validator';
+
 import { PromotionType } from '../entities/offer.entity';
 
 @Injectable()
