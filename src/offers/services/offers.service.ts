@@ -19,7 +19,7 @@ export class OffersService {
     private readonly offersRepository: Repository<Offer>,
   ) {}
 
-  async paginate(options: IPaginationOptions, promotionType?: PromotionType) {
+  async paginate(options: IPaginationOptions, promotionType?: PromotionType, order?: "ASC" | "DESC") {
 
     const selection: string[] = [
       'item.title AS "itemTitle"',
@@ -37,7 +37,8 @@ export class OffersService {
     return paginateRaw<Offer>(this.offersRepository.createQueryBuilder('offer')
       .leftJoinAndSelect('offer.item', 'item')
       .select(selection)
-      .where((promotionType) ? promotionTypeCondition : dateCondition),
+      .where((promotionType) ? promotionTypeCondition : dateCondition)
+      .orderBy("offer.final_price", order),
       options,
     )
   }

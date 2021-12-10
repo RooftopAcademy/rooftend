@@ -90,6 +90,7 @@ export class OffersController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('promotion_type', PromotionTypeValidationPipe) promotionType?: PromotionType,
+    @Query('price_order') order?: "ASC" | "DESC"
   ) {
     const ITEMS_LIMIT: number = 50;
     const paginateOptions = {
