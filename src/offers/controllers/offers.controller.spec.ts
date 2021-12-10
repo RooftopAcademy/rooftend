@@ -40,7 +40,7 @@ describe('OffersController', () => {
     expect(mockOffersService.paginate).toBeCalledWith(paginateOptions);
   });
 
-  it('Sevice should be called with a specifict value for page parameter', () => {
+  it('Sevice should be called with a specific value for page parameter', () => {
     const paginateOptions = {
       page: 2,
       limit: 50,
