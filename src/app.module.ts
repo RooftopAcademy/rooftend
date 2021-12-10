@@ -7,8 +7,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
-import { CartItemModule } from './cart-item/cart-item.module';
-import { ItemsModule } from './items/items.module';
 import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -37,7 +35,7 @@ import { UsersModule } from './users/users.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
 
     AccountStatusModule,
@@ -57,11 +55,10 @@ import { UsersModule } from './users/users.module';
     ShippingMethodsModule,
     StoresModule,
     UsersModule,
-    CartItemModule,
-    ItemsModule
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+
+export class AppModule {}
