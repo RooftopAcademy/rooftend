@@ -26,7 +26,7 @@ export class Offer {
     name: 'id',
     type: 'bigint',
     })
-    id: number;
+  id: number;
 
   @ApiProperty({
     type: String,
@@ -39,7 +39,7 @@ export class Offer {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
     })
-    createdAt: Date;
+  createdAt: Date;
 
   @ApiProperty({
     type: Number,
@@ -50,7 +50,7 @@ export class Offer {
   @JoinColumn({
     name: 'item_id',
     })
-    item: Item;
+  item: Item;
 
   @ApiProperty({
     type: String,
@@ -63,7 +63,7 @@ export class Offer {
     type: 'timestamptz',
     nullable: false,
     })
-    startAt: Date;
+  startAt: Date;
 
   @ApiProperty({
     type: String,
@@ -76,7 +76,7 @@ export class Offer {
     type: 'timestamptz',
     nullable: false,
     })
-    endAt: Date;
+  endAt: Date;
 
   @ApiProperty({
     type: Number,
@@ -87,8 +87,13 @@ export class Offer {
     type: 'smallint',
     nullable: false,
     })
-    discount: number;
+  discount: number;
 
+  @ApiProperty({
+    type: Number,
+    description: 'Initial stock',
+    example: 50,
+  })
   @Column({
     name: 'initial_stock',
     type: 'bigint',
@@ -96,6 +101,11 @@ export class Offer {
   })
   initialStock: number;
 
+  @ApiProperty({
+    type: Number,
+    description: 'Stock sold',
+    example: 15,
+  })
   @Column({
     name: 'sold_stock',
     type: 'bigint',
@@ -103,12 +113,12 @@ export class Offer {
   })
   soldStock: number;
 
-  @Column({
+  /*@Column({
     name: 'offer_expiration_time',
     type: 'time',
   })
   offerExpirationTime: Date ;
-
+  */
 
   @ApiProperty({
     type: Number,

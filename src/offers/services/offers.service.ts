@@ -26,6 +26,8 @@ export class OffersService {
       'item.price AS "regularPrice"',
       'offer.discount AS "discountRate"',
       'offer.final_price AS "finalPrice"',
+      'offer.start_at AS "offerStartTime"',
+      'offer.end_at AS "offerEndTime"',
       '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
       '(offer.end_at - NOW()) AS "offerTimeLeft" '
     ]
