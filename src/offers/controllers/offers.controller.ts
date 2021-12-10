@@ -90,7 +90,7 @@ export class OffersController {
     name: 'price_order',
     description: 'Order in which the final price of each offer is shown',
     required: false,
-    example: 'DESC',
+    example: 'DESC or ASC',
   })
   @Get()
   async findAll(
