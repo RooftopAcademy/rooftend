@@ -86,6 +86,12 @@ export class OffersController {
     required: false,
     example: 'DEAL_OF_THE_DAY',
   })
+  @ApiQuery({
+    name: 'price_order',
+    description: 'Order in which the final price of each offer is shown',
+    required: false,
+    example: 'DESC',
+  })
   @Get()
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
