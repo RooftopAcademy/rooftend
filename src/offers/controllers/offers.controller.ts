@@ -16,7 +16,6 @@ import {
 import { OffersService } from '../services/offers.service';
 import { PromotionType } from '../entities/offer.entity';
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
-import { paginate } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Offers')
 @Controller('offers')
