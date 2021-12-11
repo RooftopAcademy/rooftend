@@ -33,7 +33,6 @@ export class OffersService {
     ]
     const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
     const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;
-
     return paginateRaw<Offer>(this.offersRepository.createQueryBuilder('offer')
       .leftJoinAndSelect('offer.item', 'item')
       .select(selection)
