@@ -26,6 +26,7 @@ import { SearchModule } from './search/search.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { OffersModule } from './offers/offers.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
+    OffersModule,
   ],
 
   controllers: [AppController],
