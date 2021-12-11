@@ -29,7 +29,8 @@ export class OffersService {
       'offer.start_at AS "offerStartTime"',
       'offer.end_at AS "offerEndTime"',
       '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
-      '(offer.end_at - NOW()) AS "offerTimeLeft" '
+      '(offer.end_at - NOW()) AS "offerTimeLeft" ',
+      'offer.promotion_type AS promotionType'
     ]
     const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
     const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;

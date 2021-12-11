@@ -104,7 +104,7 @@ export class OffersController {
       limit: ITEMS_LIMIT,
       route: '/offers',
     };
-    return (promotionType && order)
+    return (promotionType || order)
       ? this.offersService.paginate(paginateOptions, promotionType, order)
       : this.offersService.paginate(paginateOptions);
   }
