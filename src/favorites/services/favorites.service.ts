@@ -23,7 +23,7 @@ export class FavoritesService {
 
     const totalFavorites = Number(countFavorites[0].count);
     const totalPages = Math.ceil(totalFavorites / Number(limit));
-    const previousPagePath = (Number(page) > 0) ? `/favorites?page=${Number(page)}` : ""
+    const previousPagePath = (Number(page) > 1) ? `/favorites?page=${Number(page) - 1}` : ""
 
     let favorites = await this.favoritesRepo.query(`
       SELECT
