@@ -88,9 +88,9 @@ export class OffersController {
   })
   @ApiQuery({
     name: 'price_order',
-    description: 'Order in which the final price of each offer is shown',
+    description: 'Order in which the final price of each offer is shown: "DESC OR ASC"',
     required: false,
-    example: 'DESC or ASC',
+    example: 'DESC',
   })
   @Get()
   async findAll(
