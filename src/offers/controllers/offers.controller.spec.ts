@@ -50,14 +50,15 @@ describe('OffersController', () => {
     expect(mockOffersService.paginate).toBeCalledWith(paginateOptions);
   });
 
-  it('Sevice should be called with promotion type parameter', () => {
+  it('Sevice should be called with promotion type parameter and pagination order', () => {
     const paginateOptions = {
       page: 2,
       limit: 50,
       route: '/offers',
     };
     const promotionType: PromotionType = PromotionType.DEAL_OF_THE_DAY;
-    controller.findAll(2, promotionType);
-    expect(mockOffersService.paginate).toBeCalledWith(paginateOptions, promotionType);
+    const order = "DESC";
+    controller.findAll(2, promotionType,order);
+    expect(mockOffersService.paginate).toBeCalledWith(paginateOptions, promotionType, order);
   });
 });
