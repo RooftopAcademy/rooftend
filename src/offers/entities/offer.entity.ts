@@ -8,6 +8,7 @@ import {
   } from "typeorm";
 
 import { Item } from "../../items/entities/items.entity";
+import { IPostgresInterval } from 'postgres-interval';
 
 export enum PromotionType {
   LIGHTNING_DEAL = 'LIGHTNING_DEAL',
@@ -24,7 +25,7 @@ export class Offer {
   @PrimaryGeneratedColumn({
     name: 'id',
     type: 'bigint',
-  })
+    })
   id: number;
 
   @ApiProperty({
@@ -37,7 +38,7 @@ export class Offer {
     name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
-  })
+    })
   createdAt: Date;
 
   @ApiProperty({
@@ -48,7 +49,7 @@ export class Offer {
   @ManyToOne(() => Item)
   @JoinColumn({
     name: 'item_id',
-  })
+    })
   item: Item;
 
   @ApiProperty({
@@ -61,7 +62,7 @@ export class Offer {
     name: 'start_at',
     type: 'timestamptz',
     nullable: false,
-  })
+    })
   startAt: Date;
 
   @ApiProperty({
@@ -74,7 +75,7 @@ export class Offer {
     name: 'end_at',
     type: 'timestamptz',
     nullable: false,
-  })
+    })
   endAt: Date;
 
   @ApiProperty({
@@ -85,8 +86,39 @@ export class Offer {
   @Column({
     type: 'smallint',
     nullable: false,
-  })
+    })
   discount: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Initial stock',
+    example: 50,
+  })
+  @Column({
+    name: 'initial_stock',
+    type: 'bigint',
+    nullable: false
+  })
+  initialStock: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Stock sold',
+    example: 15,
+  })
+  @Column({
+    name: 'sold_stock',
+    type: 'bigint',
+    nullable: false
+  })
+  soldStock: number;
+
+  /*@Column({
+    name: 'offer_expiration_time',
+    type: 'time',
+  })
+  offerExpirationTime: Date ;
+  */
 
   @ApiProperty({
     type: Number,
