@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { CartItemModule } from './cart-item/cart-item.module';
+import { CustomMessagesModule } from './custom-messages/custom-messages.module';
 import { ItemsModule } from './items/items.module';
 import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
@@ -62,6 +63,7 @@ import { OffersModule } from './offers/offers.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
+    CustomMessagesModule,
     OffersModule,
   ],
 
