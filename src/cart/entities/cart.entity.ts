@@ -79,7 +79,4 @@ export class Cart {
   })
   currencyCode: string;
 
-  @OneToMany(() => CartItem, cartItem => cartItem.cartId)
-  cartItemsId: CartItem[];
-
 }

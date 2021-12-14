@@ -48,7 +48,7 @@ export class CartItem {
   @ApiProperty({ example: 10, description: 'Id of the Item that the Cart Item represents' })
   itemId: number;
 
-  @ManyToOne(() => Cart, cart => cart.cartItemsId)
+  @ManyToOne(() => Cart)
   @Column({
     name: 'cart_id',
   })
