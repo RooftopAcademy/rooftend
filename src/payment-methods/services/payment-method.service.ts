@@ -1,8 +1,7 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import PaymentMethod from '../payment-method.entity';
+import PaymentMethod from '../models/payment-method.entity';
 
 @Injectable()
 export default class PaymentMethodsService {
