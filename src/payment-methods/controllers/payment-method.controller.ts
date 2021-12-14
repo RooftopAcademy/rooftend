@@ -13,16 +13,17 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import PaymentMethod from '../payment-method.entity';
 import PaymentMethodsService from '../services/payment-method.service';
+import PaymentMethodDto from '../dto/create-payment-method.dto';
 
 @ApiTags('Payment Methods')
-@Controller('payment')
+@Controller('payment-methods')
 export default class PaymentMethodsController {
   constructor(private readonly service: PaymentMethodsService) {}
 
@@ -33,7 +34,8 @@ export default class PaymentMethodsController {
   @ApiResponse({
     status: 200,
     description: 'All the payment methods found',
-    type: PaymentMethod,
+    type: PaymentMethodDto,
+    isArray: true,
   })
   async all(): Promise<PaymentMethod[]> {
     const payment_methods = await this.service.all();
@@ -52,7 +54,7 @@ export default class PaymentMethodsController {
   @ApiOkResponse({
     status: 200,
     description: 'The payment method found',
-    type: PaymentMethod,
+    type: PaymentMethodDto,
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -72,6 +74,7 @@ export default class PaymentMethodsController {
     }
 
     return payment_method;
+
   }
 
   @Post('*')
@@ -83,7 +86,7 @@ export default class PaymentMethodsController {
   create(@Res() res : Response): void 
     { return res.status(403).end('Forbidden'); }
 
-  @Put('*')
+  @Patch('*')
   @ApiResponse({
     status: 403,
     description: 'Forbidden',
