@@ -7,19 +7,21 @@ import {
   Param,
   Patch,
   Post,
-  Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  ApiParam,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 import { CreatePlatformDTO } from '../create-platform-dto.entity';
 import { Platform } from '../platform.entity';
 
 import { PlatformService } from '../services/platform.service';
+import { UpdatePlatformDTO } from '../update-platform-dto.entity';
 
 @ApiTags('Platforms')
 @Controller('platforms')
@@ -30,14 +32,12 @@ export class PlatformController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the platforms',
-    type: Platform,
+    type: [Platform],
   })
   @Get()
   @HttpCode(200)
   findAll() {
-    return this.platformService.findAll().then((data) => {
-      return data;
-    });
+    return this.platformService.findAll();
   }
 
   @ApiOperation({ summary: 'Get a platform by id' })
@@ -46,26 +46,19 @@ export class PlatformController {
     description: 'The found platform with that id',
     type: Platform,
   })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+  })
   @Get(':id')
   @HttpCode(200)
-  findOne(
-    @Param('id') id: number | string,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.platformService
-      .findOneById(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('Platform not found');
-        }
-        return data;
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+  findOne(@Param('id') id: number | string) {
+    return this.platformService.findOneById(id);
   }
 
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a platform' })
   @ApiResponse({
@@ -76,74 +69,49 @@ export class PlatformController {
   @ApiBadRequestResponse({
     description: 'The platform could not be created',
   })
-  async create(
-    @Body() createPlatformDTO: CreatePlatformDTO,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.platformService
-      .create(createPlatformDTO)
-      .then(() => {
-        response.status(201).end('Platform created');
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+  async create(@Body() createPlatform: CreatePlatformDTO) {
+    return this.platformService.create(createPlatform);
   }
 
   @Patch(':id')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiOperation({ summary: 'Update a platform' })
   @ApiResponse({
     status: 200,
     description: 'The platform has been updated successfully.',
   })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+  })
   @ApiBadRequestResponse({
     description: 'The platform could not be updated',
   })
   update(
     @Param('id') id: string | number,
-    @Body() createPlatformDTO: CreatePlatformDTO,
-    @Res({ passthrough: true }) response: Response,
+    @Body() updatePlatform: UpdatePlatformDTO,
   ) {
-    return this.platformService
-      .findOneById(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('Platform not found');
-        }
-        this.platformService.update(id, createPlatformDTO);
-        response.status(200).end('Platform updated');
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+    return this.platformService.update(id, updatePlatform);
   }
 
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Remove a platform' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'The platform has been removed successfully.',
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
   })
   @ApiBadRequestResponse({
     description: 'The platform could not be removed',
   })
-  remove(
-    @Param('id') id: string,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.platformService
-      .findOneById(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('Platform not found');
-        }
-        this.platformService.remove(parseInt(id));
-        response.status(200).end('Platform removed');
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+  remove(@Param('id') id: string | number) {
+    return this.platformService.remove(id);
   }
 }

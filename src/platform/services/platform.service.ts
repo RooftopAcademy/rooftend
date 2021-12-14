@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
+import { CreatePlatformDTO } from '../create-platform-dto.entity';
 import { Platform } from '../platform.entity';
+import { UpdatePlatformDTO } from '../update-platform-dto.entity';
 
 @Injectable()
 export class PlatformService {
@@ -11,22 +17,72 @@ export class PlatformService {
   ) {}
 
   async findAll(): Promise<Platform[]> {
-    return this.platformRepository.find();
+    return await this.platformRepository.find();
   }
 
   async findOneById(id: number | string): Promise<Platform> {
-    return this.platformRepository.findOne(id);
+    const platform = await this.platformRepository.findOne(id);
+
+    if (!platform) {
+      throw new NotFoundException('Task not found');
+    }
+
+    return platform;
   }
 
-  async create(platform: Platform): Promise<Platform> {
-    return this.platformRepository.save(platform);
+  async create(platform: CreatePlatformDTO): Promise<{
+    message: string;
+  }> {
+    if (await this.exists(platform)) {
+      throw new ConflictException('The platform already exists');
+    }
+
+    await this.platformRepository.save(platform);
+
+    return {
+      message: 'Platform Created',
+    };
   }
 
-  async update(id: number | string, platform: Platform): Promise<UpdateResult> {
-    return this.platformRepository.update(id, platform);
+  async update(
+    id: number | string,
+    platform: UpdatePlatformDTO,
+  ): Promise<{
+    message: string;
+  }> {
+    await this.findOneById(id);
+
+    const foundId = await this.exists(platform);
+    if (foundId && foundId != id) {
+      throw new ConflictException(
+        'This modification will produce two platforms with the same attributes',
+      );
+    }
+
+    platform.updatedAt = new Date();
+
+    this.platformRepository.update(id, platform);
+
+    return { message: 'Task Updated' };
   }
 
-  async remove(id: number): Promise<DeleteResult> {
-    return this.platformRepository.delete(id);
+  async remove(id: string | number): Promise<{
+    message: string;
+  }> {
+    await this.findOneById(id);
+
+    await this.platformRepository.delete(id);
+
+    return { message: 'Task Removed' };
+  }
+
+  async exists(
+    platform: CreatePlatformDTO | UpdatePlatformDTO,
+  ): Promise<number | null> {
+    const foundPlatform = await this.platformRepository.findOne(platform);
+    if (foundPlatform) {
+      return foundPlatform.id;
+    }
+    return null;
   }
 }
