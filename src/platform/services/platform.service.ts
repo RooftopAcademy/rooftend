@@ -71,7 +71,7 @@ export class PlatformService {
     return { message: 'Platform Updated' };
   }
 
-  async remove(id: string | number): Promise<{
+  async delete(id: string | number): Promise<{
     message: string;
   }> {
     await this.findOneById(id);
