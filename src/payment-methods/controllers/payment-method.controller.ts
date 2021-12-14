@@ -11,6 +11,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -34,12 +35,14 @@ export default class PaymentMethodsController {
     description: 'All the payment methods found',
     type: PaymentMethod,
   })
-  async all(@Res({ passthrough: true }) response): Promise<PaymentMethod[]> {
+  async all(): Promise<PaymentMethod[]> {
     const payment_methods = await this.service.all();
 
-    if (payment_methods) return payment_methods;
+    if (!payment_methods) {
+      throw new NotFoundException('No payment methods found');
+    }
 
-    return response.status(404).end('Not found');
+    return payment_methods;
   }
 
   @Get(':id')
@@ -61,13 +64,14 @@ export default class PaymentMethodsController {
   })
   async find(
     @Param('id') id: number,
-    @Res({ passthrough: true }) response,
   ): Promise<PaymentMethod> {
     const payment_method: PaymentMethod = await this.service.find(id);
 
-    if (payment_method) return response.status(200).send(payment_method).end();
+    if (!payment_method) {
+      throw new NotFoundException('Payment method not found');
+    }
 
-    return response.status(404).end('Not found');
+    return payment_method;
   }
 
   @Post('*')
