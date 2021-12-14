@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -56,13 +57,12 @@ export class Platform {
     type: 'date',
     format: 'date-time',
   })
-  @UpdateDateColumn({
+  @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
     default: null,
   })
-  deletedAt: Date;
-
+  deletedAt?: Date;
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
     type: 'string',
