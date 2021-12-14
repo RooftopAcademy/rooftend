@@ -55,11 +55,11 @@ export class Platform {
     format: 'date-time',
   })
   @DeleteDateColumn({
-    name: 'removed_at',
+    name: 'deleted_at',
     type: 'timestamptz',
     default: null,
   })
-  removedAt?: Date;
+  deletedAt?: Date;
 
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
