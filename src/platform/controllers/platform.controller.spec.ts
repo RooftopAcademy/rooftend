@@ -47,7 +47,7 @@ describe('PlatformController', () => {
     update: jest.fn().mockImplementation((id, dto: UpdatePlatformDTO) => {
       return { message: 'Task Updated' };
     }),
-    remove: jest.fn().mockImplementation((id) => {
+    delete: jest.fn().mockImplementation((id) => {
       return { message: 'Task Removed' };
     }),
   };
@@ -152,11 +152,11 @@ describe('PlatformController', () => {
 
   describe('remove', () => {
     it('should remove platform', () => {
-      expect(controller.remove(10)).toEqual({ message: 'Task Removed' });
+      expect(controller.delete(10)).toEqual({ message: 'Task Removed' });
 
-      expect(mockPlatformService.remove).toHaveBeenCalled();
+      expect(mockPlatformService.delete).toHaveBeenCalled();
 
-      expect(mockPlatformService.remove).toHaveBeenCalledWith(10);
+      expect(mockPlatformService.delete).toHaveBeenCalledWith(10);
     });
   });
 });
