@@ -9,7 +9,7 @@ export class UpdatePlatformDTO {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
