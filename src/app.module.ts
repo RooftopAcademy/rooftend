@@ -22,6 +22,7 @@ import { PhonesModule } from './phones/phones.module';
 import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
+import { PurchasesModule } from './purchases/purchases.module';
 import { QuestionsModule } from './questions/questions.module';
 import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
@@ -29,7 +30,6 @@ import { ShippingMethodsModule } from './shipping-methods/shipping-methods.modul
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { OffersModule } from './offers/offers.module';
-
 
 @Module({
   imports: [
@@ -68,9 +68,10 @@ import { OffersModule } from './offers/offers.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
+    PurchasesModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
