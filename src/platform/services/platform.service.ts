@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { CreatePlatformDTO } from '../create-platform-dto.entity';
 import { Platform } from '../platform.entity';
 
 @Injectable()
@@ -18,11 +19,14 @@ export class PlatformService {
     return this.platformRepository.findOne(id);
   }
 
-  async create(platform: Platform): Promise<Platform> {
+  async create(platform: CreatePlatformDTO): Promise<Platform> {
     return this.platformRepository.save(platform);
   }
 
-  async update(id: number | string, platform: Platform): Promise<UpdateResult> {
+  async update(
+    id: number | string,
+    platform: CreatePlatformDTO,
+  ): Promise<UpdateResult> {
     return this.platformRepository.update(id, platform);
   }
 
