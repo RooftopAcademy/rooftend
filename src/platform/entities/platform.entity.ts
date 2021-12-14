@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -53,7 +54,7 @@ export class Platform {
     type: 'date',
     format: 'date-time',
   })
-  @UpdateDateColumn({
+  @DeleteDateColumn({
     name: 'removed_at',
     type: 'timestamptz',
     default: null,
