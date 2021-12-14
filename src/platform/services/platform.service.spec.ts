@@ -62,6 +62,11 @@ describe('PlatformService', () => {
         ...platform,
       }),
     ),
+    softDelete: jest.fn().mockImplementation((id) =>
+      Promise.resolve({
+        id,
+      }),
+    ),
   };
 
   beforeEach(async () => {
@@ -231,9 +236,9 @@ describe('PlatformService', () => {
   });
 
   describe('remove', () => {
-    it('should soft remove a platform', async () => {
+    it('should soft delete a platform', async () => {
       expect(await service.remove(10)).toEqual({
-        message: 'Platform Removed',
+        message: 'Platform Deleted',
       });
     });
 
