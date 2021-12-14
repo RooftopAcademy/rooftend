@@ -14,6 +14,7 @@ import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { HelpsModule } from './helps/help.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
@@ -28,6 +29,7 @@ import { ShippingMethodsModule } from './shipping-methods/shipping-methods.modul
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { OffersModule } from './offers/offers.module';
+
 
 @Module({
   imports: [
@@ -47,9 +49,12 @@ import { OffersModule } from './offers/offers.module';
     BrandsModule,
     CartModule,
     CategoriesModule,
+    CustomMessagesModule,
     FavoritesModule,
+    HelpsModule,
     HistoryModule,
     NotificationModule,
+    OffersModule,
     PaymentMethodsModule,
     PhonesModule,
     PhotosModule,
@@ -63,8 +68,6 @@ import { OffersModule } from './offers/offers.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
-    CustomMessagesModule,
-    OffersModule,
   ],
 
   controllers: [AppController],
