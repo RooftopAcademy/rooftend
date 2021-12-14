@@ -14,6 +14,7 @@ export class Platform {
   @ApiProperty({
     description: 'Platform Id number',
     type: 'integer',
+    example: 1,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,
@@ -26,6 +27,7 @@ export class Platform {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @CreateDateColumn({
     name: 'created_at',
@@ -39,6 +41,7 @@ export class Platform {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @UpdateDateColumn({
     name: 'updated_at',
@@ -48,8 +51,23 @@ export class Platform {
   updatedAt: Date;
 
   @ApiProperty({
-    description: '3 digits ISO country code (Example: ARG)',
+    description: 'The date when the platform has been soft deleted',
+    default: null,
+    type: 'date',
+    format: 'date-time',
+    example: Date.now(),
+  })
+  @UpdateDateColumn({
+    name: 'removed_at',
+    type: 'timestamptz',
+    default: () => null,
+  })
+  removedAt: Date;
+
+  @ApiProperty({
+    description: '3 digits ISO country code',
     type: 'string',
+    example: 'ARG',
   })
   @Column({
     name: 'country_code',
@@ -59,8 +77,9 @@ export class Platform {
   countryCode: string;
 
   @ApiProperty({
-    description: '3 digits ISO currency code (Example: ARS)',
+    description: '3 digits ISO currency code',
     type: 'string',
+    example: 'ARG',
   })
   @Column({
     name: 'currency_code',
@@ -70,8 +89,9 @@ export class Platform {
   currencyCode: string;
 
   @ApiProperty({
-    description: '5 digits ISO language code (Example: es_AR)',
+    description: '5 digits ISO language code',
     type: 'string',
+    example: 'es_AR',
   })
   @Column({
     name: 'lang_code',
@@ -81,8 +101,9 @@ export class Platform {
   langCode: string;
 
   @ApiProperty({
-    description: 'Up to 5 digits phone code (Example: ++549)',
+    description: 'Up to 5 digits phone code',
     type: 'string',
+    example: '++549',
   })
   @Column({
     name: 'phone_country_code',
