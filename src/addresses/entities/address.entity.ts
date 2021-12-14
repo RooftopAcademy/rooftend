@@ -14,6 +14,7 @@ export class Address {
   @ApiProperty({
     description: 'Address Id number',
     type: 'integer',
+    example: 1,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,
@@ -26,6 +27,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @CreateDateColumn({
     name: 'created_at',
@@ -39,6 +41,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @UpdateDateColumn({
     name: 'updated_at',
@@ -52,6 +55,7 @@ export class Address {
     default: null,
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @UpdateDateColumn({
     name: 'removed_at',
@@ -61,8 +65,9 @@ export class Address {
   revomedAt: Date;
 
   @ApiProperty({
-    description: '3 digits ISO country code (Example: ARG)',
+    description: '3 digits ISO country code',
     type: 'string',
+    example: 'ARG',
   })
   @Column({
     name: 'country_code',
@@ -72,8 +77,9 @@ export class Address {
   countryCode: string;
 
   @ApiProperty({
-    description: 'Country state name (Example: Córdoba)',
+    description: 'Country state name)',
     type: 'string',
+    example: 'Córdoba',
   })
   @Column({
     name: 'country_state',
@@ -83,8 +89,9 @@ export class Address {
   countryState: string;
 
   @ApiProperty({
-    description: 'City name (Example: San Francisco)',
+    description: 'City name',
     type: 'string',
+    example: 'San Francisco',
   })
   @Column({
     name: 'city_name',
@@ -94,8 +101,9 @@ export class Address {
   cityName: string;
 
   @ApiProperty({
-    description: 'Street name (Example: 9 de Julio)',
+    description: 'Street name',
     type: 'string',
+    example: '9 de Julio',
   })
   @Column({
     name: 'street_name',
@@ -105,8 +113,9 @@ export class Address {
   streetName: string;
 
   @ApiProperty({
-    description: 'Street number (Example: 3850)',
+    description: 'Street number',
     type: 'integer',
+    example: 3850,
   })
   @Column({
     name: 'street_number',
@@ -115,8 +124,9 @@ export class Address {
   streetNumber: number;
 
   @ApiProperty({
-    description: 'Zip code (Example: X2400AIQ)',
+    description: 'Zip code',
     type: 'string',
+    example: 'X2400AIQ',
   })
   @Column({
     name: 'zip_code',
@@ -126,8 +136,9 @@ export class Address {
   zipCode: string;
 
   @ApiProperty({
-    description: 'Floor number (Example: 8)',
+    description: 'Floor number',
     type: 'small-integer',
+    example: 8,
     default: null,
   })
   @Column({
@@ -138,8 +149,9 @@ export class Address {
   floor: number;
 
   @ApiProperty({
-    description: 'Office code (Example: B)',
+    description: 'Office code',
     type: 'string',
+    example: 'B',
     default: null,
   })
   @Column({
@@ -152,8 +164,9 @@ export class Address {
 
   @ApiProperty({
     description:
-      'References (Example: Indications about the house, apartment, neighborhood, streets, etc.)',
+      'Indications about the house, apartment, neighborhood, streets, etc.',
     type: 'string',
+    example: 'My house color is beige, with a black door.',
     default: null,
   })
   @Column({
@@ -165,7 +178,8 @@ export class Address {
   references: string;
 
   @ApiProperty({
-    description: 'Subject_Id (Example: 4)',
+    description: 'Id of the entity this address belongs',
+    example: 4,
     type: 'big-integer',
   })
   @Column({
@@ -175,7 +189,8 @@ export class Address {
   subjectId: number;
 
   @ApiProperty({
-    description: 'Subject type (Example: User )',
+    description: 'Entity type this address belongs',
+    example: 'User',
     type: 'string',
   })
   @Column({
