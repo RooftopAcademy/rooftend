@@ -62,7 +62,7 @@ export class Address {
     type: 'timestamptz',
     default: null,
   })
-  deletedAt: Date;
+  deletedAt?: Date;
 
   @ApiProperty({
     description: '3 digits ISO country code',
