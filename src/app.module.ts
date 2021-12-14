@@ -38,7 +38,7 @@ import { SavedItemsModule } from './saved-items/saved-items.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      // synchronize: true,
     }),
 
     AccountStatusModule,
