@@ -1,7 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { UpdateDateColumn } from 'typeorm';
 
-export class CreatePlatformDTO {
+export class UpdatePlatformDTO {
+  @ApiHideProperty()
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
+
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
     type: 'string',
