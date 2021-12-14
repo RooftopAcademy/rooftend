@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 
@@ -12,19 +12,19 @@ export class Notification {
   })
   id: number;
 
-  @ApiProperty({ example: 1, description: 'Id to the related user' })
+  @ApiProperty({ example: 1, description: 'Id to the related user.' })
   @Column({
     name: 'user_id',
     unsigned: true,
     type: 'bigint',
   })
-  @OneToOne((type) => User, (user) => user.id)
+  @ManyToOne((type) => User, (user) => user.id)
   @JoinColumn({ referencedColumnName : "id" })
   user_id: number;
 
   @ApiProperty({
     example: 'http://localhost:3000/notifications',
-    description: 'link to where it redirects when clicked',
+    description: 'Link to where it redirects when clicked.',
   })
   @Column({
     name: 'action_url',
@@ -34,19 +34,19 @@ export class Notification {
   action_url: string;
 
   @ApiProperty({
-    example: 'shipping notification',
-    description: 'your purchase is on the way',
+    example: 'Your purchase is on the way.',
+    description: 'Shipping notification.',
   })
   @Column({
-    name: 'title',
+    name: 'Title.',
     type: 'character varying',
     length: 20,
   })
   title: string;
 
   @ApiProperty({
-    example: 'description',
-    description: 'description',
+    example: 'Description.',
+    description: 'Description.',
   })
   @Column({
     name: 'description',
@@ -57,7 +57,7 @@ export class Notification {
 
   @ApiProperty({
     example: 'image.jpg',
-    description: 'path where the notification image is stored',
+    description: 'Path where the notification image is stored.',
   })
   @Column({
     name: 'image_url',
@@ -68,7 +68,7 @@ export class Notification {
 
   @ApiProperty({
     example: '22/11/2021',
-    description: 'date the notification was created',
+    description: 'Date the notification was created.',
   })
   @Column({
     name: 'created_at',
@@ -77,7 +77,7 @@ export class Notification {
 
   @ApiProperty({
     example: '22/11/2021',
-    description: 'date the notification was sent to the user',
+    description: 'Date the notification was sent to the user.',
   })
   @Column({
     name: 'sent_at',
@@ -86,7 +86,7 @@ export class Notification {
 
   @ApiProperty({
     example: '23/11/2021',
-    description: 'date the user read the notification',
+    description: 'Date the user read the notification.',
   })
   @Column({
     name: 'read_at',
@@ -95,7 +95,7 @@ export class Notification {
 
   @ApiProperty({
     example: '23/11/2021',
-    description: 'date the user deleted the notification',
+    description: 'Date the user deleted the notification.',
   })
   @Column({
     name: 'deleted_at',

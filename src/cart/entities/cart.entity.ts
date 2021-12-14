@@ -1,50 +1,85 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn } from "typeorm";
+import { type } from "os";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn, OneToMany } from "typeorm";
+import { CartItem } from "../../cart-item/entities/cart-item.entity";
 import { User } from "../../users/entities/user.entity";
 
 @Entity({ name: 'carts' })
 export class Cart {
-  /*@PrimaryColumn()*/
+  
   @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
-  @ApiProperty({ type: [Number] , readOnly:true})
+  @ApiProperty({ 
+    name: "id",
+    type: "integer" ,
+    readOnly:true
+  })
   id: number;
 
-  /*@Column('timestamp with time zone', { name: 'created_at', nullable: false, default: () => '((CURRENT_TIMESTAMP))' })  */
   @CreateDateColumn({
     name: 'created_at',
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ type: [Date] })
-  created_at: Date;
+  @ApiProperty({ 
+    name: "createdAt",
+    type: "string" ,
+    format: "date-time",
+    readOnly:true
+  })
+  createdAt: Date;
 
-  /*@Column('timestamp with time zone', { name: 'updated_at', nullable: false, default: () => 'CURRENT_TIMESTAMP' })  */
   @UpdateDateColumn({
     name: 'updated_at',
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ type: [Date] })
-  updated_at: Date;
+  @ApiProperty({ 
+    name: "updatedAt",
+    type: "string" ,
+    format: "date-time",
+    readOnly:true
+  })
+  updatedAt: Date;
 
-    @BeforeUpdate()
-    updateTimeStamp(){
-        this.updated_at = new Date;
-    }
+  @BeforeUpdate()
+  updateTimeStamp(){
+      this.updatedAt = new Date;
+  }
 
-    @ManyToOne(type => User, user => user.id) user: User; 
-    @Column({name: 'user_id', type: "bigint"})
-    @JoinColumn({ name: 'user_id' })
-    userId: number;
+  @ManyToOne(type => User)
+  @JoinColumn({name: "user_id"})
+  @ApiProperty({ 
+    name: "userId",
+    type: "integer",
+    example: 1,
+    description: "Id of the user the Cart belongs to"
+  })
+  userId: User;
 
-    @Column({type:"double precision"})
-    @ApiProperty({ type: [Number] })
-    amount: number;
+  @Column({type:"double precision"})
+  @ApiProperty({ 
+    name: "amount",
+    type: "integer",
+    required: true,
+    example: "666",
+    description: "Item amount in this cart"
+  })
+  amount: number;
 
-    @Column("varchar", { length: 3 , name: 'currency_code'})
-    @ApiProperty({ type: [String] })
-    currencyCode: string;
+  @Column("varchar", { length: 3 , name: 'currency_code'})
+  @ApiProperty({
+    name: "currencyCode",
+    required: true, 
+    type: "string",
+    example: "ab6",
+    description: "Currency code of the user location",
+    maxLength: 3
+  })
+  currencyCode: string;
+
+  @OneToMany(() => CartItem, cartItem => cartItem.cartId)
+  cartItemsId: CartItem[];
 
 }
