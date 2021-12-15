@@ -5,45 +5,57 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger'; /* eslint-disable prettier/prettier */
+} from '@nestjs/swagger';
 import {
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import PaymentMethod from '../payment-method.entity';
+import PaymentMethod from '../models/payment-method.entity';
 import PaymentMethodsService from '../services/payment-method.service';
-import PaymentMethodDto from '../dto/create-payment-method.dto';
 
 @ApiTags('Payment Methods')
 @Controller('payment-methods')
 export default class PaymentMethodsController {
   constructor(private readonly service: PaymentMethodsService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @ApiOperation({
     summary: "Returns all the payment methods available"
   })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
     description: 'All the payment methods found',
-    type: PaymentMethodDto,
-    isArray: true,
+    schema: {
+      example: [
+        {
+          "name": "CASH",
+          "type": "Cash"
+        },
+        {
+          "name": "DEBIT_CARD",
+          "type": "Debit card"
+        },
+      ]
+    },
   })
-  async all(@Res({ passthrough: true }) response): Promise<PaymentMethod[]> {
+  async all(): Promise<PaymentMethod[]> {
     const payment_methods = await this.service.all();
 
-    if (payment_methods) return payment_methods;
-
-    return response.status(404).end('Not found');
+    return payment_methods;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @ApiOperation({
     summary: "Returns the payment method matching the id parameter"
@@ -51,7 +63,13 @@ export default class PaymentMethodsController {
   @ApiOkResponse({
     status: 200,
     description: 'The payment method found',
-    type: PaymentMethodDto,
+    schema: {
+      example: 
+        {
+          "name": "CASH",
+          "type": "Cash"
+        }
+    }
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -63,18 +81,14 @@ export default class PaymentMethodsController {
   })
   async find(
     @Param('id') id: number,
-    @Res({ passthrough: true }) response,
   ): Promise<PaymentMethod> {
-    try {
-      const payment_method = await this.service.find(id);
-      
-      if (payment_method) { return payment_method }
-      
-      response.status(404).end();
-      
-    } catch (error) {
-      response.status(404).json({ message: `${error}` });
+    const payment_method: PaymentMethod = await this.service.find(id);
+
+    if (!payment_method) {
+      throw new NotFoundException('Payment method not found');
     }
+
+    return payment_method;
   }
 
   @Post('*')
