@@ -71,14 +71,14 @@ export class PlatformService {
     return { message: 'Platform Updated' };
   }
 
-  async remove(id: string | number): Promise<{
+  async delete(id: string | number): Promise<{
     message: string;
   }> {
     await this.findOneById(id);
 
-    await this.platformRepository.update(id, { deletedAt: new Date() });
+    await this.platformRepository.softDelete(id);
 
-    return { message: 'Platform Removed' };
+    return { message: 'Platform Deleted' };
   }
 
   async exists(
@@ -90,7 +90,6 @@ export class PlatformService {
         currencyCode: platform.currencyCode,
         langCode: platform.langCode,
         phoneCountryCode: platform.phoneCountryCode,
-        deletedAt: IsNull(),
       },
     });
     if (foundPlatform) {
