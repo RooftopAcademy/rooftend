@@ -59,15 +59,16 @@ export class Cart {
 
   @UpdateDateColumn({
     name: 'purchased_at',
-    nullable: false,
+    nullable: true,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: () => null,
   })
   @ApiProperty({
     name: 'purchasedAt',
     type: 'string',
     format: 'date-time',
     readOnly: true,
+    default: null,
   })
   purchasedAt: Date;
 
