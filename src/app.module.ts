@@ -42,7 +42,7 @@ import { OffersModule } from './offers/offers.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
 
     AccountStatusModule,
@@ -73,4 +73,5 @@ import { OffersModule } from './offers/offers.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+
+export class AppModule {}

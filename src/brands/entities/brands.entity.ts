@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { PhotosEntity } from '../../photos/models/photos.entity';
 
 @Entity({ name: 'brands' })
 export class Brand {
@@ -19,9 +20,10 @@ export class Brand {
 
   @Column()
   @ApiProperty({
-    example: '',
+    example: 1234,
     description: 'The logo of the brand',
-    type: String,
+    type: Number,
   })
-  photoId: string;
+  @OneToOne(() => PhotosEntity) @JoinColumn() 
+  photoId: Number;
 }
