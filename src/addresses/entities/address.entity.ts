@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -27,7 +28,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
-    example: Date.now(),
+    example: '2021-12-15',
   })
   @CreateDateColumn({
     name: 'created_at',
@@ -41,7 +42,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
-    example: Date.now(),
+    example: '2021-12-15',
   })
   @UpdateDateColumn({
     name: 'updated_at',
@@ -50,14 +51,7 @@ export class Address {
   })
   updatedAt: Date;
 
-  @ApiProperty({
-    description: 'The date when the platform has been soft deleted',
-    default: null,
-    type: 'date',
-    format: 'date-time',
-    example: Date.now(),
-  })
-  @UpdateDateColumn({
+  @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
     default: null,
@@ -77,7 +71,7 @@ export class Address {
   countryCode: string;
 
   @ApiProperty({
-    description: 'Country state name)',
+    description: 'Country state name',
     type: 'string',
     example: 'Córdoba',
   })
@@ -155,7 +149,7 @@ export class Address {
     default: null,
   })
   @Column({
-    name: 'floor',
+    name: 'office',
     type: 'char',
     length: 5,
     default: () => null,
