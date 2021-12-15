@@ -1,6 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundError } from 'rxjs';
 import PaymentMethodsService from '../services/payment-method.service';
 import PaymentMethodsController from './payment-method.controller';
 
