@@ -26,7 +26,7 @@ export class CategoriesController {
   public constructor(private readonly categoriesService: CategoriesService) {}
     
   @Get()
-  @ApiOperation({summary: 'Returns categories available'})
+  @ApiOperation({summary: 'Returns all available categories'})
   @ApiOkResponse({
     type:Category,
     description: 'The categories available',
@@ -52,7 +52,7 @@ export class CategoriesController {
   
     @Get(':id')
     @HttpCode(200)
-    @ApiOperation({summary: ' categories'})
+    @ApiOperation({summary: ' Gets one category by id'})
     @ApiParam({ name: 'id', type: Number, required: true, example: 1 })
     @ApiOkResponse({
       type: Category,
