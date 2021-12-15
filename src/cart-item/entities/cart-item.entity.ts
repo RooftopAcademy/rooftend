@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from "@nestjs/swagger";
 
-import { Cart } from "../../cart/entities/cart.entity";
+import { Cart } from '../../cart/entities/cart.entity';
 import { Item } from '../../items/entities/items.entity';
 
 @Entity('cart_item')
@@ -48,7 +48,7 @@ export class CartItem {
   @ApiProperty({ example: 10, description: 'Id of the Item that the Cart Item represents' })
   itemId: number;
 
-  @ManyToOne(() => Cart, cart => cart.cartItemsId)
+  @ManyToOne(() => Cart, (cart: Cart) => cart.cartItemsId)
   @Column({
     name: 'cart_id',
   })

@@ -83,21 +83,6 @@ export class User {
 
   favorites: [];
 
-  @ApiProperty({
-    example: 1,
-    description: 'Description the notification',
-  })
-  @Column({
-    name: 'notification_id',
-    unsigned: true,
-    type: Number
-  })
-  @OneToMany(type => Notification, notification => notification.id)
-  @JoinColumn({
-    referencedColumnName: 'id'
-  })
-  notification_id: number
-
   @OneToMany(() => Search, (search) => search.user)
   searches: Search[];
 }
