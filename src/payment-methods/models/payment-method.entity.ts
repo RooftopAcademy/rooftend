@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'; /* eslint-disable prettier/prettier */
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -17,6 +18,7 @@ export default class PaymentMethod {
     type: Number,
     readOnly: true,
   })
+  @Exclude({ toPlainOnly: true })
   @PrimaryGeneratedColumn({
     unsigned: true,
     type: 'bigint',
@@ -60,6 +62,7 @@ export default class PaymentMethod {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
+  @Exclude({ toPlainOnly: true })
   created_at: Date;
 
   @ApiProperty({
@@ -74,5 +77,6 @@ export default class PaymentMethod {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
+  @Exclude({ toPlainOnly: true })
   updated_at: Date;
 }
