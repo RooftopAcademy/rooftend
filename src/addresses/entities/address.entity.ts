@@ -140,7 +140,7 @@ export class Address {
     type: 'smallint',
     default: () => null,
   })
-  floor: number;
+  floor?: number;
 
   @ApiProperty({
     description: 'Office code',
@@ -154,7 +154,7 @@ export class Address {
     length: 5,
     default: () => null,
   })
-  office: string;
+  office?: string;
 
   @ApiProperty({
     description:
@@ -169,7 +169,7 @@ export class Address {
     length: 500,
     default: () => null,
   })
-  references: string;
+  references?: string;
 
   @ApiProperty({
     description: 'Id of the entity this address belongs',
