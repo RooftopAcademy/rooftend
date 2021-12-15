@@ -24,6 +24,7 @@ export class Brand {
     description: 'The logo of the brand',
     type: Number,
   })
-  @OneToOne(() => PhotosEntity) @JoinColumn() 
-  photoId: Number;
+  @OneToOne(() => PhotosEntity)
+  @JoinColumn({ name: 'photo_id' })
+  photoId: PhotosEntity;
 }

@@ -19,10 +19,6 @@ export class BrandsService {
     return this.brandRepo.findOne(id);
   }
 
-  findAll(): Promise<Brand[]> {
-    return this.brandRepo.find();
-  }
-
   create(body: any): Promise<Brand[]> {
     const newBrand = this.brandRepo.create(body);
     return this.brandRepo.save(newBrand);

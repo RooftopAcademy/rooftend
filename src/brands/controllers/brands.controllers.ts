@@ -16,6 +16,7 @@ import { BrandsService } from '../services/brands.serveces';
 import { createBrandDTO } from '../entities/create-brands-dto.entity';
 import {
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -51,6 +52,7 @@ export class BrandsController {
     description: 'Shows the search result for a brand by id',
     type: Brand,
   })
+  @ApiNotFoundResponse({status: 404, description: 'No Brand was found that matches that id'})
   @Get(':id')
   getOne(@Param('id') id: number) {
     return this.brandService.findOne(id);
@@ -90,6 +92,7 @@ export class BrandsController {
   @ApiBadRequestResponse({
     description: 'The brand could not be deleted',
   })
+  @ApiNotFoundResponse({status: 404, description: 'No Brand was found that matches that id'})
   @Delete()
   delete(@Param('id') id: number) {
     return this.brandService.delete(id);
