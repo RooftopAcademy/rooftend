@@ -15,6 +15,7 @@ import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
 import { Notification } from '../../notification/entities/notification.entity';
 import { Search } from '../../search/search.entity';
+import { MessagePostPurchase } from '../../message-post-purchases/entities/message-post-purchase.entity';
 
 @Entity('users')
 export class User {

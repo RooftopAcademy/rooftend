@@ -29,6 +29,7 @@ import { ShippingMethodsModule } from './shipping-methods/shipping-methods.modul
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { OffersModule } from './offers/offers.module';
+import { MessagePostPurchasesModule } from './message-post-purchases/message-post-purchases.module';
 
 
 @Module({
@@ -68,6 +69,7 @@ import { OffersModule } from './offers/offers.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
+    MessagePostPurchasesModule,
   ],
 
   controllers: [AppController],
