@@ -20,8 +20,6 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { SavedItemsEntity } from '../entities/savedItems.entity';
-import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 
 @ApiTags('Saved')
 @Controller('saved')
