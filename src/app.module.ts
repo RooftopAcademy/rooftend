@@ -60,6 +60,7 @@ import { OffersModule } from './offers/offers.module';
     PhotosModule,
     PlatformModule,
     ProfileModule,
+    PurchasesModule,
     QuestionsModule,
     ReviewModule,
     SearchModule,
@@ -68,7 +69,6 @@ import { OffersModule } from './offers/offers.module';
     UsersModule,
     CartItemModule,
     ItemsModule,
-    PurchasesModule,
   ],
 
   controllers: [AppController],
