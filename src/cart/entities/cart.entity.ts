@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn } from "typeorm";
+import { type } from "os";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeUpdate, JoinColumn, OneToMany } from "typeorm";
+import { CartItem } from "../../cart-item/entities/cart-item.entity";
 import { User } from "../../users/entities/user.entity";
 
 @Entity({ name: 'carts' })
@@ -20,12 +22,12 @@ export class Cart {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ 
-    name: "created_at",
+    name: "createdAt",
     type: "string" ,
     format: "date-time",
     readOnly:true
   })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
@@ -34,28 +36,27 @@ export class Cart {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ 
-    name: "updated_at",
+    name: "updatedAt",
     type: "string" ,
     format: "date-time",
     readOnly:true
   })
-  updated_at: Date;
+  updatedAt: Date;
 
   @BeforeUpdate()
   updateTimeStamp(){
-      this.updated_at = new Date;
+      this.updatedAt = new Date;
   }
 
-  @ManyToOne(type => User, user => user.id) user: User; 
-  @Column({name: 'user_id', type: "bigint"})
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(type => User)
+  @JoinColumn({name: "user_id"})
   @ApiProperty({ 
     name: "userId",
     type: "integer",
     example: 1,
     description: "Id of the user the Cart belongs to"
   })
-  userId: number;
+  userId: User;
 
   @Column({type:"double precision"})
   @ApiProperty({ 
@@ -77,5 +78,8 @@ export class Cart {
     maxLength: 3
   })
   currencyCode: string;
+
+  @OneToMany(() => CartItem, cartItem => cartItem.cartId)
+  cartItemsId: CartItem[];
 
 }
