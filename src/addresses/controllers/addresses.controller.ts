@@ -8,11 +8,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { AdressesService } from '../services/adresses.service';
+import { AddressesService } from '../services/addresses.service';
 
 @Controller('adresses')
-export class AdressesController {
-  constructor(private readonly addressesService: AdressesService) {}
+export class AddressesController {
+  constructor(private readonly addressesService: AddressesService) {}
 
   @Get()
   @HttpCode(200)

@@ -22,6 +22,7 @@ import { PhonesModule } from './phones/phones.module';
 import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
+import { PurchasesModule } from './purchases/purchases.module';
 import { QuestionsModule } from './questions/questions.module';
 import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
@@ -60,6 +61,7 @@ import { OffersModule } from './offers/offers.module';
     PhotosModule,
     PlatformModule,
     ProfileModule,
+    PurchasesModule,
     QuestionsModule,
     ReviewModule,
     SearchModule,
