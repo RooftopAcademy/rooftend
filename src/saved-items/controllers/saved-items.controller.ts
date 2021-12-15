@@ -21,6 +21,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { SavedItemsEntity } from '../entities/savedItems.entity';
+import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 
 @ApiTags('Saved')
 @Controller('saved')
@@ -32,13 +33,21 @@ export class SavedItemsController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns all saved items',
-    type: [SavedItemsEntity],
+    type: [CreateSavedItemDto],
   })
   async findAll(
     @Res({ passthrough: true }) res: Response,
-  ): Promise<SavedItemsEntity[]> {
-    const data = await this.savedItemsService.getAllSavedItems();
+  ): Promise<CreateSavedItemDto[]> {
+    const rawData = await this.savedItemsService.getAllSavedItems();
     res.status(HttpStatus.OK);
+    const data: CreateSavedItemDto[] = rawData.map((item) => {
+      return {
+        itemId: item.itemId,
+        userId: item.userId,
+        quantity: item.quantity,
+        price: item.price,
+      };
+    });
     return data;
   }
 
@@ -49,7 +58,7 @@ export class SavedItemsController {
     schema: {
       example: {
         message: 'Successfully created',
-        item: { id: 1, itemId: 1, userId: 1, quantity: 1, price: 100 },
+        item: { userId: 1, quantity: 1, price: 100 },
       },
       properties: {
         message: {
@@ -57,18 +66,28 @@ export class SavedItemsController {
           description: 'message for successful creation',
           example: 'Successfully created',
         },
-        item: { $ref: getSchemaPath(SavedItemsEntity) },
+        item: { $ref: getSchemaPath(CreateSavedItemDto) },
       },
     },
   })
-  create(@Res() res: Response, @Body() createSavedItemDto: CreateSavedItemDto) {
-    this.savedItemsService
-      .createSavedItem(createSavedItemDto)
-      .then((savedItem) => {
-        res
-          .status(HttpStatus.CREATED)
-          .json({ message: 'Successfully created', item: savedItem });
-      });
+  async create(
+    @Res({ passthrough: true }) res: Response,
+    @Body() createSavedItemDto: CreateSavedItemDto,
+  ) {
+    const rawSavedItem = await this.savedItemsService.createSavedItem(
+      createSavedItemDto,
+    );
+    res.status(HttpStatus.CREATED);
+    const savedItem: CreateSavedItemDto = {
+      itemId: rawSavedItem.itemId,
+      userId: rawSavedItem.userId,
+      quantity: rawSavedItem.quantity,
+      price: rawSavedItem.price,
+    };
+    return {
+      message: 'Successfully created',
+      item: savedItem,
+    };
   }
 
   @Patch(':id')
@@ -89,18 +108,14 @@ export class SavedItemsController {
       },
     },
   })
-  update(
-    @Res() res: Response,
+  async update(
+    @Res({ passthrough: true }) res: Response,
     @Param() params,
     @Body() updateSavedItemDto: UpdateSavedItemDto,
   ) {
-    this.savedItemsService
-      .updateSavedItem(params.id, updateSavedItemDto)
-      .then((savedItem) => {
-        res
-          .status(HttpStatus.OK)
-          .json({ message: `item with id ${params.id} updated successfully` });
-      });
+    await this.savedItemsService.updateSavedItem(params.id, updateSavedItemDto);
+    res.status(HttpStatus.OK);
+    return `item with id ${params.id} updated successfully`;
   }
 
   @Delete(':id')
@@ -115,17 +130,22 @@ export class SavedItemsController {
       properties: {
         message: {
           type: 'String',
-          description: 'message for successful deletion',
+          description: 'message for successful or fail deletion',
           example: 'item with id 5 deleted successfully',
         },
       },
     },
   })
-  remove(@Res() res: Response, @Param() params) {
-    this.savedItemsService.removeSavedItem(params.id).then(() => {
-      res.status(HttpStatus.OK).json({
-        message: `item with id ${params.id} deleted successfully`,
-      });
-    });
+  async remove(@Res({ passthrough: true }) res: Response, @Param() params) {
+    try {
+      const response = await this.savedItemsService.removeSavedItem(params.id);
+      if (response.affected == 0)
+        throw new Error('item with id ' + params.id + ' not found');
+      res.status(HttpStatus.OK);
+      return `Error: item with id ${params.id} deleted successfully`;
+    } catch (err) {
+      res.status(HttpStatus.NOT_FOUND);
+      return err.message;
+    }
   }
 }
