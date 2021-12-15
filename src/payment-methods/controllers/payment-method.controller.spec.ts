@@ -1,4 +1,6 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundError } from 'rxjs';
 import PaymentMethodsService from '../services/payment-method.service';
 import PaymentMethodsController from './payment-method.controller';
 
@@ -26,12 +28,12 @@ describe('PaymentMethodsController', () => {
     }),
     find: jest.fn().mockImplementation((id) => {
       return {
-        id,
-        name: 'CASH',
-        type: 'Cash',
-        created_at: '2021-12-12T13:45:40.800Z',
-        updated_at: '2021-12-12T15:14:54.100Z',
-      };
+          id,
+          name: 'CASH',
+          type: 'Cash',
+          created_at: '2021-12-12T13:45:40.800Z',
+          updated_at: '2021-12-12T15:14:54.100Z',
+        };
     }),
   };
 
@@ -83,8 +85,21 @@ describe('PaymentMethodsController', () => {
         created_at: '2021-12-12T13:45:40.800Z',
         updated_at: '2021-12-12T15:14:54.100Z',
       });
-  
-      expect(mockPaymentMethodsService.find).toHaveBeenCalled();
+    })
+
+    it('should call service.find with the id provided', () => {
+      expect(mockPaymentMethodsService.find).toHaveBeenCalledWith(2); 
     });
+
+    it('should return Payment method not found when there is not match with id', async () => {
+      
+      mockPaymentMethodsService.find.mockReturnValueOnce(null);
+
+      try {
+        expect(await controller.find(2)).toThrow(NotFoundException);
+      } catch (err) {
+        expect(err.message).toBe('Payment method not found');
+      }
+    })    
   });
 });
