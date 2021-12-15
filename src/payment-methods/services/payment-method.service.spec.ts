@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import PaymentMethod from '../models/payment-method.entity';
@@ -48,7 +47,7 @@ describe('PaymentMethodsService', () => {
 
   describe('all', () => {
     it('should return a list of payment methods', async () => {
-      expect(await service.all()).toEqual([
+      expect(await service.getAll()).toEqual([
         {
           name: 'CASH',
           type: 'Cash',
@@ -63,7 +62,7 @@ describe('PaymentMethodsService', () => {
   
   describe('find', () => {
     it('should return the payment method found by id', async () => {
-      expect(await service.find(1)).toEqual({
+      expect(await service.findOne(1)).toEqual({
         name: 'CASH',
         type: 'Cash',
       });
@@ -71,7 +70,7 @@ describe('PaymentMethodsService', () => {
 
     it('should call repository.find with the id provided', async () => {
       
-      await service.find(4);
+      await service.findOne(4);
 
       expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4); 
     });
