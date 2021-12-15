@@ -5,9 +5,12 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  JoinColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { Help } from '../../helps/help.entity';
 
 @Entity()
 export class QuestionsEntity {
@@ -22,6 +25,16 @@ export class QuestionsEntity {
 
   // @ManyToOne(type => UserEntity, user => user.questions)
   // user: UserEntity;
+
+  @ApiProperty({
+    type: () => Help,
+    description: 'The question can belong to a help category.',
+    example: 2,
+    required: false,
+  })
+  @JoinColumn({ name: 'help_id'})
+  @ManyToOne(() => Help, (help) => help.questions)
+  helpId: number | null;
 
   @Column({
     name: 'question',
