@@ -49,8 +49,8 @@ export default class PaymentMethodsController {
       ],
     },
   })
-  async all(): Promise<PaymentMethod[]> {
-    const payment_methods = await this.service.all();
+  async getAll(): Promise<PaymentMethod[]> {
+    const payment_methods = await this.service.getAll();
 
     return payment_methods;
   }
@@ -78,8 +78,8 @@ export default class PaymentMethodsController {
     name: 'id',
     format: 'number',
   })
-  async find(@Param('id') id: number): Promise<PaymentMethod> {
-    const payment_method: PaymentMethod = await this.service.find(id);
+  async findOne(@Param('id') id: number): Promise<PaymentMethod> {
+    const payment_method: PaymentMethod = await this.service.findOne(id);
 
     if (!payment_method) {
       throw new NotFoundException('Payment method not found');

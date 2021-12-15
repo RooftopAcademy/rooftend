@@ -10,11 +10,11 @@ export default class PaymentMethodsService {
     private readonly repository: Repository<PaymentMethod>,
   ) {}
 
-  all(): Promise<PaymentMethod[]> {
+  getAll(): Promise<PaymentMethod[]> {
     return this.repository.find();
   }
 
-  find(id: number): Promise<PaymentMethod> {
+  findOne(id: number): Promise<PaymentMethod> {
     return this.repository.findOne(id);
   }
 }

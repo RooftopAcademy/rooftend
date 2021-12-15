@@ -7,31 +7,22 @@ describe('PaymentMethodsController', () => {
   let controller: PaymentMethodsController;
 
   const mockPaymentMethodsService = {
-    all: jest.fn().mockImplementation(() => {
+    getAll: jest.fn().mockImplementation(() => {
       return [
         {
-          id: 2,
           name: 'CASH',
           type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
         },
         {
-          id: 3,
           name: 'DEBIT_CARD',
           type: 'Debit Card',
-          created_at: '2021-12-12T15:13:35.600Z',
-          updated_at: '2021-12-13T11:45:33.500Z',
         },
       ];
     }),
-    find: jest.fn().mockImplementation((id) => {
+    findOne: jest.fn().mockImplementation(() => {
       return {
-        id,
         name: 'CASH',
         type: 'Cash',
-        created_at: '2021-12-12T13:45:40.800Z',
-        updated_at: '2021-12-12T15:14:54.100Z',
       };
     }),
   };
@@ -54,47 +45,38 @@ describe('PaymentMethodsController', () => {
 
   describe('all', () => {
     it('should return a list of payment methods', async () => {
-      expect(await controller.all()).toEqual([
+      expect(await controller.getAll()).toEqual([
         {
-          id: 2,
           name: 'CASH',
           type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
         },
         {
-          id: 3,
           name: 'DEBIT_CARD',
           type: 'Debit Card',
-          created_at: '2021-12-12T15:13:35.600Z',
-          updated_at: '2021-12-13T11:45:33.500Z',
         },
       ]);
 
-      expect(mockPaymentMethodsService.all).toHaveBeenCalled();
+      expect(mockPaymentMethodsService.getAll).toHaveBeenCalled();
     });
   });
 
   describe('find', () => {
     it('should return the payment method found by id', async () => {
-      expect(await controller.find(2)).toEqual({
-        id: 2,
+      expect(await controller.findOne(2)).toEqual({
         name: 'CASH',
         type: 'Cash',
-        created_at: '2021-12-12T13:45:40.800Z',
-        updated_at: '2021-12-12T15:14:54.100Z',
       });
     });
 
     it('should call service.find with the id provided', () => {
-      expect(mockPaymentMethodsService.find).toHaveBeenCalledWith(2);
+      expect(mockPaymentMethodsService.findOne).toHaveBeenCalledWith(2);
     });
 
     it('should return Payment method not found when there is not match with id', async () => {
-      mockPaymentMethodsService.find.mockReturnValueOnce(null);
+      mockPaymentMethodsService.findOne.mockReturnValueOnce(null);
 
       try {
-        expect(await controller.find(2)).toThrow(NotFoundException);
+        expect(await controller.findOne(2)).toThrow(NotFoundException);
       } catch (err) {
         expect(err.message).toBe('Payment method not found');
       }
