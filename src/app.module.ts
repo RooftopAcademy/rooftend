@@ -22,14 +22,15 @@ import { PhonesModule } from './phones/phones.module';
 import { PhotosModule } from './photos/photos.module';
 import { PlatformModule } from './platform/platform.module';
 import { ProfileModule } from './profile/profile.module';
+import { PurchasesModule } from './purchases/purchases.module';
 import { QuestionsModule } from './questions/questions.module';
 import { ReviewModule } from './review/review.module';
 import { SearchModule } from './search/search.module';
 import { ShippingMethodsModule } from './shipping-methods/shipping-methods.module';
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
+import { SavedItemsModule } from './saved-items/saved-items.module';
 import { OffersModule } from './offers/offers.module';
-
 
 @Module({
   imports: [
@@ -60,11 +61,13 @@ import { OffersModule } from './offers/offers.module';
     PhotosModule,
     PlatformModule,
     ProfileModule,
+    PurchasesModule,
     QuestionsModule,
     ReviewModule,
     SearchModule,
     ShippingMethodsModule,
     StoresModule,
+    SavedItemsModule,
     UsersModule,
     CartItemModule,
     ItemsModule,
@@ -73,4 +76,4 @@ import { OffersModule } from './offers/offers.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

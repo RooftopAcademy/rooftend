@@ -56,16 +56,16 @@ export class Platform {
     default: null,
     type: 'date',
     format: 'date-time',
+    example: Date.now(),
   })
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
-    default: null,
+    default: () => null,
   })
   deletedAt?: Date;
   @ApiProperty({
     description: '3 digits ISO country code (Example: ARG)',
-
     type: 'string',
     example: 'ARG',
   })
