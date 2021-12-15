@@ -6,7 +6,26 @@ import { response } from 'express';
 describe('SavedItemsController', () => {
   let controller: SavedItemsController;
 
-  const SavedItemsServiceMock = {};
+  const SavedItemsServiceMock = {
+    getAllSavedItems: jest.fn(
+      () =>
+        new Promise((resolve, reject) => {
+          resolve([{ itemId: 1, userId: 1, quantity: 1, price: 1 }]);
+        }),
+    ),
+    createSavedItem: jest.fn(
+      (dto) =>
+        new Promise((resolve, reject) => {
+          resolve({ id: 1, ...dto });
+        }),
+    ),
+    updateSavedItem: jest.fn(
+      (id, dto) =>
+        new Promise((resolve, reject) => {
+          resolve({ id, itemId: 1, userId: 1, ...dto });
+        }),
+    ),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,8 +43,8 @@ describe('SavedItemsController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return all database items', () => {
-    expect(controller.findAll(response)).resolves.toBe([
+  it('should return all database items', async () => {
+    expect(await controller.findAll(response)).toEqual([
       {
         itemId: expect.any(Number),
         userId: expect.any(Number),
@@ -35,9 +54,9 @@ describe('SavedItemsController', () => {
     ]);
   });
 
-  it('should return an object containing a message and the created item', () => {
+  it('should return an object containing a message and the created item', async () => {
     const item = { itemId: 1, userId: 1, quantity: 1, price: 1 };
-    expect(controller.create(response, item)).resolves.toEqual({
+    expect(await controller.create(response, item)).toEqual({
       message: 'Successfully created',
       item: {
         itemId: expect.any(Number),
@@ -48,14 +67,14 @@ describe('SavedItemsController', () => {
     });
   });
 
-  it('should return a message for successful update', () => {
+  it('should return a message for successful update', async () => {
     const item = { quantity: 1, price: 1 };
-    expect(controller.update(response, 1, item)).resolves.toEqual(
+    expect(await controller.update(response, 1, item)).toEqual(
       expect.any(String),
     );
   });
 
-  it('should return a message for successful delete', () => {
-    expect(controller.remove(response, 1)).resolves.toEqual(expect.any(String));
+  it('should return a message for successful delete', async () => {
+    expect(await controller.remove(response, 1)).toEqual(expect.any(String));
   });
 });
