@@ -138,9 +138,9 @@ export class SavedItemsController {
     try {
       const response = await this.savedItemsService.removeSavedItem(params.id);
       if (response.affected == 0)
-        throw new Error('item with id ' + params.id + ' not found');
+        throw new Error('Error: item with id ' + params.id + ' not found');
       res.status(HttpStatus.OK);
-      return `Error: item with id ${params.id} deleted successfully`;
+      return `Item with id ${params.id} deleted successfully`;
     } catch (err) {
       res.status(HttpStatus.NOT_FOUND);
       return err.message;
