@@ -19,11 +19,11 @@ describe('PaymentMethodsController', () => {
         },
       ];
     }),
-    findOne: jest.fn().mockImplementation((id) => {
+    findOne: jest.fn().mockImplementation(() => {
       return {
-          name: 'CASH',
-          type: 'Cash',
-        };
+        name: 'CASH',
+        type: 'Cash',
+      };
     }),
   };
 
@@ -42,7 +42,7 @@ describe('PaymentMethodsController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  
+
   describe('all', () => {
     it('should return a list of payment methods', async () => {
       expect(await controller.getAll()).toEqual([
@@ -55,7 +55,7 @@ describe('PaymentMethodsController', () => {
           type: 'Debit Card',
         },
       ]);
-  
+
       expect(mockPaymentMethodsService.getAll).toHaveBeenCalled();
     });
   });
@@ -66,14 +66,13 @@ describe('PaymentMethodsController', () => {
         name: 'CASH',
         type: 'Cash',
       });
-    })
+    });
 
     it('should call service.find with the id provided', () => {
-      expect(mockPaymentMethodsService.findOne).toHaveBeenCalledWith(2); 
+      expect(mockPaymentMethodsService.findOne).toHaveBeenCalledWith(2);
     });
 
     it('should return Payment method not found when there is not match with id', async () => {
-      
       mockPaymentMethodsService.findOne.mockReturnValueOnce(null);
 
       try {
@@ -81,6 +80,6 @@ describe('PaymentMethodsController', () => {
       } catch (err) {
         expect(err.message).toBe('Payment method not found');
       }
-    })    
+    });
   });
 });

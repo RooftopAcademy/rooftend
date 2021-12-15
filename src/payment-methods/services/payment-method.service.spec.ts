@@ -6,8 +6,8 @@ import PaymentMethodsService from './payment-method.service';
 describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;
 
-  let mockPaymentMethodRepo = {
-    find: jest.fn().mockImplementation(() => 
+  const mockPaymentMethodRepo = {
+    find: jest.fn().mockImplementation(() =>
       Promise.resolve([
         {
           name: 'CASH',
@@ -17,13 +17,13 @@ describe('PaymentMethodsService', () => {
           name: 'DEBIT_CARD',
           type: 'Debit Card',
         },
-      ])
+      ]),
     ),
-    findOne: jest.fn().mockImplementation((id) =>
+    findOne: jest.fn().mockImplementation(() =>
       Promise.resolve({
         name: 'CASH',
         type: 'Cash',
-      })
+      }),
     ),
   };
 
@@ -55,11 +55,11 @@ describe('PaymentMethodsService', () => {
         {
           name: 'DEBIT_CARD',
           type: 'Debit Card',
-        }, 
+        },
       ]);
     });
   });
-  
+
   describe('find', () => {
     it('should return the payment method found by id', async () => {
       expect(await service.findOne(1)).toEqual({
@@ -69,12 +69,9 @@ describe('PaymentMethodsService', () => {
     });
 
     it('should call repository.find with the id provided', async () => {
-      
       await service.findOne(4);
 
-      expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4); 
+      expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4);
     });
-
   });
-
 });
