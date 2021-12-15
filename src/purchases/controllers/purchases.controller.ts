@@ -28,7 +28,6 @@ export class PurchasesController {
   @ApiResponse({
     status: 200,
     description: 'The found purchase with that id',
-    // type: ,
   })
   @ApiParam({
     name: 'id',
