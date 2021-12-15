@@ -1,14 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import { ApiProperty } from "@nestjs/swagger";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
-import { Cart } from "../../cart/entities/cart.entity";
+import { Cart } from '../../cart/entities/cart.entity';
 import { Item } from '../../items/entities/items.entity';
 
 @Entity('cart_item')
 export class CartItem {
   @PrimaryGeneratedColumn({
     unsigned: true,
-    type: 'bigint'
+    type: 'bigint',
   })
   @ApiProperty({ example: 1, description: 'Cart Item ID' })
   id: number;
@@ -30,7 +38,10 @@ export class CartItem {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Cart Item's creation date" })
+  @ApiProperty({
+    example: '2016-03-26 10:10:10-05:00',
+    description: "Cart Item's creation date",
+  })
   createdAt: Date;
 
   @UpdateDateColumn({
@@ -38,20 +49,29 @@ export class CartItem {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Cart Item's last update date" })
+  @ApiProperty({
+    example: '2016-03-26 10:10:10-05:00',
+    description: "Cart Item's last update date",
+  })
   updatedAt: Date;
 
-  @ManyToOne(() => Item)
-  @Column({
-    name: 'item_id'
+  @ManyToOne(() => Item, (item) => item.cartItemsId)
+  @JoinColumn({
+    name: 'item_id',
   })
-  @ApiProperty({ example: 10, description: 'Id of the Item that the Cart Item represents' })
+  @ApiProperty({
+    example: 10,
+    description: 'Id of the Item that the Cart Item represents',
+  })
   itemId: number;
 
-  @ManyToOne(() => Cart, cart => cart.cartItemsId)
-  @Column({
+  @ManyToOne(() => Cart, (cart) => cart.cartItemsId)
+  @JoinColumn({
     name: 'cart_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the Cart which Cart Item belongs' })
+  @ApiProperty({
+    example: 999,
+    description: 'Id of the Cart which Cart Item belongs',
+  })
   cartId: number;
 }
