@@ -11,28 +11,19 @@ describe('PaymentMethodsController', () => {
     all: jest.fn().mockImplementation(() => {
       return [
         {
-          id: 2,
           name: 'CASH',
           type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
         },
         {
-          id: 3,
           name: 'DEBIT_CARD',
           type: 'Debit Card',
-          created_at: '2021-12-12T15:13:35.600Z',
-          updated_at: '2021-12-13T11:45:33.500Z',
         },
       ];
     }),
     find: jest.fn().mockImplementation((id) => {
       return {
-          id,
           name: 'CASH',
           type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
         };
     }),
   };
@@ -57,18 +48,12 @@ describe('PaymentMethodsController', () => {
     it('should return a list of payment methods', async () => {
       expect(await controller.all()).toEqual([
         {
-          id: 2,
           name: 'CASH',
           type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
         },
         {
-          id: 3,
           name: 'DEBIT_CARD',
           type: 'Debit Card',
-          created_at: '2021-12-12T15:13:35.600Z',
-          updated_at: '2021-12-13T11:45:33.500Z',
         },
       ]);
   
@@ -79,11 +64,8 @@ describe('PaymentMethodsController', () => {
   describe('find', () => {
     it('should return the payment method found by id', async () => {
       expect(await controller.find(2)).toEqual({
-        id: 2,
         name: 'CASH',
         type: 'Cash',
-        created_at: '2021-12-12T13:45:40.800Z',
-        updated_at: '2021-12-12T15:14:54.100Z',
       });
     })
 
