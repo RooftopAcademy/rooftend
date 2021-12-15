@@ -18,7 +18,7 @@ export class Category {
     type:String,
     maxLength:100,
     description: 'The name of the category',
-    example: 'technology',
+    example: 'Technology',
   })
   @Column({
     type: 'character varying',
@@ -30,7 +30,7 @@ export class Category {
   @ApiProperty({
     type:Number,
     description: 'Category_id is related to category',
-    example: 'technology',
+    example: '1',
   })
   @Column({
     name: 'category_id',
