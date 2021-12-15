@@ -8,7 +8,7 @@ describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;
 
   let mockPaymentMethodRepo = {
-    find: jest.fn().mockImplementation(() => 
+    find: jest.fn().mockImplementation(() =>
       Promise.resolve([
         {
           id: 2,
@@ -24,7 +24,7 @@ describe('PaymentMethodsService', () => {
           created_at: '2021-12-12T15:13:35.600Z',
           updated_at: '2021-12-13T11:45:33.500Z',
         },
-      ])
+      ]),
     ),
     findOne: jest.fn().mockImplementation((id) =>
       Promise.resolve({
@@ -33,7 +33,7 @@ describe('PaymentMethodsService', () => {
         type: 'Cash',
         created_at: '2021-12-12T13:45:40.800Z',
         updated_at: '2021-12-12T15:14:54.100Z',
-      })
+      }),
     ),
   };
 
@@ -71,11 +71,11 @@ describe('PaymentMethodsService', () => {
           type: 'Debit Card',
           created_at: '2021-12-12T15:13:35.600Z',
           updated_at: '2021-12-13T11:45:33.500Z',
-        }, 
+        },
       ]);
     });
   });
-  
+
   describe('find', () => {
     it('should return the payment method found by id', async () => {
       expect(await service.find(1)).toEqual({
@@ -88,12 +88,9 @@ describe('PaymentMethodsService', () => {
     });
 
     it('should call repository.find with the id provided', async () => {
-      
       await service.find(4);
 
-      expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4); 
+      expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4);
     });
-
   });
-
 });

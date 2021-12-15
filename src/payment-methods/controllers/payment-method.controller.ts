@@ -31,7 +31,7 @@ export default class PaymentMethodsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @ApiOperation({
-    summary: "Returns all the payment methods available"
+    summary: 'Returns all the payment methods available',
   })
   @ApiOkResponse({
     status: 200,
@@ -39,14 +39,14 @@ export default class PaymentMethodsController {
     schema: {
       example: [
         {
-          "name": "CASH",
-          "type": "Cash"
+          name: 'CASH',
+          type: 'Cash',
         },
         {
-          "name": "DEBIT_CARD",
-          "type": "Debit card"
+          name: 'DEBIT_CARD',
+          type: 'Debit card',
         },
-      ]
+      ],
     },
   })
   async all(): Promise<PaymentMethod[]> {
@@ -58,18 +58,17 @@ export default class PaymentMethodsController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @ApiOperation({
-    summary: "Returns the payment method matching the id parameter"
+    summary: 'Returns the payment method matching the id parameter',
   })
   @ApiOkResponse({
     status: 200,
     description: 'The payment method found',
     schema: {
-      example: 
-        {
-          "name": "CASH",
-          "type": "Cash"
-        }
-    }
+      example: {
+        name: 'CASH',
+        type: 'Cash',
+      },
+    },
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -77,11 +76,9 @@ export default class PaymentMethodsController {
   })
   @ApiParam({
     name: 'id',
-    format: 'number'
+    format: 'number',
   })
-  async find(
-    @Param('id') id: number,
-  ): Promise<PaymentMethod> {
+  async find(@Param('id') id: number): Promise<PaymentMethod> {
     const payment_method: PaymentMethod = await this.service.find(id);
 
     if (!payment_method) {
@@ -97,8 +94,9 @@ export default class PaymentMethodsController {
     description: 'Forbidden',
   })
   @HttpCode(403)
-  create(@Res() res : Response): void 
-    { return res.status(403).end('Forbidden'); }
+  create(@Res() res: Response): void {
+    return res.status(403).end('Forbidden');
+  }
 
   @Patch('*')
   @ApiResponse({
@@ -106,8 +104,9 @@ export default class PaymentMethodsController {
     description: 'Forbidden',
   })
   @HttpCode(403)
-  update(@Res() res: Response)
-    { return res.status(403).end('Forbidden'); }
+  update(@Res() res: Response) {
+    return res.status(403).end('Forbidden');
+  }
 
   @Delete('*')
   @ApiResponse({
@@ -115,6 +114,7 @@ export default class PaymentMethodsController {
     description: 'Forbidden',
   })
   @HttpCode(403)
-  delete(@Res() res: Response) : void 
-    { return res.status(403).end('Forbidden'); }
+  delete(@Res() res: Response): void {
+    return res.status(403).end('Forbidden');
+  }
 }

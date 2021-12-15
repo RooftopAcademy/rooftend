@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 /* eslint-disable prettier/prettier */
 export default class PaymentMethodDto {

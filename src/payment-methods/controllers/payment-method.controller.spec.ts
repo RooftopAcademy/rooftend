@@ -27,12 +27,12 @@ describe('PaymentMethodsController', () => {
     }),
     find: jest.fn().mockImplementation((id) => {
       return {
-          id,
-          name: 'CASH',
-          type: 'Cash',
-          created_at: '2021-12-12T13:45:40.800Z',
-          updated_at: '2021-12-12T15:14:54.100Z',
-        };
+        id,
+        name: 'CASH',
+        type: 'Cash',
+        created_at: '2021-12-12T13:45:40.800Z',
+        updated_at: '2021-12-12T15:14:54.100Z',
+      };
     }),
   };
 
@@ -51,7 +51,7 @@ describe('PaymentMethodsController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  
+
   describe('all', () => {
     it('should return a list of payment methods', async () => {
       expect(await controller.all()).toEqual([
@@ -70,7 +70,7 @@ describe('PaymentMethodsController', () => {
           updated_at: '2021-12-13T11:45:33.500Z',
         },
       ]);
-  
+
       expect(mockPaymentMethodsService.all).toHaveBeenCalled();
     });
   });
@@ -84,14 +84,13 @@ describe('PaymentMethodsController', () => {
         created_at: '2021-12-12T13:45:40.800Z',
         updated_at: '2021-12-12T15:14:54.100Z',
       });
-    })
+    });
 
     it('should call service.find with the id provided', () => {
-      expect(mockPaymentMethodsService.find).toHaveBeenCalledWith(2); 
+      expect(mockPaymentMethodsService.find).toHaveBeenCalledWith(2);
     });
 
     it('should return Payment method not found when there is not match with id', async () => {
-      
       mockPaymentMethodsService.find.mockReturnValueOnce(null);
 
       try {
@@ -99,6 +98,6 @@ describe('PaymentMethodsController', () => {
       } catch (err) {
         expect(err.message).toBe('Payment method not found');
       }
-    })    
+    });
   });
 });
