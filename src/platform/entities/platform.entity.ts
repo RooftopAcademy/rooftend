@@ -56,11 +56,12 @@ export class Platform {
     default: null,
     type: 'date',
     format: 'date-time',
+    example: '2021-12-16',
   })
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
-    default: null,
+    default: () => null,
   })
   deletedAt?: Date;
   @ApiProperty({

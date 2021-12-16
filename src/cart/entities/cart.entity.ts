@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { type } from 'os';
 import {
   Entity,
   Column,
@@ -52,10 +51,10 @@ export class Cart {
   })
   updatedAt: Date;
 
-  @BeforeUpdate()
-  updateTimeStamp() {
-    this.updatedAt = new Date();
-  }
+  // @BeforeUpdate()
+  // updateTimeStamp() {
+  //   this.updatedAt = new Date();
+  // }
 
   @UpdateDateColumn({
     name: 'purchased_at',
@@ -72,15 +71,15 @@ export class Cart {
   })
   purchasedAt: Date;
 
-  @ManyToOne((type) => User)
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User)
   @ApiProperty({
     name: 'userId',
     type: 'integer',
     example: 1,
     description: 'Id of the user the Cart belongs to',
   })
-  userId: User;
+  @JoinColumn({ name: 'user_id' })
+  userId: number;
 
   @Column({ type: 'double precision' })
   @ApiProperty({
@@ -92,7 +91,12 @@ export class Cart {
   })
   amount: number;
 
-  @Column('varchar', { length: 3, name: 'currency_code' })
+  @Column('character varying', { length: 3, name: 'currency_code' })
+  @Column({
+    length: 3,
+    name: 'currency_code',
+    type: "character varying"
+  })
   @ApiProperty({
     name: 'currencyCode',
     required: true,
