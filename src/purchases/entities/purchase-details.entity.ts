@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import DeliveryStatus from '../../deliveries/entities/delivery-status.enum';
+import { ItemDetails } from './item-details.entity';
 
 export class PurchaseDetails {
   @ApiProperty({
@@ -11,39 +12,17 @@ export class PurchaseDetails {
   purchasedAt: Date;
 
   @ApiProperty({
-    name: 'title',
-    type: 'string',
-    example: 'Fancy TV 40 inches',
-  })
-  title: string;
-
-  @ApiProperty({
-    name: 'price',
-    type: 'number',
-    format: 'float',
-    example: 2536.25,
-  })
-  price: number;
-
-  @ApiProperty({
-    name: 'quantity',
-    type: 'number',
-    format: 'integer',
-    example: 1369,
-  })
-  quantity: number;
-
-  @ApiProperty({
-    name: 'photo',
-    type: 'string',
-    example: 'www.photodelivery.com/40inchesTV',
-  })
-  photo: string;
-
-  @ApiProperty({
     name: 'deliveryStatus',
     type: 'string',
     example: DeliveryStatus.PENDING,
   })
   deliveryStatus: DeliveryStatus;
+
+  @ApiProperty({
+    name: 'itemDetails',
+    type: '[ItemDetails]',
+    example:
+      '[{"title":"shirt","quantity":5,"price":25.75,"photo":"www.photodelivery.com/fancyShirt"},{"title":"shoes","quantity":2,"price":75.76,"photo":"www.photodelivery.com/fancyShoes"}]',
+  })
+  itemDetails: Array<ItemDetails>;
 }
