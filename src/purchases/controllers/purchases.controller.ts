@@ -2,6 +2,7 @@ import { Controller, Get, HttpCode, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Cart } from '../../cart/entities/cart.entity';
 import { User } from '../../users/entities/user.entity';
+import { PurchaseDetails } from '../entities/purchase-details.entity';
 import { PurchasesService } from '../services/purchases.service';
 
 @ApiTags('Purchases')
@@ -28,6 +29,7 @@ export class PurchasesController {
   @ApiResponse({
     status: 200,
     description: 'The found purchase with that id',
+    type: PurchaseDetails,
   })
   @ApiParam({
     name: 'id',
