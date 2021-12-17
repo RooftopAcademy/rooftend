@@ -1,3 +1,4 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Cart } from '../../cart/entities/cart.entity';
@@ -136,6 +137,32 @@ describe('PurchasesService', () => {
           },
         ],
       });
+    });
+
+    it('should return a not found exception', async () => {
+      mockPurchasesRepository.findOne.mockReturnValueOnce(null);
+
+      try {
+        expect(await service.findOneById(10, 1)).toThrow(NotFoundException);
+      } catch (err) {
+        expect(err.message).toBe('Purchase not found');
+      }
+    });
+
+    it('should return a forbidden exception', async () => {
+      mockPurchasesRepository.findOne.mockReturnValueOnce({
+        purchasedAt: null,
+        title: 'shirt',
+        quantity: 5,
+        price: 25.75,
+        photo: 'www.photodelivery.com/fancyShirt',
+      });
+
+      try {
+        expect(await service.findOneById(10, 1)).toThrow(ForbiddenException);
+      } catch (err) {
+        expect(err.message).toBe('This cart has not been purchased');
+      }
     });
   });
 });
