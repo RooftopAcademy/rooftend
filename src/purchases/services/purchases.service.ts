@@ -67,18 +67,21 @@ export class PurchasesService {
       .getRawMany();
 
     const purchaseDetails: PurchaseDetails = new PurchaseDetails();
-    purchaseDetails.purchasedAt = newQuery[0].purchasedAt;
-    purchaseDetails.deliveryStatus = newQuery[0].deliveryStatus;
-    purchaseDetails.itemDetails = [];
 
-    for (let index = 0; index < newQuery.length; index++) {
-      const itemDetails = new ItemDetails();
-      itemDetails.title = newQuery[index].title;
-      itemDetails.quantity = newQuery[index].quantity;
-      itemDetails.price = newQuery[index].price;
-      itemDetails.photo = newQuery[index].photo;
+    if (newQuery.length != 0) {
+      purchaseDetails.purchasedAt = newQuery[0].purchasedAt;
+      purchaseDetails.deliveryStatus = newQuery[0].deliveryStatus;
+      purchaseDetails.itemDetails = [];
 
-      purchaseDetails.itemDetails.push(itemDetails);
+      for (let index = 0; index < newQuery.length; index++) {
+        const itemDetails = new ItemDetails();
+        itemDetails.title = newQuery[index].title;
+        itemDetails.quantity = newQuery[index].quantity;
+        itemDetails.price = newQuery[index].price;
+        itemDetails.photo = newQuery[index].photo;
+
+        purchaseDetails.itemDetails.push(itemDetails);
+      }
     }
 
     return purchaseDetails;
