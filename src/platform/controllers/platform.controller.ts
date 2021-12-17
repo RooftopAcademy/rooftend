@@ -17,11 +17,11 @@ import {
   ApiBadRequestResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { CreatePlatformDTO } from '../create-platform-dto.entity';
-import { Platform } from '../platform.entity';
+import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
+import { Platform } from '../entities/platform.entity';
 
 import { PlatformService } from '../services/platform.service';
-import { UpdatePlatformDTO } from '../update-platform-dto.entity';
+import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
 
 @ApiTags('Platforms')
 @Controller('platforms')
@@ -69,7 +69,7 @@ export class PlatformController {
   @ApiBadRequestResponse({
     description: 'The platform could not be created',
   })
-  async create(@Body() createPlatform: CreatePlatformDTO) {
+  create(@Body() createPlatform: CreatePlatformDTO) {
     return this.platformService.create(createPlatform);
   }
 
@@ -98,10 +98,10 @@ export class PlatformController {
 
   @Delete(':id')
   @HttpCode(204)
-  @ApiOperation({ summary: 'Remove a platform' })
+  @ApiOperation({ summary: 'Delete a platform' })
   @ApiResponse({
     status: 204,
-    description: 'The platform has been removed successfully.',
+    description: 'The platform has been deleted successfully.',
   })
   @ApiParam({
     name: 'id',
@@ -109,9 +109,9 @@ export class PlatformController {
     type: Number,
   })
   @ApiBadRequestResponse({
-    description: 'The platform could not be removed',
+    description: 'The platform could not be deleted',
   })
-  remove(@Param('id') id: string | number) {
-    return this.platformService.remove(id);
+  delete(@Param('id') id: string | number) {
+    return this.platformService.delete(id);
   }
 }

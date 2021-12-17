@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatePlatformDTO } from '../create-platform-dto.entity';
-import { Platform } from '../platform.entity';
-import { UpdatePlatformDTO } from '../update-platform-dto.entity';
+import { IsNull, Repository } from 'typeorm';
+import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
+import { Platform } from '../entities/platform.entity';
+import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
 
 @Injectable()
 export class PlatformService {
@@ -17,14 +17,18 @@ export class PlatformService {
   ) {}
 
   async findAll(): Promise<Platform[]> {
-    return await this.platformRepository.find();
+    return await this.platformRepository.find({
+      where: {
+        deletedAt: IsNull(),
+      },
+    });
   }
 
   async findOneById(id: number | string): Promise<Platform> {
     const platform = await this.platformRepository.findOne(id);
 
     if (!platform) {
-      throw new NotFoundException('Task not found');
+      throw new NotFoundException('Platform not found');
     }
 
     return platform;
@@ -37,7 +41,8 @@ export class PlatformService {
       throw new ConflictException('The platform already exists');
     }
 
-    await this.platformRepository.save(platform);
+    const newPlatform = this.platformRepository.create(platform);
+    await this.platformRepository.save(newPlatform);
 
     return {
       message: 'Platform Created',
@@ -63,23 +68,30 @@ export class PlatformService {
 
     this.platformRepository.update(id, platform);
 
-    return { message: 'Task Updated' };
+    return { message: 'Platform Updated' };
   }
 
-  async remove(id: string | number): Promise<{
+  async delete(id: string | number): Promise<{
     message: string;
   }> {
     await this.findOneById(id);
 
-    await this.platformRepository.delete(id);
+    await this.platformRepository.softDelete(id);
 
-    return { message: 'Task Removed' };
+    return { message: 'Platform Deleted' };
   }
 
   async exists(
     platform: CreatePlatformDTO | UpdatePlatformDTO,
   ): Promise<number | null> {
-    const foundPlatform = await this.platformRepository.findOne(platform);
+    const foundPlatform = await this.platformRepository.findOne({
+      where: {
+        countryCode: platform.countryCode,
+        currencyCode: platform.currencyCode,
+        langCode: platform.langCode,
+        phoneCountryCode: platform.phoneCountryCode,
+      },
+    });
     if (foundPlatform) {
       return foundPlatform.id;
     }
