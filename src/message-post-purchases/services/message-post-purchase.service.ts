@@ -22,8 +22,9 @@ export class MessagePostPurchaseService {
         `);
 
         let messages = await this.messageRepo.query(`
-        SELECT * FROM messages_post_purchase
-        WHERE messages_post_purchase.cart_id = ${cartId}
+          SELECT MGP.id, MGP.cart_id, MGP.message, MGP.sender_id 
+          FROM messages_post_purchase MGP
+          WHERE MGP.cart_id = ${cartId}
         `);
 
         const totalMessages = Number(countMessage[0].count);
@@ -31,26 +32,13 @@ export class MessagePostPurchaseService {
         const previousPagePath = (Number(page) > 1) ? `/purchase/${cartId}/messages?page=${Number(page) - 1}` : ""
     
 
-        messages = messages.map(({
-            id,
-            cart_id,
-            created_at,
-            sent_at,
-            received_at,
-            read_at,
-            sender_id,
-            message
-        }) => {
+        messages = messages.map((item) => {
           return({
-            "id": id,
-            "item": {
-              "cart_id": cart_id,
-              "created_at": created_at,
-              "sent_at": sent_at,
-              "received_at": received_at,
-              "read_at": read_at,
-              "sender_id": sender_id,
-              "message": message
+            "id": item.id,
+            "message": {
+              "cart_id": item.cart_id,
+              "sender_id": item.sender_id,
+              "message": item.message
             }
           })
         });
