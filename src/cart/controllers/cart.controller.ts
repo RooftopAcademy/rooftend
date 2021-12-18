@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiHeader, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
@@ -65,7 +66,7 @@ export class CartController {
         return this.cartService.create(body);
     }
 
-    @Put(':id')
+    @Patch(':id')
     @ApiParam({
         name: "id",
         type: "integer",
