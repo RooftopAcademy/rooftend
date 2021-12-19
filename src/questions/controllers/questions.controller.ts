@@ -16,7 +16,7 @@ import { Response } from 'express';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Question } from '../entities/question.entity';
 import { QuestionsService } from '../services/questions.service';
-import { QuestionDTO } from '../entities/questions.dto';
+import { QuestionDTO } from '../entities/question.dto';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('Questions')

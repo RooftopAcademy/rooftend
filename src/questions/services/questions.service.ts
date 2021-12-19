@@ -7,7 +7,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { QuestionDTO } from '../entities/questions.dto';
+import { QuestionDTO } from '../entities/question.dto';
 
 @Injectable()
 export class QuestionsService {
