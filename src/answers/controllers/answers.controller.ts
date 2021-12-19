@@ -21,7 +21,7 @@ export class AnswersController {
         }
     })
     @ApiBody({ type: AnswerDTO })
-    create(@Body() answer: AnswerDTO) {
-        return this.answersService.create(answer);
+    create(@Body() answer: AnswerDTO, userId: number) {
+        return this.answersService.create(answer, userId);
     }
 }
