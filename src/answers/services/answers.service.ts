@@ -11,7 +11,7 @@ export class AnswersService {
     ) { }
 
     create(answer: AnswerDTO): Promise<Answer> {
-        const answerEntity = this.AnswersRepository.create({ ...answer, "user_id": 1 });
+        const answerEntity = this.AnswersRepository.create({ ...answer, "userId": 1 });
         return this.AnswersRepository.save(answerEntity);
     }
 }
