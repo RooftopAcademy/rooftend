@@ -14,6 +14,8 @@ import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { Question } from '../../questions/entities/question.entity';
+
 
 @Entity('items')
 export class Item {
@@ -102,4 +104,7 @@ export class Item {
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
+
+  @OneToMany(() => Question, (question) => question.itemId)
+  questions: Question[];
 }
