@@ -6,7 +6,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { Category } from '../../categories.entity';
+import { Category } from '../entities/categories.entity';
 
 @Injectable()
 export class CategoriesService {

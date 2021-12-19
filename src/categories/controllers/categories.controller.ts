@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { Category } from '../../categories.entity';
+import { Category } from '../entities/categories.entity';
 import { Response } from 'express';
 import { ApiOperation, ApiTags ,ApiParam, ApiOkResponse,ApiNotFoundResponse, ApiBody, ApiResponse} from '@nestjs/swagger';
 

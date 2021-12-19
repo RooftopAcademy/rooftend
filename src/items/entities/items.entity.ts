@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { ApiProperty } from "@nestjs/swagger";
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/categories.entity';
+import { Category } from '../../categories/entities/categories.entity';
 
 @Entity('items')
 export class Item {
