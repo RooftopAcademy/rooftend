@@ -38,5 +38,5 @@ export class Category {
   categoryId: string;
 
   @OneToMany(()=>Category,(category)=>category.id)
-  categories:Category[]
+  subCategories:Category[]
 }
