@@ -27,20 +27,6 @@ export class CartController {
         return this.cartService.findAll();
     }
 
-    @Get(':id')
-    @ApiParam({
-        name: "id",
-        type: "integer",
-        required: true
-    })
-    @ApiOperation({summary: 'Gets one cart by Id'})
-    @ApiResponse({status: 201, description: 'Cart succesfully found'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    getOne(@Param('id') id : number): Promise<Cart>{
-        return this.cartService.findOne(id);
-    }
-
     @ApiBody({
         type: Cart
     })
