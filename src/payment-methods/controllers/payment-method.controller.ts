@@ -5,51 +5,70 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger'; /* eslint-disable prettier/prettier */
+} from '@nestjs/swagger';
 import {
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import PaymentMethod from '../payment-method.entity';
+import PaymentMethod from '../models/payment-method.entity';
 import PaymentMethodsService from '../services/payment-method.service';
 
 @ApiTags('Payment Methods')
-@Controller('payment')
+@Controller('payment-methods')
 export default class PaymentMethodsController {
   constructor(private readonly service: PaymentMethodsService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   @ApiOperation({
-    summary: "Returns all the payment methods available"
+    summary: 'Returns all the payment methods available',
   })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
     description: 'All the payment methods found',
-    type: PaymentMethod,
+    schema: {
+      example: [
+        {
+          name: 'CASH',
+          type: 'Cash',
+        },
+        {
+          name: 'DEBIT_CARD',
+          type: 'Debit card',
+        },
+      ],
+    },
   })
-  async all(@Res({ passthrough: true }) response): Promise<PaymentMethod[]> {
-    const payment_methods = await this.service.all();
+  async getAll(): Promise<PaymentMethod[]> {
+    const payment_methods = await this.service.getAll();
 
-    if (payment_methods) return payment_methods;
-
-    return response.status(404).end('Not found');
+    return payment_methods;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @ApiOperation({
-    summary: "Returns the payment method matching the id parameter"
+    summary: 'Returns the payment method matching the id parameter',
   })
   @ApiOkResponse({
     status: 200,
     description: 'The payment method found',
-    type: PaymentMethod,
+    schema: {
+      example: {
+        name: 'CASH',
+        type: 'Cash',
+      },
+    },
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -57,17 +76,16 @@ export default class PaymentMethodsController {
   })
   @ApiParam({
     name: 'id',
-    format: 'number'
+    format: 'number',
   })
-  async find(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) response,
-  ): Promise<PaymentMethod> {
-    const payment_method: PaymentMethod = await this.service.find(id);
+  async findOne(@Param('id') id: number): Promise<PaymentMethod> {
+    const payment_method: PaymentMethod = await this.service.findOne(id);
 
-    if (payment_method) return response.status(200).send(payment_method).end();
+    if (!payment_method) {
+      throw new NotFoundException('Payment method not found');
+    }
 
-    return response.status(404).end('Not found');
+    return payment_method;
   }
 
   @Post('*')
@@ -76,17 +94,19 @@ export default class PaymentMethodsController {
     description: 'Forbidden',
   })
   @HttpCode(403)
-  create(@Res() res : Response): void 
-    { return res.status(403).end('Forbidden'); }
+  create(@Res() res: Response): void {
+    return res.status(403).end('Forbidden');
+  }
 
-  @Put('*')
+  @Patch('*')
   @ApiResponse({
     status: 403,
     description: 'Forbidden',
   })
   @HttpCode(403)
-  update(@Res() res: Response)
-    { return res.status(403).end('Forbidden'); }
+  update(@Res() res: Response) {
+    return res.status(403).end('Forbidden');
+  }
 
   @Delete('*')
   @ApiResponse({
@@ -94,6 +114,7 @@ export default class PaymentMethodsController {
     description: 'Forbidden',
   })
   @HttpCode(403)
-  delete(@Res() res: Response) : void 
-    { return res.status(403).end('Forbidden'); }
+  delete(@Res() res: Response): void {
+    return res.status(403).end('Forbidden');
+  }
 }

@@ -1,17 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import PaymentMethod from '../payment-method.entity';
+import PaymentMethod from '../models/payment-method.entity';
 import PaymentMethodsService from './payment-method.service';
 
 describe('PaymentMethodsService', () => {
   let service: PaymentMethodsService;
 
-  let mockPaymentMethodRepo = {
-    create: jest.fn((dto) => dto),
-    save: jest.fn((paymentMethod) =>
+  const mockPaymentMethodRepo = {
+    find: jest.fn().mockImplementation(() =>
+      Promise.resolve([
+        {
+          name: 'CASH',
+          type: 'Cash',
+        },
+        {
+          name: 'DEBIT_CARD',
+          type: 'Debit Card',
+        },
+      ]),
+    ),
+    findOne: jest.fn().mockImplementation(() =>
       Promise.resolve({
-        id: Date.now(),
-        ...paymentMethod,
+        name: 'CASH',
+        type: 'Cash',
       }),
     ),
   };
@@ -34,11 +45,33 @@ describe('PaymentMethodsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new payment method record and return that', async () => {
-    const dto = { name: 'Cash', type: 'CASH' };
-    expect(await service.create(dto)).toEqual({
-      id: expect.any(Number),
-      ...dto,
+  describe('all', () => {
+    it('should return a list of payment methods', async () => {
+      expect(await service.getAll()).toEqual([
+        {
+          name: 'CASH',
+          type: 'Cash',
+        },
+        {
+          name: 'DEBIT_CARD',
+          type: 'Debit Card',
+        },
+      ]);
+    });
+  });
+
+  describe('find', () => {
+    it('should return the payment method found by id', async () => {
+      expect(await service.findOne(1)).toEqual({
+        name: 'CASH',
+        type: 'Cash',
+      });
+    });
+
+    it('should call repository.find with the id provided', async () => {
+      await service.findOne(4);
+
+      expect(mockPaymentMethodRepo.findOne).toHaveBeenCalledWith(4);
     });
   });
 });

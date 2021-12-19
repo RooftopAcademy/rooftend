@@ -1,8 +1,7 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import PaymentMethod from '../payment-method.entity';
+import PaymentMethod from '../models/payment-method.entity';
 
 @Injectable()
 export default class PaymentMethodsService {
@@ -11,11 +10,11 @@ export default class PaymentMethodsService {
     private readonly repository: Repository<PaymentMethod>,
   ) {}
 
-  all(): Promise<PaymentMethod[]> {
+  getAll(): Promise<PaymentMethod[]> {
     return this.repository.find();
   }
 
-  find(id: number): Promise<PaymentMethod> {
+  findOne(id: number): Promise<PaymentMethod> {
     return this.repository.findOne(id);
   }
 }
