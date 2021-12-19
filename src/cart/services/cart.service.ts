@@ -38,11 +38,4 @@ export class CartService {
         await this.cartRepo.delete(id);
     }
 
-    async getCartItems(id: number){
-        const cartItemsRepo = await getRepository(CartItem);
-        return cartItemsRepo.find({
-            cartId: id
-        });
-    }
-
 }
