@@ -29,7 +29,7 @@ export class Category {
   @ManyToOne(()=>Category,(category)=>category.id)
   @ApiProperty({
     type:Number,
-    description: 'Category_id is related to category',
+    description: 'Parent category id',
     example: '1',
   })
   @Column({
