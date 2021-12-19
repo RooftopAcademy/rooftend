@@ -35,7 +35,7 @@ export class Category {
   @Column({
     name: 'category_id',
   })
-  category_id: string;
+  categoryId: string;
 
   @OneToMany(()=>Category,(category)=>category.id)
   categories:Category[]
