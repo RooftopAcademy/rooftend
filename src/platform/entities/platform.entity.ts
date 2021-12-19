@@ -56,7 +56,7 @@ export class Platform {
     default: null,
     type: 'date',
     format: 'date-time',
-    example: Date.now(),
+    example: '2021-12-16',
   })
   @DeleteDateColumn({
     name: 'deleted_at',
