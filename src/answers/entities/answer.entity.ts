@@ -34,7 +34,7 @@ export class Answer {
         readOnly: true,
         example: 2,
     })
-    user_id: number;
+    userId: number;
 
 
     @ApiProperty({
