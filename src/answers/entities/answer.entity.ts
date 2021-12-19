@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 
 @Entity()
@@ -41,9 +41,25 @@ export class Answer {
         type: Date,
         default: 'now()',
         example: '2021-11-18T01:46:52.589Z',
+        format: 'date-time',
         description: 'The timestamp of the created answer',
     })
     @Column({ name: 'created_at', type: 'timestamp with time zone' })
     @Type(() => Date)
     createdAt: Date;
+
+    @ApiProperty({
+        description: 'Deleted timestamp',
+        default: null,
+        type: Date,
+        format: 'date-time',
+        example: '2021-12-19',
+    })
+    @DeleteDateColumn({
+        name: 'deleted_at',
+        type: 'timestamptz',
+        default: () => null,
+    })
+    deletedAt?: Date;
+
 }
