@@ -1,4 +1,4 @@
-import { 
+import {
   Controller,
   Get,
   Param,
@@ -12,12 +12,12 @@ import { HelpService } from '../services/help.service';
 import { ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from '../../categories/categories.entity';
 import { Response } from 'express';
-import { QuestionsEntity } from '../../questions/models/questions.entity';
+import { Question } from '../../questions/entities/question.entity';
 
 @ApiTags('Help')
 @Controller('help')
 export class HelpController {
-  constructor(private readonly helpService: HelpService) {}
+  constructor(private readonly helpService: HelpService) { }
 
   @ApiOperation({ summary: 'Returns all help categories.' })
   @ApiResponse({
@@ -38,8 +38,8 @@ export class HelpController {
     schema: {
       example: [
         {
-        "ID": "1",
-        "Question": "Cómo contactar al vendedor"
+          "ID": "1",
+          "Question": "Cómo contactar al vendedor"
         },
         {
           "ID": 3,
@@ -62,7 +62,7 @@ export class HelpController {
   })
   @HttpCode(200)
   @Get('categories/:id')
-  findAllQuestionsByCategoryId(@Param('id') id: number): Promise<QuestionsEntity[]> {
+  findAllQuestionsByCategoryId(@Param('id') id: number): Promise<Question[]> {
     return this.helpService.findAllQuestionsByCategoryId(id);
   }
 
@@ -91,7 +91,7 @@ export class HelpController {
   })
   @HttpCode(200)
   @Get('question/:id')
-  findAnswerToQuestion(@Param('id') id: number): Promise<QuestionsEntity> {
+  findAnswerToQuestion(@Param('id') id: number): Promise<Question> {
     return this.helpService.findAnswerToQuestion(id);
   }
 
@@ -100,27 +100,27 @@ export class HelpController {
     description: "Forbidden. It's not allowed to create a help section",
   })
   @HttpCode(403)
-  create(@Res() res: Response): void { 
-    return res.status(403).end(); 
+  create(@Res() res: Response): void {
+    return res.status(403).end();
   }
-    
+
 
   @Patch()
   @ApiForbiddenResponse({
     description: "Forbidden. It's not allowed to update a help section",
   })
   @HttpCode(403)
-  update(@Res() res: Response) { 
-    return res.status(403).end(); 
+  update(@Res() res: Response) {
+    return res.status(403).end();
   }
-    
+
 
   @Delete()
   @ApiForbiddenResponse({
     description: "Forbidden. It's not allowed to delete a help section",
   })
   @HttpCode(403)
-  delete(@Res() res: Response) : void { 
-    return res.status(403).end(); 
+  delete(@Res() res: Response): void {
+    return res.status(403).end();
   }
 }
