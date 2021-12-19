@@ -46,7 +46,7 @@ export class Question {
   @JoinColumn()
   @ApiProperty({
     type: Number,
-    description: 'Id of who ask the question',
+    description: 'Id of the item where questions was asked',
     nullable: false,
     readOnly: true,
     example: 2,
@@ -91,7 +91,7 @@ export class Question {
   @ApiProperty({
     description: 'The date when question has been deleted',
     default: null,
-    type: 'date',
+    type: Date,
     format: 'date-time',
     example: '2021-12-19',
   })
