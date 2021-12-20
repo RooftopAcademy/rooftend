@@ -88,12 +88,12 @@ export class Item {
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
   brandId: Brand;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, user => user.items)
   @JoinColumn({
     name: 'user_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: User;
+  userId: number;
 
   @ManyToOne(() => Category)
   @JoinColumn({
