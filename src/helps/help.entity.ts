@@ -46,8 +46,6 @@ export class Help {
   @JoinColumn({ name: 'category_id' })
   categoryId: number;
 
-  @OneToMany(() => Question, questions => questions.helpId)
-  questions: Question[];
 
   @ApiProperty({
     example: '2021-11-27T17:03:41.356Z',
