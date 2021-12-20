@@ -47,7 +47,7 @@ export class Cart {
     name: 'purchased_at',
     nullable: true,
     type: 'timestamptz',
-    default: () => null,
+    default: null,
   })
   @ApiProperty({
     name: 'purchasedAt',
@@ -62,7 +62,7 @@ export class Cart {
   @ManyToOne(() => User)
   @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
-  userId: number;
+  userId: User;
 
   @Column({ type: 'double precision' })
   @ApiProperty({
