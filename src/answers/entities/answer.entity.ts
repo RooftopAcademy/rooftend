@@ -26,7 +26,7 @@ export class Answer {
     content: string;
 
     @OneToOne(() => User)
-    @JoinColumn()
+    @JoinColumn({ name: 'user_id' })
     @ApiProperty({
         type: Number,
         description: 'Id of user that answer',
