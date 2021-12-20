@@ -43,7 +43,7 @@ export class Question {
   answerId: number;
 
   @ManyToOne(() => Item)
-  @JoinColumn()
+  @JoinColumn({ name: 'item_id' })
   @ApiProperty({
     type: Number,
     description: 'Id of the item where questions was asked',
@@ -63,16 +63,6 @@ export class Question {
     example: 2,
   })
   userId: number;
-
-  @ApiProperty({
-    type: () => Help,
-    description: 'The question can belong to a help category.',
-    example: 2,
-    required: false,
-  })
-  @JoinColumn({ name: 'help_id' })
-  @ManyToOne(() => Help, (help) => help.questions)
-  helpId: number | null;
 
   @Column({
     name: 'question',
