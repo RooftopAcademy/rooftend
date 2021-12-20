@@ -82,8 +82,8 @@ export class QuestionsController {
     }
   })
   @ApiBody({ type: QuestionDTO })
-  create(@Body() question: QuestionDTO, userId: 1): Promise<Question> {
-    return this.QuestionsService.createQuestion(question, userId);
+  create(@Body() question: QuestionDTO): Promise<Question> {
+    return this.QuestionsService.createQuestion(question, 1);
   }
 
   @Delete(':id')
