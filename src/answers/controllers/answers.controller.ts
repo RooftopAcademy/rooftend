@@ -24,15 +24,14 @@ export class AnswersController {
     })
     @ApiBody({ type: AnswerDTO })
     create(@Body() answer: AnswerDTO, userId: number) {
-        return this.answersService.create(answer, userId);
+        return this.answersService.create(answer, userId = 1);
     }
 
-
     @Delete(':id')
-    @HttpCode(204)
+    @HttpCode(200)
     @ApiOperation({ summary: 'Delete answer' })
     @ApiResponse({
-        status: 204,
+        status: 200,
         description: 'Answer was deled.',
     })
     @ApiParam({
