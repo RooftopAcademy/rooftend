@@ -42,7 +42,7 @@ export class Question {
   })
   answerId: number;
 
-  @ManyToOne(() => Item)
+  @ManyToOne(() => Item, (item) => item.questions)
   @JoinColumn({ name: 'item_id' })
   @ApiProperty({
     type: Number,
@@ -53,7 +53,7 @@ export class Question {
   })
   itemId: number;
 
-  @ManyToOne(() => User, user => user.questions)
+  @ManyToOne(() => User, (user) => user.questions)
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({
     type: Number,
