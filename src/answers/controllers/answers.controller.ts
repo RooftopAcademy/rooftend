@@ -17,14 +17,18 @@ export class AnswersController {
         description: 'Created',
         schema: {
             example: {
-                "statusCode": 201,
-                "message": "Created"
+                'status': 201,
+                'message': 'Created',
             }
         }
     })
     @ApiBody({ type: AnswerDTO })
-    create(@Body() answer: AnswerDTO, userId: number) {
-        return this.answersService.create(answer, userId = 1);
+    async create(@Body() answer: AnswerDTO) {
+        await this.answersService.create(answer, 1);
+        return ({
+            status: 201,
+            message: 'Created',
+        });
     }
 
     @Delete(':id')
@@ -32,17 +36,22 @@ export class AnswersController {
     @ApiOperation({ summary: 'Delete answer' })
     @ApiResponse({
         status: 200,
-        description: 'Answer was deled.',
+        description: 'Ok',
     })
     @ApiParam({
         name: 'id',
         example: 1,
         type: Number,
+        description: 'Id of answer'
     })
     @ApiBadRequestResponse({
         description: 'Error, the deletion was not completed',
     })
-    async delete(@Param('id') id: number): Promise<DeleteResult> {
-        return await this.answersService.deleteAnswer(id);
+    async delete(@Param('id') id: number): Promise<{ status: number, message: string }> {
+        await this.answersService.deleteAnswer(id)
+        return ({
+            status: 200,
+            message: 'Ok',
+        });
     }
 }
