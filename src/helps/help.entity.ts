@@ -1,4 +1,4 @@
-import { 
+import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { Category } from "../categories/categories.entity";
-import { QuestionsEntity } from "../questions/models/questions.entity";
+import { Question } from "../questions/entities/question.entity";
 
 @Entity({ name: 'help' })
 export class Help {
@@ -43,11 +43,9 @@ export class Help {
     required: true,
   })
   @OneToOne(() => Category)
-  @JoinColumn({ name: 'category_id'})
+  @JoinColumn({ name: 'category_id' })
   categoryId: number;
 
-  @OneToMany(() => QuestionsEntity, questions => questions.helpId)
-  questions: QuestionsEntity[];
 
   @ApiProperty({
     example: '2021-11-27T17:03:41.356Z',
