@@ -10,16 +10,17 @@ export class AnswersService {
         @InjectRepository(Answer) private AnswersRepository: Repository<Answer>,
     ) { }
 
-    create(answer: AnswerDTO, userId: number): Promise<Answer> {
-        const answerEntity = this.AnswersRepository.create({ ...answer, "userId": userId });
-        return this.AnswersRepository.save(answerEntity);
+    create(answer: AnswerDTO, userId: number): Promise<void> {
+        const answerEntity = this.AnswersRepository.create({ ...answer, 'userId': userId, 'createdAt': new Date() });
+        this.AnswersRepository.save(answerEntity)
+        return
     }
 
-    async deleteAnswer(id: number): Promise<UpdateResult> {
+    async deleteAnswer(id: number): Promise<void> {
         const deleteResponse = await this.AnswersRepository.softDelete(id);
         if (!deleteResponse.affected) {
             throw new NotFoundException(id, 'Error, the deletion was not completed');
         }
-        return deleteResponse;
+        return
     }
 }

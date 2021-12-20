@@ -49,7 +49,9 @@ import { OffersModule } from './offers/offers.module';
     }),
 
     AccountStatusModule,
+    AnswersModule,
     BrandsModule,
+    CartItemModule,
     CartModule,
     CategoriesModule,
     CustomMessagesModule,
@@ -57,6 +59,7 @@ import { OffersModule } from './offers/offers.module';
     HelpsModule,
     HistoryModule,
     NotificationModule,
+    ItemsModule,
     OffersModule,
     PaymentMethodsModule,
     PhonesModule,
@@ -71,9 +74,6 @@ import { OffersModule } from './offers/offers.module';
     StoresModule,
     SavedItemsModule,
     UsersModule,
-    CartItemModule,
-    ItemsModule,
-    AnswersModule,
   ],
 
   controllers: [AppController],
