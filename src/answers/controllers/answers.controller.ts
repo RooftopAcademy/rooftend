@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, HttpCode, Param, Post } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
 import { AnswerDTO } from '../entities/answer.dto';
 import { AnswersService } from '../services/answers.service';
 
+@ApiTags('Answers')
 @Controller('answers')
 export class AnswersController {
     constructor(private readonly answersService: AnswersService) { }
