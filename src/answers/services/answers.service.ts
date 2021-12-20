@@ -11,7 +11,7 @@ export class AnswersService {
     ) { }
 
     create(answer: AnswerDTO, userId: number): Promise<void> {
-        const answerEntity = this.AnswersRepository.create({ ...answer, "userId": userId, "createdAt": new Date() });
+        const answerEntity = this.AnswersRepository.create({ ...answer, 'userId': userId, 'createdAt': new Date() });
         this.AnswersRepository.save(answerEntity)
         return
     }

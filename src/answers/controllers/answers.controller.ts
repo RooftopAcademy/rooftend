@@ -17,8 +17,8 @@ export class AnswersController {
         description: 'Created',
         schema: {
             example: {
-                'status': 201,
-                'message': 'Created',
+                "status": 201,
+                "message": "Created",
             }
         }
     })
@@ -26,8 +26,8 @@ export class AnswersController {
     async create(@Body() answer: AnswerDTO) {
         await this.answersService.create(answer, 1);
         return ({
-            status: 201,
-            message: 'Created',
+            "status": 201,
+            "message": "Created",
         });
     }
 
@@ -50,8 +50,8 @@ export class AnswersController {
     async delete(@Param('id') id: number): Promise<{ status: number, message: string }> {
         await this.answersService.deleteAnswer(id)
         return ({
-            status: 200,
-            message: 'Ok',
+            "status": 200,
+            "message": "Ok",
         });
     }
 }
