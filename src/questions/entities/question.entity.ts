@@ -98,7 +98,7 @@ export class Question {
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
-    default: () => null,
+    default: null,
   })
   deletedAt?: Date;
 
