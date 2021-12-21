@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, HttpCode, Param, Post } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DeleteResult } from 'typeorm';
+import { Body, Controller, Delete, HttpCode, Param, Post, Res } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AnswerDTO } from '../entities/answer.dto';
 import { AnswersService } from '../services/answers.service';
 
@@ -17,26 +17,28 @@ export class AnswersController {
         description: 'Created',
         schema: {
             example: {
-                "status": 201,
+                "statusCode": 201,
                 "message": "Created",
             }
         }
     })
     @ApiBody({ type: AnswerDTO })
-    async create(@Body() answer: AnswerDTO) {
-        await this.answersService.create(answer, 1);
-        return ({
-            "status": 201,
-            "message": "Created",
-        });
+    async create(@Body() answer: AnswerDTO, @Res() res: Response): Promise<Response<any, Record<string, any>>> {
+        await this.answersService.create(answer);
+        return res.send(
+            {
+                "statusCode": 201,
+                "message": "Created",
+            }
+        );
     }
 
     @Delete(':id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Delete answer' })
-    @ApiResponse({
+    @ApiOkResponse({
         status: 200,
-        description: 'Ok',
+        description: 'Deleted',
     })
     @ApiParam({
         name: 'id',
@@ -44,14 +46,20 @@ export class AnswersController {
         type: Number,
         description: 'Id of answer'
     })
-    @ApiBadRequestResponse({
-        description: 'Error, the deletion was not completed',
+    @ApiNotFoundResponse({
+        status: 404,
+        description: 'Not found',
     })
-    async delete(@Param('id') id: number): Promise<{ status: number, message: string }> {
+    async delete(@Param('id') id: number, @Res() res: Response): Promise<Response<any, Record<string, any>>> {
         await this.answersService.deleteAnswer(id)
-        return ({
-            "status": 200,
-            "message": "Ok",
-        });
+        return res.send(
+            {
+                "statusCode": 200,
+                "message": "Deleted",
+            }
+        );
     }
+
+
+
 }
