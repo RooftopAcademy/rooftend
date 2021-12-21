@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 
 @Entity()
@@ -24,18 +24,6 @@ export class Answer {
     })
     @Column({ name: 'content', type: 'varchar', length: 500 })
     content: string;
-
-    @OneToOne(() => User)
-    @JoinColumn({ name: 'user_id' })
-    @ApiProperty({
-        type: Number,
-        description: 'Id of user that answer',
-        nullable: false,
-        readOnly: true,
-        example: 2,
-    })
-    userId: number;
-
 
     @ApiProperty({
         type: Date,
