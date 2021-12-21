@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { AnswerDTO } from '../entities/answer.dto';
@@ -10,17 +10,20 @@ export class AnswersService {
         @InjectRepository(Answer) private AnswersRepository: Repository<Answer>,
     ) { }
 
-    create(answer: AnswerDTO, userId: number): Promise<void> {
-        const answerEntity = this.AnswersRepository.create({ ...answer, 'userId': userId, 'createdAt': new Date() });
-        this.AnswersRepository.save(answerEntity)
-        return
+    async create(answer: AnswerDTO): Promise<void> {
+        try {
+            const answerEntity = this.AnswersRepository.create({ ...answer, 'createdAt': new Date() });
+            await this.AnswersRepository.save(answerEntity)
+        }
+        catch (err) {
+            throw new UnprocessableEntityException();
+        }
     }
 
     async deleteAnswer(id: number): Promise<void> {
         const deleteResponse = await this.AnswersRepository.softDelete(id);
         if (!deleteResponse.affected) {
-            throw new NotFoundException(id, 'Error, the deletion was not completed');
+            throw new NotFoundException();
         }
-        return
     }
 }
