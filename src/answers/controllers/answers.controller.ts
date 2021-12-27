@@ -1,5 +1,21 @@
-import { Body, Controller, Delete, HttpCode, Param, Post, Res } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    Body,
+    Controller,
+    Delete,
+    HttpCode,
+    Param,
+    Post,
+    Res,
+} from '@nestjs/common';
+import {
+    ApiBody,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiParam,
+    ApiTags
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { AnswerDTO } from '../entities/answer.dto';
 import { AnswersService } from '../services/answers.service';
@@ -7,7 +23,9 @@ import { AnswersService } from '../services/answers.service';
 @ApiTags('Answers')
 @Controller('answers')
 export class AnswersController {
-    constructor(private readonly answersService: AnswersService) { }
+    constructor(
+        private readonly answersService: AnswersService,
+    ) { }
 
     @Post()
     @HttpCode(201)
@@ -23,7 +41,10 @@ export class AnswersController {
         }
     })
     @ApiBody({ type: AnswerDTO })
-    async create(@Body() answer: AnswerDTO, @Res() res: Response): Promise<Response<any, Record<string, any>>> {
+    async create(
+        @Body() answer: AnswerDTO,
+        @Res() res: Response
+    ): Promise<Response<any, Record<string, any>>> {
         await this.answersService.create(answer);
         return res.send(
             {
@@ -32,7 +53,6 @@ export class AnswersController {
             }
         );
     }
-
     @Delete(':id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Delete answer' })
@@ -59,7 +79,4 @@ export class AnswersController {
             }
         );
     }
-
-
-
 }
