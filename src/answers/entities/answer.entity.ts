@@ -1,9 +1,17 @@
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { Column, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../../users/entities/user.entity";
+import { Question } from "../../questions/entities/question.entity";
 
-@Entity()
+
+@Entity('answers')
 export class Answer {
 
     @ApiProperty({
@@ -50,4 +58,13 @@ export class Answer {
     })
     deletedAt?: Date;
 
+    @OneToOne(() => Question, question => question.answerId)
+    @JoinColumn({ name: 'question_id' })
+    @ApiProperty({
+        type: Number,
+        description: 'Id of question answered',
+        nullable: true,
+        example: 2,
+    })
+    questionId: number;
 }
