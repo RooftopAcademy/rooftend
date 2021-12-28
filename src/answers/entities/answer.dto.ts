@@ -1,5 +1,9 @@
+import {
+    IsInt,
+    IsNotEmpty,
+    IsString
+} from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
 
 export class AnswerDTO {
 
@@ -11,4 +15,13 @@ export class AnswerDTO {
         type: String,
     })
     content: string;
+
+    @IsInt()
+    @IsNotEmpty()
+    @ApiProperty({
+        example: 2,
+        description: 'Question id',
+        type: Number,
+    })
+    questionId: number;
 }
