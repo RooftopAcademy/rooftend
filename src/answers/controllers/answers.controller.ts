@@ -39,10 +39,7 @@ export class AnswersController {
     })
     @ApiBody({ type: AnswerDTO })
     async create(@Body() answer: AnswerDTO)
-        : Promise<{
-            statusCode: number;
-            message: string;
-        }> {
+        : Promise<Status> {
         return await this.answersService.create(answer);
     }
 
@@ -67,10 +64,7 @@ export class AnswersController {
         description: 'Not found',
     })
     async delete(@Param('id') id: number)
-        : Promise<{
-            statusCode: number;
-            message: string;
-        }> {
+        : Promise<Status> {
         return await this.answersService.delete(id)
     }
 }
