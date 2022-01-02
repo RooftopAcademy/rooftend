@@ -16,7 +16,7 @@ import {
     ApiParam,
     ApiTags
 } from '@nestjs/swagger';
-import { Response } from 'express';
+import Status from '../../statusCodes';
 import { AnswerDTO } from '../entities/answer.dto';
 import { AnswersService } from '../services/answers.service';
 
@@ -34,31 +34,27 @@ export class AnswersController {
         status: 201,
         description: 'Created',
         schema: {
-            example: {
-                "statusCode": 201,
-                "message": "Created",
-            }
+            example: Status.CREATED,
         }
     })
     @ApiBody({ type: AnswerDTO })
-    async create(
-        @Body() answer: AnswerDTO,
-        @Res() res: Response
-    ): Promise<Response<any, Record<string, any>>> {
-        await this.answersService.create(answer);
-        return res.send(
-            {
-                "statusCode": 201,
-                "message": "Created",
-            }
-        );
+    async create(@Body() answer: AnswerDTO)
+        : Promise<{
+            statusCode: number;
+            message: string;
+        }> {
+        return await this.answersService.create(answer);
     }
+
     @Delete(':id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Delete answer' })
     @ApiOkResponse({
         status: 200,
         description: 'Deleted',
+        schema: {
+            example: Status.DELETED,
+        }
     })
     @ApiParam({
         name: 'id',
@@ -70,13 +66,11 @@ export class AnswersController {
         status: 404,
         description: 'Not found',
     })
-    async delete(@Param('id') id: number, @Res() res: Response): Promise<Response<any, Record<string, any>>> {
-        await this.answersService.deleteAnswer(id)
-        return res.send(
-            {
-                "statusCode": 200,
-                "message": "Deleted",
-            }
-        );
+    async delete(@Param('id') id: number)
+        : Promise<{
+            statusCode: number;
+            message: string;
+        }> {
+        return await this.answersService.delete(id)
     }
 }
