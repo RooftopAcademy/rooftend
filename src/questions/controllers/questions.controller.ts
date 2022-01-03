@@ -30,6 +30,7 @@ import { Response } from 'express';
 import { Question } from '../entities/question.entity';
 import { QuestionsService } from '../services/questions.service';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
+import Status from '../../statusCodes';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -177,21 +178,12 @@ export class QuestionsController {
     status: 201,
     description: 'Created',
     schema: {
-      example: {
-        "statusCode": 201,
-        "message": "Created",
-      }
+      example: Status.CREATED
     }
   })
   @ApiBody({ type: CreateQuestionDTO })
-  async create(@Body() question: CreateQuestionDTO, @Res() res: Response) {
-    await this.QuestionsService.createQuestion(question, 2);
-    return res.send(
-      {
-        "statusCode": 201,
-        "message": "Created",
-      }
-    );
+  async create(@Body() question: CreateQuestionDTO): Promise<Status> {
+    return await this.QuestionsService.create(question, 2)
   }
 
   @Delete(':id')
@@ -214,13 +206,8 @@ export class QuestionsController {
   @ApiBadRequestResponse({
     description: 'Error, the deletion was not completed',
   })
-  async delete(@Param('id') id: number, @Res() res: Response): Promise<Response<any, Record<string, any>>> {
-    await this.QuestionsService.deleteQuestion(id);
-    return res.send(
-      {
-        "statusCode": 200,
-        "message": "Deleted",
-      }
-    );
+  async delete(@Param('id') questionId: number): Promise<Status> {
+    return await this.QuestionsService.delete(questionId);
   }
+
 }
