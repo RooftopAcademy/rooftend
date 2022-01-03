@@ -7,12 +7,12 @@ import {
   paginate,
   Pagination,
   IPaginationOptions,
+  IPaginationMeta,
 } from 'nestjs-typeorm-paginate';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Question } from '../entities/question.entity';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
-import { statSync } from 'fs';
 import Status from '../../statusCodes';
 
 
@@ -39,7 +39,7 @@ export class QuestionsService {
       return await paginate<Question>(questions, options);
     }
     catch (err) {
-      throw new NotFoundException();
+      return null
     }
   }
 
@@ -48,6 +48,7 @@ export class QuestionsService {
     userId: number,
   ): Promise<Pagination<Question>> {
     try {
+      console.log('entro')
       let questions = this.questionsRepository.createQueryBuilder('questions')
         .leftJoinAndMapOne('questions.user', 'questions.userId', 'user')
         .leftJoinAndMapOne('questions.item', 'questions.itemId', 'item')
@@ -58,14 +59,14 @@ export class QuestionsService {
       return await paginate<Question>(questions, options);
     }
     catch (err) {
-      throw new NotFoundException();
+      return null
     }
   }
 
   async paginateSent(
     options: IPaginationOptions,
     userId: number,
-  ): Promise<Pagination<Question>> {
+  ): Promise<Pagination<Question, IPaginationMeta>> {
     try {
       let questions = this.questionsRepository.createQueryBuilder('questions')
         .leftJoinAndMapOne('questions.item', 'questions.itemId', 'item')
@@ -76,7 +77,7 @@ export class QuestionsService {
       return await paginate<Question>(questions, options);
     }
     catch (err) {
-      throw new NotFoundException();
+      return null
     }
   }
 
