@@ -69,13 +69,12 @@ export class QuestionsController {
     example: 10,
   })
   async find(
-    @Res() res: Response,
     @Query('item_id',) item_id = 2,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Question, IPaginationMeta> | void> {
+  ): Promise<Pagination<Question, IPaginationMeta>> {
     limit = limit > 100 ? 100 : limit;
-    const paginatedQuestions = await this.QuestionsService.paginateBy(
+    return await this.QuestionsService.paginateBy(
       {
         page,
         limit,
@@ -83,8 +82,6 @@ export class QuestionsController {
       },
       item_id,
     );
-    if (paginatedQuestions)
-      return res.status(200).send(paginatedQuestions).end();
   }
 
   @Get('/recived')
@@ -112,12 +109,11 @@ export class QuestionsController {
     example: 10,
   })
   async findRecived(
-    @Res() res: Response,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Question, IPaginationMeta> | void> {
+  ): Promise<Pagination<Question, IPaginationMeta>> {
     limit = limit > 100 ? 100 : limit;
-    const paginatedQuestions = await this.QuestionsService.paginateRecived(
+    return await this.QuestionsService.paginateRecived(
       {
         page,
         limit,
@@ -125,8 +121,6 @@ export class QuestionsController {
       },
       2
     );
-    if (paginatedQuestions)
-      return res.status(200).send(paginatedQuestions).end();
   }
 
   @Get('/sent')
@@ -154,12 +148,11 @@ export class QuestionsController {
     example: 10,
   })
   async findSent(
-    @Res() res: Response,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Question, IPaginationMeta> | void> {
     limit = limit > 100 ? 100 : limit;
-    const paginatedQuestions = await this.QuestionsService.paginateSent(
+    return await this.QuestionsService.paginateSent(
       {
         page,
         limit,
@@ -167,8 +160,6 @@ export class QuestionsController {
       },
       2
     );
-    if (paginatedQuestions)
-      return res.status(200).send(paginatedQuestions).end();
   }
 
   @Post()
