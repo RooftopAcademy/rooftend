@@ -12,6 +12,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Question } from '../entities/question.entity';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
+import { statSync } from 'fs';
+import Status from '../../statusCodes';
 
 
 @Injectable()
@@ -78,19 +80,23 @@ export class QuestionsService {
     }
   }
 
-  async createQuestion(question: CreateQuestionDTO, userId: number): Promise<void> {
+  async create(question: CreateQuestionDTO, userId: number): Promise<Status> {
     try {
       const questionEntity = this.questionsRepository.create({ ...question, 'userId': userId, 'createdAt': new Date() });
       await this.questionsRepository.save(questionEntity);
+      return Status.CREATED
     }
     catch (err) {
       throw new UnprocessableEntityException();
     }
   }
 
-  async deleteQuestion(id: number): Promise<void> {
-    const deleteResponse = await this.questionsRepository.softDelete(id);
-    if (!deleteResponse.affected) {
+  async delete(questionId: number): Promise<Status> {
+    try {
+      await this.questionsRepository.softDelete(questionId)
+      return Status.DELETED
+    }
+    catch (err) {
       throw new NotFoundException();
     }
   }
