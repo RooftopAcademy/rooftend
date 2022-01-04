@@ -138,7 +138,7 @@ export class Address {
   @Column({
     name: 'floor',
     type: 'smallint',
-    default: () => null,
+    default: null,
   })
   floor?: number;
 
@@ -152,7 +152,7 @@ export class Address {
     name: 'office',
     type: 'char',
     length: 5,
-    default: () => null,
+    default: null,
   })
   office?: string;
 
@@ -167,7 +167,7 @@ export class Address {
     name: 'references',
     type: 'char',
     length: 500,
-    default: () => null,
+    default: null,
   })
   references?: string;
 

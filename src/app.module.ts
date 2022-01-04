@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
+import { AnswersModule } from './answers/answers.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { CustomMessagesModule } from './custom-messages/custom-messages.module';
 import { ItemsModule } from './items/items.module';
@@ -32,6 +33,7 @@ import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
 import { OffersModule } from './offers/offers.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -47,7 +49,9 @@ import { OffersModule } from './offers/offers.module';
     }),
 
     AccountStatusModule,
+    AnswersModule,
     BrandsModule,
+    CartItemModule,
     CartModule,
     CategoriesModule,
     CustomMessagesModule,
@@ -55,6 +59,7 @@ import { OffersModule } from './offers/offers.module';
     HelpsModule,
     HistoryModule,
     NotificationModule,
+    ItemsModule,
     OffersModule,
     PaymentMethodsModule,
     PhonesModule,
@@ -69,11 +74,9 @@ import { OffersModule } from './offers/offers.module';
     StoresModule,
     SavedItemsModule,
     UsersModule,
-    CartItemModule,
-    ItemsModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
