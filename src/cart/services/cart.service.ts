@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { getRepository, IsNull, Not, Repository } from 'typeorm';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
 
@@ -45,4 +46,21 @@ export class CartService {
         });
     }
 
+    async paginate(options: IPaginationOptions,userId: number): Promise<Pagination<Cart>> {
+        return paginate<Cart> (
+            this.cartRepo,
+            options, 
+            {
+                //relations:['userId'],
+                select: ["id", "amount", "currencyCode", "purchasedAt","userId"],
+                where:{
+                    userId: userId,
+                    purchasedAt: Not(IsNull())
+                },
+                order:{
+                    purchasedAt: 'DESC'
+                },
+            }
+        )
+    }
 }

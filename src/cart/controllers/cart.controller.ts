@@ -6,8 +6,12 @@ import {
   Post,
   Put,
   Delete,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiHeader, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
@@ -63,6 +67,30 @@ export class CartController {
     @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
     create (@Body() body : any): Promise<Cart>{
         return this.cartService.create(body);
+    }
+
+    @Get(':userId/purchased_carts')
+    @ApiParam({
+        name: "userId",
+        type: "integer",
+        required: true
+    })
+    @ApiOperation({summary: 'Get all carts that was purchased by a given user'})
+    @ApiResponse({status:200, description: 'Purchased carts succesfully found'})
+    @ApiForbiddenResponse({status: 403, description:'Forbidden'})
+    @ApiNotFoundResponse({status:403, description:'No cart was purchased by that user'})
+    getPurchasedCarts(
+        @Param('userId') userId: number,
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+        @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+        ): Promise<Pagination<Cart>>{
+            limit = limit > 100 ? 100 : limit;
+            return this.cartService.paginate({
+                page,
+                limit,
+                route: '/cart/{userId}/purchased_carts'
+            },
+            userId)
     }
 
     @Put(':id')
