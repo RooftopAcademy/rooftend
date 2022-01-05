@@ -16,7 +16,6 @@ import { Category } from '../../categories/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
 
-
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn({
@@ -88,7 +87,7 @@ export class Item {
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
   brandId: Brand;
 
-  @ManyToOne(() => User, user => user.items)
+  @ManyToOne(() => User, (user) => user.items)
   @JoinColumn({
     name: 'user_id',
   })
@@ -107,4 +106,29 @@ export class Item {
 
   @OneToMany(() => Question, (question) => question.itemId)
   questions: Question[];
+
+  /**
+   * Check if item has availability
+   * @param qty
+   */
+  public isAvailable(qty = 0): boolean {
+    return this.stock > qty;
+  }
+
+  /**
+   * Check if item is active
+   * @description Item can be inactive when has been paused by the publisher or the admin
+   * @param void
+   */
+  public isActive(): boolean {
+    return true;
+  }
+
+  /**
+   * Get final price for given quantity
+   * @param qty
+   */
+  getFinalPrice(qty = 1): number {
+    return this.price * qty;
+  }
 }
