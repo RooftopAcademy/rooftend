@@ -3,20 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  OneToOne,
-  JoinColumn,
-  ManyToOne,
-  JoinTable,
 } from 'typeorm';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-// import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
-import { Notification } from '../../notification/entities/notification.entity';
 import { Search } from '../../search/search.entity';
 import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 import { Item } from '../../items/entities/items.entity';
+import { Question } from '../../questions/entities/question.entity';
 
 @Entity('users')
 export class User {
@@ -66,9 +61,15 @@ export class User {
   })
   photos: PhotosEntity[];
 
+  /**
+   * Reviews sent to other users
+   */
   @OneToMany(() => Review, (review) => review.user)
   publishedReviews: Review[];
 
+  /**
+   * Reviews received from other users after buy
+   */
   @PolymorphicChildren(() => Review, { eager: false })
   receivedReviews: Review[];
 
@@ -79,9 +80,21 @@ export class User {
    */
   favorites: Array<Item> = [];
 
-  @OneToMany(() => Search, (search) => search.user)
+  /**
+   * Items published by the user
+   */
+  @OneToMany(() => Item, (item) => item.userId)
+  items: Item[];
+
   /**
    * Search keywords from this user
    */
+  @OneToMany(() => Search, (search) => search.user)
   searches: Search[];
+
+  /**
+   * Questions sent by the user
+   */
+  @OneToMany((type) => Question, (question) => question.userId)
+  questions: Question[];
 }

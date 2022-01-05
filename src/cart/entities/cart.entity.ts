@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   Entity,
   Column,
@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  BeforeUpdate,
   JoinColumn,
   OneToMany,
 } from 'typeorm';
@@ -20,6 +19,7 @@ export class Cart {
     name: 'id',
     type: 'integer',
     readOnly: true,
+    example: 1,
   })
   id: number;
 
@@ -28,13 +28,9 @@ export class Cart {
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
+    select: false,
   })
-  @ApiProperty({
-    name: 'createdAt',
-    type: 'string',
-    format: 'date-time',
-    readOnly: true,
-  })
+  @ApiHideProperty()
   createdAt: Date;
 
   @UpdateDateColumn({
@@ -42,41 +38,29 @@ export class Cart {
     nullable: false,
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
+    select: false,
   })
-  @ApiProperty({
-    name: 'updatedAt',
-    type: 'string',
-    format: 'date-time',
-    readOnly: true,
-  })
+  @ApiHideProperty()
   updatedAt: Date;
-
-  // @BeforeUpdate()
-  // updateTimeStamp() {
-  //   this.updatedAt = new Date();
-  // }
 
   @UpdateDateColumn({
     name: 'purchased_at',
-    nullable: false,
+    nullable: true,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: null,
   })
   @ApiProperty({
     name: 'purchasedAt',
     type: 'string',
     format: 'date-time',
     readOnly: true,
+    default: null,
+    example: '2021-12-13T03:00:00.000Z',
   })
   purchasedAt: Date;
 
   @ManyToOne(() => User)
-  @ApiProperty({
-    name: 'userId',
-    type: 'integer',
-    example: 1,
-    description: 'Id of the user the Cart belongs to',
-  })
+  @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
   userId: number;
 
@@ -94,13 +78,13 @@ export class Cart {
   @Column({
     length: 3,
     name: 'currency_code',
-    type: "character varying"
+    type: 'character varying',
   })
   @ApiProperty({
     name: 'currencyCode',
     required: true,
     type: 'string',
-    example: 'ab6',
+    example: 'ARS',
     description: 'Currency code of the user location',
     maxLength: 3,
   })

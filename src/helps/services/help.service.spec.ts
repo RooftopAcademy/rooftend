@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from '../../categories/categories.entity';
-import { QuestionsEntity } from '../../questions/models/questions.entity';
+import { Question } from '../../questions/entities/question.entity';
 import { HelpService } from './help.service';
 
 describe('HelpService', () => {
@@ -9,8 +9,8 @@ describe('HelpService', () => {
 
   const categories = [
     {
-    "ID": expect.any(Number),
-    "Category": expect.any(String)
+      "ID": expect.any(Number),
+      "Category": expect.any(String)
     },
   ];
 
@@ -26,7 +26,7 @@ describe('HelpService', () => {
     "Answer": expect.any(String)
   }
 
-  const mockCategoryRepository  =  {
+  const mockCategoryRepository = {
     createQueryBuilder: jest.fn(() => ({
       select: jest.fn().mockReturnThis(),
       addSelect: jest.fn().mockReturnThis(),
@@ -50,13 +50,13 @@ describe('HelpService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        HelpService, 
+        HelpService,
         {
           provide: getRepositoryToken(Category),
           useValue: mockCategoryRepository
         },
         {
-          provide: getRepositoryToken(QuestionsEntity),
+          provide: getRepositoryToken(Question),
           useValue: mockQuestionRepository
         }
       ],
