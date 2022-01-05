@@ -108,13 +108,6 @@ export class Offer {
   })
   soldStock: number;
 
-  /*@Column({
-    name: 'offer_expiration_time',
-    type: 'time',
-  })
-  offerExpirationTime: Date ;
-  */
-
   @ApiProperty({
     type: Number,
     description: 'Price with discount',
