@@ -42,10 +42,4 @@ export class OffersService {
       options,
     )
   }
-
-  getOffer(id:number): Promise<Offer>{
-    const offer = this.offersRepository.findOne(id);
-    return offer;
-  } 
-
 }
