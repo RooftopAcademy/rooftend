@@ -8,11 +8,7 @@ import {
 } from "typeorm";
 
 import { Item } from "../../items/entities/items.entity";
-
-export enum PromotionType {
-  LIGHTNING_DEAL = 'LIGHTNING_DEAL',
-  DEAL_OF_THE_DAY = 'DEAL_OF_THE_DAY',
-}
+import { PromotionType } from "./promotion-type.enum";
 
 @Entity('offers')
 export class Offer {

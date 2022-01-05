@@ -14,7 +14,7 @@ import {
 } from '@nestjs/swagger';
 
 import { OffersService } from '../services/offers.service';
-import { PromotionType } from '../entities/offer.entity';
+import { PromotionType } from "../entities/promotion-type.enum";
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
 
 @ApiTags('Offers')

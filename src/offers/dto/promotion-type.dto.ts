@@ -3,7 +3,7 @@ import {
   IsOptional,
 } from "class-validator";
 
-import { PromotionType } from "../entities/offer.entity";
+import { PromotionType } from "../entities/promotion-type.enum";
 
 export class PromotionTypeDto {
   @IsEnum(PromotionType)

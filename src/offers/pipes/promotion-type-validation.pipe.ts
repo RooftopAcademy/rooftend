@@ -8,7 +8,7 @@ import {
   isEnum,
 } from 'class-validator';
 
-import { PromotionType } from '../entities/offer.entity';
+import { PromotionType } from '../entities/promotion-type.enum';
 
 @Injectable()
 export class PromotionTypeValidationPipe implements PipeTransform<string, Promise<PromotionType>> {

@@ -4,12 +4,13 @@ import {
   IPaginationOptions,
   paginateRaw,
 } from 'nestjs-typeorm-paginate';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-
 import {
-  Offer,
-  PromotionType,
-} from '../entities/offer.entity';
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
+
+import { Offer } from '../entities/offer.entity';
+import { PromotionType } from '../entities/promotion-type.enum';
 
 @Injectable()
 export class OffersService {
