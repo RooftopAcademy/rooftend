@@ -47,7 +47,7 @@ export class Cart {
     name: 'purchased_at',
     nullable: true,
     type: 'timestamptz',
-    default: () => null,
+    default: null,
   })
   @ApiProperty({
     name: 'purchasedAt',

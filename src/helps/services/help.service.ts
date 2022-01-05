@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../categories/categories.entity';
-import { QuestionsEntity } from '../../questions/models/questions.entity';
+import { Question } from '../../questions/entities/question.entity';
 import { Help } from '../help.entity';
 
 @Injectable()
 export class HelpService {
   constructor(
-    @InjectRepository(QuestionsEntity)
-    private readonly questionRepository: Repository<QuestionsEntity>,
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
 
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) {}
+  ) { }
 
   /**
    * Brings all categories referred to the help section.
@@ -31,7 +31,7 @@ export class HelpService {
   /**
    * Brings all questions from the referred category_id.
    */
-  findAllQuestionsByCategoryId(id: number): Promise<QuestionsEntity[]> {
+  findAllQuestionsByCategoryId(id: number): Promise<Question[]> {
     const questions = this.questionRepository
       .createQueryBuilder("question")
       .select("question.questionContent", "Question")
@@ -47,7 +47,7 @@ export class HelpService {
    * Brings the answer and the question from a certain question id.
    * It checks that the question to be brought belongs to the help section.
    */
-  findAnswerToQuestion(id: number): Promise<QuestionsEntity> {
+  findAnswerToQuestion(id: number): Promise<Question> {
     const answer = this.questionRepository
       .createQueryBuilder("question")
       .select("question.questionContent", "Question")

@@ -14,6 +14,8 @@ import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/entities/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { Question } from '../../questions/entities/question.entity';
+
 
 @Entity('items')
 export class Item {
@@ -86,12 +88,12 @@ export class Item {
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
   brandId: Brand;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, user => user.items)
   @JoinColumn({
     name: 'user_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: User;
+  userId: number;
 
   @ManyToOne(() => Category)
   @JoinColumn({
@@ -102,4 +104,7 @@ export class Item {
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
+
+  @OneToMany(() => Question, (question) => question.itemId)
+  questions: Question[];
 }
