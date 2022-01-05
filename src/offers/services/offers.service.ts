@@ -46,7 +46,7 @@ export class OffersService {
       : queryWithoutTypeCondition;
     
     return paginateRaw<Offer>(
-      (order) ? queryWithoutOrder.orderBy('offer.final_price') : queryWithoutOrder,
+      (order) ? queryWithoutOrder.orderBy('offer.final_price', order) : queryWithoutOrder,
       options,
     );
   }
