@@ -18,9 +18,6 @@ export class CategoriesService {
     return paginate<Category>(this.repository, options);
   }
 
-  async getAll(): Promise<Category[]> {
-    return this.repository.find();
-  }
   async findOne(id: number): Promise<Category> {
     const category: Category | undefined = await this.repository.findOne(id);
     if (!category) {
