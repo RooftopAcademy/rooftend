@@ -1,4 +1,8 @@
-import { IsEnum, IsOptional } from "class-validator";
+import {
+  IsEnum,
+  IsOptional,
+} from "class-validator";
+
 import { PromotionType } from "../entities/offer.entity";
 
 export class PromotionTypeDto {

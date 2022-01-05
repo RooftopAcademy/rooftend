@@ -1,9 +1,12 @@
 import {
   BadRequestException,
   Injectable,
-  PipeTransform
+  PipeTransform,
 } from '@nestjs/common';
-import { isDefined, isEnum } from 'class-validator';
+import {
+  isDefined,
+  isEnum,
+} from 'class-validator';
 
 import { PromotionType } from '../entities/offer.entity';
 

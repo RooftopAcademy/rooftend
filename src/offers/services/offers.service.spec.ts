@@ -1,6 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Offer, PromotionType } from '../entities/offer.entity';
+
+import { Offer } from '../entities/offer.entity';
 import { OffersService } from './offers.service';
 
 describe('OffersService', () => {

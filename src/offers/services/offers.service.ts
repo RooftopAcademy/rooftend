@@ -4,7 +4,6 @@ import {
   IPaginationOptions,
   paginateRaw,
 } from 'nestjs-typeorm-paginate';
-import { of } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {

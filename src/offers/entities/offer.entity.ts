@@ -4,11 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
-  } from "typeorm";
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 import { Item } from "../../items/entities/items.entity";
-import { IPostgresInterval } from 'postgres-interval';
 
 export enum PromotionType {
   LIGHTNING_DEAL = 'LIGHTNING_DEAL',

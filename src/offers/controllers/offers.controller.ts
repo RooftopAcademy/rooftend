@@ -2,15 +2,20 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
-  Param,
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { OffersService } from '../services/offers.service';
 import { PromotionType } from '../entities/offer.entity';
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
-import { ApiBadRequestResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Offers')
 @Controller('offers')
