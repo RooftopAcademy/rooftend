@@ -30,12 +30,13 @@ export class AuthenticationController {
 
     const newUser = new User();
     newUser.email = body.email.toLocaleLowerCase();
-
-    const passwordHashed = await bcrypt.hash(body.password, 10);
-
-    newUser.password = passwordHashed;
+    newUser.password = await bcrypt.hash(body.password, 10);
 
     console.log(newUser);
+
+    //////////
+
+    this.authService.addUserToDatabase(newUser);
 
     return 'hola pepe';
   }

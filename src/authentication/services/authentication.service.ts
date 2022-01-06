@@ -17,4 +17,11 @@ export class AuthenticationService {
 
     return user;
   }
+
+  ///////
+
+  async addUserToDatabase(user: User) {
+    const newUser = this.userRepository.create(user);
+    await this.userRepository.save(newUser);
+  }
 }
