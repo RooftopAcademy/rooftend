@@ -92,7 +92,6 @@ export class Offer {
   @Column({
     name: 'initial_stock',
     type: 'bigint',
-    nullable: false
   })
   initialStock: number;
 
@@ -104,7 +103,6 @@ export class Offer {
   @Column({
     name: 'sold_stock',
     type: 'bigint',
-    nullable: false
   })
   soldStock: number;
 
