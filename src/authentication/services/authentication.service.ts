@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../../users/services/user.service';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDTO } from '../entities/create-user-dto.entity';
+import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,10 +19,9 @@ export class AuthenticationService {
   }
 
   async create(user: CreateUserDTO) {
-    user.email = user.email.toLocaleLowerCase();
+    user.email = user.email.toLowerCase();
     user.password = await bcrypt.hash(user.password, 10);
-
-    const newUser = this.userService.create(user);
-    await this.userService.save(newUser);
+    console.log(user);
+    await this.userService.create(user);
   }
 }
