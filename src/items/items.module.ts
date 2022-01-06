@@ -8,6 +8,6 @@ import { ItemsService } from './services/items.service';
 @Module({
   controllers: [ItemsController],
   providers: [ItemsService],
-  imports: [TypeOrmModule.forFeature([Item]), CaslModule],
+  imports: [TypeOrmModule.forFeature([Item])],
 })
 export class ItemsModule { }

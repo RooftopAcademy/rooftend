@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 
@@ -8,10 +8,6 @@ import {
   ApiTags,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { Permission } from '../../auth/permission.enum';
-import { AppAbility } from '../../auth/casl/casl-ability.factory';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
-import { CheckPolicies } from '../../auth/policy-handler';
 
 @ApiTags("Items")
 @Controller('items')
@@ -68,8 +64,6 @@ export class ItemsController {
   })
   @Patch(':id')
   @HttpCode(204)
-  @UseGuards(PoliciesGuard)
-  @CheckPolicies((ability: AppAbility) => ability.can(Permission.Update, Item))
   update(@Param('id') id: number, @Body() body: any): Promise<Item> {
     return this.ItemsService.update(id, body);
   }
