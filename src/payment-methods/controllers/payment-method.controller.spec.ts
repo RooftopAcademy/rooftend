@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import PaymentMethodsService from '../services/payment-method.service';
 import PaymentMethodsController from './payment-method.controller';
@@ -6,16 +7,22 @@ describe('PaymentMethodsController', () => {
   let controller: PaymentMethodsController;
 
   const mockPaymentMethodsService = {
-    create: jest.fn((dto) => {
-      return {
-        id: Date.now(),
-        ...dto,
-      };
+    getAll: jest.fn().mockImplementation(() => {
+      return [
+        {
+          name: 'CASH',
+          type: 'Cash',
+        },
+        {
+          name: 'DEBIT_CARD',
+          type: 'Debit Card',
+        },
+      ];
     }),
-    update: jest.fn((id, dto) => {
+    findOne: jest.fn().mockImplementation(() => {
       return {
-        id,
-        ...dto,
+        name: 'CASH',
+        type: 'Cash',
       };
     }),
   };
@@ -36,24 +43,43 @@ describe('PaymentMethodsController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create a payment method', () => {
-    const dto = { name: 'Cash', type: 'CASH' };
-    expect(controller.create(dto)).toEqual({
-      id: expect.any(Number),
-      name: 'Cash',
-      type: 'CASH',
-    });
+  describe('all', () => {
+    it('should return a list of payment methods', async () => {
+      expect(await controller.getAll()).toEqual([
+        {
+          name: 'CASH',
+          type: 'Cash',
+        },
+        {
+          name: 'DEBIT_CARD',
+          type: 'Debit Card',
+        },
+      ]);
 
-    expect(mockPaymentMethodsService.create).toHaveBeenCalledWith(dto);
+      expect(mockPaymentMethodsService.getAll).toHaveBeenCalled();
+    });
   });
 
-  it('should update a payment method', () => {
-    const dto = { name: 'Cash', type: 'CASH' };
-    expect(controller.update(1, dto)).toEqual({
-      id: 1,
-      ...dto,
+  describe('find', () => {
+    it('should return the payment method found by id', async () => {
+      expect(await controller.findOne(2)).toEqual({
+        name: 'CASH',
+        type: 'Cash',
+      });
     });
 
-    expect(mockPaymentMethodsService.update).toHaveBeenCalledWith(1, dto);
+    it('should call service.find with the id provided', () => {
+      expect(mockPaymentMethodsService.findOne).toHaveBeenCalledWith(2);
+    });
+
+    it('should return Payment method not found when there is not match with id', async () => {
+      mockPaymentMethodsService.findOne.mockReturnValueOnce(null);
+
+      try {
+        expect(await controller.findOne(2)).toThrow(NotFoundException);
+      } catch (err) {
+        expect(err.message).toBe('Payment method not found');
+      }
+    });
   });
 });

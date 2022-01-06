@@ -10,10 +10,12 @@ import { Brand } from '../../brands/entities/brands.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity('stores')
-export class StoresEntity {
+export class Store {
   @ApiProperty({
     type: Number,
     description: 'Store Id',
+    example: 265,
+    readOnly: true,
   })
   @PrimaryGeneratedColumn({
     name: 'id',
@@ -22,9 +24,11 @@ export class StoresEntity {
   id: number;
 
   @ApiProperty({
-    type: String,
+    type: 'string',
     format: 'date-time',
     description: 'Created date',
+    example: '2021-11-26T20:24:45.386Z',
+    readOnly: true,
   })
   @Column({
     name: 'created_at',
@@ -34,9 +38,11 @@ export class StoresEntity {
   createdAt: Date;
 
   @ApiProperty({
-    type: String,
+    type: 'string',
     format: 'date-time',
     description: 'Updated date',
+    example: '2021-11-26T20:24:45.386Z',
+    readOnly: true,
   })
   @Column({
     name: 'updated_at',
@@ -45,34 +51,37 @@ export class StoresEntity {
   })
   updatedAt: Date;
 
-  @ApiProperty({
-    type: Brand,
-    description: 'The brand to which the store belongs',
-  })
   @OneToOne(() => Brand)
   @JoinColumn({
     name: 'brand_id',
   })
-  brandId: Brand;
+  brand: Brand;
+
+  @ApiProperty({
+    type: 'bigint',
+    description: 'The brand to which the store belongs',
+  })
+  @Column({
+    name: 'brand_id',
+    type: 'bigint',
+    nullable: false,
+  })
+  brandId: number;
+
+  @OneToOne(() => User)
+  @JoinColumn({
+    name: 'user_id',
+  })
+  user: User;
 
   @ApiProperty({
     type: User,
     description: 'The user to who the store belongs',
   })
-  @OneToOne(() => User)
   @Column({
-    type: 'bigint',
     name: 'user_id',
+    type: 'bigint',
+    nullable: false,
   })
-  userId: User;
-
-  // @ApiProperty({
-  //   type: Banner,
-  // })
-  // @OneToOne(() => Banner)
-  // @Column({
-  //   name: 'banner_id',
-  //   type: 'integer',
-  // })
-  // bannerId: Banner;
+  userId: number;
 }

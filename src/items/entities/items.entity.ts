@@ -1,15 +1,27 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/categories.entity';
+import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { Question } from '../../questions/entities/question.entity';
+
 
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn({
     unsigned: true,
-    type: 'bigint'
+    type: 'bigint',
   })
   @ApiProperty({ example: 1, description: 'Item ID' })
   id: number;
@@ -19,7 +31,10 @@ export class Item {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Item's creation date" })
+  @ApiProperty({
+    example: '2016-03-26 10:10:10-05:00',
+    description: "Item's creation date",
+  })
   createdAt: Date;
 
   @UpdateDateColumn({
@@ -27,26 +42,30 @@ export class Item {
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Item's last update date" })
+  @ApiProperty({
+    example: '2016-03-26 10:10:10-05:00',
+    description: "Item's last update date",
+  })
   updatedAt: Date;
 
   @Column({
     type: 'character varying',
-    length: 100
+    length: 100,
   })
   @ApiProperty({
-    example: "Lorem ipsum dolor sit amet, consectetuer adipiscin",
-    description: 'Item title'
+    example: 'Lorem ipsum dolor sit amet, consectetuer adipiscin',
+    description: 'Item title',
   })
   title: string;
 
   @Column({
     type: 'character varying',
-    length: 1000
+    length: 1000,
   })
   @ApiProperty({
-    example: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibu",
-    description: 'Item description'
+    example:
+      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibu',
+    description: 'Item description',
   })
   description: string;
 
@@ -63,23 +82,29 @@ export class Item {
   stock: number;
 
   @ManyToOne(() => Brand)
-  @Column({
-    name: 'brand_id'
+  @JoinColumn({
+    name: 'brand_id',
   })
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
-  brandId: number;
+  brandId: Brand;
 
-  @ManyToOne(() => User)
-  @Column({
+  @ManyToOne(() => User, user => user.items)
+  @JoinColumn({
     name: 'user_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
   userId: number;
 
   @ManyToOne(() => Category)
-  @Column({
+  @JoinColumn({
     name: 'category_id',
   })
   @ApiProperty({ example: 999, description: 'Id of the Item Category' })
-  categoryId: number;
+  categoryId: Category;
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
+  cartItemsId: CartItem[];
+
+  @OneToMany(() => Question, (question) => question.itemId)
+  questions: Question[];
 }

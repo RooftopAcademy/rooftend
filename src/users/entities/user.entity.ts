@@ -13,7 +13,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
-
+import { Notification } from '../../notification/entities/notification.entity';
+import { Search } from '../../search/search.entity';
+import { QuestionsModule } from '../../questions/questions.module';
+import { userInfo } from 'os';
+import { Question } from '../../questions/entities/question.entity';
+import { Item } from '../../items/entities/items.entity';
 @Entity('users')
 export class User {
   @ApiProperty({
@@ -80,4 +85,14 @@ export class User {
   entities: [];
 
   favorites: [];
+
+  @OneToMany(() => Item, (item) => item.userId)
+  items: Item[];
+
+  @OneToMany(() => Search, (search) => search.user)
+  searches: Search[];
+
+  @OneToMany((type) => Question, (question) => question.userId)
+  questions: Question[];
+
 }
