@@ -10,10 +10,11 @@ import {
   IPaginationMeta,
 } from 'nestjs-typeorm-paginate';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository, UpdateResult } from 'typeorm';
 import { Question } from '../entities/question.entity';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
-import Status from '../../statusCodes';
+import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
 
 
 @Injectable()
@@ -29,13 +30,11 @@ export class QuestionsService {
   ): Promise<Pagination<Question>> {
     try {
       let questions = this.questionsRepository.createQueryBuilder('questions')
-        .where('questions.itemId = :itemId', { itemId })
+        .where('questions.itemId = :itemId AND questions.answerId is not null', { itemId })
         .leftJoinAndMapOne('questions.user', 'questions.userId', 'user')
         .leftJoinAndMapOne('questions.answer', 'questions.answerId', 'answer')
         .select(['questions.content'])
         .addSelect(['answer.content', 'answer.createdAt'])
-        .where('questions.answerId is not null');
-
       return await paginate<Question>(questions, options);
     }
     catch (err) {
@@ -48,14 +47,13 @@ export class QuestionsService {
     userId: number,
   ): Promise<Pagination<Question>> {
     try {
-      console.log('entro')
       let questions = this.questionsRepository.createQueryBuilder('questions')
         .leftJoinAndMapOne('questions.user', 'questions.userId', 'user')
         .leftJoinAndMapOne('questions.item', 'questions.itemId', 'item')
         .select(['questions.content', 'questions.createdAt'])
+        .where('questions.answerId is null AND item.userId = :userId', { userId })
         .addSelect(['user.username', 'item.title'])
-        .where('questions.answerId is null')
-        .andWhere('item.userId = :userId', { userId })
+
       return await paginate<Question>(questions, options);
     }
     catch (err) {
@@ -85,20 +83,43 @@ export class QuestionsService {
     try {
       const questionEntity = this.questionsRepository.create({ ...question, 'userId': userId, 'createdAt': new Date() });
       await this.questionsRepository.save(questionEntity);
-      return Status.CREATED
+      return STATUS.CREATED
     }
     catch (err) {
       throw new UnprocessableEntityException();
     }
   }
-
   async delete(questionId: number): Promise<Status> {
     try {
       await this.questionsRepository.softDelete(questionId)
-      return Status.DELETED
+      return STATUS.DELETED
     }
     catch (err) {
       throw new NotFoundException();
     }
+  }
+
+  async addAnswer(questionId: number, answerId: number): Promise<UpdateResult> {
+    try {
+
+      return await this.questionsRepository.update(questionId, { 'answerId': answerId });
+    }
+    catch (err) {
+      throw new NotFoundException();
+    }
+  }
+
+  async findUnanswered(questionId: number) {
+    let question = await this.questionsRepository.find(
+      {
+        where: {
+          questionId,
+          answerId: Not(IsNull()),
+        }
+      })
+    if (question) {
+      return question;
+    }
+    throw new NotFoundException()
   }
 }
