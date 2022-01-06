@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { AnswersModule } from './answers/answers.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { CustomMessagesModule } from './custom-messages/custom-messages.module';
 import { ItemsModule } from './items/items.module';
@@ -33,7 +34,6 @@ import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
 import { OffersModule } from './offers/offers.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -50,6 +50,7 @@ import { OffersModule } from './offers/offers.module';
 
     AccountStatusModule,
     AnswersModule,
+    AuthenticationModule,
     BrandsModule,
     CartItemModule,
     CartModule,
@@ -79,4 +80,4 @@ import { OffersModule } from './offers/offers.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
