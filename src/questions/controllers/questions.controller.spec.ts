@@ -1,21 +1,33 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionsController } from './questions.controller'
 import { QuestionsService } from '../services/questions.service'
-import Status from '../../statusCodes';
+import STATUS from '../../statusCodes/statusCodes';
 import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Question } from '../entities/question.entity';
+import { AnswersService } from '../services/answers.service';
+import { AnswerDTO } from '../entities/answer.dto';
 
 describe('QuestionController test', () => {
-    let controllerQuestions: QuestionsController
+    let controller: QuestionsController
+
+    const mockAnswersService = {
+        create: jest.fn().mockImplementation(answerDto => {
+            return STATUS.CREATED
+        }),
+
+        delete: jest.fn().mockImplementation(id => {
+            return STATUS.DELETED
+        })
+    }
 
     const mockQuestionsService = {
         create: jest.fn().mockImplementation((questionDto: CreateQuestionDTO, id: number) => {
-            return Status.CREATED
+            return STATUS.CREATED
         }),
         delete: jest.fn().mockImplementation(id => {
-            return Status.DELETED
+            return STATUS.DELETED
         }),
         paginateBy: jest.fn().mockImplementation((options, itemId) => {
             return Promise.resolve(
@@ -102,17 +114,23 @@ describe('QuestionController test', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [QuestionsController],
-            providers: [QuestionsService],
+            providers: [QuestionsService, AnswersService],
         })
+            .overrideProvider(AnswersService)
+            .useValue(mockAnswersService)
             .overrideProvider(QuestionsService)
             .useValue(mockQuestionsService)
             .compile()
 
-        controllerQuestions = module.get<QuestionsController>(QuestionsController);
+        controller = module.get<QuestionsController>(QuestionsController);
     });
 
     it('should be defined', () => {
-        expect(controllerQuestions).toBeDefined();
+        expect(controller).toBeDefined();
+    });
+
+    it('should be defined', () => {
+        expect(mockAnswersService).toBeDefined();
     });
 
     it('should be defined', () => {
@@ -123,7 +141,7 @@ describe('QuestionController test', () => {
         const questionDto = {} as unknown as CreateQuestionDTO
 
         it('should recive created status', async () => {
-            expect(await controllerQuestions.create(questionDto)).toEqual(Status.CREATED)
+            expect(await controller.createQuestion(questionDto)).toEqual(STATUS.CREATED)
             expect(mockQuestionsService.create).toHaveBeenCalled();
         })
 
@@ -133,7 +151,7 @@ describe('QuestionController test', () => {
                     throw new UnprocessableEntityException();
                 })
             try {
-                await controllerQuestions.create(questionDto)
+                await controller.createQuestion(questionDto)
             }
             catch (err) {
                 expect(err).toEqual(new UnprocessableEntityException())
@@ -144,7 +162,7 @@ describe('QuestionController test', () => {
     describe('soft delete', () => {
         it('should delete the question with 200', async () => {
             const questionId: number = 1
-            expect(await controllerQuestions.delete(questionId)).toEqual(Status.DELETED)
+            expect(await controller.deleteQuestion(questionId)).toEqual(STATUS.DELETED)
             expect(mockQuestionsService.create).toHaveBeenCalled()
         })
 
@@ -154,7 +172,7 @@ describe('QuestionController test', () => {
                     throw new NotFoundException();
                 })
             try {
-                await controllerQuestions.delete(3)
+                await controller.deleteQuestion(3)
             }
             catch (err) {
                 expect(err).toEqual(new NotFoundException())
@@ -164,7 +182,7 @@ describe('QuestionController test', () => {
 
     describe('find method', () => {
         it('should get all questions answerd of publication with item id 1', async () => {
-            expect(await controllerQuestions.find(1, 1, 1)).toEqual(
+            expect(await controller.find(1, 1, 1)).toEqual(
                 [
                     {
                         "content": "Cats, cats, cats... Can u see them?",
@@ -191,14 +209,14 @@ describe('QuestionController test', () => {
                 .mockImplementationOnce(() => {
                     return null;
                 })
-            expect(await controllerQuestions.find(1, 1, 10)).toEqual(null)
+            expect(await controller.find(1, 1, 10)).toEqual(null)
         })
 
     })
 
     describe('findRecived method', () => {
         it('should get all questions that user with id 2 recived', async () => {
-            expect(await controllerQuestions.findRecived(1, 10)).toEqual(
+            expect(await controller.findRecived(1, 10)).toEqual(
                 [
                     {
                         "content": "Soft kitty, little kitty song?",
@@ -229,13 +247,13 @@ describe('QuestionController test', () => {
                 .mockImplementationOnce(() => {
                     return null;
                 })
-            expect(await controllerQuestions.findRecived(1, 10)).toEqual(null)
+            expect(await controller.findRecived(1, 10)).toEqual(null)
         })
 
     })
     describe('findSent method', () => {
         it('should get all questions wrote by the user', async () => {
-            expect(await controllerQuestions.findSent(1, 10)).toEqual(
+            expect(await controller.findSent(1, 10)).toEqual(
                 [
                     {
                         "id": "14",
@@ -272,8 +290,57 @@ describe('QuestionController test', () => {
                 .mockImplementationOnce(() => {
                     return null;
                 })
-            expect(await controllerQuestions.findSent(1, 10)).toEqual(null)
+            expect(await controller.findSent(1, 10)).toEqual(null)
         })
 
     })
+
+
+    describe('create method test', () => {
+        const answerDto: AnswerDTO = {
+            "content": "Answer to some question",
+        }
+        const id: number = 1
+        it('should recive created status', async () => {
+            expect(await controller.createAnswer(answerDto, id)).toEqual(STATUS.CREATED)
+            expect(mockAnswersService.create).toHaveBeenCalled();
+        })
+
+        it('should throw a NotFoundException', async () => {
+            jest.spyOn(mockAnswersService, 'create')
+                .mockImplementationOnce(() => {
+                    throw new UnprocessableEntityException();
+                })
+            try {
+                await controller.createAnswer(answerDto, id)
+            }
+            catch (err) {
+                expect(err).toEqual(new UnprocessableEntityException())
+            }
+        })
+    })
+
+    describe('soft delete', () => {
+        const answerId: number = 1
+        const questionId: number = 1
+        it('should delete the answer', async () => {
+
+            expect(await controller.deleteAnswer(answerId, questionId)).toEqual(STATUS.DELETED)
+            expect(mockAnswersService.create).toHaveBeenCalled()
+        })
+
+        it('should throw a NotFoundException', async () => {
+            jest.spyOn(mockAnswersService, 'delete')
+                .mockImplementationOnce(() => {
+                    throw new NotFoundException();
+                })
+            try {
+                await controller.deleteAnswer(answerId, questionId)
+            }
+            catch (err) {
+                expect(err).toEqual(new NotFoundException())
+            }
+        })
+    })
+
 });
