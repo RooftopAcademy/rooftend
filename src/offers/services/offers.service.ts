@@ -30,7 +30,7 @@ export class OffersService {
       'offer.end_at AS "offerEndTime"',
       '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
       '(offer.end_at - NOW()) AS "offerTimeLeft"',
-      'offer.promotion_type AS promotionType',
+      'offer.promotion_type AS "promotionType"',
     ];
 
     const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
@@ -45,9 +45,37 @@ export class OffersService {
       ? queryWithoutTypeCondition.andWhere(promotionTypeCondition)
       : queryWithoutTypeCondition;
     
-    return paginateRaw<Offer>(
+    const paginated = await paginateRaw<any>(
       (order) ? queryWithoutOrder.orderBy('offer.final_price', order) : queryWithoutOrder,
       options,
     );
+
+    const items = paginated.items.map((offer) => {
+      if (offer.promotionType == PromotionType.DEAL_OF_THE_DAY) {
+        return {
+          "itemTitle": offer.itemTitle,
+          "regularPrice": offer.regularPrice,
+          "discountRate": offer.discountRate,
+          "finalPrice": offer.finalPrice,
+          "offerStartTime": offer.offerStartTime,
+          "offerEndTime": offer.offerEndTime,
+          "promotiontype": offer.promotionType,
+        }
+      }
+      return {
+        ...offer,
+        offerTimeLeft: {
+          hours: offer.offerTimeLeft.hours,
+          minutes: offer.offerTimeLeft.minutes,
+          seconds: offer.offerTimeLeft.seconds,
+        }
+      };
+    });
+
+    return {
+      items: items,
+      meta: paginated.meta,
+      links: paginated.links,
+    }
   }
 }
