@@ -111,7 +111,7 @@ describe('AnswersService test', () => {
 
     describe('test for delete method', () => {
         it('should apply a soft delete on answer with 200', async () => {
-            expect(await answersService.delete(3)).toEqual({
+            expect(await answersService.delete(3, 2)).toEqual({
                 "statusCode": 200,
                 "message": "Deleted",
             });
@@ -122,7 +122,7 @@ describe('AnswersService test', () => {
                     throw HttpException;
                 })
             try {
-                await answersService.delete(3)
+                await answersService.delete(3, 2)
             }
             catch (err) {
                 expect(err).toEqual(new NotFoundException())
