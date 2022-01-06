@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { MessagePostPurchase } from '../entities/message-post-purchase.entity';
-import { Repository } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     paginate,
     Pagination,
     IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { map, Observable } from 'rxjs';
 
 
 
@@ -16,54 +17,19 @@ export class MessagePostPurchaseService {
 
     }
 
-    async paginate({page,limit}: IPaginationOptions, cartId: number): Promise<Pagination<MessagePostPurchase>> {
-        let countMessage = await this.messageRepo.query(`
-            SELECT COUNT(*) FROM messages_post_purchase
-        `);
+    async paginate(options: IPaginationOptions, cartId: number): Promise<Pagination<MessagePostPurchase>>{
+      const queryBuilder = getConnection().createQueryBuilder()
+        .select("mgp.id") 
+        .addSelect("mgp.cart_id")
+        .addSelect("mgp.message")
+        .addSelect("mgp.sender_id")
+        .from(MessagePostPurchase, "mgp") 
+        .where("mgp.cart_id = :cart_id", { cart_id: cartId});
+      console.log(queryBuilder)
 
-        let messages = await this.messageRepo.query(`
-          SELECT MGP.id, MGP.cart_id, MGP.message, MGP.sender_id 
-          FROM messages_post_purchase MGP
-          WHERE MGP.cart_id = ${cartId}
-        `);
-
-        const totalMessages = Number(countMessage[0].count);
-        const totalPages = Math.ceil(totalMessages / Number(limit));
-        const previousPagePath = (Number(page) > 1) ? `/purchase/${cartId}/messages?page=${Number(page) - 1}` : ""
-    
-
-        messages = messages.map((item) => {
-          return({
-            "id": item.id,
-            "message": {
-              "cart_id": item.cart_id,
-              "sender_id": item.sender_id,
-              "message": item.message
-            }
-          })
-        });
-
-        const response = ({
-            "items": [
-              ...messages
-            ],
-            "meta": {
-              "totalItems": totalMessages,
-              "itemCount": messages.length,
-              "itemsPerPage": Number(limit),
-              "totalPages": totalPages,
-              "currentPage": Number(page)
-            },
-            "links": {
-              "first": `/purchase/${cartId}/messages`,
-              "previous": previousPagePath,
-              "next": `/purchase/${cartId}/messages?page=${Number(page) + 1}`,
-              "last": `/purchase/${cartId}/messages?page=${totalPages}`
-            }
-          });
-
-        return response;
+      return paginate<MessagePostPurchase>(queryBuilder, options);
     }
+
 
     create(body: any) {
         const newMessage = this.messageRepo.create(body);
