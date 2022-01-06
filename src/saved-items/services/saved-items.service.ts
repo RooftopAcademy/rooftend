@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateSavedItemDto } from '../dto/createSavedItemDto';
-import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
-import { SavedItemsEntity } from '../entities/savedItems.entity';
+import { CreateSavedItemDto } from '../dto/CreateSavedItemDto';
+import { UpdateSavedItemDto } from '../dto/UpdateSavedItemDto';
+import { SavedItemsEntity } from '../entities/SavedItems.entity';
 
 @Injectable()
 export class SavedItemsService {
