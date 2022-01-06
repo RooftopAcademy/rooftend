@@ -111,7 +111,7 @@ export class OffersController {
       route: '/offers',
     };
 
-    if (!(order === 'ASC' || order === 'DESC')) throw new BadRequestException('Invalid value for order parameter.');
+    if (!(order === 'ASC' || order === 'DESC' || order === null)) throw new BadRequestException('Invalid value for order parameter.');
     
     return this.offersService.paginate(paginateOptions, promotionType, order);
   }
