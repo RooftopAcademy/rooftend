@@ -11,7 +11,6 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Help } from '../../helps/help.entity';
 import { User } from '../../users/entities/user.entity';
 import { Answer } from '../../answers/entities/answer.entity';
 import { Type } from 'class-transformer';
