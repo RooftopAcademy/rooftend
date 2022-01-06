@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
-import { Answer } from '../../answers/entities/answer.entity';
+import { Answer } from './answer.entity';
 import { Type } from 'class-transformer';
 import { Item } from '../../items/entities/items.entity';
 
@@ -27,7 +27,7 @@ export class Question {
   @Type(() => Number)
   id: number;
 
-  @OneToOne(() => Answer, answer => answer.questionId)
+  @OneToOne(() => Answer)
   @JoinColumn({ name: 'answer_id' })
   @ApiProperty({
     type: Number,
