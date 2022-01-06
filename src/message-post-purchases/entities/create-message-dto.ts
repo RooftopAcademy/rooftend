@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsInt, IsDateString } from 'class-validator';
 
 export class CreateMessageDTO {
-
   @ApiProperty({
     description: 'The cart id',
     type: Number,
@@ -23,12 +22,4 @@ export class CreateMessageDTO {
   })
   @IsString()
   message: string;
-
-  @ApiProperty({
-    type: Date,
-    description: 'Message date created',
-    example: '2021-12-10 12:32:19.537+00',
-  })
-  @IsDateString()
-  createdAt: Date;
 }

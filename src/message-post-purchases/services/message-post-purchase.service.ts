@@ -17,19 +17,18 @@ export class MessagePostPurchaseService {
 
     }
 
-    async paginate(options: IPaginationOptions, cartId: number): Promise<Pagination<MessagePostPurchase>>{
+    async find(cartId: number, options: IPaginationOptions): Promise<Pagination<MessagePostPurchase>>{
       const queryBuilder = getConnection().createQueryBuilder()
-        .select("mgp.id") 
-        .addSelect("mgp.cart_id")
-        .addSelect("mgp.message")
-        .addSelect("mgp.sender_id")
-        .from(MessagePostPurchase, "mgp") 
+        .select(["mgp.id", "mgp.message", "mgp.sender_id"])
+        .from(MessagePostPurchase, "mgp")
         .where("mgp.cart_id = :cart_id", { cart_id: cartId});
-      console.log(queryBuilder)
 
       return paginate<MessagePostPurchase>(queryBuilder, options);
     }
 
+    async findOneById(id : number): Promise<MessagePostPurchase>{
+        return await this.messageRepo.findOneOrFail({id});
+    }
 
     create(body: any) {
         const newMessage = this.messageRepo.create(body);

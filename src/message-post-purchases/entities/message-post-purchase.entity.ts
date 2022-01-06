@@ -3,7 +3,7 @@ import {
     Column,
     PrimaryGeneratedColumn,
     JoinColumn,
-    ManyToOne,
+    ManyToOne, UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Cart } from '../../cart/entities/cart.entity';
@@ -40,7 +40,6 @@ export class MessagePostPurchase {
     })
     sender_id: number;
 
-
     @ApiProperty({
         description: 'Message description',
         type: String,
@@ -48,20 +47,9 @@ export class MessagePostPurchase {
     @Column({ type: 'character varying', nullable: false })
     message: String;
 
-
-    @ApiProperty({
-        type: String,
-        format: 'date-time',
-        description: 'Created date of message',
-        example: '2021-10-19 10:23:54+03'
-    })
-    @Column({
-        name: 'created_at',
-        type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    createdAt: Date;
-
+    /**
+     * Represents when user sent message
+     */
     @ApiProperty({
         type: String,
         format: 'date-time',
@@ -75,6 +63,9 @@ export class MessagePostPurchase {
     })
     sentAt: Date;
 
+    /**
+     * Represent when user was received
+     */
     @ApiProperty({
         type: String,
         format: 'date-time',
@@ -84,20 +75,23 @@ export class MessagePostPurchase {
     @Column({
         name: 'received_at',
         type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
+        default: () => null,
     })
     receivedAt: Date;
 
+    /**
+     * Represent when user read the message
+     */
     @ApiProperty({
         type: String,
         format: 'date-time',
-        description: 'Send date of message',
+        description: 'When user read the message',
         example: '2021-10-19 10:23:54+03'
     })
     @Column({
         name: 'read_at',
         type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
+        default: () => null,
     })
     readAt: Date;
 

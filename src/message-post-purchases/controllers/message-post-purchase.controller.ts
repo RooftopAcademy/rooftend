@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, NotFoundException, UnprocessableEntityException, UsePipes } from '@nestjs/common';
 import {
     ApiForbiddenResponse,
     ApiOperation,
@@ -24,8 +24,10 @@ import {
 import { MessagePostPurchaseService } from '../services/message-post-purchase.service';
 import { MessagePostPurchase } from '../entities/message-post-purchase.entity';
 import { Response } from 'express';
-import { CreateMessageDTO } from '../entities/message-dto';
-import { updateMessageDto } from '../entities/update-message-dto';
+import { CreateMessageDTO } from '../entities/create-message-dto';
+import { ReceivedMessageDTO } from '../entities/received-message-dto';
+import { ReadMessageDTO } from '../entities/read-message-dto';
+import { StatusValidationPipe } from '../entities/status-validation-pipe';
 
 
 
@@ -47,11 +49,11 @@ export class MessagePostPurchaseController {
         @Param('cartId') cartId: number
     ) {
         limit = limit > 100 ? 100 : limit;
-        return this.messageService.paginate({
+        return this.messageService.find(cartId, {
             limit,
             page,
             route: `/purchase/${cartId}/messages`,
-        }, cartId);
+        });
     }
 
     @Post(':cartId/messages')
@@ -66,16 +68,12 @@ export class MessagePostPurchaseController {
     })
     async create(
         @Body() CreateMessageDTO: CreateMessageDTO,
-        @Res({ passthrough: true }) response: Response,
     ) {
-        return this.messageService
-            .create(CreateMessageDTO)
-            .then(() => {
-                response.status(200).end('Message created');
-            })
-            .catch((err) => {
-                response.status(400).end(err.message);
-            });
+        try {
+            return await this.messageService.create(CreateMessageDTO)
+        } catch (err) {
+            throw new UnprocessableEntityException(err)
+        }
     }
 
 
@@ -88,30 +86,20 @@ export class MessagePostPurchaseController {
     @ApiBadRequestResponse({
         description: 'The message could not be updated',
     })
-    @Patch(':cartId/messages/:id_message')
+    @Patch(':cartId/messages/:messageId')
     @HttpCode(204)
     async update(
-        @Param('id_message') id_message: number,
-        @Body() body: updateMessageDto,
+        @Param('messageId') messageId: number,
+        @Body('status', new StatusValidationPipe()) status
     ): Promise<MessagePostPurchase> {
-        const res = await this.messageService.update(id_message, body);
-        return res;
-    }
+        let message = await this.messageService.findOneById(messageId)
 
-
-    @Delete(':cart_id/messages')
-    @HttpCode(403)
-    @ApiForbiddenResponse({
-        status: 403,
-        description: 'Forbidden',
-        schema: {
-            example: {
-                "statusCode": 403,
-                "message": "Forbidden"
-            }
+        if (!message) {
+            throw new NotFoundException();
         }
-    })
-    public async getById() {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+
+        return await this.messageService.update(messageId, {
+            [`${status}At`] : new Date
+        });
     }
 }
