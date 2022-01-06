@@ -15,7 +15,6 @@ import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { HelpsModule } from './helps/help.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
@@ -32,7 +31,7 @@ import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
 import { OffersModule } from './offers/offers.module';
-
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -56,7 +55,6 @@ import { OffersModule } from './offers/offers.module';
     CategoriesModule,
     CustomMessagesModule,
     FavoritesModule,
-    HelpsModule,
     HistoryModule,
     NotificationModule,
     ItemsModule,
@@ -74,9 +72,10 @@ import { OffersModule } from './offers/offers.module';
     StoresModule,
     SavedItemsModule,
     UsersModule,
+    SupportModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
