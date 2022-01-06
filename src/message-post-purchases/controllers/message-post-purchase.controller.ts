@@ -48,8 +48,8 @@ export class MessagePostPurchaseController {
     ) {
         limit = limit > 100 ? 100 : limit;
         return this.messageService.paginate({
-            page,
             limit,
+            page,
             route: `/purchase/${cartId}/messages`,
         }, cartId);
     }

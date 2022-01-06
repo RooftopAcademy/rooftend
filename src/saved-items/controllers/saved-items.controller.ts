@@ -10,9 +10,9 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateSavedItemDto } from '../dto/createSavedItemDto';
+import { CreateSavedItemDto } from '../dto/CreateSavedItemDto';
 import { SavedItemsService } from '../services/saved-items.service';
-import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
+import { UpdateSavedItemDto } from '../dto/UpdateSavedItemDto';
 import {
   ApiCreatedResponse,
   ApiOperation,

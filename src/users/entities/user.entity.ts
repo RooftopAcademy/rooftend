@@ -5,7 +5,6 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
-  ManyToOne,
   JoinTable,
 } from 'typeorm';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
@@ -15,7 +14,6 @@ import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
 import { Notification } from '../../notification/entities/notification.entity';
 import { Search } from '../../search/search.entity';
-import { MessagePostPurchase } from '../../message-post-purchases/entities/message-post-purchase.entity';
 
 @Entity('users')
 export class User {
@@ -49,13 +47,6 @@ export class User {
   })
   @Column({ type: 'character varying', length: 100, nullable: false })
   email: string;
-
-  // @ApiProperty({
-  //   description: 'account status valid of user ',
-  //    type: String,
-  // })
-  // @Column({ type: 'integer', nullable: false})
-  // account_status: number;
 
   @ApiProperty({
     description: 'Account status assigned to that user ',
