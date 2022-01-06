@@ -17,17 +17,21 @@ export class UserService {
     return paginate<User>(this.userRepo, options);
   }
 
-  findOne(id: number): Promise<User> {
-    return this.userRepo.findOne(id);
-  }
-
   findAll() {
     return this.userRepo.find();
   }
 
-  create(body: any) {
-    const newUser = this.userRepo.create(body);
-    return this.userRepo.save(newUser);
+  findOneById(id: number): Promise<User> {
+    return this.userRepo.findOne(id);
+  }
+
+  findOneByEmail(email: string): Promise<User> {
+    return this.userRepo.findOne(email);
+  }
+
+  async create(user: User) {
+    const newUser: User = await this.userRepo.create(user);
+    return await this.userRepo.save(newUser);
   }
 
   async update(id: number, body: any): Promise<User> {
@@ -37,6 +41,6 @@ export class UserService {
   }
 
   delete(id: number) {
-    return this.userRepo.delete(id);
+    return this.userRepo.softDelete(id);
   }
 }
