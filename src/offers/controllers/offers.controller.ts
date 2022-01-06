@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   DefaultValuePipe,
   Get,
@@ -100,8 +101,8 @@ export class OffersController {
   @Get()
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('promotion_type', PromotionTypeValidationPipe) promotionType?: PromotionType,
-    @Query('price_order') order?: "ASC" | "DESC"
+    @Query('promotion_type', PromotionTypeValidationPipe) promotionType: PromotionType | null,
+    @Query('price_order') order: "ASC" | "DESC" | null = null,
   ) {
     const ITEMS_LIMIT: number = 50;
     const paginateOptions = {
@@ -109,8 +110,9 @@ export class OffersController {
       limit: ITEMS_LIMIT,
       route: '/offers',
     };
-    return (promotionType || order)
-      ? this.offersService.paginate(paginateOptions, promotionType, order)
-      : this.offersService.paginate(paginateOptions);
+
+    if (!(order === 'ASC' || order === 'DESC')) throw new BadRequestException('Invalid value for order parameter.');
+    
+    return this.offersService.paginate(paginateOptions, promotionType, order);
   }
 }

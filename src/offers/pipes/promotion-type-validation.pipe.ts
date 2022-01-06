@@ -15,7 +15,7 @@ export class PromotionTypeValidationPipe implements PipeTransform<string, Promis
 
   transform(promotionType: string): Promise<PromotionType> {
     if (!isDefined(promotionType)) {
-      return;
+      return null;
     }
 
     if (!isEnum(promotionType, PromotionType)) {
