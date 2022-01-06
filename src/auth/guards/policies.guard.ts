@@ -18,14 +18,10 @@ export class PoliciesGuard implements CanActivate {
         context.getHandler(),
       ) || [];
 
-    console.log(context.getHandler());
-
     // const { user } = context.switchToHttp().getRequest();
     const user = new User();
     user.id = 123;
     const ability = this.caslAbilityFactory.createForUser(user);
-    // console.log(ability);
-    // console.log(user);
 
     return policyHandlers.every((handler) =>
       this.execPolicyHandler(handler, ability),
