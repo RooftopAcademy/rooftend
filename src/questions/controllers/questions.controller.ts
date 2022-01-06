@@ -253,7 +253,7 @@ export class QuestionsController {
   })
   async deleteAnswer(@Param('id') id: number, @Param('questionId') questionId: number):
     Promise<Status> {
-    return await this.answersService.delete(id)
+    return await this.answersService.delete(id, questionId)
   }
 
 }

@@ -99,7 +99,7 @@ export class QuestionsService {
     }
   }
 
-  async addAnswer(questionId: number, answerId: number): Promise<UpdateResult> {
+  async addAnswer(questionId: number, answerId?: null | number): Promise<UpdateResult> {
     try {
 
       return await this.questionsRepository.update(questionId, { 'answerId': answerId });

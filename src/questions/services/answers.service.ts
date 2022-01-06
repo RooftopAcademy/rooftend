@@ -34,9 +34,10 @@ export class AnswersService {
         }
     }
 
-    async delete(id: number): Promise<Status> {
+    async delete(answerId: number, questionId: number): Promise<Status> {
         try {
-            await this.answersRepository.softDelete(id);
+            await this.answersRepository.softDelete(answerId);
+            await this.questionsService.addAnswer(questionId, null)
             return STATUS.DELETED
         }
         catch (err) {
