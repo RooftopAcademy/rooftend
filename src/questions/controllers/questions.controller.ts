@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  Res,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -26,16 +25,19 @@ import {
   IPaginationMeta,
   Pagination
 } from 'nestjs-typeorm-paginate';
-import { Response } from 'express';
 import { Question } from '../entities/question.entity';
 import { QuestionsService } from '../services/questions.service';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
-import Status from '../../statusCodes';
+import Status from '../../statusCodes/status.interface';
+import STATUS from '../../statusCodes/statusCodes';
+import { AnswersService } from '../services/answers.service';
+import { AnswerDTO } from '../entities/answer.dto';
 
 @ApiTags('Questions')
 @Controller('questions')
 export class QuestionsController {
-  constructor(private QuestionsService: QuestionsService) { }
+  constructor(private QuestionsService: QuestionsService,
+    private readonly answersService: AnswersService,) { }
 
   @Get('/')
   @HttpCode(200)
@@ -169,11 +171,11 @@ export class QuestionsController {
     status: 201,
     description: 'Created',
     schema: {
-      example: Status.CREATED
+      example: STATUS.CREATED
     }
   })
   @ApiBody({ type: CreateQuestionDTO })
-  async create(@Body() question: CreateQuestionDTO): Promise<Status> {
+  async createQuestion(@Body() question: CreateQuestionDTO): Promise<Status> {
     return await this.QuestionsService.create(question, 2)
   }
 
@@ -197,8 +199,61 @@ export class QuestionsController {
   @ApiBadRequestResponse({
     description: 'Error, the deletion was not completed',
   })
-  async delete(@Param('id') questionId: number): Promise<Status> {
-    return await this.QuestionsService.delete(questionId);
+  async deleteQuestion(@Param('id') id: number): Promise<Status> {
+    return await this.QuestionsService.delete(id);
+  }
+
+  @Post(':id/answers')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Create answer' })
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: STATUS.CREATED,
+    }
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+    description: 'Id of question'
+  })
+  @ApiBody({ type: AnswerDTO })
+  async createAnswer(@Body() answer: AnswerDTO, @Param() id: number)
+    : Promise<Status> {
+    return await this.answersService.create(answer, id);
+  }
+
+  @Delete(':questionId/answers/:id')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Delete answer' })
+  @ApiOkResponse({
+    status: 200,
+    description: 'Deleted',
+    schema: {
+      example: STATUS.DELETED,
+    }
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+    description: 'Id of answer'
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
+  })
+  @ApiParam({
+    name: 'idQ',
+    example: 1,
+    type: Number,
+    description: 'Id of Question'
+  })
+  async deleteAnswer(@Param('id') id: number, @Param('questionId') questionId: number):
+    Promise<Status> {
+    return await this.answersService.delete(id)
   }
 
 }
