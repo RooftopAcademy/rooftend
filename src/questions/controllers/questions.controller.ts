@@ -220,7 +220,7 @@ export class QuestionsController {
     description: 'Id of question'
   })
   @ApiBody({ type: AnswerDTO })
-  async createAnswer(@Body() answer: AnswerDTO, @Param() id: number)
+  async createAnswer(@Body() answer: AnswerDTO, @Param('id') id: number)
     : Promise<Status> {
     return await this.answersService.create(answer, id);
   }

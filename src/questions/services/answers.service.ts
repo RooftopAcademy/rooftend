@@ -21,13 +21,11 @@ export class AnswersService {
 
     async create(answer: AnswerDTO, questionId: number) {
         try {
-
             await this.questionsService.findUnanswered(questionId)
             const partialAnswer = this.answersRepository.create({ ...answer, 'createdAt': new Date() });
             const answerEntity = await this.answersRepository.save(partialAnswer);
             await this.questionsService.addAnswer(questionId, answerEntity.id)
             return STATUS.CREATED
-
         }
         catch (err) {
             throw new UnprocessableEntityException();

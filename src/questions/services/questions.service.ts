@@ -99,7 +99,7 @@ export class QuestionsService {
     }
   }
 
-  async addAnswer(questionId: number, answerId?: null | number): Promise<UpdateResult> {
+  async addAnswer(questionId: number, answerId: null | number): Promise<UpdateResult> {
     try {
 
       return await this.questionsRepository.update(questionId, { 'answerId': answerId });
@@ -110,14 +110,8 @@ export class QuestionsService {
   }
 
   async findUnanswered(questionId: number) {
-    let question = await this.questionsRepository.find(
-      {
-        where: {
-          questionId,
-          answerId: Not(IsNull()),
-        }
-      })
-    if (question) {
+    let question = await this.questionsRepository.findOne(questionId)
+    if (!question.answerId) {
       return question;
     }
     throw new NotFoundException()
