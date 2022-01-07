@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { 
+  IPaginationMeta,
   IPaginationOptions,
   paginateRaw,
+  Pagination,
 } from 'nestjs-typeorm-paginate';
 import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
+import { OfferDTO } from '../dto/offer.dto';
 
 import { Offer } from '../entities/offer.entity';
 import { PromotionType } from '../entities/promotion-type.enum';
@@ -19,63 +22,41 @@ export class OffersService {
     private readonly offersRepository: Repository<Offer>,
   ) {}
 
-  async paginate(options: IPaginationOptions, promotionType?: PromotionType, order?: "ASC" | "DESC") {
+  async paginate(
+    options: IPaginationOptions,
+    promotionType?: PromotionType,
+    order?: "ASC" | "DESC",
+    ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
 
-    const selection: string[] = [
-      'item.title AS "itemTitle"',
-      'item.price AS "regularPrice"',
-      'offer.discount AS "discountRate"',
-      'offer.final_price AS "finalPrice"',
-      'offer.start_at AS "offerStartTime"',
-      'offer.end_at AS "offerEndTime"',
-      '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
-      '(offer.end_at - NOW()) AS "offerTimeLeft"',
-      'offer.promotion_type AS "promotionType"',
-    ];
-
-    const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
-    const promotionTypeCondition: string = `offer.promotion_type = '${ promotionType }'`;
-
-    const queryWithoutTypeCondition: SelectQueryBuilder<Offer> = this.offersRepository.createQueryBuilder('offer')
+    const query: SelectQueryBuilder<OfferDTO> = this.offersRepository.createQueryBuilder('offer')
       .leftJoinAndSelect('offer.item', 'item')
-      .select(selection)
-      .where(dateCondition);
+      .select([
+        'item.title AS "itemTitle"',
+        'item.price AS "regularPrice"',
+        'offer.discount AS "discountRate"',
+        'offer.final_price AS "finalPrice"',
+        'offer.start_at AS "offerStartTime"',
+        'offer.end_at AS "offerEndTime"',
+        'offer.promotion_type AS "promotionType"',
+      ])
+      .where('now() BETWEEN offer.start_at AND offer.end_at')
+      .addSelect(`
+        CASE WHEN offer.promotion_type = 'LIGHTNING_DEAL'
+        THEN ((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER END AS "soldPercentage"
+      `)
+      .addSelect(`
+        CASE WHEN offer.promotion_type = 'LIGHTNING_DEAL'
+        THEN (offer.end_at - NOW()) END AS "offerTimeLeft"
+      `);
     
-    const queryWithoutOrder: SelectQueryBuilder<Offer> = (promotionType)
-      ? queryWithoutTypeCondition.andWhere(promotionTypeCondition)
-      : queryWithoutTypeCondition;
-    
-    const paginated = await paginateRaw<any>(
-      (order) ? queryWithoutOrder.orderBy('offer.final_price', order) : queryWithoutOrder,
-      options,
-    );
-
-    const items = paginated.items.map((offer) => {
-      if (offer.promotionType == PromotionType.DEAL_OF_THE_DAY) {
-        return {
-          "itemTitle": offer.itemTitle,
-          "regularPrice": offer.regularPrice,
-          "discountRate": offer.discountRate,
-          "finalPrice": offer.finalPrice,
-          "offerStartTime": offer.offerStartTime,
-          "offerEndTime": offer.offerEndTime,
-          "promotiontype": offer.promotionType,
-        }
-      }
-      return {
-        ...offer,
-        offerTimeLeft: {
-          hours: offer.offerTimeLeft.hours,
-          minutes: offer.offerTimeLeft.minutes,
-          seconds: offer.offerTimeLeft.seconds,
-        }
-      };
-    });
-
-    return {
-      items: items,
-      meta: paginated.meta,
-      links: paginated.links,
+    if (promotionType) {
+      query.andWhere('offer.promotion_type = :promotionType', { promotionType });
     }
+
+    if (order) {
+      query.orderBy('offer.final_price', order);
+    }
+
+    return paginateRaw(query, options);
   }
 }
