@@ -24,7 +24,7 @@ import {
 @ApiTags('Saved')
 @Controller('saved')
 export class SavedItemsController {
-  constructor(private readonly savedItemsService: SavedItemsService) {}
+  constructor(private readonly savedItemsService: SavedItemsService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all saved items' })

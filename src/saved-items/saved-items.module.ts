@@ -9,4 +9,4 @@ import { SavedItemsEntity } from './entities/SavedItems.entity';
   providers: [SavedItemsService],
   controllers: [SavedItemsController],
 })
-export class SavedItemsModule {}
+export class SavedItemsModule { }

@@ -10,7 +10,7 @@ export class SavedItemsService {
   constructor(
     @InjectRepository(SavedItemsEntity)
     private savedItemsRepo: Repository<SavedItemsEntity>,
-  ) {}
+  ) { }
 
   getAllSavedItems() {
     return this.savedItemsRepo.find();
