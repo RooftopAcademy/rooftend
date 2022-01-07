@@ -25,7 +25,7 @@ export class OffersService {
   async paginate(
     options: IPaginationOptions,
     promotionType?: PromotionType,
-    order?: "ASC" | "DESC",
+    order?: 'ASC' | 'DESC',
     ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
 
     const query: SelectQueryBuilder<OfferDTO> = this.offersRepository.createQueryBuilder('offer')
