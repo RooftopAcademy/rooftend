@@ -1,6 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
+import { Item } from '../../items/entities/items.entity';
 
 @Entity('history')
 export class History {
@@ -11,27 +12,19 @@ export class History {
   })
   id: number;
 
-  @OneToOne(() => User)
-  @Column({
-    name: 'user_id',
-    type: 'bigint',
-    unsigned: true,
-  })
+  @ManyToOne(() => User, (user) => user.visits)
+  @JoinColumn({ name: 'user_id' })
   @ApiProperty({ example: 1, description: 'The user that has the history' })
-  user_id: number;
+  user_id: Number;
 
-  // @OneToOne(() => Item)
-  // @Column({
-  //   name:'item_id',
-  //   type: 'bigint',
-  //   unsigned: true,
-  // })
-  // @ApiProperty({ example: 1, description: 'The item that the user visited' })
-  // item_id: number;
 
+  @ManyToOne(() => Item)
+  @JoinColumn({ name: 'item_id' })
+  item_id: Item;
+  
 
   @ApiProperty({
-    default: 'Current date',
+    default: 'now()',
     type: Date,
     description: 'The date-time that was created',
   })
@@ -40,5 +33,5 @@ export class History {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  createdAt: Date;
+  created_at: Date;
 }
