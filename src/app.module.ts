@@ -7,7 +7,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
-import { AnswersModule } from './answers/answers.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { CustomMessagesModule } from './custom-messages/custom-messages.module';
 import { ItemsModule } from './items/items.module';
@@ -48,7 +47,6 @@ import { SupportModule } from './support/support.module';
     }),
 
     AccountStatusModule,
-    AnswersModule,
     BrandsModule,
     CartItemModule,
     CartModule,

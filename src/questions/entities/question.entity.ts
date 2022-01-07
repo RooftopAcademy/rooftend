@@ -3,20 +3,18 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   OneToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
-import { Answer } from '../../answers/entities/answer.entity';
+import { Answer } from './answer.entity';
 import { Type } from 'class-transformer';
 import { Item } from '../../items/entities/items.entity';
 
-@Entity()
+@Entity('questions')
 export class Question {
 
   @ApiProperty({
@@ -29,17 +27,15 @@ export class Question {
   @Type(() => Number)
   id: number;
 
-  @OneToOne(() => Answer, {
-    eager: true,
-  })
-  @JoinColumn()
+  @OneToOne(() => Answer)
+  @JoinColumn({ name: 'answer_id' })
   @ApiProperty({
     type: Number,
     description: 'Id of answer',
     nullable: true,
     example: 2,
   })
-  answerId: number;
+  answerId?: number;
 
   @ManyToOne(() => Item, (item) => item.questions)
   @JoinColumn({ name: 'item_id' })
@@ -65,7 +61,7 @@ export class Question {
 
 
   @Column({
-    name: 'question',
+    name: 'content',
     type: 'character varying',
     nullable: false,
   })
@@ -91,5 +87,4 @@ export class Question {
     default: null,
   })
   deletedAt?: Date;
-
 }

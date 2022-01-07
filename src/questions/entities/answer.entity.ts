@@ -1,9 +1,15 @@
+import {
+    Column,
+    DeleteDateColumn,
+    Entity,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { Column, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../../users/entities/user.entity";
 
-@Entity()
+
+
+@Entity('answers')
 export class Answer {
 
     @ApiProperty({
@@ -24,18 +30,6 @@ export class Answer {
     })
     @Column({ name: 'content', type: 'varchar', length: 500 })
     content: string;
-
-    @OneToOne(() => User)
-    @JoinColumn({ name: 'user_id' })
-    @ApiProperty({
-        type: Number,
-        description: 'Id of user that answer',
-        nullable: false,
-        readOnly: true,
-        example: 2,
-    })
-    userId: number;
-
 
     @ApiProperty({
         type: Date,
@@ -61,5 +55,4 @@ export class Answer {
         default: null,
     })
     deletedAt?: Date;
-
 }
