@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { MessagePostPurchase } from '../entities/message-post-purchase.entity';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     paginate,
     Pagination,
     IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { map, Observable } from 'rxjs';
-
 
 
 @Injectable()

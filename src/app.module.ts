@@ -44,7 +44,7 @@ import { MessagePostPurchasesModule } from './message-post-purchases/message-pos
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
 
     AccountStatusModule,

@@ -1,10 +1,10 @@
-import { Controller, NotFoundException, UnprocessableEntityException, UsePipes } from '@nestjs/common';
+import { Controller, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import {
-    ApiForbiddenResponse,
     ApiOperation,
     ApiResponse,
     ApiBadRequestResponse,
-    ApiTags
+    ApiTags,
+    ApiQuery
 } from '@nestjs/swagger';
 import {
     Get,
@@ -12,21 +12,14 @@ import {
     Post,
     Body,
     Patch,
-    Delete,
     HttpCode,
-    Res,
-    HttpException,
-    HttpStatus,
     Query,
     ParseIntPipe,
     DefaultValuePipe,
 } from '@nestjs/common';
 import { MessagePostPurchaseService } from '../services/message-post-purchase.service';
 import { MessagePostPurchase } from '../entities/message-post-purchase.entity';
-import { Response } from 'express';
 import { CreateMessageDTO } from '../entities/create-message-dto';
-import { ReceivedMessageDTO } from '../entities/received-message-dto';
-import { ReadMessageDTO } from '../entities/read-message-dto';
 import { StatusValidationPipe } from '../entities/status-validation-pipe';
 
 
@@ -43,6 +36,27 @@ export class MessagePostPurchaseController {
         type: MessagePostPurchase,
     })
     @Get(':cartId/messages')
+    @ApiQuery({
+        name: 'page',
+        type: Number,
+        required: false,
+        description: 'Current page number',
+        example: 1
+    })
+    @ApiQuery({
+        name: 'limit',
+        type: Number,
+        required: false,
+        description: 'limit of items',
+        example: 10
+    })
+    // @ApiQuery({
+    //     name: 'cart_id',
+    //     type: Number,
+    //     required: true,
+    //     description: 'Id of cartId messages',
+    //     example: 1
+    // })
     find(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -77,6 +91,13 @@ export class MessagePostPurchaseController {
     }
 
 
+    @ApiQuery({
+        name: 'messageId',
+        type: Number,
+        required: true,
+        description: 'Id of message',
+        example: 1
+    })
     @ApiOperation({ summary: 'Update a message post purchase by ID' })
     @ApiResponse({
         status: 204,
