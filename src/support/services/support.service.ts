@@ -5,7 +5,7 @@ import { SupportCategory } from '../entities/supportCategory.entity';
 import { SupportQuestion } from '../entities/supportQuestion.entity';
 import { SupportRequest } from '../entities/supportRequest.entity';
 import { CreateRequestDto } from '../entities/create-request.dto';
-import { AnswerRequestDto } from '../entities/answer-request.dto';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class SupportService {
@@ -28,7 +28,7 @@ export class SupportService {
   /**
    * Returns all questions from a specific category
    */
-  async getAllQuestionsByCategoryId(id: number | string) {
+  async getQuestionsByCategoryId(id: number | string) {
     const questions = await this.questionRepository
       .createQueryBuilder('questions')
       .select('questions.id', 'id')
@@ -36,7 +36,6 @@ export class SupportService {
       .where('questions.category = :id', { id })
       .getRawMany();
 
-    console.log(questions);
     if (questions.length > 0) {
       return questions;
     }
@@ -68,41 +67,18 @@ export class SupportService {
    */
   async makeARequest(
     request: CreateRequestDto,
+    user: User,
   ): Promise<{ statusCode: number; message: string }> {
     try {
-      const req = await this.requestRepository.save(request);
+      const req = await this.requestRepository.save({
+        ...request,
+        user: user,
+      });
       if (req) {
         return { statusCode: 200, message: 'Created' };
       }
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
-  }
-
-  /**
-   * An employee from support can answer a user request.
-   * This method first checks that the user request exists,
-   * then it checks that the question hasn't been answered, otherwise an error is thrown.
-   * @param { CreateRequestDto } answer
-   * @returns { Promise<SupportRequest> }
-   */
-  async answerARequest(answer: AnswerRequestDto): Promise<SupportRequest> {
-    const question = await this.requestRepository.findOne({
-      where: { id: answer.replyTo, replyTo: null },
-    });
-    const answered = await this.requestRepository.findOne({
-      where: { replyTo: answer.replyTo },
-    });
-
-    console.log(question, answered);
-    if (question && answered === undefined) {
-      const answerReq = <SupportRequest>(
-        (<unknown>this.requestRepository.save(answer))
-      );
-      return answerReq;
-    }
-    throw question
-      ? new HttpException('Not found', HttpStatus.NOT_FOUND)
-      : new HttpException('Invalid entity', HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }
