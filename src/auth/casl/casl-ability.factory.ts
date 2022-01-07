@@ -8,9 +8,9 @@ import {
 import { Injectable } from '@nestjs/common';
 import { Permission } from '../permission.enum';
 import { User } from '../../users/entities/user.entity';
-import { Item } from '../../items/entities/items.entity';
 
-type Subjects = InferSubjects<typeof Item> | 'all';
+// TODO: replace any with classes
+type Subjects = InferSubjects<any> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
