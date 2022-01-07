@@ -8,15 +8,16 @@ import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
 import { CartItemModule } from './cart-item/cart-item.module';
+import { CaslModule } from './auth/casl/casl.module';
 import { CustomMessagesModule } from './custom-messages/custom-messages.module';
 import { ItemsModule } from './items/items.module';
 import { BrandsModule } from './brands/brands.module';
 import { CartModule } from './cart/cart.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { HelpsModule } from './helps/help.module';
 import { HistoryModule } from './history/history.module';
 import { NotificationModule } from './notification/notification.module';
+import { OffersModule } from './offers/offers.module';
 import { PaymentMethodsModule } from './payment-methods/payment-method.module';
 import { PhonesModule } from './phones/phones.module';
 import { PhotosModule } from './photos/photos.module';
@@ -30,8 +31,7 @@ import { ShippingMethodsModule } from './shipping-methods/shipping-methods.modul
 import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
-import { OffersModule } from './offers/offers.module';
-
+import { SupportModule } from './support/support.module';
 
 @Module({
   imports: [
@@ -51,10 +51,10 @@ import { OffersModule } from './offers/offers.module';
     BrandsModule,
     CartItemModule,
     CartModule,
+    CaslModule,
     CategoriesModule,
     CustomMessagesModule,
     FavoritesModule,
-    HelpsModule,
     HistoryModule,
     NotificationModule,
     ItemsModule,
@@ -67,14 +67,15 @@ import { OffersModule } from './offers/offers.module';
     PurchasesModule,
     QuestionsModule,
     ReviewModule,
+    SavedItemsModule,
     SearchModule,
     ShippingMethodsModule,
     StoresModule,
-    SavedItemsModule,
+    SupportModule,
     UsersModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -19,6 +19,7 @@ import { QuestionsModule } from '../../questions/questions.module';
 import { userInfo } from 'os';
 import { Question } from '../../questions/entities/question.entity';
 import { Item } from '../../items/entities/items.entity';
+import { SupportRequest } from '../../support/entities/supportRequest.entity';
 @Entity('users')
 export class User {
   @ApiProperty({
@@ -95,4 +96,9 @@ export class User {
   @OneToMany((type) => Question, (question) => question.userId)
   questions: Question[];
 
+  /**
+   * A user can make many support requests
+   */
+  @OneToMany(() => SupportRequest, (supportRequest) => supportRequest.user)
+  supportRequests: SupportRequest[];
 }
