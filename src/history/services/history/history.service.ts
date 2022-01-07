@@ -50,7 +50,7 @@ export class HistoryService {
 
 
   async delete(id: number): Promise<boolean> {
-    await this.historyRepo.softDelete(id);
+    await this.historyRepo.delete(id);
     return true;
   }
 

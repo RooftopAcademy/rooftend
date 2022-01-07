@@ -6,7 +6,7 @@ import {
   Param,
 } from '@nestjs/common';
 
-import { ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { HistoryService } from '../../services/history/history.service';
 import { History } from '../../models/history.entity';
 
@@ -35,7 +35,14 @@ export class HistoryController {
     status: 200,
     description: 'The history has been removed successfully.',
   })
-  delete(@Param('id') id) {
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'The ID of the Visit record to delete.',
+    example: 1,
+  })
+  delete(@Param('id') id: number) {
     return this.historyService.delete(id);
   }
 }
