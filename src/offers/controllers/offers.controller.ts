@@ -17,6 +17,9 @@ import {
 import { OffersService } from '../services/offers.service';
 import { PromotionType } from "../entities/promotion-type.enum";
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
+import { Offer } from '../entities/offer.entity';
+import { OfferDTO } from '../dto/offer.dto';
 
 @ApiTags('Offers')
 @Controller('offers')
@@ -103,7 +106,7 @@ export class OffersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('promotion_type', PromotionTypeValidationPipe) promotionType: PromotionType | null,
     @Query('price_order') order: "ASC" | "DESC" | null = null,
-  ) {
+  ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
     const ITEMS_LIMIT: number = 50;
     const paginateOptions = {
       page,
