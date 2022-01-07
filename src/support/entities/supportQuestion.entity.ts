@@ -4,10 +4,15 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { SupportCategory } from './supportCategory.entity';
 
+/**
+ * A SupportQuestion represents a solved and explained issue, belonging to
+ * a certain support category, with its own question and answer.
+ */
 @Entity('support_questions')
 export class SupportQuestion {
   @ApiProperty({
@@ -17,6 +22,13 @@ export class SupportQuestion {
   })
   @PrimaryGeneratedColumn()
   id: number;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
   @ApiProperty({
     type: String,

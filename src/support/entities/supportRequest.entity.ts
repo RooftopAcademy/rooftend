@@ -5,10 +5,15 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 
+/**
+ * A SupportRequest may be a question made by a user or
+ * the answer to a question referred on the replyTo field.
+ */
 @Entity('support_requests')
 export class SupportRequest {
   @ApiProperty({
@@ -18,6 +23,13 @@ export class SupportRequest {
   })
   @PrimaryGeneratedColumn()
   id: number;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 
   @ApiProperty({
     type: String,
@@ -38,7 +50,7 @@ export class SupportRequest {
   })
   @ManyToOne(() => User, (user) => user.supportRequests, { nullable: false })
   @JoinColumn({ name: 'user_id' })
-  user: number;
+  user: User;
 
   @ApiProperty({
     type: Number,
@@ -50,5 +62,5 @@ export class SupportRequest {
   })
   @OneToOne(() => SupportRequest, { nullable: true })
   @JoinColumn({ name: 'reply_to' })
-  replyTo: number | null;
+  replyTo?: SupportRequest | null;
 }
