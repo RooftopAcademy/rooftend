@@ -27,12 +27,11 @@ export class UserService {
   }
 
   findOneByEmail(email: string): Promise<User> {
-    return this.userRepo.findOne(email);
+    return this.userRepo.findOne({ email });
   }
 
   async create(user: CreateUserDTO) {
     const newUser: User = await this.userRepo.create(user);
-    console.log(newUser);
     return await this.userRepo.save(newUser);
   }
 
