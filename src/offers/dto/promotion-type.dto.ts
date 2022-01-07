@@ -5,7 +5,7 @@ import {
 
 import { PromotionType } from "../entities/promotion-type.enum";
 
-export class PromotionTypeDto {
+export class PromotionTypeDTO {
   @IsEnum(PromotionType)
   @IsOptional()
   promotionType: PromotionType;
