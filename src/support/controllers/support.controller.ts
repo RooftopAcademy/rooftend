@@ -19,13 +19,10 @@ import {
   ApiOperation,
   ApiParam,
   ApiNotFoundResponse,
-  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { SupportCategory } from '../entities/supportCategory.entity';
-import { SupportQuestion } from '../entities/supportQuestion.entity';
-import { SupportRequest } from '../entities/supportRequest.entity';
 import { CreateRequestDto } from '../entities/create-request.dto';
-import { AnswerRequestDto } from '../entities/answer-request.dto';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Support')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -40,7 +37,7 @@ export class SupportController {
     type: [SupportCategory],
   })
   @Get('categories')
-  async findAllCategories() {
+  async getAllCategories() {
     return await this.supportService.getAllCategories();
   }
 
@@ -81,8 +78,8 @@ export class SupportController {
   @ApiParam({ name: 'id', type: Number, required: true })
   @HttpCode(200)
   @Get('categories/:id')
-  async getAllQuestionsByCategoryId(@Param('id', ParseIntPipe) id: number) {
-    return await this.supportService.getAllQuestionsByCategoryId(id);
+  async getQuestionsByCategoryId(@Param('id', ParseIntPipe) id: number) {
+    return await this.supportService.getQuestionsByCategoryId(id);
   }
 
   @ApiOperation({ summary: 'Returns the answer to a specific question' })
@@ -118,26 +115,28 @@ export class SupportController {
   @ApiParam({ name: 'id', type: Number, required: true })
   @HttpCode(200)
   @Get('question/:id')
-  async getAnswerByQuestionId(@Param('id') id: number) {
+  async getAnswerByQuestionId(@Param('id', ParseIntPipe) id: number) {
     return await this.supportService.getAnswerByQuestionId(id);
   }
 
   @ApiOperation({
-    summary: 'Creates a new support request to ask or answer a question',
+    summary: 'Creates a new support request to ask a question',
   })
   @ApiCreatedResponse({
-    type: SupportRequest,
     description: 'Created a new support request',
+    schema: {
+      example: {
+        statusCode: 201,
+        message: 'Created',
+      },
+    },
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
     schema: {
       example: {
         statusCode: 400,
-        message: [
-          'property user should not exist',
-          'user_id must be an integer number',
-        ],
+        message: ['property user should not exist'],
         error: 'Bad Request',
       },
     },
@@ -146,41 +145,9 @@ export class SupportController {
   @HttpCode(201)
   @Post('request')
   async makeARequest(@Body() createRequestDto: CreateRequestDto) {
-    return this.supportService.makeARequest(createRequestDto);
-  }
-
-  @ApiOperation({
-    summary: 'Creates a new support request to answer a question',
-  })
-  @ApiCreatedResponse({
-    type: SupportRequest,
-    description: 'Created a new support request as an answer',
-  })
-  @ApiUnprocessableEntityResponse({
-    description: 'Trying to answer an already answered question',
-    schema: {
-      example: {
-        asd: '',
-      },
-    },
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad request',
-    schema: {
-      example: {
-        statusCode: 400,
-        message: [
-          'property user should not exist',
-          'user_id must be an integer number',
-        ],
-        error: 'Bad Request',
-      },
-    },
-  })
-  @ApiBody({ type: AnswerRequestDto })
-  @HttpCode(201)
-  @Post('request/answer')
-  async answerARequest(@Body() answerRequestDto: AnswerRequestDto) {
-    return this.supportService.answerARequest(answerRequestDto);
+    // User will be retrieved from a JWT in the future
+    const user = new User();
+    user.id = 1;
+    return this.supportService.makeARequest(createRequestDto, user);
   }
 }
