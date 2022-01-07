@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateRequestDto {
   @ApiProperty({
@@ -10,13 +10,4 @@ export class CreateRequestDto {
   @IsString()
   @IsNotEmpty()
   content: string;
-
-  @ApiProperty({
-    type: Number,
-    description: 'The user who makes the request',
-    example: 1,
-  })
-  @IsInt()
-  @IsNotEmpty()
-  user: number;
 }
