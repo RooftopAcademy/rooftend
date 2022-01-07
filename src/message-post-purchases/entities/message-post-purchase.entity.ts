@@ -75,7 +75,7 @@ export class MessagePostPurchase {
     @Column({
         name: 'received_at',
         type: 'timestamptz',
-        default: () => null,
+        default:  null,
     })
     receivedAt: Date;
 
@@ -91,7 +91,7 @@ export class MessagePostPurchase {
     @Column({
         name: 'read_at',
         type: 'timestamptz',
-        default: () => null,
+        default: null,
     })
     readAt: Date;
 
