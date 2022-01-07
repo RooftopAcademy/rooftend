@@ -31,7 +31,7 @@ import { StoresModule } from './stores/stores.module';
 import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
 import { OffersModule } from './offers/offers.module';
-
+import { CaslModule } from './auth/casl/casl.module';
 
 @Module({
   imports: [
@@ -51,6 +51,7 @@ import { OffersModule } from './offers/offers.module';
     BrandsModule,
     CartItemModule,
     CartModule,
+    CaslModule,
     CategoriesModule,
     CustomMessagesModule,
     FavoritesModule,
@@ -77,4 +78,4 @@ import { OffersModule } from './offers/offers.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
