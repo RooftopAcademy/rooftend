@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { History } from '../../models/history.entity';
+import { History } from '../models/history.entity';
 
-import { PhotosEntity } from '../../../photos/models/photos.entity';
-import STATUS from '../../../statusCodes/statusCode';
-import Status from '../../../statusCodes/status.interface';
-import { CreateHistoryDto } from '../../models/create-history.dto';
+import { PhotosEntity } from '../../photos/models/photos.entity';
+import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
+import { CreateHistoryDto } from '../models/create-history.dto';
 
 @Injectable()
 export class HistoryService {
