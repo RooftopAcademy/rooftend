@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
-import { HistoryService } from '../../services/history/history.service';
-import { History } from '../../models/history.entity';
-import STATUS from '../../../statusCodes/statusCode';
-import Status from '../../../statusCodes/status.interface';
-import { CreateHistoryDto } from '../../models/create-history.dto';
+import { HistoryService } from '../services/history.service';
+import { History } from '../models/history.entity';
+import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
+import { CreateHistoryDto } from '../models/create-history.dto';
 
 @ApiTags('History')
 @Controller('history')
