@@ -25,7 +25,7 @@ export class MessagePostPurchaseService {
     }
 
     async findOneById(id : number): Promise<MessagePostPurchase>{
-        return await this.messageRepo.findOneOrFail({id});
+        return await this.messageRepo.findOne(id);
     }
 
     create(body: any) {

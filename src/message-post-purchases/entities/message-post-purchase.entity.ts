@@ -36,7 +36,7 @@ export class MessagePostPurchase {
     @Column({ type: 'bigint', nullable: false })
     @ManyToOne(() => User)
     @JoinColumn({
-        name: 'id',
+        name: 'user_id',
     })
     sender_id: number;
 

@@ -22,4 +22,12 @@ export class CreateMessageDTO {
   })
   @IsString()
   message: string;
+
+  @ApiProperty({
+    description: 'Send date of message',
+    type: Date,
+    example: '2021-10-19 10:23:54+03'
+  })
+  @IsDateString()
+  sent_at: Date;
 }
