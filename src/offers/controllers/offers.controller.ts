@@ -19,6 +19,10 @@ import { PromotionType } from '../entities/promotion-type.enum';
 import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { OfferDTO } from '../dto/offer.dto';
+import { PriceRangeValidationPipe } from '../pipes/price-range-validation.pipe';
+import { PriceRangeDTO } from '../dto/price-range.dto';
+import { PriceOrder } from './price-order.enum';
+import { isEnum } from 'class-validator';
 
 @ApiTags('Offers')
 @Controller('offers')
@@ -79,18 +83,28 @@ export class OffersController {
   })
   @ApiQuery({
     name: 'page',
+    type: 'number',
     description: 'Requiered page. Default value: 1',
     required: false,
     example: 1,
   })
   @ApiQuery({
     name: 'promotion_type',
+    type: 'string',
     description: 'Promotion type: DEAL_OF_THE_DAY or LIGHTNING_DEAL',
     required: false,
     example: 'DEAL_OF_THE_DAY',
   })
   @ApiQuery({
+    name: 'price',
+    type: 'string',
+    description: 'Price range, example: "2500-8000"',
+    required: false,
+    example: '2500-8000',
+  })
+  @ApiQuery({
     name: 'price_order',
+    type: 'string',
     description: 'Order in which the final price of each offer is shown: DESC or ASC',
     required: false,
     example: 'DESC',
@@ -99,17 +113,20 @@ export class OffersController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('promotion_type', PromotionTypeValidationPipe) promotionType: PromotionType | null,
-    @Query('price_order') order: 'ASC' | 'DESC' | null = null,
+    @Query('price', PriceRangeValidationPipe) priceRange: PriceRangeDTO | null,
+    @Query('price_order') order: PriceOrder,
   ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
     const ITEMS_LIMIT: number = 50;
-    const paginateOptions = {
-      page,
-      limit: ITEMS_LIMIT,
-      route: '/offers',
-    };
 
-    if (!(order === 'ASC' || order === 'DESC' || order === null)) throw new BadRequestException('Invalid value for order parameter.');
+    console.log(order);
+
+    if (order && !isEnum(order, PriceOrder)) throw new BadRequestException('Invalid value for order parameter.');
     
-    return this.offersService.paginate(paginateOptions, promotionType, order);
+    return this.offersService.paginate(
+      { page, limit: ITEMS_LIMIT, route: '/offers' },
+      promotionType,
+      order,
+      priceRange,
+    );
   }
 }
