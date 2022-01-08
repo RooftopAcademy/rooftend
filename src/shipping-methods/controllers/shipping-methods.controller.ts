@@ -1,14 +1,9 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, Param } from '@nestjs/common';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
 @Controller('shipping-methods')
 export class ShippingMethodsController {
-  constructor(private shippingMethodsService: ShippingMethodsService) { }
+  constructor(private shippingMethodsService: ShippingMethodsService) {}
 
   @Get()
   @HttpCode(200)

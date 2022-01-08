@@ -6,18 +6,24 @@ import { ShippingMethodsController } from './shipping-methods.controller';
 describe('ShippingMethodsController', () => {
   let controller: ShippingMethodsController;
   const mockShippingMethodsRepository = {
-    findAll: jest.fn().mockImplementation(() => Promise.resolve([{
-      id: 3,
-      name: "Name",
-      photoId: 1,
-    },])),
-    findOne: jest.fn().mockImplementation((id) => Promise.resolve({
-      id,
-      name: "Name",
-      photoId: 1,
-    })),
+    findAll: jest.fn().mockImplementation(() =>
+      Promise.resolve([
+        {
+          id: 3,
+          name: 'Name',
+          photoId: 1,
+        },
+      ]),
+    ),
+    findOne: jest.fn().mockImplementation((id) =>
+      Promise.resolve({
+        id,
+        name: 'Name',
+        photoId: 1,
+      }),
+    ),
     getCount: jest.fn().mockImplementation(() => Promise.resolve(1)),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,13 +45,15 @@ describe('ShippingMethodsController', () => {
 
   describe('all', () => {
     it('should return an array of Shipping Methods', async () => {
-      expect(await controller.getAll()).toEqual(expect.arrayContaining([
-        {
-          id: expect.any(Number),
-          name: expect.any(String),
-          photoId: expect.any(Number),
-        },
-      ]));
+      expect(await controller.getAll()).toEqual(
+        expect.arrayContaining([
+          {
+            id: expect.any(Number),
+            name: expect.any(String),
+            photoId: expect.any(Number),
+          },
+        ]),
+      );
     });
 
     it('should call service.findAll with the id provided', () => {
@@ -60,7 +68,7 @@ describe('ShippingMethodsController', () => {
         id,
         name: expect.any(String),
         photoId: expect.any(Number),
-      })
+      });
     });
 
     it('should call service.findOne with the id provided', () => {
