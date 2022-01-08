@@ -1,17 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { Repository } from 'typeorm';
 import { History } from '../../models/history.entity';
-import { Item } from '../../../items/entities/items.entity'
-import { QueryBuilder } from 'typeorm';
-import { User } from '../../../users/entities/user.entity';
-import { HistoryModule } from '../../history.module';
+
 import { PhotosEntity } from '../../../photos/models/photos.entity';
+import STATUS from '../../../statusCodes/statusCode';
+import Status from '../../../statusCodes/status.interface';
+import { CreateHistoryDto } from '../../models/create-history.dto';
 
 @Injectable()
 export class HistoryService {
@@ -32,11 +27,10 @@ export class HistoryService {
       {item: 'item'}
       )
     .leftJoinAndMapOne('items.brand', 'items.brandId', 'brand')
-    .select(`TO_CHAR( history.created_at , 'YYYY Month')`, 'date')
+    .select('history.created_at')
     .addSelect(['items.title', 'brand.name', 'items.price', 'photos.url'])
     .where('history.user_id = :user',{ user })
-    .groupBy('date')
-    .addGroupBy('history.created_at')
+    .groupBy('history.created_at')
     .addGroupBy('items.title')
     .addGroupBy('items.price')
     .addGroupBy('photos.url')
@@ -48,10 +42,38 @@ export class HistoryService {
     return historyRaw;
   }
 
+  async create( createHistoryDto: CreateHistoryDto, user: number): Promise<Status> {
+    try {
+      const visit = { ...createHistoryDto, user_id: user };
+      const historyEntity = this.historyRepo.create(visit);
+      await this.historyRepo.save(historyEntity);
+      return STATUS.CREATED
+    }
+    catch (err) {
+      throw new UnprocessableEntityException();
+    }
+  }
 
-  async delete(id: number): Promise<boolean> {
-    await this.historyRepo.delete(id);
-    return true;
+  async delete(visitId: number): Promise<Status> {
+    try {
+      await this.findOneById(visitId)
+      await this.historyRepo.softDelete(visitId)
+      return STATUS.DELETED
+      
+    }
+    catch (err) {
+      throw new NotFoundException();
+    }
+  }
+
+  async findOneById(id: number): Promise<History> {
+    const visit = await this.historyRepo.findOne(id);
+
+    if (!visit) {
+      throw new NotFoundException('History not found');
+    }
+
+    return visit;
   }
 
 

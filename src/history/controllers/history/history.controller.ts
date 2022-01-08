@@ -1,14 +1,19 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   Param,
+  Post,
 } from '@nestjs/common';
 
-import { ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { HistoryService } from '../../services/history/history.service';
 import { History } from '../../models/history.entity';
+import STATUS from '../../../statusCodes/statusCode';
+import Status from '../../../statusCodes/status.interface';
+import { CreateHistoryDto } from '../../models/create-history.dto';
 
 @ApiTags('History')
 @Controller('history')
@@ -17,6 +22,14 @@ export class HistoryController {
 
   @Get()
   @HttpCode(200)
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: 'Ok',
+  })
   @ApiOperation({ summary: 'Get last 50 visits' })
   @ApiResponse({
     status: 200,
@@ -25,6 +38,22 @@ export class HistoryController {
   })
   getAll() {
     return this.historyService.get(1);
+  }
+
+
+  @Post('')
+  @HttpCode(201)
+  @ApiOperation({ summary: 'Create visits' })
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: STATUS.CREATED
+    }
+  })
+  @ApiBody({ type: CreateHistoryDto})
+  async createVisit(@Body() visit: CreateHistoryDto): Promise<Status> {
+    return await this.historyService.create(visit, 1)
   }
 
 
@@ -42,7 +71,14 @@ export class HistoryController {
     description: 'The ID of the Visit record to delete.',
     example: 1,
   })
-  delete(@Param('id') id: number) {
-    return this.historyService.delete(id);
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
+  })
+  @ApiBadRequestResponse({
+    description: 'Error, the deletion was not completed',
+  })
+  async delete(@Param('id') id: number): Promise<Status> {
+    return await this.historyService.delete(id);
   }
 }

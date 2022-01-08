@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
@@ -34,4 +34,11 @@ export class History {
     default: () => 'CURRENT_TIMESTAMP',
   })
   created_at: Date;
+
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'timestamptz',
+    default: null,
+  })
+  deletedAt?: Date;
 }

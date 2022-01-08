@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsDateString } from "class-validator";
+import { Item } from "../../items/entities/items.entity";
 
 
 export class HistoryDto {
@@ -18,10 +19,10 @@ export class HistoryDto {
 
   @ApiProperty({
       example:1,
-      description:'The id of the item that the user visited'
+      description:'The id of the item that the user visited',
   })
   @IsInt()
-  item_id: number;
+  item_id: Item;
 
   @ApiProperty({
     default: 'now()',
