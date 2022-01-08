@@ -10,8 +10,10 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-import { OfferDTO } from '../dto/offer.dto';
 
+import { PriceOrder } from '../controllers/price-order.enum';
+import { OfferDTO } from '../dto/offer.dto';
+import { PriceRangeDTO } from '../dto/price-range.dto';
 import { Offer } from '../entities/offer.entity';
 import { PromotionType } from '../entities/promotion-type.enum';
 
@@ -25,7 +27,8 @@ export class OffersService {
   async paginate(
     options: IPaginationOptions,
     promotionType?: PromotionType,
-    order?: 'ASC' | 'DESC',
+    order?: PriceOrder,
+    priceRange?: PriceRangeDTO,
     ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
 
     const query: SelectQueryBuilder<OfferDTO> = this.offersRepository.createQueryBuilder('offer')
@@ -48,6 +51,10 @@ export class OffersService {
         CASE WHEN offer.promotion_type = 'LIGHTNING_DEAL'
         THEN (offer.end_at - NOW()) END AS "offerTimeLeft"
       `);
+    
+    if (priceRange) {
+      query.andWhere('offer.final_price > :min AND offer.final_price < :max', priceRange);
+    }
     
     if (promotionType) {
       query.andWhere('offer.promotion_type = :promotionType', { promotionType });
