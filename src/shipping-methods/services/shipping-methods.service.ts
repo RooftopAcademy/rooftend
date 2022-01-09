@@ -12,32 +12,14 @@ export class ShippingMethodsService {
   ) {}
 
   findAll() {
-    //return this.shippingMethodsRepo.find();
-    return [
-      {
-        id: 1,
-        name: '',
-        photoId: 1,
-      },
-      {
-        id: 2,
-        name: '',
-        photoId: 2,
-      },
-    ];
+    return this.shippingMethodsRepo.find();
   }
 
   findOne(id: number) {
-    //return this.shippingMethodsRepo.findOne(id);
-    return {
-      id: id,
-      name: '',
-      photoId: 1,
-    };
+    return this.shippingMethodsRepo.findOne(id);
   }
 
   getCount() {
-    //return this.shippingMethodsRepo.query("SELECT COUNT(*) FROM shipping_methods");
-    return 10;
+    return this.shippingMethodsRepo.count();
   }
 }
