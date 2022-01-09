@@ -21,18 +21,6 @@ describe('CartService', () => {
             currencyCode: 'abc', 
             userId: 1 
         })),
-        merge: jest.fn().mockImplementation((newCart, oldCart) => Promise.resolve({ 
-            id: Date.now(), 
-            created_at: Date.now(), 
-            updated_at: Date.now(), 
-            ...oldCart 
-        })),
-        update: jest.fn().mockImplementation((id, cart) => Promise.resolve({
-            id,
-            created_at: Date.now(),
-            updated_at: Date.now(),
-            ...cart
-        })),
     }
 
     beforeEach(async () => {
@@ -70,17 +58,6 @@ describe('CartService', () => {
             created_at: expect.any(Number),
             updated_at: expect.any(Number),
 
-        })
-    });
-    it('should update a cart and return it', async () => {
-        const cart = { currencyCode: 'abc', amount: 555, userId: 1 };
-        expect(await service.update(10, cart)).toEqual({
-            id: 10,
-            created_at: expect.any(Number),
-            updated_at: expect.any(Number),
-            amount: cart.amount,
-            currencyCode : cart.currencyCode,
-            userId: cart.userId,
         })
     });
 
