@@ -16,10 +16,10 @@ import {
 
 import { OffersService } from '../services/offers.service';
 import { PromotionType } from '../entities/promotion-type.enum';
-import { PromotionTypeValidationPipe } from '../pipes/promotion-type-validation.pipe';
+import { PromotionTypeValidationPipe } from './promotion-type-validation.pipe';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { OfferDTO } from '../dto/offer.dto';
-import { PriceRangeValidationPipe } from '../pipes/price-range-validation.pipe';
+import { PriceRangeValidationPipe } from './price-range-validation.pipe';
 import { PriceRangeDTO } from '../dto/price-range.dto';
 import { PriceOrder } from './price-order.enum';
 import { isEnum } from 'class-validator';
