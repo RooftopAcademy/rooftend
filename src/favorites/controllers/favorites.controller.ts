@@ -28,6 +28,8 @@ import {
 import { FavoritesService } from '../services/favorites.service';
 
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
+import { Favorite } from '../entities/favorite.entity';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -178,7 +180,7 @@ export class FavoritesController {
     @Query('token') token: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ) {
+  ): Promise<Pagination<Favorite>> {
     limit = 10
     token = 1
     return this.favoritesService.paginate(

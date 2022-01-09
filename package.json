@@ -24,6 +24,7 @@
       "migrations:run": "npm run typeorm -- migration:run"
    },
    "dependencies": {
+      "@casl/ability": "^5.4.3",
       "@nestjs-query/query-typeorm": "^0.30.0",
       "@nestjs/common": "^8.0.0",
       "@nestjs/config": "^1.1.0",
