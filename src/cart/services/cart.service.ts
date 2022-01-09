@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
 
 @Injectable()
@@ -21,8 +22,10 @@ export class CartService {
         return this.cartRepo.findOne(id);
     }
 
-    create(body: any): Promise<Cart> {
-        return this.cartRepo.save(body);
+    create(user: User, body: Cart): Promise<Cart> {
+        let cart = this.cartRepo.create(body);
+        cart.user = user;
+        return this.cartRepo.save(cart);
     }
 
 }

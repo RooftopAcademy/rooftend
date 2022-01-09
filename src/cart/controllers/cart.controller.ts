@@ -6,6 +6,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
 
@@ -45,7 +46,9 @@ export class CartController {
   @ApiResponse({ status: 201, description: 'Cart succesfully created' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   create(@Body() body: any): Promise<Cart> {
-    return this.cartService.create(body);
+    let user = new User();
+    user.id = 1;
+    return this.cartService.create(user, body);
   }
 
 }
