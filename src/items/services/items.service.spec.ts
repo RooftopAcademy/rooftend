@@ -19,51 +19,56 @@ describe('ItemsService', () => {
     id: 3,
     createdAt: new Date(),
     updatedAt: new Date(),
-    title: "Name 2",
-    description: "Des 2",
+    title: 'Name 2',
+    description: 'Des 2',
     price: 2,
     stock: 2,
     brandId: new Brand(),
     userId,
     categoryId: new Category(),
     cartItemsId: [],
-    questions: []
-  }
+    questions: [],
+  };
 
   const mockItemsRepository = {
-    find: jest.fn(() => Promise.resolve([{
-      id: 2,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title: "Name",
-      description: "Des",
-      price: 1,
-      stock: 1,
-      brandId: new Brand(),
-      userId: 1,
-      categoryId: new Category(),
-      cartItemsId: [],
-      questions: []
-    }, {
-      id: 3,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      title: "Name 2",
-      description: "Des 2",
-      price: 2,
-      stock: 2,
-      brandId: new Brand(),
-      userId: newUser.id,
-      categoryId: new Category(),
-      cartItemsId: [],
-      questions: []
-    }])),
-    findOne: jest.fn(id => Promise.resolve(genericItem)),
-    create: jest.fn(body => Object.assign(body, { id: 4 })),
+    find: jest.fn(() =>
+      Promise.resolve([
+        {
+          id: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          title: 'Name',
+          description: 'Des',
+          price: 1,
+          stock: 1,
+          brandId: new Brand(),
+          userId: 1,
+          categoryId: new Category(),
+          cartItemsId: [],
+          questions: [],
+        },
+        {
+          id: 3,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          title: 'Name 2',
+          description: 'Des 2',
+          price: 2,
+          stock: 2,
+          brandId: new Brand(),
+          userId: newUser.id,
+          categoryId: new Category(),
+          cartItemsId: [],
+          questions: [],
+        },
+      ]),
+    ),
+    findOne: jest.fn((id) => Promise.resolve(genericItem)),
+    create: jest.fn((body) => Object.assign(body, { id: 4 })),
     merge: jest.fn((item, body) => Object.assign({ item, body })),
-    save: jest.fn(item => Promise.resolve(item)),
-    delete: jest.fn(id => Promise.resolve(true)),
-  }
+    save: jest.fn((item) => Promise.resolve(item)),
+    delete: jest.fn((id) => Promise.resolve(true)),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -73,10 +78,9 @@ describe('ItemsService', () => {
           provide: getRepositoryToken(Item),
           useValue: mockItemsRepository,
         },
-        CaslAbilityFactory
-      ]
-    })
-      .compile();
+        CaslAbilityFactory,
+      ],
+    }).compile();
 
     service = module.get<ItemsService>(ItemsService);
   });
@@ -87,33 +91,36 @@ describe('ItemsService', () => {
 
   describe('all', () => {
     it('should return an array of Items', async () => {
-      expect(await service.findAll()).toEqual([{
-        id: 2,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-        title: "Name",
-        description: "Des",
-        price: 1,
-        stock: 1,
-        brandId: expect.any(Brand),
-        userId: 1,
-        categoryId: expect.any(Category),
-        cartItemsId: [],
-        questions: []
-      }, {
-        id: 3,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-        title: "Name 2",
-        description: "Des 2",
-        price: 2,
-        stock: 2,
-        brandId: expect.any(Brand),
-        userId: newUser.id,
-        categoryId: expect.any(Category),
-        cartItemsId: [],
-        questions: []
-      }]);
+      expect(await service.findAll()).toEqual([
+        {
+          id: 2,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          title: 'Name',
+          description: 'Des',
+          price: 1,
+          stock: 1,
+          brandId: expect.any(Brand),
+          userId: 1,
+          categoryId: expect.any(Category),
+          cartItemsId: [],
+          questions: [],
+        },
+        {
+          id: 3,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          title: 'Name 2',
+          description: 'Des 2',
+          price: 2,
+          stock: 2,
+          brandId: expect.any(Brand),
+          userId: newUser.id,
+          categoryId: expect.any(Category),
+          cartItemsId: [],
+          questions: [],
+        },
+      ]);
     });
   });
 
@@ -123,15 +130,15 @@ describe('ItemsService', () => {
         id: 3,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        title: "Name 2",
-        description: "Des 2",
+        title: 'Name 2',
+        description: 'Des 2',
         price: 2,
         stock: 2,
         brandId: expect.any(Brand),
         userId: newUser.id,
         categoryId: expect.any(Category),
         cartItemsId: [],
-        questions: []
+        questions: [],
       });
     });
 
@@ -149,8 +156,8 @@ describe('ItemsService', () => {
   describe('create', () => {
     it('should create a Item', async () => {
       const dto: CreateItemDTO = {
-        title: "Name 2",
-        description: "Des 2",
+        title: 'Name 2',
+        description: 'Des 2',
         price: 2,
         stock: 2,
         brandId: new Brand(),
@@ -160,7 +167,7 @@ describe('ItemsService', () => {
       const expected = {
         id: 4,
         ...dto,
-        userId: newUser.id
+        userId: newUser.id,
       };
 
       expect(await service.create(newUser, dto)).toEqual(expected);
@@ -175,7 +182,7 @@ describe('ItemsService', () => {
       newUser.id = userId;
       const dto = {
         price: 100,
-        stock: 500
+        stock: 500,
       };
 
       const expected = {
@@ -185,9 +192,13 @@ describe('ItemsService', () => {
         updatedAt: expect.any(Date),
       };
 
-      mockItemsRepository.save.mockReturnValueOnce(Promise.resolve({ ...genericItem, ...dto }));
+      mockItemsRepository.save.mockReturnValueOnce(
+        Promise.resolve({ ...genericItem, ...dto }),
+      );
 
-      expect(await service.update(newUser, genericItem.id, dto)).toEqual(expected);
+      expect(await service.update(newUser, genericItem.id, dto)).toEqual(
+        expected,
+      );
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
       expect(mockItemsRepository.merge).toHaveBeenCalledWith(genericItem, dto);
@@ -196,11 +207,13 @@ describe('ItemsService', () => {
     it('should throw ForbiddenException', async () => {
       newUser.id = userId + 1;
       const dto = {
-        stock: 500
+        stock: 500,
       };
 
       try {
-        expect(await service.update(newUser, genericItem.id, dto)).toThrow(ForbiddenException);
+        expect(await service.update(newUser, genericItem.id, dto)).toThrow(
+          ForbiddenException,
+        );
       } catch (err) {
         expect(err.message).toEqual('Cannot execute "update" on "Item"');
       }
@@ -224,7 +237,9 @@ describe('ItemsService', () => {
       newUser.id = userId + 1;
 
       try {
-        expect(await service.delete(newUser, genericItem.id)).toThrow(ForbiddenException);
+        expect(await service.delete(newUser, genericItem.id)).toThrow(
+          ForbiddenException,
+        );
       } catch (err) {
         expect(err.message).toBe('Cannot execute "delete" on "Item"');
       }

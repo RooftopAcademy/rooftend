@@ -16,7 +16,6 @@ import { Category } from '../../categories/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
 
-
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn({
@@ -88,7 +87,7 @@ export class Item {
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
   brandId: Brand;
 
-  @ManyToOne(() => User, user => user.items)
+  @ManyToOne(() => User, (user) => user.items)
   @JoinColumn({
     name: 'user_id',
   })

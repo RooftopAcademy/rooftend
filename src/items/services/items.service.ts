@@ -11,14 +11,13 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/permission.enum';
 import { ForbiddenError } from '@casl/ability';
 
-
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly ItemsRepo: Repository<Item>,
-    private readonly caslAbilityFactory: CaslAbilityFactory
-  ) { }
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   findAll(): Promise<Item[]> {
     return this.ItemsRepo.find();
@@ -43,7 +42,10 @@ export class ItemsService {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    ForbiddenError.from(ability).throwUnlessCan(Permission.Update, Object.assign(new Item(), item));
+    ForbiddenError.from(ability).throwUnlessCan(
+      Permission.Update,
+      Object.assign(new Item(), item),
+    );
 
     this.ItemsRepo.merge(item, body);
     return this.ItemsRepo.save(item);
@@ -53,7 +55,10 @@ export class ItemsService {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    ForbiddenError.from(ability).throwUnlessCan(Permission.Delete, Object.assign(new Item(), item));
+    ForbiddenError.from(ability).throwUnlessCan(
+      Permission.Delete,
+      Object.assign(new Item(), item),
+    );
 
     await this.ItemsRepo.delete(id);
     return true;

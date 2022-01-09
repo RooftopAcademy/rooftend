@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 
@@ -12,10 +24,10 @@ import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { Request, Response } from 'express';
 import { User } from '../../users/entities/user.entity';
 
-@ApiTags("Items")
+@ApiTags('Items')
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService) { }
+  constructor(private readonly ItemsService: ItemsService) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -37,7 +49,11 @@ export class ItemsController {
   })
   @Get(':id')
   @HttpCode(200)
-  getOne(@Req() req: Request, @Param('id') id: number, @Res() res: Response): Promise<Item> {
+  getOne(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Res() res: Response,
+  ): Promise<Item> {
     try {
       return this.ItemsService.findOne(id);
     } catch (error) {
@@ -77,7 +93,12 @@ export class ItemsController {
   @Patch(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(204)
-  update(@Req() req: Request, @Param('id') id: number, @Body() body: any, @Res() res: Response): Promise<Item> {
+  update(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Body() body: any,
+    @Res() res: Response,
+  ): Promise<Item> {
     const user = new User();
     user.id = 1;
 
@@ -101,7 +122,11 @@ export class ItemsController {
   @Delete(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  delete(@Req() req: Request, @Param('id') id: number, @Res() res: Response): Promise<boolean> {
+  delete(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Res() res: Response,
+  ): Promise<boolean> {
     const user = new User();
     user.id = 1;
 

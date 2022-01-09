@@ -1,5 +1,5 @@
-import { Brand } from "../../brands/entities/brands.entity";
-import { Category } from "../../categories/categories.entity";
+import { Brand } from '../../brands/entities/brands.entity';
+import { Category } from '../../categories/categories.entity';
 
 export class CreateItemDTO {
   title: string;
@@ -7,6 +7,5 @@ export class CreateItemDTO {
   price: number;
   stock: number;
   brandId: Brand;
-  categoryId: Category
+  categoryId: Category;
 }
-
