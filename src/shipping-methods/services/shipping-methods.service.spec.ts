@@ -8,7 +8,7 @@ describe('ShippingMethodsService', () => {
 
   const id = 1;
   const mockShippingMethodsRepository = {
-    findAll: jest.fn().mockImplementation(() =>
+    find: jest.fn().mockImplementation(() =>
       Promise.resolve([
         {
           id: 3,
@@ -24,7 +24,7 @@ describe('ShippingMethodsService', () => {
         photoId: 1,
       }),
     ),
-    getCount: jest.fn().mockImplementation(() => Promise.resolve(1)),
+    count: jest.fn().mockImplementation(() => Promise.resolve(10)),
   };
 
   beforeEach(async () => {
@@ -49,9 +49,9 @@ describe('ShippingMethodsService', () => {
     expect(await service.findAll()).toEqual(
       expect.arrayContaining([
         {
-          id: expect.any(Number),
-          name: expect.any(String),
-          photoId: expect.any(Number),
+          id: 3,
+          name: 'Name',
+          photoId: 1,
         },
       ]),
     );
@@ -60,12 +60,12 @@ describe('ShippingMethodsService', () => {
   it('should return a Shipping Method with the given id', async () => {
     expect(await service.findOne(id)).toEqual({
       id,
-      name: expect.any(String),
-      photoId: expect.any(Number),
+      name: 'Name',
+      photoId: 1,
     });
   });
 
   it('should return the quantity of existing Shipping Methods', async () => {
-    expect(await service.getCount()).toEqual(expect.any(Number));
+    expect(await service.getCount()).toEqual(10);
   });
 });
