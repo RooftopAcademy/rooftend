@@ -118,8 +118,6 @@ export class OffersController {
   ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
     const ITEMS_LIMIT: number = 50;
 
-    console.log(order);
-
     if (order && !isEnum(order, PriceOrder)) throw new BadRequestException('Invalid value for order parameter.');
     
     return this.offersService.paginate(
