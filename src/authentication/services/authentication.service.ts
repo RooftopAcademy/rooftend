@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../../users/services/user.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
@@ -40,13 +40,13 @@ export class AuthenticationService {
     }
 
     //buscar expresión regular que funcione
-    const regEx = /^[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?><]*$/g;
-    if (regEx.test(password)) {
-      throw new HttpException(
-        'The password can contain letters,numbers and special characters only.',
-        HttpStatus.CONFLICT,
-      );
-    }
+    // const regEx = /^[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?><]*$/g;
+    // if (regEx.test(password)) {
+    //   throw new HttpException(
+    //     'The password can contain letters,numbers and special characters only.',
+    //     HttpStatus.CONFLICT,
+    //   );
+    // }
   }
 
   async create(user: CreateUserDTO) {
@@ -57,9 +57,14 @@ export class AuthenticationService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     const passwordMatch = await bcrypt.compare(pass, user.password);
 
-    if (user && passwordMatch) {
+    if (passwordMatch) {
       const { password, ...result } = user;
       return result;
     }
