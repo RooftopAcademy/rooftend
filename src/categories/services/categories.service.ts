@@ -21,7 +21,7 @@ export class CategoriesService {
   async findOne(id: number): Promise<Category> {
     const category: Category | undefined = await this.repository.findOne(id);
     if (!category) {
-      throw new NotFoundException(`Review with id ${id} not found.`);
+      throw new NotFoundException(`Category with id ${id} not found.`);
     }
     return category;
   }
