@@ -84,6 +84,16 @@ describe('ShippingMethodsController', () => {
     it('should call service.findOne with the id provided', () => {
       expect(mockShippingMethodsService.findOne).toHaveBeenCalledWith(id);
     });
+
+    it('should throw a NotFoundError', async () => {
+      mockShippingMethodsService.findOne.mockImplementationOnce(() => { throw new NotFoundException() })
+
+      try {
+        expect(await controller.getOne(id)).toThrow(NotFoundException);
+      } catch (error) {
+        expect(error.message).toEqual("Not Found");
+      }
+    });
   });
 
   describe('count', () => {
