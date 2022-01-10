@@ -2,10 +2,16 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
+  Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
@@ -30,12 +36,23 @@ export class CartController {
     type: "integer",
     required: true
   })
+  @UseGuards(PoliciesGuard)
+  @HttpCode(200)
   @ApiOperation({ summary: 'Gets one cart by Id' })
   @ApiResponse({ status: 201, description: 'Cart succesfully found' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   @ApiNotFoundResponse({ status: 404, description: 'No Cart was found that matches that id' })
-  getOne(@Param('id') id: number): Promise<Cart> {
-    return this.cartService.findOne(id);
+  getOne(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Res() res:Response
+    ): Promise<Cart> {
+    try{
+      return this.cartService.findOne(id);
+    }catch(error){
+      res.status(404);
+      return error.message;
+    }
   }
 
   @ApiBody({

@@ -8,9 +8,10 @@ import {
 import { Injectable } from '@nestjs/common';
 import { Permission } from '../permission.enum';
 import { User } from '../../users/entities/user.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 
 // TODO: replace any with classes
-type Subjects = InferSubjects<any> | 'all';
+type Subjects = InferSubjects<typeof Cart> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -20,6 +21,8 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder<
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
+
+    can(Permission.Read, Cart, { user: { id: user.id } });
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
