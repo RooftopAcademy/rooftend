@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import {
   paginate,
   Pagination,
@@ -15,14 +15,12 @@ export class CategoriesService {
   ) {}
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
-    try {
-      const categories = this.repository
-        .createQueryBuilder('categories')
-        .select('categories.name');
-      return paginate<Category>(categories, options);
-    } catch (err) {
-      return null;
-    }
+    return paginate<Category>(this.repository, options,{
+      where: {
+        parentCategory: { id: IsNull() },
+      },
+      // relations: ['categories'],
+    });
   }
 
   async findOne(id: number): Promise<Category> {

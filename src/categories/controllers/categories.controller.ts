@@ -41,6 +41,7 @@ export class CategoriesController {
       example: {
         items: [
           {
+            id: 1,
             name: 'TECHNOLOGY',
           },
         ],
@@ -53,7 +54,6 @@ export class CategoriesController {
       example: new NotFoundException('No categories available').getResponse(),
     },
   })
- 
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -85,8 +85,14 @@ export class CategoriesController {
   @ApiOperation({ summary: ' Gets one category by id' })
   @ApiParam({ name: 'id', type: Number, required: true, example: 1 })
   @ApiOkResponse({
-    type: Category,
+    status: 200,
     description: 'The category found.',
+    schema: {
+      example: {
+        id: 1,
+        name: 'TECHNOLOGY',
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'Category not found.',
