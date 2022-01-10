@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -21,7 +20,7 @@ import {
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { PoliciesGuard } from '../../auth/guards/policies.guard';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Items')
@@ -49,11 +48,7 @@ export class ItemsController {
   })
   @Get(':id')
   @HttpCode(200)
-  getOne(
-    @Req() req: Request,
-    @Param('id') id: number,
-    @Res() res: Response,
-  ): Promise<Item> {
+  getOne(@Param('id') id: number, @Res() res: Response): Promise<Item> {
     try {
       return this.ItemsService.findOne(id);
     } catch (error) {
@@ -74,7 +69,7 @@ export class ItemsController {
   @Post()
   @UseGuards(PoliciesGuard)
   @HttpCode(201)
-  create(@Req() req: Request, @Body() body: any): Promise<Item> {
+  create(@Body() body: any): Promise<Item> {
     const user = new User();
     user.id = 1;
 
@@ -94,7 +89,6 @@ export class ItemsController {
   @UseGuards(PoliciesGuard)
   @HttpCode(204)
   update(
-    @Req() req: Request,
     @Param('id') id: number,
     @Body() body: any,
     @Res() res: Response,
@@ -122,11 +116,7 @@ export class ItemsController {
   @Delete(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  delete(
-    @Req() req: Request,
-    @Param('id') id: number,
-    @Res() res: Response,
-  ): Promise<boolean> {
+  delete(@Param('id') id: number, @Res() res: Response): Promise<boolean> {
     const user = new User();
     user.id = 1;
 
