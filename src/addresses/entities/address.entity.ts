@@ -5,8 +5,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
+  JoinColumn,
+  ManyToOne
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({
   name: 'addresses',
@@ -14,7 +16,7 @@ import {
 export class Address {
   @ApiProperty({
     description: 'Address Id number',
-    type: 'integer',
+    type: Number,
     example: 1,
   })
   @PrimaryGeneratedColumn({
@@ -26,7 +28,7 @@ export class Address {
   @ApiProperty({
     description: 'The date when the address is created',
     default: 'Current date',
-    type: 'date',
+    type: String,
     format: 'date-time',
     example: '2021-12-15',
   })
@@ -40,75 +42,68 @@ export class Address {
   @ApiProperty({
     description: 'The date when the address is updated',
     default: 'Current date',
-    type: 'date',
+    type: String,
     format: 'date-time',
     example: '2021-12-15',
   })
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: null,
   })
   updatedAt: Date;
 
-  @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'timestamptz',
-    default: null,
-  })
-  deletedAt?: Date;
-
   @ApiProperty({
     description: '3 digits ISO country code',
-    type: 'string',
+    type: String,
     example: 'ARG',
   })
   @Column({
     name: 'country_code',
-    type: 'char',
+    type: 'character varying',
     length: 3,
   })
   countryCode: string;
 
   @ApiProperty({
     description: 'Country state name',
-    type: 'string',
+    type: String,
     example: 'Córdoba',
   })
   @Column({
     name: 'country_state',
-    type: 'char',
+    type: 'character varying',
     length: 100,
   })
   countryState: string;
 
   @ApiProperty({
     description: 'City name',
-    type: 'string',
+    type: String,
     example: 'San Francisco',
   })
   @Column({
     name: 'city_name',
-    type: 'char',
+    type: 'character varying',
     length: 200,
   })
   cityName: string;
 
   @ApiProperty({
     description: 'Street name',
-    type: 'string',
+    type: String,
     example: '9 de Julio',
   })
   @Column({
     name: 'street_name',
-    type: 'char',
+    type: 'character varying',
     length: 200,
   })
   streetName: string;
 
   @ApiProperty({
     description: 'Street number',
-    type: 'integer',
+    type: Number,
     example: 3850,
   })
   @Column({
@@ -119,19 +114,19 @@ export class Address {
 
   @ApiProperty({
     description: 'Zip code',
-    type: 'string',
+    type: String,
     example: 'X2400AIQ',
   })
   @Column({
     name: 'zip_code',
-    type: 'char',
+    type: 'character varying',
     length: 10,
   })
   zipCode: string;
 
   @ApiProperty({
     description: 'Floor number',
-    type: 'small-integer',
+    type: Number,
     example: 8,
     default: null,
   })
@@ -144,13 +139,13 @@ export class Address {
 
   @ApiProperty({
     description: 'Office code',
-    type: 'string',
+    type: String,
     example: 'B',
     default: null,
   })
   @Column({
     name: 'office',
-    type: 'char',
+    type: 'character varying',
     length: 5,
     default: null,
   })
@@ -159,37 +154,34 @@ export class Address {
   @ApiProperty({
     description:
       'Indications about the house, apartment, neighborhood, streets, etc.',
-    type: 'string',
+    type: String,
     example: 'My house color is beige, with a black door.',
     default: null,
   })
   @Column({
     name: 'references',
-    type: 'char',
+    type: 'character varying',
     length: 500,
     default: null,
   })
   references?: string;
 
-  @ApiProperty({
-    description: 'Id of the entity this address belongs',
-    example: 4,
-    type: 'big-integer',
-  })
-  @Column({
-    name: 'subject_id',
-    type: 'bigint',
+  @ApiProperty({ example: 999, description: 'Id of the Adress owner', type: Number })
+  @Column({ type: 'bigint', nullable: false })
+  @ManyToOne(() => User)
+  @JoinColumn({
+    name: 'user_id',
   })
   subjectId: number;
 
   @ApiProperty({
     description: 'Entity type this address belongs',
     example: 'User',
-    type: 'string',
+    type: String,
   })
   @Column({
     name: 'subject_type',
-    type: 'char',
+    type: 'character varying',
     length: 100,
   })
   subjectType: string;
