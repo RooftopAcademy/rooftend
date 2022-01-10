@@ -10,6 +10,7 @@ import { CreateItemDTO } from '../entities/create.item.dto';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/permission.enum';
 import { ForbiddenError } from '@casl/ability';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ItemsService {
@@ -44,7 +45,7 @@ export class ItemsService {
 
     ForbiddenError.from(ability).throwUnlessCan(
       Permission.Update,
-      Object.assign(new Item(), item),
+      plainToClass(Item, item),
     );
 
     this.ItemsRepo.merge(item, body);
@@ -57,7 +58,7 @@ export class ItemsService {
 
     ForbiddenError.from(ability).throwUnlessCan(
       Permission.Delete,
-      Object.assign(new Item(), item),
+      plainToClass(Item, item),
     );
 
     await this.ItemsRepo.delete(id);
