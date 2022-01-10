@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,8 +15,12 @@ export class ShippingMethodsService {
     return this.shippingMethodsRepo.find();
   }
 
-  findOne(id: number) {
-    return this.shippingMethodsRepo.findOne(id);
+  async findOne(id: number) {
+    const shippingMethod: ShippingMethod = await this.shippingMethodsRepo.findOne(id);
+
+    if (!shippingMethod) throw new NotFoundException();
+
+    return shippingMethod;
   }
 
   getCount() {
