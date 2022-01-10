@@ -26,17 +26,17 @@ export class Category {
   })
   name: string;
 
-  @ManyToOne(()=>Category,(category)=>category.id)
+  @ManyToOne(() => Category, (category) => category.id)
   @ApiProperty({
-    type:Number,
+    type: () => Category,
     description: 'Parent category id',
     example: '1',
   })
-  @Column({
+  @JoinColumn({
     name: 'category_id',
   })
-  categoryId: string;
+  parentCategory: Category;
 
-  @OneToMany(()=>Category,(category)=>category.id)
-  subCategories:Category[]
+  @OneToMany(() => Category, (category) => category.id)
+  subCategories: Category[];
 }
