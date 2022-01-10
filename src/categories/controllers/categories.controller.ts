@@ -23,7 +23,6 @@ import {
   ApiParam,
   ApiOkResponse,
   ApiNotFoundResponse,
-  ApiBody,
   ApiResponse,
   ApiQuery,
 } from '@nestjs/swagger';
@@ -36,9 +35,17 @@ export class CategoriesController {
   @Get()
   @ApiOperation({ summary: 'Returns all available categories' })
   @ApiOkResponse({
-    type: Category,
+    status: 200,
     description: 'The categories available',
-    isArray: true,
+    schema: {
+      example: {
+        items: [
+          {
+            name: 'TECHNOLOGY',
+          },
+        ],
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'No categories available',
@@ -46,6 +53,7 @@ export class CategoriesController {
       example: new NotFoundException('No categories available').getResponse(),
     },
   })
+ 
   @ApiQuery({
     name: 'page',
     type: Number,
