@@ -18,6 +18,7 @@ import { QuestionsModule } from '../../questions/questions.module';
 import { userInfo } from 'os';
 import { Question } from '../../questions/entities/question.entity';
 import { Item } from '../../items/entities/items.entity';
+import { History } from '../../history/models/history.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
 @Entity('users')
 export class User {
@@ -84,6 +85,9 @@ export class User {
 
   @OneToMany(() => Search, (search) => search.user)
   searches: Search[];
+
+  @OneToMany(() => History, (visit) => visit.user_id)
+  visits: History[];
 
   @OneToMany((type) => Question, (question) => question.userId)
   questions: Question[];
