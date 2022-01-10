@@ -15,11 +15,18 @@ export class CategoriesService {
   ) {}
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
-    return paginate<Category>(this.repository, options);
+    try {
+      const categories = this.repository
+        .createQueryBuilder('categories')
+        .select('categories.name');
+      return paginate<Category>(categories, options);
+    } catch (err) {
+      return null;
+    }
   }
 
   async findOne(id: number): Promise<Category> {
-    const category: Category | undefined = await this.repository.findOne(id);
+    const category: Category = await this.repository.findOne(id);
     if (!category) {
       throw new NotFoundException(`Category with id ${id} not found.`);
     }
