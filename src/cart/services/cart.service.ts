@@ -1,4 +1,4 @@
-import { ForbiddenError } from '@casl/ability';
+import { defineAbility, ForbiddenError, subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
@@ -33,15 +33,11 @@ export class CartService {
         cart.cartItems = await this.cartItemService.findAll(id);
         console.log(cart);
         const ability = this.caslAbilityFactory.createForUser(user);
-        console.log(ability.can(Permission.Read, plainToClass(Cart, cart) ));
+        cart.user.id = +cart.user.id;
+        console.log(ability.can(Permission.Read, subject('Cart',cart) ));
+        //console.log(ability.can(Permission.Read, plainToClass(Cart,cart) ));
         console.log(user.id + " this is the user id");
-        console.log(cart.user + " this is the user id asigned to the cart");
         console.log(ability.relevantRuleFor(Permission.Read, Cart ));
-        // ForbiddenError.from(ability).throwUnlessCan(
-        //     Permission.Read,
-        //     plainToClass(Cart, cart),
-        // );
-        
         return cart;
     }
 
