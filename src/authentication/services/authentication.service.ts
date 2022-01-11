@@ -24,30 +24,30 @@ export class AuthenticationService {
     }
   }
 
-  async checkPass(password: string) {
-    if (password.length > 16) {
-      throw new HttpException(
-        'Password must not contain more than 16 characters.',
-        HttpStatus.CONFLICT,
-      );
-    }
+  // async checkPass(password: string) {
+  //   if (password.length > 16) {
+  //     throw new HttpException(
+  //       'Password must not contain more than 16 characters.',
+  //       HttpStatus.CONFLICT,
+  //     );
+  //   }
 
-    if (password.length < 8) {
-      throw new HttpException(
-        'Password must contain at least 8 characters.',
-        HttpStatus.CONFLICT,
-      );
-    }
+  //   if (password.length < 8) {
+  //     throw new HttpException(
+  //       'Password must contain at least 8 characters.',
+  //       HttpStatus.CONFLICT,
+  //     );
+  //   }
 
-    //buscar expresión regular que funcione
-    // const regEx = /^[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?><]*$/g;
-    // if (regEx.test(password)) {
-    //   throw new HttpException(
-    //     'The password can contain letters,numbers and special characters only.',
-    //     HttpStatus.CONFLICT,
-    //   );
-    // }
-  }
+  //   buscar expresión regular que funcione
+  //   const regEx = /^[A-Za-z0-9\s!@#$%^&*()_+=-`~\\\]\[{}|';:/.,?><]*$/g;
+  //   if (regEx.test(password)) {
+  //     throw new HttpException(
+  //       'The password can contain letters,numbers and special characters only.',
+  //       HttpStatus.CONFLICT,
+  //     );
+  //   }
+  // }
 
   async create(user: CreateUserDTO) {
     user.email = user.email.toLowerCase();
