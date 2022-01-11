@@ -24,8 +24,6 @@ export class AuthenticationController {
 
     await this.authService.create(user);
 
-    //crear evento para crear carrito
-
     return this.authService.login(user);
   }
 
