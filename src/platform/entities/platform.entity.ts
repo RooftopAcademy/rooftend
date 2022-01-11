@@ -16,6 +16,7 @@ export class Platform {
     description: 'Platform Id number',
     type: 'integer',
     example: 1,
+    readOnly: true,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,
