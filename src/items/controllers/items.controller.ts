@@ -17,6 +17,8 @@ import {
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { User } from '../../users/entities/user.entity';
@@ -24,7 +26,7 @@ import { User } from '../../users/entities/user.entity';
 @ApiTags('Items')
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService) { }
+  constructor(private readonly ItemsService: ItemsService) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -46,6 +48,9 @@ export class ItemsController {
   })
   @Get(':id')
   @HttpCode(200)
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+  })
   getOne(@Param('id') id: number): Promise<Item> {
     return this.ItemsService.findOne(id);
   }
@@ -81,10 +86,13 @@ export class ItemsController {
   @Patch(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(204)
-  update(
-    @Param('id') id: number,
-    @Body() body: any
-  ): Promise<Item> {
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+  })
+  update(@Param('id') id: number, @Body() body: any): Promise<Item> {
     const user = new User();
     user.id = 1;
 
@@ -103,6 +111,9 @@ export class ItemsController {
   @Delete(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
   delete(@Param('id') id: number): Promise<boolean> {
     const user = new User();
     user.id = 1;
