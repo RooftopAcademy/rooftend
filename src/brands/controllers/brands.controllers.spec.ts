@@ -10,7 +10,7 @@ describe('brandsController', () => {
   const mockBrandService = {
     create: jest.fn((dto) => {
       return {
-        id: expect.any(Number),
+        id: Date.now(),
         ...dto,
       };
     }),
@@ -38,19 +38,19 @@ describe('brandsController', () => {
   });
 
   it('should create a brand', () => {
-    expect(controller.create({ name: 'Mario', photoId: 'ph id' })).toEqual({
+    expect(controller.create({ name: 'Mario', photoId: 123 })).toEqual({
       id: expect.any(Number),
       name: 'Mario',
-      photoId: 'ph id',
+      photoId: 123,
     });
   });
 
   it('should update a brand', () => {
-    const dto: createBrandDTO = { name: 'Mario', photoId: 'ph id' };
-    expect(controller.update(1, dto)).toEqual({
-      id: expect.any(Number),
+    const brand = {name: 'Mario', photoId:123 };
+    expect(controller.update(1, brand)).toEqual({
+      id: 1,
       name: 'Mario',
-      photoId: 'ph id',
+      photoId: 123,
     });
   });
 });

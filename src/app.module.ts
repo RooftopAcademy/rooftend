@@ -44,7 +44,7 @@ import { SupportModule } from './support/support.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      //synchronize: true,
     }),
 
     AccountStatusModule,
@@ -78,4 +78,5 @@ import { SupportModule } from './support/support.module';
   controllers: [AppController],
   providers: [AppService],
 })
+
 export class AppModule {}

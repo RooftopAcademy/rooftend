@@ -15,20 +15,16 @@ export class BrandsService {
     private brandRepo: Repository<Brand>,
   ) {}
 
-  findOne(id: number) {
+  findOne(id: number): Promise<Brand> {
     return this.brandRepo.findOne(id);
   }
 
-  findAll() {
-    return this.brandRepo.find();
-  }
-
-  create(body: any) {
+  create(body: any): Promise<Brand[]> {
     const newBrand = this.brandRepo.create(body);
     return this.brandRepo.save(newBrand);
   }
 
-  async update(id: number, body: any) {
+  async update(id: number, body: any): Promise<Brand> {
     const brand = await this.brandRepo.findOne(id);
     this.brandRepo.merge(brand, body);
     return this.brandRepo.save(brand);
