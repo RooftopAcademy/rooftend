@@ -35,10 +35,4 @@ export class AuthenticationController {
   async login(@Req() req) {
     return this.authService.login(req.user);
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('profile')
-  // getProfile(@Request() req) {
-  //   return req.user;
-  // }
 }
