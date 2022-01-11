@@ -15,23 +15,12 @@ export class HistoryService {
     private readonly historyRepo: Repository<History>,
   ) {}
 
-  getAll(): Promise<History[]> {
-    return this.historyRepo.find();
-  }
-
-  getById(id: number): Promise<History> {
-    return this.historyRepo.findOne(id);
-  }
-
-  create(body: any): Promise<History[]> {
-    const newHistory = this.historyRepo.create(body);
-    return this.historyRepo.save(newHistory);
-  }
-
-  async update(id: number, body: any): Promise<History> {
-    const history = await this.historyRepo.findOne(id);
-    this.historyRepo.merge(history, body);
-    return this.historyRepo.save(history);
+  async getAll(userId): Promise<History[]> {
+    return await this.historyRepo.find({
+      where: {
+        userId,
+      },
+    });
   }
 
   async delete(id: number): Promise<boolean> {
