@@ -26,7 +26,7 @@ export class Category {
   })
   name: string;
 
-  @ManyToOne(() => Category, (category) => category.id)
+  @ManyToOne(() => Category, (category) => category.subCategories)
   @ApiProperty({
     type: () => Category,
     description: 'Parent category id',
@@ -37,6 +37,6 @@ export class Category {
   })
   parentCategory: Category;
 
-  @OneToMany(() => Category, (category) => category.id)
+  @OneToMany(() => Category, (category) => category.parentCategory)
   subCategories: Category[];
 }

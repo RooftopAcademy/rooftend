@@ -43,6 +43,50 @@ export class CategoriesController {
           {
             id: 1,
             name: 'TECHNOLOGY',
+            subCategories: [
+              {
+                id: 12,
+                name: 'CELL PHONES AND TELEPHONES',
+              },
+              {
+                id: 13,
+                name: 'COMPUTING',
+              },
+            ],
+          },
+          {
+            id: 2,
+            name: 'VEHICLES',
+            subCategories: [
+              {
+                id: 25,
+                name: 'CARS AND TRUCKS',
+              },
+              {
+                id: 26,
+                name: 'MOTORCYCLES',
+              },
+              {
+                id: 27,
+                name: 'TRUCKS',
+              },
+              {
+                id: 28,
+                name: 'NAUTICAL',
+              },
+              {
+                id: 29,
+                name: 'AGRICULTURAL MACHINERY',
+              },
+              {
+                id: 30,
+                name: 'MOTORHOMES',
+              },
+              {
+                id: 31,
+                name: 'VIA MACHINERY',
+              },
+            ],
           },
         ],
       },
@@ -91,6 +135,16 @@ export class CategoriesController {
       example: {
         id: 1,
         name: 'TECHNOLOGY',
+        subCategories: [
+          {
+            id: 12,
+            name: 'CELL PHONES AND TELEPHONES',
+          },
+          {
+            id: 13,
+            name: 'COMPUTING',
+          },
+        ],
       },
     },
   })

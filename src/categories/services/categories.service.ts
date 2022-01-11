@@ -7,6 +7,7 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 import { Category } from '../entities/categories.entity';
+import { isNull } from 'util';
 
 @Injectable()
 export class CategoriesService {
@@ -19,18 +20,22 @@ export class CategoriesService {
       where: {
         parentCategory: { id: IsNull() },
       },
-      // relations: ['categories'],
+      relations: ['subCategories'],
     });
   }
 
   async findOne(id: number): Promise<Category> {
-    const category: Category = await this.repository.findOne(id);
+    const category: Category = await this.repository.findOne(id, {
+      // where: {
+      //   parentCategory: {id = isNull()},
+      // },
+      relations: ['subCategories'],
+    });
     if (!category) {
       throw new NotFoundException(`Category with id ${id} not found.`);
     }
     return category;
   }
-
   create(body: any): Promise<Category> {
     const newCategory = this.repository.create({
       id: body.id,
