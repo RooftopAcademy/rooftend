@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthenticationService } from '../services/authentication.service';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
@@ -10,6 +18,7 @@ export class AuthenticationController {
 
   @Public()
   @Post('register')
+  @UsePipes(new ValidationPipe({ disableErrorMessages: true }))
   async register(@Body() user: CreateUserDTO) {
     await this.authService.checkEmail(user);
 
