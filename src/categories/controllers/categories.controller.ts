@@ -3,10 +3,6 @@ import {
   Get,
   HttpCode,
   Param,
-  Post,
-  Body,
-  Delete,
-  Patch,
   Res,
   DefaultValuePipe,
   ParseIntPipe,
@@ -23,7 +19,6 @@ import {
   ApiParam,
   ApiOkResponse,
   ApiNotFoundResponse,
-  ApiResponse,
   ApiQuery,
 } from '@nestjs/swagger';
 
@@ -160,35 +155,5 @@ export class CategoriesController {
     const data = await this.categoriesService.findOne(id);
     if (data) return res.status(200).send(data).end();
     res.status(404).end('Status Not Found');
-  }
-
-  @Post()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  create(@Res() res: Response) {
-    res.status(403).end();
-  }
-
-  @Patch()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  update(@Res() res: Response) {
-    res.status(403).end();
-  }
-
-  @Delete()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  delete(@Res() res: Response) {
-    res.status(403).end();
   }
 }
