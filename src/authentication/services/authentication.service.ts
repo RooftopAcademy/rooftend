@@ -30,7 +30,7 @@ export class AuthenticationService {
     user.email = user.email.toLowerCase();
     user.password = await bcrypt.hash(user.password, 10);
     const newUser = await this.usersService.create(user);
-    this.eventEmitter.emit('user-created', newUser);
+    this.eventEmitter.emit('user-created', newUser.id);
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -50,10 +50,18 @@ export class AuthenticationService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, id: user.id };
+    const foundUser = await this.usersService.findOneByEmail(
+      user.email.toLowerCase(),
+    );
+
+    if (!foundUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const { password, ...result } = foundUser;
 
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(result),
     };
   }
 }
