@@ -43,7 +43,7 @@ export class CartService {
     });
   }
 
-  @OnEvent('user-created')
+  @OnEvent('user.created')
   handleUserCreatedEvent(user: User) {
     this.create(user);
   }
