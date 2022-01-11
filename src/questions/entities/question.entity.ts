@@ -78,7 +78,7 @@ export class Question {
   content: string;
 
   @ApiProperty({
-    description: 'The date when question has been deleted',
+    description: 'The date when question has been created',
     default: () => 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
