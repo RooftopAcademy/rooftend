@@ -16,7 +16,12 @@ import { BrandsService } from '../services/brands.serveces';
 import { createBrandDTO } from '../entities/create-brands-dto.entity';
 import {
   ApiBadRequestResponse,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -24,15 +29,32 @@ import {
 @ApiTags('Brands')
 @Controller('brands')
 export class BrandsController {
-  constructor(private brandService: BrandsService) {}
+  constructor(private brandService: BrandsService) { }
 
   @ApiOperation({ summary: 'Paginate all brands' })
-  @ApiResponse({
-    status: 200,
-    description: 'A list with all the brands',
-    type: Brand,
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
   })
-  @Get()
+  @ApiOkResponse({
+    status: 200,
+    description: 'Ok',
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    required: false,
+    description: 'Current page number',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'limit of paginated questions',
+    example: 10,
+  })
+  @Get('/')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
@@ -59,11 +81,9 @@ export class BrandsController {
   @ApiOperation({ summary: 'Create a brands' })
   @ApiResponse({
     status: 201,
-    description: 'The brand has been created successfully',
+    description: 'Created',
   })
-  @ApiBadRequestResponse({
-    description: 'The brand could not be created',
-  })
+  @ApiBody({ type: createBrandDTO })
   @Post()
   create(@Body() createBrandDTO: createBrandDTO) {
     return this.brandService.create(createBrandDTO);
@@ -72,25 +92,39 @@ export class BrandsController {
   @ApiOperation({ summary: 'Update a brands' })
   @ApiResponse({
     status: 200,
-    description: 'The brand has been updated successfully',
+    description: 'Updated',
   })
-  @ApiBadRequestResponse({
-    description: 'The brand could not be updated',
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
   })
-  @Patch()
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+    description: 'Brand id'
+  })
+  @Patch(':id')
   update(@Param() id: number, @Body() createBrandDTO: createBrandDTO) {
     return this.brandService.update(id, createBrandDTO);
   }
 
   @ApiOperation({ summary: 'Delete a brands' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
-    description: 'The brand has been deleted successfully',
+    description: 'Deleted',
   })
-  @ApiBadRequestResponse({
-    description: 'The brand could not be deleted',
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
   })
-  @Delete()
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+    description: 'brand id'
+  })
+  @Delete(':id')
   delete(@Param('id') id: number) {
     return this.brandService.delete(id);
   }
