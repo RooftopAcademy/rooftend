@@ -151,7 +151,9 @@ export class CategoriesController {
   @ApiNotFoundResponse({
     description: 'Category not found.',
     schema: {
-      example: new NotFoundException('Category not found').getResponse(),
+      example: new NotFoundException(
+        'Category with id 10 not found',
+      ).getResponse(),
     },
   })
   async findOne(@Param('id') id: number, @Res() res: Response) {
