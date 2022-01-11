@@ -63,11 +63,11 @@ describe('ItemsService', () => {
         },
       ]),
     ),
-    findOne: jest.fn((id) => Promise.resolve(genericItem)),
+    findOne: jest.fn(() => Promise.resolve(genericItem)),
     create: jest.fn((body) => Object.assign(body, { id: 4 })),
     merge: jest.fn((item, body) => Object.assign({ item, body })),
     save: jest.fn((item) => Promise.resolve(item)),
-    delete: jest.fn((id) => Promise.resolve(true)),
+    delete: jest.fn(() => Promise.resolve(true)),
   };
 
   beforeEach(async () => {
