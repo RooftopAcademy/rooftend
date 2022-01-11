@@ -13,9 +13,6 @@ export class AuthenticationController {
   async register(@Body() user: CreateUserDTO) {
     await this.authService.checkEmail(user);
 
-    await this.authService.checkPass(user.password);
-    //verificar max, min caracteres y alfanumerico y simbolos (regExp)
-
     await this.authService.create(user);
 
     //crear evento para crear carrito
