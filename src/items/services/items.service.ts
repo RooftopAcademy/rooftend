@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -9,7 +13,6 @@ import { CreateItemDTO } from '../entities/create.item.dto';
 
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/permission.enum';
-import { ForbiddenError } from '@casl/ability';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
@@ -43,10 +46,8 @@ export class ItemsService {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    ForbiddenError.from(ability).throwUnlessCan(
-      Permission.Update,
-      plainToClass(Item, item),
-    );
+    if (ability.cannot(Permission.Update, plainToClass(Item, item)))
+      throw new ForbiddenException();
 
     this.ItemsRepo.merge(item, body);
     return this.ItemsRepo.save(item);
@@ -56,10 +57,8 @@ export class ItemsService {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    ForbiddenError.from(ability).throwUnlessCan(
-      Permission.Delete,
-      plainToClass(Item, item),
-    );
+    if (ability.cannot(Permission.Delete, plainToClass(Item, item)))
+      throw new ForbiddenException();
 
     await this.ItemsRepo.delete(id);
     return true;
