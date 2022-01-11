@@ -12,9 +12,10 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/categories.entity';
+import { Category } from '../../categories/entities/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
+import { History } from '../../history/models/history.entity';
 
 
 @Entity('items')
@@ -139,4 +140,7 @@ export class Item {
 
   @OneToMany(() => Question, (question) => question.itemId)
   questions: Question[];
+
+  @OneToMany(() => History, (visit) => visit.item_id)
+  visits: History[];
 }
