@@ -61,7 +61,7 @@ export class PhonesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get phone by id' })
-  @ApiOkResponse({ status: 200, description: 'The phone found', type: Phone })
+  @ApiOkResponse({ status: 200, description: 'Ok', type: Phone })
   @ApiParam({
     name: 'id',
     example: 1,
@@ -74,7 +74,7 @@ export class PhonesController {
 
   @Post()
   @ApiOperation({ summary: 'Create phone' })
-  @ApiCreatedResponse({ status: 201, description: 'Phone created' })
+  @ApiCreatedResponse({ status: 201, description: 'Created' })
   @ApiBody({ type: Phone })
   create(@Body() bodyParams: Phone) {
     return this.phonesService.create(bodyParams);
@@ -82,8 +82,8 @@ export class PhonesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update phone' })
-  @ApiResponse({ status: 200, description: 'Phone updated' })
-  @ApiNotFoundResponse({ status: 404, description: 'Phone not found' })
+  @ApiResponse({ status: 200, description: 'Updated' })
+  @ApiNotFoundResponse({ status: 404, description: 'Not found' })
   @ApiParam({
     name: 'id',
     required: true,
