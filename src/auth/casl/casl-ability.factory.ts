@@ -22,7 +22,11 @@ export class CaslAbilityFactory {
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
 
-    can(Permission.Read, Cart, { user: { id: user.id } });
+    can(Permission.Read, Cart, { user: { id: user.id} }); 
+    //cannot(Permission.Read, Cart, { user: undefined }); 
+    //can(Permission.Read, Cart, { user: user.id });
+    //can(Permission.Read, Cart, { user: user }); //{ user: User { id: 1 } }
+    can(Permission.Read,Cart, {user: { id:  user.id  }});
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details

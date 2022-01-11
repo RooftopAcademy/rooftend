@@ -64,13 +64,13 @@ export class Cart {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'double precision' ,default: 0})
   @ApiProperty({
     name: 'amount',
     type: 'integer',
-    required: true,
     example: '666',
     description: 'Item amount in this cart',
+    default: '0',
   })
   amount: number;
 
@@ -79,6 +79,7 @@ export class Cart {
     length: 3,
     name: 'currency_code',
     type: 'character varying',
+    default: 'ARS'
   })
   @ApiProperty({
     name: 'currencyCode',
@@ -87,9 +88,10 @@ export class Cart {
     example: 'ARS',
     description: 'Currency code of the user location',
     maxLength: 3,
+    default: 'ARS',
   })
   currencyCode: string;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
-  cartItemsId: CartItem[];
+  cartItems: CartItem[];
 }

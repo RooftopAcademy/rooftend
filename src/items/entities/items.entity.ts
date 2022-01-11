@@ -96,12 +96,12 @@ export class Item {
   @ApiProperty({ example: 999, description: 'Id of the item owner' })
   userId: number;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({
-    name: 'category_id',
-  })
-  @ApiProperty({ example: 999, description: 'Id of the Item Category' })
-  categoryId: Category;
+  // @ManyToOne(() => Category)
+  // @JoinColumn({
+  //   name: 'category_id',
+  // })
+  // @ApiProperty({ example: 999, description: 'Id of the Item Category' })
+  // categoryId: Category;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];

@@ -38,21 +38,16 @@ export class CartController {
   })
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  @ApiOperation({ summary: 'Gets one cart by Id' })
-  @ApiResponse({ status: 201, description: 'Cart succesfully found' })
+  @ApiOperation({ summary: 'Gets one cart and its content given an Id' })
+  @ApiResponse({ status: 200, description: 'Cart succesfully found with given id' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   @ApiNotFoundResponse({ status: 404, description: 'No Cart was found that matches that id' })
   getOne(
-    @Req() req: Request,
     @Param('id') id: number,
-    @Res() res:Response
     ): Promise<Cart> {
-    try{
-      return this.cartService.findOne(id);
-    }catch(error){
-      res.status(404);
-      return error.message;
-    }
+    const user = new User();
+    user.id = 1;
+    return this.cartService.findOne(user, id);
   }
 
   @ApiBody({
@@ -62,10 +57,10 @@ export class CartController {
   @ApiOperation({ summary: 'Creates cart' })
   @ApiResponse({ status: 201, description: 'Cart succesfully created' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
-  create(@Body() body: any): Promise<Cart> {
+  create(): Promise<Cart> {
     let user = new User();
     user.id = 1;
-    return this.cartService.create(user, body);
+    return this.cartService.create(user);
   }
 
 }
