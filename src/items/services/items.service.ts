@@ -24,8 +24,8 @@ export class ItemsService {
     return this.ItemsRepo.find();
   }
 
-  findOne(id: number): Promise<Item> {
-    const item = this.ItemsRepo.findOne(id);
+  async findOne(id: number): Promise<Item> {
+    const item = await this.ItemsRepo.findOne(id);
 
     if (!item) throw new NotFoundException('Item Not Found');
 
