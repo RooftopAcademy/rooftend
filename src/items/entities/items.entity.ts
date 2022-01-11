@@ -137,6 +137,6 @@ export class Item {
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 
-  @OneToMany(() => Question, (question) => question.item)
+  @OneToMany(() => Question, (question) => question.itemId)
   questions: Question[];
 }
