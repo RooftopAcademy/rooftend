@@ -23,7 +23,10 @@ export class Question {
     readOnly: true,
     example: 1,
   })
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint',
+  })
   @Type(() => Number)
   id: number;
 
@@ -59,18 +62,34 @@ export class Question {
   })
   userId: number;
 
-
+  @ApiProperty({
+    type: String,
+    maxLength: 500,
+    description: 'Answer content',
+    example: 'Esto es una respuesta a tu pregunta.',
+    nullable: false,
+  })
   @Column({
     name: 'content',
     type: 'character varying',
     nullable: false,
+    length: 500,
   })
   content: string;
 
+  @ApiProperty({
+    description: 'The date when question has been deleted',
+    default: () => 'CURRENT_TIMESTAMP',
+    type: Date,
+    format: 'date-time',
+    example: '2021-11-18T01:46:52.589Z',
+    nullable: false,
+  })
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   createdAt: Date;
 
@@ -78,8 +97,9 @@ export class Question {
     description: 'The date when question has been deleted',
     default: null,
     type: Date,
+    nullable: true,
     format: 'date-time',
-    example: '2021-12-19',
+    example: '2021-11-18T01:46:52.589Z',
   })
   @DeleteDateColumn({
     name: 'deleted_at',
