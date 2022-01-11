@@ -222,6 +222,25 @@ describe('ItemsService', () => {
       expect(mockItemsRepository.merge).toHaveBeenCalledTimes(1);
       expect(mockItemsRepository.save).toHaveBeenCalledTimes(2);
     });
+
+    it('should throw NotFoundException', async () => {
+      mockItemsRepository.findOne.mockReturnValueOnce(null);
+      const dto = {
+        stock: 500,
+      };
+
+      try {
+        expect(await service.update(newUser, genericItem.id, dto)).toThrow(
+          NotFoundException,
+        );
+      } catch (err) {
+        expect(err.message).toEqual('Item Not Found');
+      }
+
+      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
+      expect(mockItemsRepository.merge).toHaveBeenCalledTimes(1);
+      expect(mockItemsRepository.save).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('remove', () => {
