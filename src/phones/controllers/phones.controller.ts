@@ -12,6 +12,9 @@ import {
 } from '@nestjs/common';
 import {
   ApiBody,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -24,7 +27,7 @@ import { Phone } from '../entities/phone.entity';
 @ApiTags('Phones')
 @Controller('phones')
 export class PhonesController {
-  constructor(private phonesService: PhonesService) {}
+  constructor(private phonesService: PhonesService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all phones' })
@@ -58,11 +61,12 @@ export class PhonesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get phone by id' })
-  @ApiResponse({ status: 200, description: 'The phone found', type: Phone })
-  @ApiQuery({
+  @ApiOkResponse({ status: 200, description: 'The phone found', type: Phone })
+  @ApiParam({
     name: 'id',
-    required: true,
-    description: 'Phone id',
+    example: 1,
+    type: Number,
+    description: 'Phone id'
   })
   getOne(@Param('id') id: number) {
     return this.phonesService.findOne(id);
@@ -70,7 +74,7 @@ export class PhonesController {
 
   @Post()
   @ApiOperation({ summary: 'Create phone' })
-  @ApiResponse({ status: 201, description: 'Phone created' })
+  @ApiCreatedResponse({ status: 201, description: 'Phone created' })
   @ApiBody({ type: Phone })
   create(@Body() bodyParams: Phone) {
     return this.phonesService.create(bodyParams);
@@ -79,10 +83,11 @@ export class PhonesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update phone' })
   @ApiResponse({ status: 200, description: 'Phone updated' })
-  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiNotFoundResponse({ status: 404, description: 'Phone not found' })
   @ApiParam({
     name: 'id',
     required: true,
+    type: Number,
     description: 'Phone id to be updated',
   })
   @ApiBody({ type: Phone })
@@ -92,10 +97,11 @@ export class PhonesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete phone' })
-  @ApiResponse({ status: 200, description: 'Phone deleted' })
-  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiOkResponse({ status: 200, description: 'Deleted' })
+  @ApiNotFoundResponse({ status: 404, description: 'Not found' })
   @ApiParam({
     name: 'id',
+    type: Number,
     required: true,
     description: 'Phone id to be deleted',
   })
