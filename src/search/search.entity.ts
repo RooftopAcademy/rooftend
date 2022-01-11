@@ -29,7 +29,17 @@ export class Search {
   @ManyToOne(() => User, (user) => user.searches, { eager: true })
   user?: User;
 
-  @Column({ type: 'character varying', length: 100 })
+  @ApiProperty({
+    type: String,
+    maxLength: 100,
+    description: '',
+    example: '',
+  })
+  @Column({
+    name: 'keywords',
+    type: 'character varying',
+    length: 100,
+  })
   keywords: string;
 
   @ApiProperty({
@@ -38,7 +48,10 @@ export class Search {
     example: '2021-11-12T01:46:52.589Z',
     description: 'The timestamp of the creation of the review.',
   })
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp with time zone',
+  })
   @Type(() => Date)
   createdAt: Date;
 }
