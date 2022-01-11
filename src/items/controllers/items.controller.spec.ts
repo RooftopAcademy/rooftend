@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { request, response } from 'express';
 
 import { CaslModule } from '../../auth/casl/casl.module';
 import { Brand } from '../../brands/entities/brands.entity';
@@ -146,7 +145,7 @@ describe('ItemsController', () => {
 
   describe('one', () => {
     it('should return an Item', async () => {
-      expect(await controller.getOne(request, 3, response)).toEqual({
+      expect(await controller.getOne(3)).toEqual({
         id: 3,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -162,14 +161,24 @@ describe('ItemsController', () => {
       });
     });
 
-    it('should return a NotFoundError message', async () => {
-      mockItemsService.findOne.mockImplementationOnce(() => {
-        throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-      });
+    it('should return a ForbiddenError message', async () => {
+      mockItemsService.findOne.mockImplementationOnce(() => { throw new ForbiddenException() });
 
-      expect(await controller.getOne(request, 10, response)).toEqual(
-        'Not Found',
-      );
+      try {
+        expect(await controller.getOne(10)).toThrow(ForbiddenException);
+      } catch (error) {
+        expect(error.message).toEqual("Forbidden");
+      }
+    });
+
+    it('should return a NotFoundError message', async () => {
+      mockItemsService.findOne.mockImplementationOnce(() => { throw new NotFoundException() });
+
+      try {
+        expect(await controller.getOne(10)).toThrow(NotFoundException);
+      } catch (error) {
+        expect(error.message).toEqual("Not Found");
+      }
     });
   });
 
@@ -184,7 +193,7 @@ describe('ItemsController', () => {
         categoryId: new Category(),
       };
 
-      expect(await controller.create(request, dto)).toEqual({
+      expect(await controller.create(dto)).toEqual({
         id: 4,
         ...dto,
         userId: newUser.id,
@@ -219,7 +228,7 @@ describe('ItemsController', () => {
         stock: 500,
       };
 
-      expect(await controller.update(request, item.id, dto, response)).toEqual({
+      expect(await controller.update(item.id, dto)).toEqual({
         ...item,
         price: 100,
         stock: 500,
@@ -232,29 +241,46 @@ describe('ItemsController', () => {
       );
     });
 
-    it('should return ForbiddenError message', async () => {
-      mockItemsService.update.mockImplementationOnce(() => {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-      });
+    it('should return a ForbiddenError message', async () => {
+      mockItemsService.update.mockImplementationOnce(() => { throw new ForbiddenException() });
       const dto = {
         stock: 500,
       };
 
-      expect(
-        await controller.update(request, newUser.id + 1, dto, response),
-      ).toEqual('Forbidden');
+      try {
+        expect(await controller.update(10, dto)).toThrow(ForbiddenException);
+      } catch (error) {
+        expect(error.message).toEqual("Forbidden");
+        expect(mockItemsService.update).toHaveBeenCalledWith(
+          expect.any(User),
+          10,
+          dto,
+        );
+      }
+    });
 
-      expect(mockItemsService.update).toHaveBeenCalledWith(
-        expect.any(User),
-        newUser.id + 1,
-        dto,
-      );
+    it('should return a NotFoundError message', async () => {
+      mockItemsService.update.mockImplementationOnce(() => { throw new NotFoundException() });
+      const dto = {
+        stock: 500,
+      };
+
+      try {
+        expect(await controller.update(10, dto)).toThrow(NotFoundException);
+      } catch (error) {
+        expect(error.message).toEqual("Not Found");
+        expect(mockItemsService.update).toHaveBeenCalledWith(
+          expect.any(User),
+          10,
+          dto,
+        );
+      }
     });
   });
 
   describe('remove', () => {
     it('should remove an Item', async () => {
-      expect(await controller.delete(request, 10, response)).toEqual(true);
+      expect(await controller.delete(10)).toEqual(true);
 
       expect(mockItemsService.delete).toHaveBeenCalledWith(
         expect.any(User),
@@ -262,18 +288,14 @@ describe('ItemsController', () => {
       );
     });
 
-    it('should return ForbiddenError message', async () => {
-      mockItemsService.delete.mockImplementationOnce(() => {
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-      });
-      expect(await controller.delete(request, 10, response)).toEqual(
-        'Forbidden',
-      );
+    it('should return a ForbiddenError message', async () => {
+      mockItemsService.delete.mockImplementationOnce(() => { throw new ForbiddenException() });
 
-      expect(mockItemsService.delete).toHaveBeenCalledWith(
-        expect.any(User),
-        10,
-      );
+      try {
+        expect(await controller.delete(10)).toThrow(ForbiddenException);
+      } catch (error) {
+        expect(error.message).toEqual("Forbidden");
+      }
     });
   });
 });
