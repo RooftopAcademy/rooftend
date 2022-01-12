@@ -14,9 +14,22 @@ export class CreateUserDTO {
     type: String,
   })
   @IsString()
-  @MinLength(8)
-  @MaxLength(16)
-  @Matches(/^(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[a-z0-9!@#$%^&/]/)
+  @MinLength(8, {
+    message: 'Password must not contain less than 8 characters',
+  })
+  @MaxLength(16, {
+    message: 'Password must not contain more than 16 characters',
+  })
+  @Matches(/\d/, { message: 'Password must contain at least one number' })
+  @Matches(/[A-Z]/, {
+    message: 'Password must contain at least one capital letter',
+  })
+  @Matches(/[a-z]/, {
+    message: 'Password must contain at least one lowercase letter',
+  })
+  @Matches(/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, {
+    message: 'Password must contain at least one special character',
+  })
   password: string;
 
   @ApiProperty({
@@ -24,13 +37,20 @@ export class CreateUserDTO {
     type: String,
   })
   @IsString()
-  @PasswordMatch('password')
+  @PasswordMatch('password', {
+    message: 'Password and password confirmation not matching',
+  })
   passwordConfirmation: string;
 
   @ApiProperty({
     description: 'Email of user',
     type: String,
   })
-  @IsEmail()
+  @IsEmail(
+    {},
+    {
+      message: 'Email is not valid',
+    },
+  )
   email: string;
 }
