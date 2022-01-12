@@ -4,18 +4,15 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   OneToOne,
-  JoinColumn,
   JoinTable,
+  DeleteDateColumn,
 } from 'typeorm';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
-import { Notification } from '../../notification/entities/notification.entity';
 import { Search } from '../../search/search.entity';
-import { QuestionsModule } from '../../questions/questions.module';
-import { userInfo } from 'os';
 import { Question } from '../../questions/entities/question.entity';
 import { Item } from '../../items/entities/items.entity';
 import { History } from '../../history/models/history.entity';
@@ -36,33 +33,62 @@ export class User {
     description: 'Username',
     type: String,
   })
-  @Column({ type: 'character varying', length: 50, nullable: false })
+  @Column({
+    name: 'username',
+    type: 'character varying',
+    length: 50,
+    nullable: true,
+  })
   username: string;
 
   @ApiProperty({
     description: 'Password of user ',
     type: String,
   })
-  @Column({ type: 'character varying', length: 100, nullable: false })
+  @Column({
+    name: 'password',
+    type: 'character varying',
+    length: 100,
+    nullable: false,
+  })
   password: string;
 
   @ApiProperty({
     description: 'Email valid of user ',
     type: String,
   })
-  @Column({ type: 'character varying', length: 100, nullable: false })
+  @Column({
+    name: 'email',
+    type: 'character varying',
+    length: 100,
+    nullable: false,
+  })
   email: string;
 
   @ApiProperty({
     description: 'Account status assigned to that user ',
     type: Number,
   })
-  @Column({ type: 'integer', nullable: false })
+  @Column({ name: 'account_status', type: 'integer', nullable: true })
   @OneToOne(() => AccountStatusEntity, (status) => status.name)
   @JoinTable()
-  account_status: AccountStatusEntity;
+  accountStatus: AccountStatusEntity;
 
-  @Column({ default: false })
+  @ApiProperty({
+    description: 'The date when the user has been soft deleted',
+    default: null,
+    type: 'date',
+    format: 'date-time',
+    example: '2021-12-16',
+  })
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'timestamptz',
+    default: null,
+  })
+  deletedAt?: Date;
+
+  @Column({ name: 'completed', default: false })
   completed: boolean;
 
   @PolymorphicChildren(() => PhotosEntity, {
