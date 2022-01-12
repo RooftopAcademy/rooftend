@@ -13,10 +13,10 @@ export class CreateUserDTO {
     description: 'Password of user',
     type: String,
   })
-  @IsString()
-  @MinLength(8)
-  @MaxLength(16)
-  @Matches(/^(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[a-z0-9!@#$%^&/]/)
+  @IsString({message: "PASSWORD_NOT_STRING"})
+  @MinLength(8, {message : "PASSWORD_LENGTH_MIN:8"})
+  @MaxLength(16, {message : "PASSWORD_LENGTH_MAX:16"})
+  @Matches(/^(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[a-z0-9!@#$%^&/]/, {message: "PASSWORD_NOT_MATCHES"})
   password: string;
 
   @ApiProperty({
