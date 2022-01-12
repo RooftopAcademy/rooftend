@@ -94,7 +94,7 @@ export class User {
   @OneToMany(() => Search, (search) => search.user)
   searches: Search[];
 
-  @OneToMany(() => History, (visit) => visit.user_id)
+  @OneToMany(() => History, (visit) => visit.user)
   visits: History[];
 
   @OneToMany((type) => Question, (question) => question.userId)
