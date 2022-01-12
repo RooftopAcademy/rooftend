@@ -1,10 +1,11 @@
 import { Controller, NotFoundException, UnprocessableEntityException, UsePipes } from '@nestjs/common';
 import {
-    ApiForbiddenResponse,
     ApiOperation,
     ApiResponse,
     ApiBadRequestResponse,
-    ApiTags
+    ApiTags,
+    ApiQuery,
+    ApiParam
 } from '@nestjs/swagger';
 import {
     Get,
@@ -12,24 +13,15 @@ import {
     Post,
     Body,
     Patch,
-    Delete,
     HttpCode,
-    Res,
-    HttpException,
-    HttpStatus,
     Query,
     ParseIntPipe,
     DefaultValuePipe,
 } from '@nestjs/common';
 import { MessagePostPurchaseService } from '../services/message-post-purchase.service';
 import { MessagePostPurchase } from '../entities/message-post-purchase.entity';
-import { Response } from 'express';
 import { CreateMessageDTO } from '../entities/create-message-dto';
-import { ReceivedMessageDTO } from '../entities/received-message-dto';
-import { ReadMessageDTO } from '../entities/read-message-dto';
 import { StatusValidationPipe } from '../entities/status-validation-pipe';
-
-
 
 @ApiTags('Messages Post Purchase')
 @Controller('purchase')
@@ -43,6 +35,27 @@ export class MessagePostPurchaseController {
         type: MessagePostPurchase,
     })
     @Get(':cartId/messages')
+    @ApiQuery({
+        name: 'page',
+        type: Number,
+        required: false,
+        description: 'Current page number',
+        example: 1
+    })
+    @ApiQuery({
+        name: 'limit',
+        type: Number,
+        required: false,
+        description: 'limit of items',
+        example: 10
+    })
+    @ApiParam({
+        name: 'cartId',
+        type: Number,
+        required: true,
+        description: 'Id of cart',
+        example: 1
+    })
     find(
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -77,28 +90,35 @@ export class MessagePostPurchaseController {
     }
 
 
+    
     @ApiOperation({ summary: 'Update a message post purchase by ID' })
     @ApiResponse({
         status: 204,
         description: 'Message updated succesfully',
-        type: MessagePostPurchase,
     })
     @ApiBadRequestResponse({
         description: 'The message could not be updated',
     })
-    @Patch(':cartId/messages/:messageId')
+    @Patch('messages/:message_id')
+    @ApiParam({
+        name: 'message_id',
+        type: Number,
+        required: true,
+        description: 'Id of message',
+        example: 1
+    })
     @HttpCode(204)
     async update(
-        @Param('messageId') messageId: number,
-        @Body('status', new StatusValidationPipe()) status
+        @Param('message_id') message_id: number,
+        @Body('status', StatusValidationPipe) status: string
     ): Promise<MessagePostPurchase> {
-        let message = await this.messageService.findOneById(messageId)
+        let message = await this.messageService.findOneById(message_id)
 
         if (!message) {
             throw new NotFoundException();
         }
 
-        return await this.messageService.update(messageId, {
+        return await this.messageService.update(message_id, {
             [`${status}At`] : new Date
         });
     }
