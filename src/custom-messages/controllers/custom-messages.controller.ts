@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiForbiddenResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -33,6 +34,9 @@ export class CustomMessagesController {
     type: [CustomMessage],
   })
   @Get()
+  @ApiForbiddenResponse({
+    description: "Forbidden"
+  })
   @HttpCode(200)
   getAll(@Query() query: GetCustomMessageDTO): Promise<CustomMessage[]> {
     return this.CustomMessagesService.findAll(query.user_id);
@@ -43,6 +47,9 @@ export class CustomMessagesController {
     status: 200,
     description: 'The custom message found with the passed ID',
     type: CustomMessage,
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden"
   })
   @Get(':id')
   @HttpCode(200)
@@ -59,6 +66,9 @@ export class CustomMessagesController {
   @ApiBadRequestResponse({
     description: 'The message could not be created',
   })
+  @ApiForbiddenResponse({
+    description: "Forbidden"
+  })
   @Post()
   @HttpCode(201)
   create(@Body() body: CreateCustomMessageDTO): Promise<CustomMessage[]> {
@@ -74,14 +84,16 @@ export class CustomMessagesController {
   @ApiBadRequestResponse({
     description: 'The message could not be updated',
   })
+  @ApiForbiddenResponse({
+    description: "Forbidden"
+  })
   @Patch(':id')
   @HttpCode(204)
-  async update(
+  update(
     @Param('id') id: number,
     @Body() body: UpdateCustomMessageDTO,
   ): Promise<CustomMessage> {
-    const res = await this.CustomMessagesService.update(id, body);
-    return res;
+    return this.CustomMessagesService.update(id, body);
   }
 
   @ApiOperation({ summary: 'Delete a message by ID' })
@@ -92,6 +104,9 @@ export class CustomMessagesController {
   })
   @ApiBadRequestResponse({
     description: 'The message could not be deleted',
+  })
+  @ApiForbiddenResponse({
+    description: "Forbidden"
   })
   @Delete(':id')
   @HttpCode(200)
