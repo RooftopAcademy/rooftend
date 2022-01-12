@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 
@@ -7,12 +17,16 @@ import {
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { User } from '../../users/entities/user.entity';
 
-@ApiTags("Items")
+@ApiTags('Items')
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService) { }
+  constructor(private readonly ItemsService: ItemsService) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -34,6 +48,9 @@ export class ItemsController {
   })
   @Get(':id')
   @HttpCode(200)
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+  })
   getOne(@Param('id') id: number): Promise<Item> {
     return this.ItemsService.findOne(id);
   }
@@ -48,9 +65,13 @@ export class ItemsController {
     description: 'The item could not be created',
   })
   @Post()
+  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(@Body() body: any): Promise<Item> {
-    return this.ItemsService.create(body);
+    const user = new User();
+    user.id = 1;
+
+    return this.ItemsService.create(user, body);
   }
 
   @ApiOperation({ summary: 'Update a item by ID' })
@@ -63,9 +84,19 @@ export class ItemsController {
     description: 'The item could not be updated',
   })
   @Patch(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(204)
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+  })
   update(@Param('id') id: number, @Body() body: any): Promise<Item> {
-    return this.ItemsService.update(id, body);
+    const user = new User();
+    user.id = 1;
+
+    return this.ItemsService.update(user, id, body);
   }
 
   @ApiOperation({ summary: 'Delete a item by ID' })
@@ -78,8 +109,15 @@ export class ItemsController {
     description: 'The item could not be deleted',
   })
   @Delete(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
   delete(@Param('id') id: number): Promise<boolean> {
-    return this.ItemsService.delete(id);
+    const user = new User();
+    user.id = 1;
+
+    return this.ItemsService.delete(user, id);
   }
 }

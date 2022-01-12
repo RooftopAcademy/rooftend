@@ -17,7 +17,6 @@ import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { History } from '../../history/models/history.entity';
 
-
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn({
@@ -89,12 +88,14 @@ export class Item {
   @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
   brandId: Brand;
 
-  @ManyToOne(() => User, user => user.items)
+  @ManyToOne(() => User, (user) => user.items, { eager: true })
   @JoinColumn({
     name: 'user_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: number;
+  @ApiProperty({
+    type: () => User
+  })
+  user: User;
 
   @ManyToOne(() => Category)
   @JoinColumn({
