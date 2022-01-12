@@ -1,13 +1,44 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('shipping_methods')
 export class ShippingMethod {
-  @PrimaryGeneratedColumn()
+  @ApiProperty({
+    type: 'integer',
+    description: 'Shipping method Id',
+    example: 13,
+  })
+  @PrimaryGeneratedColumn({
+    name: 'id',
+    type: 'bigint',
+  })
   id: number;
 
-  @Column()
+  @ApiProperty({
+    type: 'string',
+    description: 'Name of the shipping method',
+    example: 'Retiro en sucursal',
+  })
+  @Column({
+    name: 'name',
+    type: 'character varying',
+    length: 200,
+    nullable: false,
+  })
   name: string;
 
-  @Column()
+  @ApiProperty({
+    type: 'integer',
+    description: 'Company logo Id',
+    example: 13,
+  })
+  @Column({
+    name: 'photo_id',
+    type: 'bigint',
+  })
   photoId: number;
 }
