@@ -81,7 +81,7 @@ export class QuestionsService {
 
   async create(question: CreateQuestionDTO, userId: number): Promise<Status> {
     try {
-      const questionEntity = this.questionsRepository.create({ ...question, 'userId': userId, 'createdAt': new Date() });
+      const questionEntity = this.questionsRepository.create({ ...question, 'userId': userId, });
       await this.questionsRepository.save(questionEntity);
       return STATUS.CREATED
     }

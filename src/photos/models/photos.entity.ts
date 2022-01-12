@@ -25,7 +25,7 @@ export class PhotosEntity implements PolymorphicChildInterface {
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;

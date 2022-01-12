@@ -33,7 +33,7 @@ export class Store {
   @Column({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
@@ -47,7 +47,7 @@ export class Store {
   @Column({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 
