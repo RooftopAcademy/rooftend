@@ -1,8 +1,12 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { History } from '../../models/history.entity';
-import { HistoryService } from './history.service';
+import { HistoryService } from './history.service'; 
+import * as nestjsTypeormPaginate from 'nestjs-typeorm-paginate';
+import { User } from '../../../users/entities/user.entity';
+
 
 describe('HistoryService', () => {
   let service: HistoryService;
@@ -11,6 +15,12 @@ describe('HistoryService', () => {
     id: 1,
     user_id: 1,
     createAt: Date.now(),
+  };
+
+  let history = {
+    id: 1,
+    user_id: user.id,
+    createdAt: Date.now(),
   };
 
   const mockHistoryRepository = {
@@ -22,7 +32,22 @@ describe('HistoryService', () => {
       },
     ]),
     ),
+    delete: jest.fn(() => Promise.resolve(true)),
   };
+
+  const itemsList = [{ id: 1, user_id: 1, createdAt: Date.now() }];
+
+  jest.mock('nestjs-typeorm-paginate', () => ({
+    paginate: jest.fn().mockResolvedValue({
+      items: itemsList.slice(0, 2),
+      meta: {
+        itemCount: 2,
+        totalItems: 2,
+        totalPages: 1,
+        currentPage: 1,
+      },
+    }),
+  }));
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,25 +67,29 @@ describe('HistoryService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAll', () => {
-    it('should return a list of history', async () => {
-      expect(await service.getAll(1)).toEqual([
-        {
-          id: 1,
-          user_id: 1,
-          createdAt: expect.any(Date),
-        },
-      ]);
+  describe('delete', () => {
+    it('should delete am History', async () => {
+      expect(await service.delete(history.id)).toEqual(true);
     });
+  });
 
-    it('should throw ForbiddenException', async () => {
-      user.id += 1;
+  describe('paginate', () => {
+    it('should return an history pagination', async () => {
+      const options: IPaginationOptions = { page: 1, limit: 10 };
 
-      try {
-        expect(await service.getAll(user.id)).toThrow(ForbiddenException);
-      } catch(error) {
-        expect(error.message).toEqual('Forbidden');
-      };
+      jest.mock('nestjs-typeorm-paginate', () => ({
+        paginate: jest.fn().mockResolvedValue({
+            items: itemsList.slice(0, 2),
+            meta: {
+              itemCount: 2,
+              totalItems: 2,
+              totalPages: 1,
+              currentPage: 1,
+            }
+          }),
+      }));
+
+      expect((await service.paginate(options, new User)).items.length).toBe(itemsList.length);
     })
   })
 });
