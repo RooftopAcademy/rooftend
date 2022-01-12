@@ -6,7 +6,7 @@ import {
   InferSubjects,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { Permission } from '../permission.enum';
+import { Permission } from '../enums/permission.enum';
 import { User } from '../../users/entities/user.entity';
 
 // TODO: replace any with classes
