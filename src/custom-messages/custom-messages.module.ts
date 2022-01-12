@@ -7,8 +7,6 @@ import { CustomMessage } from './entities/custom-messages.entity';
 @Module({
   providers: [CustomMessagesService],
   controllers: [CustomMessagesController],
-  imports: [
-    TypeOrmModule.forFeature([CustomMessage])
-  ],
+  imports: [TypeOrmModule.forFeature([CustomMessage])],
 })
-export class CustomMessagesModule { }
+export class CustomMessagesModule {}
