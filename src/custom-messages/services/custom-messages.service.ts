@@ -32,6 +32,7 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
     customMessage: CustomMessage,
   ): Promise<void> {
     const ability = this.caslAbilityFactory.createForUser(user);
+    customMessage.user.id = +customMessage.user.id;
 
     if (ability.cannot(permission, subject('CustomMessage', customMessage)))
       throw new ForbiddenException();
