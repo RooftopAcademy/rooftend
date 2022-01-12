@@ -1,5 +1,5 @@
 import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/categories.entity';
+import { Category } from '../../categories/entities/categories.entity';
 
 export class CreateItemDTO {
   title: string;
