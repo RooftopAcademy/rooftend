@@ -7,7 +7,7 @@ import {
   Param,
   Patch,
   Post,
-  Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -21,8 +21,9 @@ import { CustomMessagesService } from '../services/custom-messages.service';
 
 import { CreateCustomMessageDTO } from '../entities/create-custom-messages.dto';
 import { CustomMessage } from '../entities/custom-messages.entity';
-import { GetCustomMessageDTO } from '../entities/get-custom-messages.dto';
 import { UpdateCustomMessageDTO } from '../entities/update-custom-messages.dto';
+import { User } from '../../users/entities/user.entity';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
 
 @Controller('custom-messages')
 export class CustomMessagesController {
@@ -39,8 +40,11 @@ export class CustomMessagesController {
     description: "Forbidden"
   })
   @HttpCode(200)
-  getAll(@Query() query: GetCustomMessageDTO): Promise<CustomMessage[]> {
-    return this.CustomMessagesService.findAll(query.user_id);
+  getAll(): Promise<CustomMessage[]> {
+    const user: User = new User();
+    user.id = 1;
+
+    return this.CustomMessagesService.findAll(user);
   }
 
   @ApiOperation({ summary: 'Get a single custom message by ID' })
@@ -56,9 +60,13 @@ export class CustomMessagesController {
     description: "Not Found Custom Message"
   })
   @Get(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   getOne(@Param('id') id: number): Promise<CustomMessage> {
-    return this.CustomMessagesService.findOne(id);
+    const user: User = new User();
+    user.id = 1;
+
+    return this.CustomMessagesService.findOne(user, id);
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
@@ -74,9 +82,13 @@ export class CustomMessagesController {
     description: "Forbidden"
   })
   @Post()
+  @UseGuards(PoliciesGuard)
   @HttpCode(201)
-  create(@Body() body: CreateCustomMessageDTO): Promise<CustomMessage[]> {
-    return this.CustomMessagesService.create(body);
+  create(@Body() body: CreateCustomMessageDTO): Promise<CustomMessage> {
+    const user: User = new User();
+    user.id = 1;
+
+    return this.CustomMessagesService.create(user, body);
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
@@ -95,12 +107,16 @@ export class CustomMessagesController {
     description: "Not Found Custom Message"
   })
   @Patch(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(204)
   update(
     @Param('id') id: number,
     @Body() body: UpdateCustomMessageDTO,
   ): Promise<CustomMessage> {
-    return this.CustomMessagesService.update(id, body);
+    const user: User = new User();
+    user.id = 1;
+
+    return this.CustomMessagesService.update(user, id, body);
   }
 
   @ApiOperation({ summary: 'Delete a message by ID' })
@@ -116,8 +132,12 @@ export class CustomMessagesController {
     description: "Forbidden"
   })
   @Delete(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   delete(@Param('id') id: number): Promise<boolean> {
-    return this.CustomMessagesService.delete(id);
+    const user: User = new User();
+    user.id = 1;
+
+    return this.CustomMessagesService.delete(user, id);
   }
 }
