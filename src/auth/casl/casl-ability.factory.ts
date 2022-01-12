@@ -11,15 +11,6 @@ import { User } from '../../users/entities/user.entity';
 
 // TODO: replace any with classes
 type Subjects = InferSubjects<any> | 'all';
-interface ClassWithUser {
-  user: {
-    id: number
-  }
-}
-
-type FlatClass<T extends ClassWithUser> = T & {
-  "user.id": T['user']['id']
-}
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
