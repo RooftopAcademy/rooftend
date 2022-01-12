@@ -1,9 +1,10 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/categories.entity';
+import { Category } from '../../categories/entities/categories.entity';
 import { User } from '../../users/entities/user.entity';
 import { CreateItemDTO } from '../entities/create.item.dto';
 import { Item } from '../entities/items.entity';
@@ -11,11 +12,21 @@ import { ItemsService } from './items.service';
 
 describe('ItemsService', () => {
   let service: ItemsService;
-  const newUser = new User();
   const userId = 1;
-  newUser.id = userId;
+  const newUser = plainToClass(User, {
+    id: userId,
+    username: null,
+    password: '5vOC1yGAT2Km0Lt',
+    email: 'Dewitt.Turcotte52@hotmail.com'
+  });
+  const mockUser = plainToClass(User, {
+    id: userId,
+    username: null,
+    password: '5vOC1yGAT2Km0Lt',
+    email: 'Dewitt.Turcotte52@hotmail.com'
+  });
 
-  const genericItem = {
+  const genericItem = plainToClass(Item, {
     id: 3,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -23,12 +34,8 @@ describe('ItemsService', () => {
     description: 'Des 2',
     price: 2,
     stock: 2,
-    brandId: new Brand(),
-    userId,
-    categoryId: new Category(),
-    cartItemsId: [],
-    questions: [],
-  };
+    user: mockUser,
+  });
 
   const mockItemsRepository = {
     find: jest.fn(() =>
@@ -42,7 +49,7 @@ describe('ItemsService', () => {
           price: 1,
           stock: 1,
           brandId: new Brand(),
-          userId: 1,
+          user: newUser,
           categoryId: new Category(),
           cartItemsId: [],
           questions: [],
@@ -56,7 +63,7 @@ describe('ItemsService', () => {
           price: 2,
           stock: 2,
           brandId: new Brand(),
-          userId: newUser.id,
+          user: newUser,
           categoryId: new Category(),
           cartItemsId: [],
           questions: [],
@@ -101,7 +108,7 @@ describe('ItemsService', () => {
           price: 1,
           stock: 1,
           brandId: expect.any(Brand),
-          userId: 1,
+          user: newUser,
           categoryId: expect.any(Category),
           cartItemsId: [],
           questions: [],
@@ -115,7 +122,7 @@ describe('ItemsService', () => {
           price: 2,
           stock: 2,
           brandId: expect.any(Brand),
-          userId: newUser.id,
+          user: newUser,
           categoryId: expect.any(Category),
           cartItemsId: [],
           questions: [],
@@ -134,11 +141,7 @@ describe('ItemsService', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        brandId: expect.any(Brand),
-        userId: newUser.id,
-        categoryId: expect.any(Category),
-        cartItemsId: [],
-        questions: [],
+        user: mockUser,
       });
     });
 
@@ -167,7 +170,7 @@ describe('ItemsService', () => {
       const expected = {
         id: 4,
         ...dto,
-        userId: newUser.id,
+        user: newUser,
       };
 
       expect(await service.create(newUser, dto)).toEqual(expected);
@@ -215,7 +218,7 @@ describe('ItemsService', () => {
           ForbiddenException,
         );
       } catch (err) {
-        expect(err.message).toEqual('Cannot execute "update" on "Item"');
+        expect(err.message).toEqual('Forbidden');
       }
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
@@ -260,7 +263,7 @@ describe('ItemsService', () => {
           ForbiddenException,
         );
       } catch (err) {
-        expect(err.message).toBe('Cannot execute "delete" on "Item"');
+        expect(err.message).toBe('Forbidden');
       }
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);

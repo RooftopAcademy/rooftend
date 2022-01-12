@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { CaslModule } from '../../auth/casl/casl.module';
 import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/categories.entity';
+import { Category } from '../../categories/entities/categories.entity';
 import { User } from '../../users/entities/user.entity';
 
 import { CreateItemDTO } from '../entities/create.item.dto';
@@ -27,11 +27,7 @@ describe('ItemsController', () => {
           description: 'Des',
           price: 1,
           stock: 1,
-          brandId: 1,
-          userId: 1,
-          categoryId: 1,
-          cartItemsId: 1,
-          questions: [],
+          user: newUser,
         },
         {
           id: 3,
@@ -41,11 +37,7 @@ describe('ItemsController', () => {
           description: 'Des 2',
           price: 2,
           stock: 2,
-          brandId: 2,
-          userId: newUser.id,
-          categoryId: 2,
-          cartItemsId: 2,
-          questions: [],
+          user: newUser,
         },
       ]),
     ),
@@ -58,15 +50,11 @@ describe('ItemsController', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        brandId: 2,
-        userId: newUser.id,
-        categoryId: 2,
-        cartItemsId: 2,
-        questions: [],
+        user: newUser,
       }),
     ),
     create: jest.fn().mockImplementation((user, body) => {
-      Object.assign(body, { id: 4, userId: user.id });
+      Object.assign(body, { id: 4, user });
       return Promise.resolve(body);
     }),
     update: jest.fn().mockImplementation((user, id, body) => {
@@ -79,16 +67,12 @@ describe('ItemsController', () => {
           description: 'Des 2',
           price: 2,
           stock: 2,
-          brandId: 2,
-          userId: user.id,
-          categoryId: 2,
-          cartItemsId: 2,
-          questions: [],
+          user,
         },
         ...body,
       });
     }),
-    delete: jest.fn().mockImplementation((user, id) => true),
+    delete: jest.fn().mockImplementation(() => true),
   };
 
   beforeEach(async () => {
@@ -119,11 +103,7 @@ describe('ItemsController', () => {
           description: 'Des',
           price: 1,
           stock: 1,
-          brandId: 1,
-          userId: 1,
-          categoryId: 1,
-          cartItemsId: 1,
-          questions: [],
+          user: newUser,
         },
         {
           id: 3,
@@ -133,11 +113,7 @@ describe('ItemsController', () => {
           description: 'Des 2',
           price: 2,
           stock: 2,
-          brandId: 2,
-          userId: newUser.id,
-          categoryId: 2,
-          cartItemsId: 2,
-          questions: [],
+          user: newUser,
         },
       ]);
     });
@@ -153,11 +129,7 @@ describe('ItemsController', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        brandId: 2,
-        userId: newUser.id,
-        categoryId: 2,
-        cartItemsId: 2,
-        questions: [],
+        user: newUser,
       });
     });
 
@@ -196,7 +168,7 @@ describe('ItemsController', () => {
       expect(await controller.create(dto)).toEqual({
         id: 4,
         ...dto,
-        userId: newUser.id,
+        user: newUser,
       });
 
       expect(mockItemsService.create).toHaveBeenCalledWith(
@@ -216,11 +188,7 @@ describe('ItemsController', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        brandId: 2,
-        userId: newUser.id,
-        categoryId: 2,
-        cartItemsId: 2,
-        questions: [],
+        user: newUser,
       };
 
       const dto = {
