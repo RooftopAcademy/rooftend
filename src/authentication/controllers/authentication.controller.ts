@@ -18,7 +18,7 @@ export class AuthenticationController {
 
   @Public()
   @Post('register')
-  @UsePipes(new ValidationPipe({ disableErrorMessages: true }))
+  @UsePipes(new ValidationPipe({ stopAtFirstError: true }))
   async register(@Body() user: CreateUserDTO) {
     await this.authService.checkEmail(user);
 
