@@ -6,8 +6,8 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { History } from '../../models/history.entity';
-import { User } from '../../../users/entities/user.entity';
+import { History } from '../models/history.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class HistoryService {

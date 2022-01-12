@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { HistoryController } from './controllers/history/history.controller';
+import { HistoryController } from './controllers/history.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { History } from './models/history.entity';
-import { HistoryService } from './services/history/history.service';
+import { HistoryService } from './services/history.service';
 import { CaslModule } from '../auth/casl/casl.module';
 
 @Module({

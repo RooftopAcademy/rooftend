@@ -1,8 +1,8 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CaslModule } from '../../../auth/casl/casl.module';
-import { User } from '../../../users/entities/user.entity';
-import { HistoryService } from '../../services/history/history.service';
+import { CaslModule } from '../../auth/casl/casl.module';
+import { User } from '../../users/entities/user.entity';
+import { HistoryService } from '../services/history.service';
 import { HistoryController } from './history.controller';
 
 

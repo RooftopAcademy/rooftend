@@ -2,10 +2,10 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
-import { History } from '../../models/history.entity';
+import { History } from '../models/history.entity';
 import { HistoryService } from './history.service'; 
 import * as nestjsTypeormPaginate from 'nestjs-typeorm-paginate';
-import { User } from '../../../users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 
 
 describe('HistoryService', () => {

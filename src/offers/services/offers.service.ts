@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { 
+  IPaginationMeta,
   IPaginationOptions,
   paginateRaw,
+  Pagination,
 } from 'nestjs-typeorm-paginate';
-import { of } from 'rxjs';
-import { Repository } from 'typeorm';
-
 import {
-  Offer,
-  PromotionType,
-} from '../entities/offer.entity';
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
+
+import { PriceOrder } from '../controllers/price-order.enum';
+import { OfferDTO } from '../dto/offer.dto';
+import { PriceRangeDTO } from '../dto/price-range.dto';
+import { Offer } from '../entities/offer.entity';
+import { PromotionType } from '../entities/promotion-type.enum';
 
 @Injectable()
 export class OffersService {
@@ -19,33 +24,46 @@ export class OffersService {
     private readonly offersRepository: Repository<Offer>,
   ) {}
 
-  async paginate(options: IPaginationOptions, promotionType?: PromotionType, order?: "ASC" | "DESC") {
+  async paginate(
+    options: IPaginationOptions,
+    promotionType?: PromotionType,
+    order?: PriceOrder,
+    priceRange?: PriceRangeDTO,
+    ): Promise<Pagination<OfferDTO, IPaginationMeta>> {
 
-    const selection: string[] = [
-      'item.title AS "itemTitle"',
-      'item.price AS "regularPrice"',
-      'offer.discount AS "discountRate"',
-      'offer.final_price AS "finalPrice"',
-      'offer.start_at AS "offerStartTime"',
-      'offer.end_at AS "offerEndTime"',
-      '((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER AS "soldPercentage"',
-      '(offer.end_at - NOW()) AS "offerTimeLeft" ',
-      'offer.promotion_type AS promotionType'
-    ]
-    const dateCondition: string = 'now() BETWEEN offer.start_at AND offer.end_at';
-    const promotionTypeCondition: string = `now() BETWEEN offer.start_at AND offer.end_at AND offer.promotion_type = '${ promotionType }'`;
-    return paginateRaw<Offer>(this.offersRepository.createQueryBuilder('offer')
+    const query: SelectQueryBuilder<OfferDTO> = this.offersRepository.createQueryBuilder('offer')
       .leftJoinAndSelect('offer.item', 'item')
-      .select(selection)
-      .where((promotionType) ? promotionTypeCondition : dateCondition)
-      .orderBy("offer.final_price", order),
-      options,
-    )
+      .select([
+        'item.title AS "itemTitle"',
+        'item.price AS "regularPrice"',
+        'offer.discount AS "discountRate"',
+        'offer.final_price AS "finalPrice"',
+        'offer.start_at AS "offerStartTime"',
+        'offer.end_at AS "offerEndTime"',
+        'offer.promotion_type AS "promotionType"',
+      ])
+      .where('now() BETWEEN offer.start_at AND offer.end_at')
+      .addSelect(`
+        CASE WHEN offer.promotion_type = 'LIGHTNING_DEAL'
+        THEN ((offer.initial_stock - offer.sold_stock) * 100 / offer.initial_stock)::INTEGER END AS "soldPercentage"
+      `)
+      .addSelect(`
+        CASE WHEN offer.promotion_type = 'LIGHTNING_DEAL'
+        THEN (offer.end_at - NOW()) END AS "offerTimeLeft"
+      `);
+    
+    if (priceRange) {
+      query.andWhere('offer.final_price > :min AND offer.final_price < :max', priceRange);
+    }
+    
+    if (promotionType) {
+      query.andWhere('offer.promotion_type = :promotionType', { promotionType });
+    }
+
+    if (order) {
+      query.orderBy('offer.final_price', order);
+    }
+
+    return paginateRaw(query, options);
   }
-
-  getOffer(id:number): Promise<Offer>{
-    const offer = this.offersRepository.findOne(id);
-    return offer;
-  } 
-
 }

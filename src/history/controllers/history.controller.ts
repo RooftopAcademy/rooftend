@@ -10,10 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { HistoryService } from '../../services/history/history.service';
-import { History } from '../../models/history.entity';
-import { PoliciesGuard } from '../../../auth/guards/policies.guard';
-import { User } from '../../../users/entities/user.entity';
+import { HistoryService } from '../services/history.service';
+import { History } from '../models/history.entity';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('history')
 @Controller('history')
