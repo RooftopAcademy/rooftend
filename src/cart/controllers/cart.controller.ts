@@ -23,11 +23,15 @@ export class CartController {
   constructor(private cartService: CartService) { }
 
   @Get()
-  @ApiOperation({ summary: 'Gets all carts' })
-  @ApiResponse({ status: 201, description: 'Listing all Carts' })
+  @UseGuards(PoliciesGuard)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Gets current available Cart ' })
+  @ApiResponse({ status: 200, description: 'Succesfully found Cart' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
-  getAll(): Promise<Cart[]> {
-    return this.cartService.findAll();
+  getCart(): Promise<Cart> {
+    const user = new User();
+    user.id = 1;
+    return this.cartService.findCart(user);
   }
 
   @Get(':id')
@@ -38,31 +42,19 @@ export class CartController {
   })
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  @ApiOperation({ summary: 'Gets one cart and its content given an Id' })
+  @ApiOperation({ summary: 'Gets one cart and its cart items given an Id' })
   @ApiResponse({ status: 200, description: 'Cart succesfully found with given id' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   @ApiNotFoundResponse({ status: 404, description: 'No Cart was found that matches that id' })
-  getOne(
+  getCartById(
     @Param('id') id: number,
     ): Promise<Cart> {
     const user = new User();
     user.id = 1;
-    return this.cartService.findOne(user, id);
+    return this.cartService.findCartById(user, id);
   }
 
-  @ApiBody({
-    type: Cart
-  })
-  @Post()
-  @ApiOperation({ summary: 'Creates cart' })
-  @ApiResponse({ status: 201, description: 'Cart succesfully created' })
-  @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
-  create(): Promise<Cart> {
-    let user = new User();
-    user.id = 1;
-    return this.cartService.create(user);
-  }
-
+  
 }
 
 

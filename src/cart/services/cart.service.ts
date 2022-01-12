@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { subject } from '@casl/ability';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
 import { CartItemService } from '../../cart-item/services/cart-item.service';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
@@ -14,23 +16,25 @@ export class CartService {
         private readonly caslAbilityFactory: CaslAbilityFactory,
         private cartItemService: CartItemService) {}
 
-    async findAll(): Promise<Cart[]> {
-        const cartVar = await this.cartRepo.find({//select: ["id", "amount", "currencyCode"],
-            where: { purchasedAt: null }});
-        console.log(cartVar[0].cartItems);
-        return this.cartRepo.find({
-            //select: ["id", "amount", "currencyCode"],
-            where: { purchasedAt: null }
-        });
-    }
-    // buscar cart con findAll -> buscar todos los cart-items correspondientes usando el servicio de cart-items -> probar si la relacion te agregar los cart-items 
-    async findOne(user: User, id: number): Promise<Cart> {
-        const cart: Cart = await this.cartRepo.findOne(id);
-        cart.cartItems = await this.cartItemService.findAll(id);
-        const ability = this.caslAbilityFactory.createForUser(user);
+    async findCart(user:User): Promise<Cart> {
+        const cart = await this.cartRepo.findOne({select: ["id", "amount", "currencyCode", "user"] ,where: { purchasedAt: null }});
+        if (!cart) throw new NotFoundException('Valid cart not found');
         cart.user.id = +cart.user.id;
-        // console.log(ability.can(Permission.Read, subject('Cart',cart) ));
-        // console.log(ability.relevantRuleFor(Permission.Read, Cart ));
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (ability.cannot(Permission.Read, subject('Cart', cart)))
+            throw new ForbiddenException();
+        return cart;
+        
+    }
+    
+    async findCartById(user: User, id: number): Promise<Cart> {
+        const cart: Cart = await this.cartRepo.findOne(id);
+        if (!cart) throw new NotFoundException('Valid cart not found');
+        cart.cartItems = await this.cartItemService.findAll(id);
+        cart.user.id = +cart.user.id;
+        const ability = this.caslAbilityFactory.createForUser(user);
+        if (ability.cannot(Permission.Read, subject('Cart', cart)))
+            throw new ForbiddenException();
         return cart;
     }
 
