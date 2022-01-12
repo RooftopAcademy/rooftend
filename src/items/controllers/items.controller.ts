@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 
@@ -8,6 +8,8 @@ import {
   ApiTags,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { User } from '../../users/entities/user.entity';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags("Items")
 @Controller('items')
@@ -22,8 +24,18 @@ export class ItemsController {
   })
   @Get()
   @HttpCode(200)
-  getAll(): Promise<Item[]> {
-    return this.ItemsService.findAll();
+  getAll(
+    @Query('sellerId') sellerId : null,
+    @Query('categoryId') categoryId : null,
+    @Query('orderBy') orderBy : null,
+    @Query('dir') dir : string = 'ASC',
+  ): Promise<Pagination<Item, IPaginationMeta>> {
+    const user = new User()
+    user.id = 1
+
+    return this.ItemsService.findAll({
+      exclude : true, sellerId, categoryId, orderBy
+    }, user);
   }
 
   @ApiOperation({ summary: 'Get a single item by ID' })

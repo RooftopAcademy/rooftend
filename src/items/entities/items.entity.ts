@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
+  OneToMany, DeleteDateColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -107,4 +107,10 @@ export class Item {
 
   @OneToMany(() => Question, (question) => question.itemId)
   questions: Question[];
+
+  @DeleteDateColumn({
+    name : "deleted_at",
+    type : "timestamp with local time zone"
+  })
+  deletedAt? : Date
 }
