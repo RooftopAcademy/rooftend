@@ -7,6 +7,7 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { History } from '../../models/history.entity';
+import { User } from '../../../users/entities/user.entity';
 
 @Injectable()
 export class HistoryService {
@@ -15,20 +16,13 @@ export class HistoryService {
     private readonly historyRepo: Repository<History>,
   ) {}
 
-  async getAll(userId): Promise<History[]> {
-    return await this.historyRepo.find({
-      where: {
-        userId
-      }
-    });
-  }
-
   async delete(id: number): Promise<boolean> {
     await this.historyRepo.delete(id);
+    
     return true;
-  }
+  };
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<History>> {
-    return paginate<History>(this.historyRepo, options);
-  }
+  async paginate(options: IPaginationOptions, user: User): Promise<Pagination<History>> {
+    return paginate<History>(this.historyRepo, options, { where: { user: { id: user.id } } });
+  };
 }

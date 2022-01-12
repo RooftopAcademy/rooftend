@@ -13,6 +13,7 @@ import { ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestj
 import { HistoryService } from '../../services/history/history.service';
 import { History } from '../../models/history.entity';
 import { PoliciesGuard } from '../../../auth/guards/policies.guard';
+import { User } from '../../../users/entities/user.entity';
 
 @ApiTags('history')
 @Controller('history')
@@ -35,12 +36,17 @@ export class HistoryController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
+    let user = new User;
+    user.id = 1;
+
     limit = limit > 100 ? 100 : limit;
     return this.historyService.paginate({
       page,
       limit,
       route: '/history',
-    });
+    },
+      user,
+    );
   };
 
   @Delete(':id')

@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { History } from '../../models/history.entity';
@@ -41,9 +42,25 @@ describe('HistoryService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
+  describe('getAll', () => {
     it('should return a list of history', async () => {
-      expect(await service.getAll(user))
+      expect(await service.getAll(1)).toEqual([
+        {
+          id: 1,
+          user_id: 1,
+          createdAt: expect.any(Date),
+        },
+      ]);
     });
+
+    it('should throw ForbiddenException', async () => {
+      user.id += 1;
+
+      try {
+        expect(await service.getAll(user.id)).toThrow(ForbiddenException);
+      } catch(error) {
+        expect(error.message).toEqual('Forbidden');
+      };
+    })
   })
 });
