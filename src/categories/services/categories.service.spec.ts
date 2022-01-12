@@ -1,3 +1,45 @@
+const itemList = [
+  {
+    id: 1,
+    name: 'TECHNOLOGY',
+    subCategories: [
+      {
+        id: 12,
+        name: 'CELL PHONES AND TELEPHONES',
+      },
+      {
+        id: 13,
+        name: 'COMPUTING',
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: 'REAL STATE',
+    subCategories: [
+      {
+        id: 14,
+        name: 'DEPARTMENTS',
+      },
+      {
+        id: 15,
+        name: 'HOUSES',
+      },
+    ],
+  },
+];
+const list = {
+  items: itemList.slice(0, 2),
+  meta: {
+    itemCount: 2,
+    totalItems: 2,
+    totalPages: 1,
+    currentPage: 1,
+  },
+};
+jest.mock('nestjs-typeorm-paginate', () => ({
+  paginate: jest.fn().mockResolvedValue(list),
+}));
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -6,62 +48,6 @@ import { Category } from '../entities/categories.entity';
 import { CategoriesService } from './categories.service';
 describe('CategoriesService', () => {
   let service: CategoriesService;
-  const itemList = [
-    {
-      id: 1,
-      name: 'TECHNOLOGY',
-      subCategories: [
-        {
-          id: 12,
-          name: 'CELL PHONES AND TELEPHONES',
-        },
-        {
-          id: 13,
-          name: 'COMPUTING',
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'REAL STATE',
-      subCategories: [
-        {
-          id: 14,
-          name: 'DEPARTMENTS',
-        },
-        {
-          id: 15,
-          name: 'HOUSES',
-        },
-      ],
-    },
-  ];
-  const list = {
-    items: itemList.slice(0, 2),
-    meta: {
-      itemCount: 2,
-      totalItems: 2,
-      totalPages: 1,
-      currentPage: 1,
-    },
-  };
-  jest.mock('nestjs-typeorm-paginate', () => ({
-    paginate: jest.fn().mockResolvedValue({
-      items: itemList.slice(0, 2),
-      meta: {
-        itemCount: 2,
-        totalItems: 2,
-        totalPages: 1,
-        currentPage: 1,
-      },
-    }),
-  }));
-  // const mock = jest.spyOn(nestjsTypeormPaginate, 'paginate');
-  // mock.mockResolvedValue(list);
-  // mock.mockRestore();
-  // jest.mock(nestjsTypeormPaginate, () => ({
-  //   paginate: jest.fn().mockResolvedValue(list),
-  // }));
   const mockCategoryRepository = {
     findOne: jest.fn().mockImplementation((id) =>
       Promise.resolve({
