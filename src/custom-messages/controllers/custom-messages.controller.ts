@@ -27,7 +27,7 @@ import { PoliciesGuard } from '../../auth/guards/policies.guard';
 
 @Controller('custom-messages')
 export class CustomMessagesController {
-  constructor(private readonly CustomMessagesService: CustomMessagesService) { }
+  constructor(private readonly CustomMessagesService: CustomMessagesService) {}
 
   @ApiOperation({ summary: 'Get all custom messages by User Id' })
   @ApiResponse({
@@ -37,7 +37,7 @@ export class CustomMessagesController {
   })
   @Get()
   @ApiForbiddenResponse({
-    description: "Forbidden"
+    description: 'Forbidden',
   })
   @HttpCode(200)
   getAll(): Promise<CustomMessage[]> {
@@ -54,10 +54,10 @@ export class CustomMessagesController {
     type: CustomMessage,
   })
   @ApiForbiddenResponse({
-    description: "Forbidden"
+    description: 'Forbidden',
   })
   @ApiNotFoundResponse({
-    description: "Not Found Custom Message"
+    description: 'Not Found Custom Message',
   })
   @Get(':id')
   @UseGuards(PoliciesGuard)
@@ -79,10 +79,9 @@ export class CustomMessagesController {
     description: 'The message could not be created',
   })
   @ApiForbiddenResponse({
-    description: "Forbidden"
+    description: 'Forbidden',
   })
   @Post()
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(@Body() body: CreateCustomMessageDTO): Promise<CustomMessage> {
     const user: User = new User();
@@ -101,10 +100,10 @@ export class CustomMessagesController {
     description: 'The message could not be updated',
   })
   @ApiForbiddenResponse({
-    description: "Forbidden"
+    description: 'Forbidden',
   })
   @ApiNotFoundResponse({
-    description: "Not Found Custom Message"
+    description: 'Not Found Custom Message',
   })
   @Patch(':id')
   @UseGuards(PoliciesGuard)
@@ -129,7 +128,7 @@ export class CustomMessagesController {
     description: 'The message could not be deleted',
   })
   @ApiForbiddenResponse({
-    description: "Forbidden"
+    description: 'Forbidden',
   })
   @Delete(':id')
   @UseGuards(PoliciesGuard)
