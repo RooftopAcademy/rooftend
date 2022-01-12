@@ -54,7 +54,7 @@ export class HistoryController {
     description: 'Forbidden.',
   })
   @HttpCode(200)
-  delete(@Param('id') id) {
+  delete(@Param('id') id: number): Promise<boolean> {
     return this.historyService.delete(id);
   };
 }

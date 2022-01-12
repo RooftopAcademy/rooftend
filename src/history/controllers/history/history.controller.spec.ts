@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CaslModule } from '../../../auth/casl/casl.module';
 import { HistoryService } from '../../services/history/history.service';
@@ -46,7 +47,21 @@ describe('HistoryController', () => {
 
       expect(mockHistoryService.paginate).toHaveBeenCalled();
 
-      expect(mockHistoryService.paginate).toHaveBeenCalledWith({"limit": 10, "page": 1, "route": "/history"});
+      expect(mockHistoryService.paginate).toHaveBeenCalledWith({ 
+        "limit": 10, 
+        "page": 1, 
+        "route": "/history" 
+      });
     });
+
+    it('should return a ForbiddenError message', async () => {
+      mockHistoryService.paginate.mockImplementationOnce(() => { throw new ForbiddenException() });
+
+      try {
+        expect(await controller.getAll()).toThrow(ForbiddenException);
+      } catch(error) {
+        expect(error.message).toEqual('Forbidden');
+      };
+    })
   });
 });

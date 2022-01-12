@@ -18,8 +18,8 @@ export class HistoryService {
   async getAll(userId): Promise<History[]> {
     return await this.historyRepo.find({
       where: {
-        userId,
-      },
+        userId
+      }
     });
   }
 
