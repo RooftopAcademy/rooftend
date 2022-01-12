@@ -20,6 +20,7 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder<
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
+    // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { "user.id": user.id });
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
