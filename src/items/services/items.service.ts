@@ -12,7 +12,7 @@ import { User } from '../../users/entities/user.entity';
 import { CreateItemDTO } from '../entities/create.item.dto';
 
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Permission } from '../../auth/permission.enum';
+import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 
 @Injectable()
