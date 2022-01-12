@@ -1,4 +1,4 @@
- import {
+import {
   Body,
   Controller,
   Delete,
@@ -8,14 +8,10 @@
   Patch,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CartItemService } from '../services/cart-item.service';
 import { CartItem } from '../entities/cart-item.entity';
-
-class DTO {
-  quantity: number
-  subtotal: number
-}
 
 import {
   ApiOperation,
@@ -24,11 +20,12 @@ import {
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
 
 @ApiTags('Cart Item')
 @Controller('carts')
 export class CartItemController {
-  constructor(private readonly cartItemService: CartItemService) { }
+  constructor(private readonly cartItemService: CartItemService) {}
 
   @ApiOperation({ summary: 'Get all cart items' })
   @ApiResponse({
@@ -37,6 +34,7 @@ export class CartItemController {
     type: [CartItem],
   })
   @Get(':cartId/items')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async getAll(
     @Param('cartId') cartId: number,
@@ -54,6 +52,7 @@ export class CartItemController {
     type: CartItem,
   })
   @Get(':cartId/items/:itemId')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async getOne(
     @Param('cartId') cartId: number,
@@ -78,6 +77,7 @@ export class CartItemController {
     description: 'The cart item could not be created',
   })
   @Post(':cartId/items/:itemId')
+  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(
     @Param('cartId') cartId: number,
@@ -97,6 +97,7 @@ export class CartItemController {
     description: 'The cart item could not be updated',
   })
   @Patch(':cartId/items/:itemId')
+  @UseGuards(PoliciesGuard)
   @HttpCode(204)
   update(
     @Param('cartId') cartId: number,
@@ -116,6 +117,7 @@ export class CartItemController {
     description: 'The cart item could not be deleted',
   })
   @Delete(':cartId/items/:itemId')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   delete(
     @Param('cartId') cartId: number,
