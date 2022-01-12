@@ -77,8 +77,8 @@ describe('CategoriesController', () => {
   });
 
   describe('paginate', () => {
-    it('should return a list of categories', () => {
-      expect(controller.index()).toEqual([
+    it('should return a list of categories', async () => {
+      expect(await controller.index()).toEqual([
         {
           items: [
             {
@@ -115,8 +115,8 @@ describe('CategoriesController', () => {
     });
   });
   describe('findOne', () => {
-    it('should return a category by its id', () => {
-      expect(controller.findOne(1)).toEqual({
+    it('should return a category by its id', async () => {
+      expect(await controller.findOne(1)).toEqual({
         id: 1,
         name: 'TECHNOLOGY',
         subCategories: [
