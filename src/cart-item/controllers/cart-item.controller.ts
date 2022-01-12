@@ -19,6 +19,7 @@ import {
   ApiTags,
   ApiBadRequestResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { PoliciesGuard } from '../../auth/guards/policies.guard';
@@ -57,6 +58,9 @@ export class CartItemController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
+  })
+  @ApiNotFoundResponse({
+    description: 'Not Found Item',
   })
   @Get(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
@@ -108,6 +112,9 @@ export class CartItemController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
+  })
+  @ApiNotFoundResponse({
+    description: 'Not Found Item',
   })
   @Patch(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
