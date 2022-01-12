@@ -1,29 +1,27 @@
-import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { async } from 'rxjs';
+import { CaslModule } from '../../../auth/casl/casl.module';
 import { HistoryService } from '../../services/history/history.service';
 import { HistoryController } from './history.controller';
+
 
 describe('HistoryController', () => {
   let controller: HistoryController;
 
   const mockHistoryService = {
-    getAll: jest.fn().mockImplementation(() => {
-      Promise.resolve([
-        {
-          id: 1,
-          user_id: 1,
-          createdAt: new Date(),
-        },
-      ]);
-    }),
-    delete: jest.fn().mockImplementation((id) => true),
+    paginate: jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        user_id: 1,
+        createdAt: new Date(),
+      },
+    ]),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [HistoryController],
       providers: [HistoryService],
+      imports: [CaslModule],
     })
     .overrideProvider(HistoryService)
     .useValue(mockHistoryService)
@@ -34,43 +32,21 @@ describe('HistoryController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
+  });  
 
   describe('getAll', () => {
-    it('should return a list of history'), () => {
-      expect(controller.getAll()).toEqual([
+    it('should return a list of history', async () => {
+      expect(await controller.getAll()).toEqual([
         {
           id: 1,
           user_id: 1,
-          createdAt: new Date(),
+          createdAt: expect.any(Date),
         },
       ]);
 
-      expect(mockHistoryService.getAll).toHaveBeenCalled();
+      expect(mockHistoryService.paginate).toHaveBeenCalled();
 
-      expect(mockHistoryService.getAll).toHaveBeenCalledWith();
-    };
-  });
-
-  describe('delete', () => {
-    it('should delete history', async () => {
-      expect(await controller.delete(1)).toEqual(true);
-
-      expect(mockHistoryService.delete).toHaveBeenCalledWith();
-
-      expect(mockHistoryService.delete).toHaveBeenCalledWith(1);
-    });
-
-    it('should return a ForbiddenError message', async () => {
-      mockHistoryService.delete.mockImplementation(() => {
-        throw new ForbiddenException()
-      });
-
-      try {
-        expect(await controller.delete(1)).toThrow(ForbiddenException);
-      } catch(error) {
-        expect(error.message).toEqual('Forbidden');
-      };
+      expect(mockHistoryService.paginate).toHaveBeenCalledWith({"limit": 10, "page": 1, "route": "/history"});
     });
   });
 });
