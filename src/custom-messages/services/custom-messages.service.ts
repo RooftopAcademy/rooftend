@@ -1,10 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryService } from '@nestjs-query/core';
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 
 import { CustomMessage } from '../entities/custom-messages.entity';
+import { User } from '../../users/entities/user.entity';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/permission.enum';
+import { subject } from '@casl/ability';
+import { CreateCustomMessageDTO } from '../entities/create-custom-messages.dto';
 
 @Injectable()
 @QueryService(CustomMessage)
@@ -12,30 +21,67 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   constructor(
     @InjectRepository(CustomMessage)
     private readonly CustomMessageRepo: Repository<CustomMessage>,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {
     super(CustomMessageRepo, { useSoftDelete: true });
   }
 
-  findAll(userId: number): Promise<CustomMessage[]> {
-    return this.CustomMessageRepo.find({ userId });
+  private async failIfCanNotAccess(
+    permission: Permission,
+    user: User,
+    customMessageId: number,
+  ): Promise<CustomMessage> {
+    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
+      customMessageId,
+    );
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(permission, subject('CustomMessage', customMessage)))
+      throw new ForbiddenException();
+
+    return customMessage;
   }
 
-  findOne(id: number): Promise<CustomMessage> {
-    return this.CustomMessageRepo.findOne(id);
+  findAll(user: User): Promise<CustomMessage[]> {
+    return this.CustomMessageRepo.find({ user });
   }
 
-  create(body: any): Promise<CustomMessage[]> {
-    const customMessage = this.CustomMessageRepo.create(body)
+  async findOne(user: User, id: number): Promise<CustomMessage> {
+    const customMessage: CustomMessage = await this.failIfCanNotAccess(
+      Permission.Read,
+      user,
+      id,
+    );
+
+    if (!customMessage) throw new NotFoundException('Not Found Custom Message');
+
+    return customMessage;
+  }
+
+  create(user: User, body: CreateCustomMessageDTO): Promise<CustomMessage> {
+    const customMessage: CustomMessage = this.CustomMessageRepo.create(body);
+    customMessage.user = user;
+
     return this.CustomMessageRepo.save(customMessage);
   }
 
-  async update(id: number, body: any): Promise<CustomMessage> {
-    const customMessage = await this.findOne(id);
+  async update(user: User, id: number, body: any): Promise<CustomMessage> {
+    const customMessage: CustomMessage = await this.failIfCanNotAccess(
+      Permission.Update,
+      user,
+      id,
+    );
+
+    if (!customMessage) throw new NotFoundException('Not Found Custom Message');
+
     this.CustomMessageRepo.merge(customMessage, body);
     return this.CustomMessageRepo.save(customMessage);
   }
 
-  async delete(id: number): Promise<boolean> {
+  async delete(user: User, id: number): Promise<boolean> {
+    await this.failIfCanNotAccess(Permission.Delete, user, id);
+
     await this.CustomMessageRepo.softDelete(id);
     return true;
   }
