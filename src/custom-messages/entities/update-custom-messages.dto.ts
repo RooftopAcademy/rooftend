@@ -1,4 +1,11 @@
+import { IsOptional, IsString } from 'class-validator';
+
 export class UpdateCustomMessageDTO {
-  subject?: string;
-  message?: string;
+  @IsOptional()
+  @IsString()
+  subject: string;
+
+  @IsOptional()
+  @IsString()
+  message: string;
 }
