@@ -1,18 +1,21 @@
 import {
   BadRequestException,
   Injectable,
-  PipeTransform
+  PipeTransform,
 } from '@nestjs/common';
-import { isDefined, isEnum } from 'class-validator';
+import {
+  isDefined,
+  isEnum,
+} from 'class-validator';
 
-import { PromotionType } from '../entities/offer.entity';
+import { PromotionType } from '../entities/promotion-type.enum';
 
 @Injectable()
 export class PromotionTypeValidationPipe implements PipeTransform<string, Promise<PromotionType>> {
 
   transform(promotionType: string): Promise<PromotionType> {
     if (!isDefined(promotionType)) {
-      return;
+      return null;
     }
 
     if (!isEnum(promotionType, PromotionType)) {

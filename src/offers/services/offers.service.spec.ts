@@ -1,6 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Offer, PromotionType } from '../entities/offer.entity';
+
+import { Offer } from '../entities/offer.entity';
 import { OffersService } from './offers.service';
 
 describe('OffersService', () => {
@@ -34,19 +38,4 @@ describe('OffersService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  it('should find an offer with the given id and return it', async () => {
-    expect(await service.getOffer(10)).toEqual({
-        id: 10,
-        createdAt: expect.any(Number),
-        item: expect.any(Number),
-        startAt: expect.any(Number),
-        endAt: expect.any(Number),
-        discount: expect.any(Number),
-        intialStock: expect.any(Number),
-        soldStock: expect.any(Number),
-        finalPrice: expect.any(Number),
-        promotionType: "LIGHTNING_DEAL",
-    })
-});
 });
