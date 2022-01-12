@@ -1,12 +1,23 @@
-import { ForbiddenException } from '@nestjs/common';
+const itemsList = [{ id: 1, user_id: 1, createdAt: Date.now() }];
+
+  jest.mock('nestjs-typeorm-paginate', () => ({
+    paginate: jest.fn().mockResolvedValue({
+      items: itemsList.slice(0, 2),
+      meta: {
+        itemCount: 2,
+        totalItems: 2,
+        totalPages: 1,
+        currentPage: 1,
+      },
+    }),
+  }));
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { History } from '../models/history.entity';
 import { HistoryService } from './history.service'; 
-import * as nestjsTypeormPaginate from 'nestjs-typeorm-paginate';
 import { User } from '../../users/entities/user.entity';
-
 
 describe('HistoryService', () => {
   let service: HistoryService;
@@ -34,20 +45,6 @@ describe('HistoryService', () => {
     ),
     delete: jest.fn(() => Promise.resolve(true)),
   };
-
-  const itemsList = [{ id: 1, user_id: 1, createdAt: Date.now() }];
-
-  jest.mock('nestjs-typeorm-paginate', () => ({
-    paginate: jest.fn().mockResolvedValue({
-      items: itemsList.slice(0, 2),
-      meta: {
-        itemCount: 2,
-        totalItems: 2,
-        totalPages: 1,
-        currentPage: 1,
-      },
-    }),
-  }));
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
