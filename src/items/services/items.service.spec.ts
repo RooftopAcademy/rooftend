@@ -17,13 +17,13 @@ describe('ItemsService', () => {
     id: userId,
     username: null,
     password: '5vOC1yGAT2Km0Lt',
-    email: 'Dewitt.Turcotte52@hotmail.com'
+    email: 'Dewitt.Turcotte52@hotmail.com',
   });
   const mockUser = plainToClass(User, {
     id: userId,
     username: null,
     password: '5vOC1yGAT2Km0Lt',
-    email: 'Dewitt.Turcotte52@hotmail.com'
+    email: 'Dewitt.Turcotte52@hotmail.com',
   });
 
   const genericItem = plainToClass(Item, {
