@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   DefaultValuePipe,
   Delete,
@@ -7,12 +6,9 @@ import {
   HttpCode,
   Param,
   ParseIntPipe,
-  Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HistoryService } from '../../services/history/history.service';
 import { History } from '../../models/history.entity';
