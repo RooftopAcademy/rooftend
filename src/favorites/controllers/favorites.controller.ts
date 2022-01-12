@@ -6,12 +6,12 @@ import {
   HttpCode,
   Param,
   Post,
-  Patch,
   ParseIntPipe,
   DefaultValuePipe,
   Query,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -30,6 +30,7 @@ import { FavoritesService } from '../services/favorites.service';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -37,6 +38,7 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Get favorites.' })
   @ApiOkResponse({
@@ -162,6 +164,9 @@ export class FavoritesController {
       },
     }
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden.',
+  })
   @ApiQuery({
     name: 'token',
     type: Number,
@@ -194,6 +199,7 @@ export class FavoritesController {
   }
 
   @Get(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(403)
   @ApiForbiddenResponse({
     status: 403,
@@ -205,11 +211,15 @@ export class FavoritesController {
       }
     }
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden.',
+  })
   public async getById() {
     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   }
 
   @Post()
+  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   @ApiOperation({ summary: 'Create Favorite.' })
   @ApiCreatedResponse({
@@ -221,6 +231,9 @@ export class FavoritesController {
         "message": "Created"
       }
     }
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden.',
   })
   @ApiBody({ type: CreateFavoriteDto })
   @ApiQuery({
@@ -242,23 +255,8 @@ export class FavoritesController {
     })
   }
 
-  @Patch()
-  @HttpCode(403)
-  @ApiForbiddenResponse({
-    status: 403,
-    description: 'Forbidden',
-    schema: {
-      example: {
-        "statusCode": 403,
-        "message": "Forbidden"
-      }
-    }
-  })
-  public update() {
-    throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-  }
-
   @Delete(':id')
+  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Delete Favorite' })
   @ApiOkResponse({
@@ -270,6 +268,9 @@ export class FavoritesController {
         "message": "Ok"
       }
     }
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden.',
   })
   @ApiParam({
     name: 'id',
