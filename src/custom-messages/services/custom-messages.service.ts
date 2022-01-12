@@ -29,18 +29,12 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   private async failIfCanNotAccess(
     permission: Permission,
     user: User,
-    customMessageId: number,
-  ): Promise<CustomMessage> {
-    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
-      customMessageId,
-    );
-
+    customMessage: CustomMessage,
+  ): Promise<void> {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if (ability.cannot(permission, subject('CustomMessage', customMessage)))
       throw new ForbiddenException();
-
-    return customMessage;
   }
 
   findAll(user: User): Promise<CustomMessage[]> {
@@ -48,13 +42,13 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   }
 
   async findOne(user: User, id: number): Promise<CustomMessage> {
-    const customMessage: CustomMessage = await this.failIfCanNotAccess(
-      Permission.Read,
-      user,
+    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
       id,
     );
 
     if (!customMessage) throw new NotFoundException('Not Found Custom Message');
+
+    await this.failIfCanNotAccess(Permission.Read, user, customMessage);
 
     return customMessage;
   }
@@ -67,11 +61,13 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   }
 
   async update(user: User, id: number, body: any): Promise<CustomMessage> {
-    const customMessage: CustomMessage = await this.failIfCanNotAccess(
-      Permission.Update,
-      user,
+    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
       id,
     );
+
+    if (!customMessage) throw new NotFoundException('Not Found Custom Message');
+
+    await this.failIfCanNotAccess(Permission.Update, user, customMessage);
 
     if (!customMessage) throw new NotFoundException('Not Found Custom Message');
 
@@ -80,7 +76,11 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   }
 
   async delete(user: User, id: number): Promise<boolean> {
-    await this.failIfCanNotAccess(Permission.Delete, user, id);
+    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
+      id,
+    );
+
+    await this.failIfCanNotAccess(Permission.Delete, user, customMessage);
 
     await this.CustomMessageRepo.softDelete(id);
     return true;
