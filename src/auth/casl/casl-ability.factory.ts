@@ -13,7 +13,7 @@ import { CustomMessage } from '../../custom-messages/entities/custom-messages.en
 import { Item } from '../../items/entities/items.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item> | 'all';
+type Subjects = InferSubjects<typeof Item | typeof CustomMessage> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
