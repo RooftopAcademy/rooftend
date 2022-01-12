@@ -7,14 +7,21 @@ import PaymentMethod from '../models/payment-method.entity';
 export default class PaymentMethodsService {
   constructor(
     @InjectRepository(PaymentMethod)
-    private readonly repository: Repository<PaymentMethod>,
+    private readonly paymentRepository: Repository<PaymentMethod>,
   ) {}
 
-  getAll(): Promise<PaymentMethod[]> {
-    return this.repository.find();
+  getAll() {
+    const payments = this.paymentRepository.createQueryBuilder('payment')
+    .select(['payment.name', 'payment.type'])
+    .getMany()
+    return payments
   }
 
-  findOne(id: number): Promise<PaymentMethod> {
-    return this.repository.findOne(id);
+  findOne(id: number){
+    const payment = this.paymentRepository.createQueryBuilder('payment')
+    .select(['payment.name', 'payment.type'])
+    .where('payment.id = :id',{id: id})
+    .getOne()
+    return payment
   }
 }

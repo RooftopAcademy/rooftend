@@ -30,24 +30,17 @@ export default class PaymentMethodsController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
+  @HttpCode(200)
   @ApiOperation({
-    summary: 'Returns all the payment methods available',
+    summary: 'Get all the payment methods',
   })
   @ApiOkResponse({
     status: 200,
-    description: 'All the payment methods found',
-    schema: {
-      example: [
-        {
-          name: 'CASH',
-          type: 'Cash',
-        },
-        {
-          name: 'DEBIT_CARD',
-          type: 'Debit card',
-        },
-      ],
-    },
+    description: 'Ok',
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
   })
   async getAll(): Promise<PaymentMethod[]> {
     const payment_methods = await this.service.getAll();
@@ -57,18 +50,13 @@ export default class PaymentMethodsController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
+  @HttpCode(200)
   @ApiOperation({
-    summary: 'Returns the payment method matching the id parameter',
+    summary: 'Get the payment method by id',
   })
   @ApiOkResponse({
     status: 200,
-    description: 'The payment method found',
-    schema: {
-      example: {
-        name: 'CASH',
-        type: 'Cash',
-      },
-    },
+    description: 'Ok',
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -78,7 +66,7 @@ export default class PaymentMethodsController {
     name: 'id',
     format: 'number',
   })
-  async findOne(@Param('id') id: number): Promise<PaymentMethod> {
+  async findOne(@Param('id') id: number){
     const payment_method: PaymentMethod = await this.service.findOne(id);
 
     if (!payment_method) {
