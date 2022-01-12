@@ -9,6 +9,7 @@ import { Injectable } from '@nestjs/common';
 import { Permission } from '../permission.enum';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../../cart/entities/cart.entity';
+import { FlatClass } from '../types/flat-class.type';
 
 // TODO: replace any with classes
 
@@ -26,8 +27,7 @@ export class CaslAbilityFactory {
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { "user.id": user.id });
-
-    can<FlatCart>(Permission.Read, Cart, { 'user.id': user.id }); 
+    can<FlatClass<Cart>>(Permission.Read, Cart, { "user.id": user.id });
     //can(Permission.Read, Cart, { userId: user.id }); 
     //can(Permission.Read, Cart, { user: {id: user.id} }); // No funciona el condicional
     //can(Permission.Read, Cart, { user: user }); //{ user: User { id: 1 } }

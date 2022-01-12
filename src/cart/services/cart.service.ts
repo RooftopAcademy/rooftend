@@ -31,12 +31,9 @@ export class CartService {
     async findOne(user: User, id: number): Promise<Cart> {
         const cart: Cart = await this.cartRepo.findOne(id);
         cart.cartItems = await this.cartItemService.findAll(id);
-        console.log(cart);
         const ability = this.caslAbilityFactory.createForUser(user);
         cart.user.id = +cart.user.id;
         console.log(ability.can(Permission.Read, subject('Cart',cart) ));
-        //console.log(ability.can(Permission.Read, plainToClass(Cart,cart) ));
-        console.log(user.id + " this is the user id");
         console.log(ability.relevantRuleFor(Permission.Read, Cart ));
         return cart;
     }
