@@ -10,9 +10,10 @@ import { Permission } from '../enums/permission.enum';
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
 import { FlatClass } from '../types/flat-class.type';
+import { Favorite } from '../../favorites/entities/favorite.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item> | 'all';
+type Subjects = InferSubjects<typeof Item | typeof Favorite> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -27,6 +28,14 @@ export class CaslAbilityFactory {
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
       'user.id': Number(user.id),
+    });
+
+    can<FlatClass<Favorite>>([
+      Permission.Read, 
+      Permission.Create, 
+      Permission.Delete
+    ], Favorite, {
+      'user.id': user.id,
     });
 
     return build({
