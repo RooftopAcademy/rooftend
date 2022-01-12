@@ -4,16 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
-  } from "typeorm";
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 import { Item } from "../../items/entities/items.entity";
-import { IPostgresInterval } from 'postgres-interval';
-
-export enum PromotionType {
-  LIGHTNING_DEAL = 'LIGHTNING_DEAL',
-  DEAL_OF_THE_DAY = 'DEAL_OF_THE_DAY',
-}
+import { PromotionType } from "./promotion-type.enum";
 
 @Entity('offers')
 export class Offer {
@@ -97,7 +92,6 @@ export class Offer {
   @Column({
     name: 'initial_stock',
     type: 'bigint',
-    nullable: false
   })
   initialStock: number;
 
@@ -109,16 +103,8 @@ export class Offer {
   @Column({
     name: 'sold_stock',
     type: 'bigint',
-    nullable: false
   })
   soldStock: number;
-
-  /*@Column({
-    name: 'offer_expiration_time',
-    type: 'time',
-  })
-  offerExpirationTime: Date ;
-  */
 
   @ApiProperty({
     type: Number,

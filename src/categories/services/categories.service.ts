@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import {
   paginate,
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { Category } from '../../categories.entity';
+import { Category } from '../entities/categories.entity';
+import { isNull } from 'util';
 
 @Injectable()
 export class CategoriesService {
@@ -15,20 +16,23 @@ export class CategoriesService {
   ) {}
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
-    return paginate<Category>(this.repository, options);
+    return paginate<Category>(this.repository, options,{
+      where: {
+        parentCategory: { id: IsNull() },
+      },
+      relations: ['subCategories'],
+    });
   }
 
-  async getAll(): Promise<Category[]> {
-    return this.repository.find();
-  }
   async findOne(id: number): Promise<Category> {
-    const category: Category | undefined = await this.repository.findOne(id);
+    const category: Category = await this.repository.findOne(id, {
+      relations: ['subCategories'],
+    });
     if (!category) {
-      throw new NotFoundException(`Review with id ${id} not found.`);
+      throw new NotFoundException(`Category with id ${id} not found.`);
     }
     return category;
   }
-
   create(body: any): Promise<Category> {
     const newCategory = this.repository.create({
       id: body.id,
