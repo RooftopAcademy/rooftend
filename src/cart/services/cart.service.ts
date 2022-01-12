@@ -18,23 +18,27 @@ export class CartService {
 
     async findCart(user:User): Promise<Cart> {
         const cart = await this.cartRepo.findOne({select: ["id", "amount", "currencyCode", "user"] ,where: { purchasedAt: null }});
-        if (!cart) throw new NotFoundException('Valid cart not found');
-        cart.user.id = +cart.user.id;
+        if (!cart){ throw new NotFoundException('Valid cart not found')};
+        cart.user.id = Number(cart.user.id);
         const ability = this.caslAbilityFactory.createForUser(user);
-        if (ability.cannot(Permission.Read, subject('Cart', cart)))
+        if (ability.cannot(Permission.Read, subject('Cart', cart))){
             throw new ForbiddenException();
+        }
         return cart;
         
     }
     
     async findCartById(user: User, id: number): Promise<Cart> {
         const cart: Cart = await this.cartRepo.findOne(id);
-        if (!cart) throw new NotFoundException('Valid cart not found');
+        if (!cart) {throw new NotFoundException('Valid cart not found')};
         cart.cartItems = await this.cartItemService.findAll(id);
-        cart.user.id = +cart.user.id;
+        cart.user.id = Number(cart.user.id);
         const ability = this.caslAbilityFactory.createForUser(user);
-        if (ability.cannot(Permission.Read, subject('Cart', cart)))
+        console.log(ability.can(Permission.Read, subject('Cart', cart)));
+        console.log(ability.relevantRuleFor(Permission.Read, subject('Cart', cart)))
+        if (ability.cannot(Permission.Read, subject('Cart', cart))){
             throw new ForbiddenException();
+        }
         return cart;
     }
 
