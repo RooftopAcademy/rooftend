@@ -92,9 +92,7 @@ export class Item {
   @JoinColumn({
     name: 'user_id',
   })
-  @ApiProperty({
-    type: () => User
-  })
+  @ApiProperty({ type: () => User })
   user: User;
 
   @ManyToOne(() => Category)
