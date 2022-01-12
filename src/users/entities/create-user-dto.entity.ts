@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { PasswordMatch } from '../class-validator/password-match.decorator';
 
 export class CreateUserDTO {
   @ApiProperty({
@@ -17,6 +18,14 @@ export class CreateUserDTO {
   @MaxLength(16)
   @Matches(/^(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[a-z0-9!@#$%^&/]/)
   password: string;
+
+  @ApiProperty({
+    description: 'Password Confirmation of user',
+    type: String,
+  })
+  @IsString()
+  @PasswordMatch('password')
+  passwordConfirmation: string;
 
   @ApiProperty({
     description: 'Email of user',
