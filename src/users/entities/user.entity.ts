@@ -80,7 +80,7 @@ export class User {
 
   favorites: [];
 
-  @OneToMany(() => Item, (item) => item.userId)
+  @OneToMany(() => Item, (item) => item.user)
   items: Item[];
 
   @OneToMany(() => Search, (search) => search.user)

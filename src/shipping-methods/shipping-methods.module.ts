@@ -6,10 +6,8 @@ import { ShippingMethodsService } from './services/shipping-methods.service';
 import { ShippingMethod } from './entities/shipping-method.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ShippingMethod])
-  ],
+  imports: [TypeOrmModule.forFeature([ShippingMethod])],
   providers: [ShippingMethodsService],
   controllers: [ShippingMethodsController],
 })
-export class ShippingMethodsModule { }
+export class ShippingMethodsModule {}
