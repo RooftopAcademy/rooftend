@@ -25,6 +25,9 @@ import {
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
+  paginate() {
+    throw new Error('Method not implemented.');
+  }
   public constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
@@ -151,9 +154,7 @@ export class CategoriesController {
       ).getResponse(),
     },
   })
-  async findOne(@Param('id') id: number, @Res() res: Response) {
-    const data = await this.categoriesService.findOne(id);
-    if (data) return res.status(200).send(data).end();
-    res.status(404).end('Status Not Found');
+  async findOne(@Param('id') id: number) {
+    return this.categoriesService.findOneById(id);
   }
 }

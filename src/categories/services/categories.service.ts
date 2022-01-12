@@ -22,7 +22,7 @@ export class CategoriesService {
     });
   }
 
-  async findOne(id: number): Promise<Category> {
+  async findOneById(id: number): Promise<Category> {
     const category: Category = await this.repository.findOne(id, {
       relations: ['subCategories'],
     });
