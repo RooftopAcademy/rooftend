@@ -12,6 +12,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
@@ -51,6 +52,9 @@ export class CustomMessagesController {
   @ApiForbiddenResponse({
     description: "Forbidden"
   })
+  @ApiNotFoundResponse({
+    description: "Not Found Custom Message"
+  })
   @Get(':id')
   @HttpCode(200)
   getOne(@Param('id') id: number): Promise<CustomMessage> {
@@ -86,6 +90,9 @@ export class CustomMessagesController {
   })
   @ApiForbiddenResponse({
     description: "Forbidden"
+  })
+  @ApiNotFoundResponse({
+    description: "Not Found Custom Message"
   })
   @Patch(':id')
   @HttpCode(204)
