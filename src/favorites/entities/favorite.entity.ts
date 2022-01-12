@@ -28,7 +28,7 @@ export class Favorite {
   id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user' })
   @ApiProperty({
     type: 'integer',
     description: 'The user ID who added the item to favorites',
@@ -36,7 +36,7 @@ export class Favorite {
     readOnly: true,
     example: 8,
   })
-  user_id: number;
+  user: User;
 
   @ManyToOne(() => Item)
   @JoinColumn({ name: 'item_id' })
