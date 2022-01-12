@@ -13,7 +13,7 @@ import { CreateItemDTO } from '../entities/create.item.dto';
 
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/permission.enum';
-import { plainToClass } from 'class-transformer';
+import { subject } from '@casl/ability';
 
 @Injectable()
 export class ItemsService {
@@ -37,7 +37,7 @@ export class ItemsService {
 
   create(user: User, body: CreateItemDTO): Promise<Item> {
     const item = this.ItemsRepo.create(body);
-    item.userId = user.id;
+    item.user = user;
 
     return this.ItemsRepo.save(item);
   }
@@ -45,8 +45,9 @@ export class ItemsService {
   async update(user: User, id: number, body: any): Promise<Item> {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
+    item.user.id = +item.user.id
 
-    if (ability.cannot(Permission.Update, plainToClass(Item, item)))
+    if (ability.cannot(Permission.Update, subject("Item", item)))
       throw new ForbiddenException();
 
     this.ItemsRepo.merge(item, body);
@@ -56,8 +57,9 @@ export class ItemsService {
   async delete(user: User, id: number): Promise<boolean> {
     const item = await this.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
+    item.user.id = +item.user.id
 
-    if (ability.cannot(Permission.Delete, plainToClass(Item, item)))
+    if (ability.cannot(Permission.Delete, subject("Item", item)))
       throw new ForbiddenException();
 
     await this.ItemsRepo.delete(id);
