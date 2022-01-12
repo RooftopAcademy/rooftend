@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { PoliciesGuard } from '../../auth/guards/policies.guard';
@@ -32,6 +33,9 @@ export class CartItemController {
     status: 200,
     description: 'A list with all the cart items',
     type: [CartItem],
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
   })
   @Get(':cartId/items')
   @UseGuards(PoliciesGuard)
@@ -50,6 +54,9 @@ export class CartItemController {
     status: 200,
     description: 'A Cart Item found with the passed ID',
     type: CartItem,
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
   })
   @Get(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
@@ -76,6 +83,9 @@ export class CartItemController {
   @ApiBadRequestResponse({
     description: 'The cart item could not be created',
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
   @Post(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
   @HttpCode(201)
@@ -96,6 +106,9 @@ export class CartItemController {
   @ApiBadRequestResponse({
     description: 'The cart item could not be updated',
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
   @Patch(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
   @HttpCode(204)
@@ -115,6 +128,9 @@ export class CartItemController {
   })
   @ApiBadRequestResponse({
     description: 'The cart item could not be deleted',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
   })
   @Delete(':cartId/items/:itemId')
   @UseGuards(PoliciesGuard)
