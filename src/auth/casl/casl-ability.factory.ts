@@ -25,6 +25,7 @@ export class CaslAbilityFactory {
     const { can, cannot, build } = new AbilityBuilder<
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
+    // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { "user.id": user.id });
 
     can<FlatCart>(Permission.Read, Cart, { 'user.id': user.id }); 
     //can(Permission.Read, Cart, { userId: user.id }); 
