@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from '../entities/cart-item.entity';
 import { Repository } from 'typeorm';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CartItemService {

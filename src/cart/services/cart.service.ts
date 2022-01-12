@@ -1,7 +1,8 @@
 import { subject } from '@casl/ability';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { CartItemService } from '../../cart-item/services/cart-item.service';
@@ -47,4 +48,8 @@ export class CartService {
         return this.cartRepo.save(cart);
     }
 
+  @OnEvent('user.created')
+  handleUserCreatedEvent(user: User) {
+    this.create(user);
+  }
 }

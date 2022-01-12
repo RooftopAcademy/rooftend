@@ -64,7 +64,7 @@ export class Cart {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'double precision' ,default: 0})
+  @Column({ type: 'double precision', default: 0 })
   @ApiProperty({
     name: 'amount',
     type: 'integer',
@@ -74,12 +74,11 @@ export class Cart {
   })
   amount: number;
 
-  @Column('character varying', { length: 3, name: 'currency_code' })
   @Column({
     length: 3,
     name: 'currency_code',
     type: 'character varying',
-    default: 'ARS'
+    default: 'ARS',
   })
   @ApiProperty({
     name: 'currencyCode',
