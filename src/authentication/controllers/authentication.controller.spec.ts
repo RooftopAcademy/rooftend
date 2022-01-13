@@ -1,4 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { AuthenticationService } from '../services/authentication.service';
 import { AuthenticationController } from './authentication.controller';
 
@@ -12,9 +15,16 @@ describe('AuthenticationController', () => {
     },
   } as unknown as Request;
 
-  const validUser = {
+  const validUser: CreateUserDTO = {
     email: 'userEmail@gmail.com',
     password: 'validPass123-',
+    passwordConfirmation: 'validPass123-',
+  };
+
+  const invalidUser: CreateUserDTO = {
+    email: 'userEmail@gmail.com',
+    password: 'aaaT?',
+    passwordConfirmation: 'aaaT?',
   };
 
   const mockAuthenticationService = {
@@ -51,6 +61,17 @@ describe('AuthenticationController', () => {
       });
       expect(mockAuthenticationService.login).toHaveBeenCalledTimes(1);
       expect(mockAuthenticationService.login).toHaveBeenCalled();
+    });
+
+    it('should throw an error if the password is invalid', async () => {
+      const createUserDto = plainToClass(CreateUserDTO, invalidUser);
+      const errors = await validate(createUserDto);
+
+      expect(errors.length).not.toBe(0);
+      expect(errors[0].constraints).toEqual({
+        matches: 'PASSWORD_MISSING: NUMBER',
+        minLength: 'PASSWORD_MIN_LENGTH: 8',
+      });
     });
   });
 
