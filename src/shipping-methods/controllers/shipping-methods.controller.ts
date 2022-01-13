@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   Controller,
   Get,
@@ -10,14 +11,15 @@ import {
 } from '@nestjs/swagger';
 
 import { ShippingMethodDTO } from '../dto/shipping-method.dto';
+=======
+import { Controller, Get, HttpCode, Param } from '@nestjs/common';
+>>>>>>> 21ee98ae4e4ffd8eacca9ea8c7b4217440ce0be0
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
 @ApiTags('Shipping Methods')
 @Controller('shipping-methods')
 export class ShippingMethodsController {
-  constructor(
-    private shippingMethodsService: ShippingMethodsService
-  ) { }
+  constructor(private shippingMethodsService: ShippingMethodsService) {}
 
   @ApiOperation({
     summary: 'Get all shipping methods',
@@ -44,4 +46,19 @@ export class ShippingMethodsController {
   getAll(): Promise<ShippingMethodDTO[]> {
     return this.shippingMethodsService.findAll();
   }
+<<<<<<< HEAD
+=======
+
+  @Get('count')
+  @HttpCode(200)
+  getCount() {
+    return this.shippingMethodsService.getCount();
+  }
+
+  @Get(':id')
+  @HttpCode(200)
+  getOne(@Param('id') id: number) {
+    return this.shippingMethodsService.findOne(id);
+  }
+>>>>>>> 21ee98ae4e4ffd8eacca9ea8c7b4217440ce0be0
 }
