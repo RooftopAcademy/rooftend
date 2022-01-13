@@ -15,20 +15,20 @@ export class CreateUserDTO {
   })
   @IsString()
   @MinLength(8, {
-    message: 'Password must not contain less than 8 characters',
+    message: 'PASSWORD_MIN_LENGTH: 8',
   })
   @MaxLength(16, {
-    message: 'Password must not contain more than 16 characters',
+    message: 'PASSWORD_MAX_LENGTH: 16',
   })
-  @Matches(/\d/, { message: 'Password must contain at least one number' })
+  @Matches(/\d/, { message: 'PASSWORD_MISSING: NUMBER' })
   @Matches(/[A-Z]/, {
-    message: 'Password must contain at least one capital letter',
+    message: 'PASSWORD_MISSING: CAPITAL_LETTER',
   })
   @Matches(/[a-z]/, {
-    message: 'Password must contain at least one lowercase letter',
+    message: 'PASSWORDS_MISSING: LOWER_CASE_LETTER',
   })
   @Matches(/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/, {
-    message: 'Password must contain at least one special character',
+    message: 'PASSWORDS_MISSING: SPECIAL_CHARACTER',
   })
   password: string;
 
@@ -38,7 +38,7 @@ export class CreateUserDTO {
   })
   @IsString()
   @PasswordMatch('password', {
-    message: 'Password and password confirmation not matching',
+    message: 'PASSWORD_CONFIRMATION_NOT_MATCHING',
   })
   passwordConfirmation: string;
 
@@ -49,7 +49,7 @@ export class CreateUserDTO {
   @IsEmail(
     {},
     {
-      message: 'Email is not valid',
+      message: 'EMAIL_NOT_VALID',
     },
   )
   email: string;
