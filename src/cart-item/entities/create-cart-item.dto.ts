@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class CreateCartItemDTO {
   @Min(1)
@@ -10,11 +10,4 @@ export class CreateCartItemDTO {
   })
   @IsInt()
   quantity?: number;
-
-  @ApiProperty({
-    description: 'The Cart Item subtotal',
-    type: Number,
-  })
-  @IsInt()
-  subtotal?: number;
 }

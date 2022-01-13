@@ -58,4 +58,17 @@ export class ReviewService {
   delete(id: string) {
     return;
   }
+
+  /**
+   * Find if some item has been reviewed
+   * Returns "1" if true or "0" if false
+   * @param itemId
+   */
+  findUnreviewedItem(itemId : number): Promise<number> {
+    let q = this.reviewRepository.createQueryBuilder()
+
+    q.where({entityType : "item", entityId : itemId})
+
+    return q.getCount()
+  }
 }

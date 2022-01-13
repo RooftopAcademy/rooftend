@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany, DeleteDateColumn,
+  OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -144,11 +145,36 @@ export class Item {
   questions: Question[];
 
   @DeleteDateColumn({
-    name : "deleted_at",
-    type : "timestamptz"
+    name: 'deleted_at',
+    type: 'timestamptz',
   })
-  deletedAt? : Date
+  deletedAt?: Date;
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
+
+  /**
+   * Check if item has availability
+   * @param qty
+   */
+  public isAvailable(qty = 0): boolean {
+    return this.stock > qty;
+  }
+
+  /**
+   * Check if item is active
+   * @description Item can be inactive when has been paused by the publisher or the admin
+   * @param void
+   */
+  public isActive(): boolean {
+    return true;
+  }
+
+  /**
+   * Get final price for given quantity
+   * @param qty
+   */
+  getFinalPrice(qty = 1): number {
+    return this.price * qty;
+  }
 }
