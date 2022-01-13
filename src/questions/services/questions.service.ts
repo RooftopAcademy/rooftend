@@ -15,6 +15,7 @@ import { Question } from '../entities/question.entity';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
 import STATUS from '../../statusCodes/statusCodes';
 import Status from '../../statusCodes/status.interface';
+import { User } from '../../users/entities/user.entity';
 
 
 @Injectable()
@@ -79,9 +80,9 @@ export class QuestionsService {
     }
   }
 
-  async create(question: CreateQuestionDTO, userId: number): Promise<Status> {
+  async create(question: CreateQuestionDTO, user: User): Promise<Status> {
     try {
-      const questionEntity = this.questionsRepository.create({ ...question, 'userId': userId, });
+      const questionEntity = this.questionsRepository.create({ ...question, 'user': user, });
       await this.questionsRepository.save(questionEntity);
       return STATUS.CREATED
     }
