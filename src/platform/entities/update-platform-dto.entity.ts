@@ -7,7 +7,6 @@ export class UpdatePlatformDTO {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt?: Date;
 

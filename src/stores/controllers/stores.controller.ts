@@ -29,15 +29,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { CreateStoreDto } from '../models/create-store.dto';
-import { ReadStoreDto } from '../models/read-store.dto';
+import { CreateStoreDto } from '../entities/create-store.dto';
+import { ReadStoreDto } from '../entities/read-store.dto';
 import { Response } from 'express';
-import { StoresService } from './stores.service';
+import { StoresService } from '../services/stores.service';
 
 @ApiTags('Stores')
 @Controller('stores')
 export class StoresController {
-  constructor(private storesService: StoresService) {}
+  constructor(private storesService: StoresService) { }
 
   @ApiOperation({
     summary: 'Get a list of stores',
@@ -47,24 +47,24 @@ export class StoresController {
     schema: {
       example: {
         "items": [
-            {
-                "id": "23",
-                "username": "miUsuario",
-                "brand": "Xiaomi"
-            }
+          {
+            "id": "23",
+            "username": "miUsuario",
+            "brand": "Xiaomi"
+          }
         ],
         "meta": {
-            "totalItems": 1,
-            "itemCount": 1,
-            "itemsPerPage": 10,
-            "totalPages": 1,
-            "currentPage": 1
+          "totalItems": 1,
+          "itemCount": 1,
+          "itemsPerPage": 10,
+          "totalPages": 1,
+          "currentPage": 1
         },
         "links": {
-            "first": "/stores?limit=10",
-            "previous": "",
-            "next": "",
-            "last": "/stores?page=1&limit=10"
+          "first": "/stores?limit=10",
+          "previous": "",
+          "next": "",
+          "last": "/stores?page=1&limit=10"
         }
       }
     }
@@ -99,11 +99,13 @@ export class StoresController {
     summary: 'Get store by Id',
   })
   @ApiOkResponse({
-    description: 'A store',
+    status: 200,
+    description: 'Ok',
     type: ReadStoreDto,
   })
   @ApiNotFoundResponse({
-    description: '404: Not Found',
+    status: 404,
+    description: 'Not Found',
     schema: {
       example: {
         "statusCode": 404,
@@ -113,6 +115,7 @@ export class StoresController {
     }
   })
   @ApiParam({
+    type: Number,
     name: 'id',
     description: 'Id of the requested store',
     required: true,
@@ -135,6 +138,7 @@ export class StoresController {
     summary: 'Create a new store',
   })
   @ApiCreatedResponse({
+    status: 201,
     description: 'The store has been successfully created',
     type: CreateStoreDto,
   })
@@ -190,7 +194,8 @@ export class StoresController {
     summary: 'Delete a store',
   })
   @ApiNotFoundResponse({
-    description: '404: Not Found',
+    status: 404,
+    description: 'Not Found',
     schema: {
       example: {
         "statusCode": 404,
@@ -206,11 +211,11 @@ export class StoresController {
     example: 8,
   })
   @ApiResponse({
-    status: 204,
-    description: 'The store has been successfully deleted',
+    status: 200,
+    description: 'Deleted',
   })
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   delete(@Param('id') id: number): Promise<DeleteResult> {
     return this.storesService.delete(id);
   }
