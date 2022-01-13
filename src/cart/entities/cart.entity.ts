@@ -1,7 +1,4 @@
-import {
-  ApiHideProperty,
-  ApiProperty
-} from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
@@ -20,7 +17,7 @@ import { User } from '../../users/entities/user.entity';
 export class Cart {
   @PrimaryGeneratedColumn({
     unsigned: true,
-    type: 'bigint'
+    type: 'bigint',
   })
   @ApiProperty({
     name: 'id',
@@ -79,10 +76,6 @@ export class Cart {
   })
   amount: number;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c3beef905c1580e32126b2865ed80567b7bb5ada
   @Column({
     length: 3,
     name: 'currency_code',
@@ -102,8 +95,8 @@ export class Cart {
   /**
    * Items to be purchased
    */
-  @OneToMany(() => CartItem, (item : CartItem) => item.cartId)
-  items : CartItem[]
+  @OneToMany(() => CartItem, (item: CartItem) => item.cartId)
+  items: CartItem[];
 
   /**
    * @deprecated User items attribute instead of cartItemsId
