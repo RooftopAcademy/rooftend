@@ -145,7 +145,7 @@ export class Item {
 
   @DeleteDateColumn({
     name : "deleted_at",
-    type : "timestamp with local time zone"
+    type : "timestamptz"
   })
   deletedAt? : Date
 
