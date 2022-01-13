@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -48,6 +49,10 @@ import { SupportModule } from './support/support.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       // synchronize: true,
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 600,
     }),
 
     AccountStatusModule,
