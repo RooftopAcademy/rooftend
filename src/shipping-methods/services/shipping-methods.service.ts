@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,57 +7,23 @@ import { ShippingMethod } from '../entities/shipping-method.entity';
 @Injectable()
 export class ShippingMethodsService {
   constructor(
-    @InjectRepository(ShippingMethod) private shippingMethodsRepo: Repository<ShippingMethod>
-  ) { }
+    @InjectRepository(ShippingMethod)
+    private shippingMethodsRepo: Repository<ShippingMethod>,
+  ) {}
 
   findAll() {
-    //return this.shippingMethodsRepo.find();
-    return [
-      {
-        id: 1,
-        name: '',
-        photoId: 1,
-      },
-      {
-        id: 2,
-        name: '',
-        photoId: 2,
-      },
-    ];
+    return this.shippingMethodsRepo.find();
   }
 
-  findOne(id: number) {
-    //return this.shippingMethodsRepo.findOne(id);
-    return {
-      id: id,
-      name: '',
-      photoId: 1,
-    };
+  async findOne(id: number) {
+    const shippingMethod: ShippingMethod = await this.shippingMethodsRepo.findOne(id);
+
+    if (!shippingMethod) throw new NotFoundException();
+
+    return shippingMethod;
   }
 
   getCount() {
-    //return this.shippingMethodsRepo.query("SELECT COUNT(*) FROM shipping_methods");
-    return 10;
-  }
-
-  create(body: any) {
-    // const newShippingMethod = new ShippingMethod();
-    // newShippingMethod.name = body.name;
-    // newShippingMethod.photoId = body.photoId;
-
-    // return this.shippingMethodsRepo.save(newShippingMethod);
-    return 'Método de Envío Creado';
-  }
-
-  async update(id: number, body: any) {
-    //const shippingMethod = await this.findOne(id);
-    //this.shippingMethodsRepo.merge(shippingMethod, body);
-    //return this.shippingMethodsRepo.save(shippingMethod);
-    return `Se Actualizó el Método de Envío ${id}`;
-  }
-
-  async delete(id: number) {
-    //await this.shippingMethodsRepo.delete(id);
-    return 'Eliminado';
+    return this.shippingMethodsRepo.count();
   }
 }
