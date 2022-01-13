@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { type } from 'os';
 import {
   Entity,
   Column,
@@ -26,6 +27,7 @@ export default class PaymentMethod {
   id: number;
 
   @ApiProperty({
+    name: 'name',
     example: 'CASH',
     description: 'The name of the payment method',
     type: String,
@@ -39,6 +41,7 @@ export default class PaymentMethod {
   name: string;
 
   @ApiProperty({
+    name: 'type',
     example: 'Cash',
     description: 'The type of the payment method, usually similar to the name',
     type: String,
@@ -60,7 +63,7 @@ export default class PaymentMethod {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
   })
   @Exclude({ toPlainOnly: true })
   created_at: Date;
@@ -70,12 +73,11 @@ export default class PaymentMethod {
     description:
       'The timestamp when the the payment method was updated for the last time',
     type: Date,
-    readOnly: true,
   })
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
   })
   @Exclude({ toPlainOnly: true })
   updated_at: Date;

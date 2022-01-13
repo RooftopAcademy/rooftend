@@ -122,7 +122,8 @@ export class BrandsController {
     name: 'id',
     example: 1,
     type: Number,
-    description: 'brand id'
+    description: 'brand id',
+    required: true,
   })
   @Delete(':id')
   delete(@Param('id') id: number) {

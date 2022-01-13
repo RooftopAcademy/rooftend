@@ -20,7 +20,7 @@ export class Offer {
   @PrimaryGeneratedColumn({
     name: 'id',
     type: 'bigint',
-    })
+  })
   id: number;
 
   @ApiProperty({
@@ -32,8 +32,8 @@ export class Offer {
   @Column({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    })
+    default: 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 
   @ApiProperty({
@@ -44,7 +44,7 @@ export class Offer {
   @ManyToOne(() => Item)
   @JoinColumn({
     name: 'item_id',
-    })
+  })
   item: Item;
 
   @ApiProperty({
@@ -57,7 +57,7 @@ export class Offer {
     name: 'start_at',
     type: 'timestamptz',
     nullable: false,
-    })
+  })
   startAt: Date;
 
   @ApiProperty({
@@ -70,7 +70,7 @@ export class Offer {
     name: 'end_at',
     type: 'timestamptz',
     nullable: false,
-    })
+  })
   endAt: Date;
 
   @ApiProperty({
@@ -81,7 +81,7 @@ export class Offer {
   @Column({
     type: 'smallint',
     nullable: false,
-    })
+  })
   discount: number;
 
   @ApiProperty({

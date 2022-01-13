@@ -36,6 +36,7 @@ export class CartItem {
     example: 10,
     description: 'Cart Item quantity in Cart',
     nullable: false,
+    minimum: 1,
   })
   quantity: number;
 
@@ -55,7 +56,7 @@ export class CartItem {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   @ApiProperty({
@@ -70,7 +71,7 @@ export class CartItem {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   @ApiProperty({

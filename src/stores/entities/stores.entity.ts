@@ -24,16 +24,18 @@ export class Store {
   id: number;
 
   @ApiProperty({
-    type: 'string',
+    type: Date,
     format: 'date-time',
     description: 'Created date',
     example: '2021-11-26T20:24:45.386Z',
-    readOnly: true,
+    default: 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   @Column({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   createdAt: Date;
 
@@ -47,7 +49,8 @@ export class Store {
   @Column({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   updatedAt: Date;
 
