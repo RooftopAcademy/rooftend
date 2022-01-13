@@ -1,14 +1,18 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
-  Entity,
+  ApiHideProperty,
+  ApiProperty
+} from '@nestjs/swagger';
+import {
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
 

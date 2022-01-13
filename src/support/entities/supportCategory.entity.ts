@@ -1,11 +1,12 @@
 import {
+  Column,
+  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  Column,
   OneToMany,
-  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { SupportQuestion } from './supportQuestion.entity';
 
 @Entity('support_categories')

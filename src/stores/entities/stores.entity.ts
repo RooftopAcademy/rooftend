@@ -1,13 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   PrimaryGeneratedColumn,
   OneToOne,
-  CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Brand } from '../../brands/entities/brands.entity';
 import { User } from '../../users/entities/user.entity';
 

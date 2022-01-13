@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { User } from '../../users/entities/user.entity';
 
 @Entity('searches')
@@ -44,7 +45,7 @@ export class Search {
 
   @ApiProperty({
     description: 'The timestamp of the creation',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2021-11-18T01:46:52.589Z',
