@@ -20,17 +20,18 @@ import {
   ApiCreatedResponse,
   ApiBody,
   ApiResponse,
-  ApiBadRequestResponse,
   ApiTags,
   ApiOperation,
   ApiParam,
   ApiQuery,
+  ApiNotFoundResponse,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('Photos')
 @Controller('photos')
 export class PhotosController {
-  constructor(private readonly photosService: PhotosService) {}
+  constructor(private readonly photosService: PhotosService) { }
 
   @ApiCreatedResponse({ type: PhotosEntity, description: 'Created a new photo' })
   @ApiOperation({ summary: 'Create a photo' })
@@ -74,14 +75,19 @@ export class PhotosController {
   }
 
   @ApiOperation({ summary: 'Get a given photo' })
-  @ApiParam({ name: 'id', type: Number, required: true })
-  @ApiResponse({
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    example: 2,
+  })
+  @ApiOkResponse({
     status: 200,
     description: 'Returns a given photo',
     type: PhotosEntity,
   })
-  @ApiBadRequestResponse({
-    description: 'The id provided was not found',
+  @ApiNotFoundResponse({
+    description: 'Not found',
     status: 404,
   })
   @Get(':id')
@@ -99,11 +105,10 @@ export class PhotosController {
   @ApiOperation({ summary: 'Update a given photo' })
   @ApiResponse({
     status: 200,
-    description: 'Updates a given photo',
-    type: PhotosEntity,
+    description: 'Updated',
   })
-  @ApiBadRequestResponse({
-    description: 'The update operation could not be executed',
+  @ApiNotFoundResponse({
+    description: 'Not Found',
     status: 404,
   })
   @ApiBody({ type: PhotosEntity })
@@ -116,13 +121,12 @@ export class PhotosController {
   }
 
   @ApiOperation({ summary: 'Delete a given photo' })
-  @ApiResponse({
-    status: 204,
-    description: 'Updates a given photo',
-    type: PhotosEntity,
+  @ApiOkResponse({
+    status: 200,
+    description: 'Deleted',
   })
-  @ApiBadRequestResponse({
-    description: 'The id provided was not found',
+  @ApiNotFoundResponse({
+    description: 'Not Found',
     status: 404,
   })
   @Delete(':id')
