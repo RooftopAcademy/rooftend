@@ -186,17 +186,18 @@ export class FavoritesController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Favorite>> {
-    limit = 10
-    token = 1
+    limit = 10;
+    token = 1;
+    
     return this.favoritesService.paginate(
       {
         page,
         limit,
         route: '/favorites',
       },
-      token
+      token,
     );
-  }
+  };
 
   @Get(':id')
   @UseGuards(PoliciesGuard)
@@ -207,16 +208,16 @@ export class FavoritesController {
     schema: {
       example: {
         "statusCode": 403,
-        "message": "Forbidden"
-      }
-    }
+        "message": "Forbidden",
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
   })
   public async getById() {
     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-  }
+  };
 
   @Post()
   @UseGuards(PoliciesGuard)
@@ -228,9 +229,9 @@ export class FavoritesController {
     schema: {
       example: {
         "statusCode": 201,
-        "message": "Created"
-      }
-    }
+        "message": "Created",
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
@@ -251,9 +252,9 @@ export class FavoritesController {
     this.favoritesService.create(createFavoriteDto, token);
     return ({
       "statusCode": 201,
-      "message": "Created"
-    })
-  }
+      "message": "Created",
+    });
+  };
 
   @Delete(':id')
   @UseGuards(PoliciesGuard)
@@ -265,9 +266,9 @@ export class FavoritesController {
     schema: {
       example: {
         "statusCode": 200,
-        "message": "Ok"
-      }
-    }
+        "message": "Ok",
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
@@ -284,6 +285,6 @@ export class FavoritesController {
     return ({
       "statusCode": 200,
       "message": "Ok"
-    })
-  }
+    });
+  };
 }
