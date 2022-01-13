@@ -22,7 +22,7 @@ export class CreateUserDTO {
   })
   @Matches(/\d/, { message: 'PASSWORD_MISSING: NUMBER' })
   @Matches(/[A-Z]/, {
-    message: 'PASSWORD_MISSING: CAPITAL_LETTER',
+    message: 'PASSWORD_MISSING: UPPER_CASE_LETTER',
   })
   @Matches(/[a-z]/, {
     message: 'PASSWORDS_MISSING: LOWER_CASE_LETTER',
