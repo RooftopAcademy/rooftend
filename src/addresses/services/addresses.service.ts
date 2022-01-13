@@ -18,7 +18,7 @@ export class AddressesService {
     return `item ${id} removed`;
   }
 
-  create(body: Body): string {
+  create(body: string): string {
     return 'item created';
   }
 }
