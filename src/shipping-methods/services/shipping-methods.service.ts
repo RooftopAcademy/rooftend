@@ -3,18 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ShippingMethod } from '../entities/shipping-method.entity';
+import { ShippingMethodDTO } from '../dto/shipping-method.dto';
 
 @Injectable()
 export class ShippingMethodsService {
   constructor(
-    @InjectRepository(ShippingMethod) private shippingMethodsRepo: Repository<ShippingMethod>
+    @InjectRepository(ShippingMethod)
+    private readonly shippingMethodsRepo: Repository<ShippingMethod>,
   ) { }
 
-  findAll() {
+  findAll(): Promise<ShippingMethodDTO[]> {
     return this.shippingMethodsRepo.find();
-  }
-
-  findOne(id: number) {
-    return this.shippingMethodsRepo.findOne(id);
   }
 }
