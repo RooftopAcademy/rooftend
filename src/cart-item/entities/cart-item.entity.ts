@@ -36,6 +36,7 @@ export class CartItem {
     example: 10,
     description: 'Cart Item quantity in Cart',
     nullable: false,
+    minimum: 1,
   })
   quantity: number;
 
