@@ -41,7 +41,7 @@ export class ShippingMethodsController {
   })
   @Get()
   @HttpCode(200)
-  getAll() {
+  getAll(): Promise<ShippingMethodDTO[]> {
     return this.shippingMethodsService.findAll();
   }
 }
