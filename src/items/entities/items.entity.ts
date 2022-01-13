@@ -103,10 +103,14 @@ export class Item {
 
   @Column({
     type: 'int',
+    name: 'stock',
+    nullable: false,
   })
   @ApiProperty({
+    nullable: false,
     example: 10,
     description: 'Item Stock',
+    type: Number,
   })
   stock: number;
 
@@ -115,6 +119,7 @@ export class Item {
     name: 'brand',
   })
   @ApiProperty({
+    type: Brand,
     example: 10,
     description: 'Brand of item',
     nullable: true,
@@ -138,7 +143,7 @@ export class Item {
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 
-  @OneToMany(() => Question, (question) => question.itemId)
+  @OneToMany(() => Question, (question) => question.item)
   questions: Question[];
 
   @OneToMany(() => History, (visit) => visit.item_id)
