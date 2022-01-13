@@ -29,10 +29,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { CreateStoreDto } from '../models/create-store.dto';
-import { ReadStoreDto } from '../models/read-store.dto';
+import { CreateStoreDto } from '../entities/create-store.dto';
+import { ReadStoreDto } from '../entities/read-store.dto';
 import { Response } from 'express';
-import { StoresService } from './stores.service';
+import { StoresService } from '../services/stores.service';
 
 @ApiTags('Stores')
 @Controller('stores')

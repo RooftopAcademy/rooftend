@@ -30,7 +30,7 @@ export class Cart {
     name: 'created_at',
     nullable: false,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     select: false,
   })
   @ApiHideProperty()
@@ -40,7 +40,7 @@ export class Cart {
     name: 'updated_at',
     nullable: false,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     select: false,
   })
   @ApiHideProperty()

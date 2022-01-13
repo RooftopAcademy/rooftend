@@ -31,10 +31,9 @@ export class PhonesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all phones' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
-    description: 'The phones found',
-    type: [Phone],
+    description: 'Ok',
   })
   @ApiQuery({
     name: 'page',
@@ -46,6 +45,7 @@ export class PhonesController {
     name: 'limit',
     required: false,
     description: 'Limit of phones to return, max is 10',
+    type: Number,
   })
   getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -66,7 +66,8 @@ export class PhonesController {
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Phone id'
+    description: 'Phone id',
+    required: true,
   })
   getOne(@Param('id') id: number) {
     return this.phonesService.findOne(id);
