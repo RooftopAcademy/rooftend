@@ -8,9 +8,10 @@ import {
 @Entity('shipping_methods')
 export class ShippingMethod {
   @ApiProperty({
-    type: 'integer',
+    type: Number,
     description: 'Shipping method Id',
     example: 13,
+    readOnly: true,
   })
   @PrimaryGeneratedColumn({
     name: 'id',
@@ -22,6 +23,7 @@ export class ShippingMethod {
     type: 'string',
     description: 'Name of the shipping method',
     example: 'Retiro en sucursal',
+    maxLength: 200,
   })
   @Column({
     name: 'name',
@@ -32,9 +34,10 @@ export class ShippingMethod {
   name: string;
 
   @ApiProperty({
-    type: 'integer',
+    type: 'string',
     description: 'URL of the company logo',
     example: 'https://images.net/logos/84646',
+    maxLength: 500,
   })
   @Column({
     name: 'logo_url',
