@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { Item } from '../../items/entities/items.entity';
 import { User } from '../../users/entities/user.entity';
-import { Search } from '../search.entity';
+import { Search } from '../entities/search.entity';
 
 @Injectable()
 export class SearchService {
@@ -12,7 +12,7 @@ export class SearchService {
     private readonly searchesRepository: Repository<Search>,
     @InjectRepository(Item) private readonly itemsRepository: Repository<Item>,
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async findAll(query: string) {
     const search = new Search();
