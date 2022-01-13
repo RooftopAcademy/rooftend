@@ -12,9 +12,9 @@ import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { Public } from '../decorators/public.decorator';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
@@ -42,7 +42,7 @@ export class AuthenticationController {
       },
     },
   })
-  @ApiBadRequestResponse({
+  @ApiConflictResponse({
     description: 'The user is allready registered',
     status: 409,
   })
@@ -57,11 +57,11 @@ export class AuthenticationController {
     return this.authService.login(user);
   }
 
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiOperation({ summary: 'Login a user' })
   @ApiBody({ type: LogInUserDTO })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'The user logged in',
     schema: {
       example: {
