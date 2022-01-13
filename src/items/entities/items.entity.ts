@@ -23,7 +23,12 @@ export class Item {
     unsigned: true,
     type: 'bigint',
   })
-  @ApiProperty({ example: 1, description: 'Item ID' })
+  @ApiProperty({
+    readOnly: true,
+    type: Number,
+    example: 1,
+    description: 'Item ID',
+  })
   id: number;
 
   @CreateDateColumn({
@@ -34,6 +39,9 @@ export class Item {
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Item's creation date",
+    default: () => 'CURRENT_TIMESTAMP',
+    type: Date,
+    format: 'date-time',
   })
   createdAt: Date;
 
@@ -43,50 +51,74 @@ export class Item {
     default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
+    default: () => 'CURRENT_TIMESTAMP',
+    type: Date,
+    format: 'date-time',
     example: '2016-03-26 10:10:10-05:00',
     description: "Item's last update date",
   })
   updatedAt: Date;
 
   @Column({
+    name: 'title',
     type: 'character varying',
     length: 100,
+    nullable: false,
   })
   @ApiProperty({
     example: 'Lorem ipsum dolor sit amet, consectetuer adipiscin',
     description: 'Item title',
+    nullable: false,
+    maxLength: 100,
   })
   title: string;
 
   @Column({
+    name: 'description',
     type: 'character varying',
     length: 1000,
+    nullable: false,
   })
   @ApiProperty({
-    example:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibu',
+    example: 'Imitaciones de varitas de sauco para el mago coleccionista',
     description: 'Item description',
+    nullable: false,
+    maxLength: 1000,
   })
   description: string;
 
   @Column({
+    name: 'price',
     type: 'float',
+    nullable: false,
   })
-  @ApiProperty({ example: 1050.99, description: 'Item Price' })
+  @ApiProperty({
+    nullable: false,
+    example: 1050.99,
+    description: 'Item Price',
+    type: Number,
+  })
   price: number;
 
   @Column({
     type: 'int',
   })
-  @ApiProperty({ example: 10, description: 'Item Stock' })
+  @ApiProperty({
+    example: 10,
+    description: 'Item Stock',
+  })
   stock: number;
 
   @ManyToOne(() => Brand)
   @JoinColumn({
-    name: 'brand_id',
+    name: 'brand',
   })
-  @ApiProperty({ example: 10, description: 'Id of the Item Brand' })
-  brandId: Brand;
+  @ApiProperty({
+    example: 10,
+    description: 'Brand of item',
+    nullable: true,
+  })
+  brand?: Brand;
 
   @ManyToOne(() => User, (user) => user.items, { eager: true })
   @JoinColumn({

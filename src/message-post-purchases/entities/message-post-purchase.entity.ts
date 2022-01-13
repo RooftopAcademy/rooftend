@@ -30,7 +30,7 @@ export class MessagePostPurchase {
     @JoinColumn({
         name: 'cart_id',
     })
-    cart_id: number;
+    cart_id: Cart;
 
     @ApiProperty({ example: 999, description: 'Id of the message owner', type: Number })
     @Column({ type: 'bigint', nullable: false })
@@ -44,9 +44,9 @@ export class MessagePostPurchase {
     @Column({ type: 'bigint', nullable: false })
     @ManyToOne(() => User)
     @JoinColumn({
-        name: 'received_id',
+        name: 'receiver_id',
     })
-    received_id: User;
+    receiver_id: User;
 
     @ApiProperty({
         description: 'Message description',

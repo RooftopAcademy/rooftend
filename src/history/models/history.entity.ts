@@ -5,7 +5,12 @@ import { Item } from '../../items/entities/items.entity';
 
 @Entity('history')
 export class History {
-  @ApiProperty({ example: 1, description: 'The id of the History' })
+  @ApiProperty({
+    example: 1,
+    description: 'The id of the History',
+    readOnly: true,
+    type: Number,
+  })
   @PrimaryGeneratedColumn({
     type: 'bigint',
     unsigned: true,
@@ -19,26 +24,40 @@ export class History {
 
 
   @ManyToOne(() => Item)
+  @ApiProperty({
+    example: 1,
+    description: 'Item Id'
+  })
   @JoinColumn({ name: 'item_id' })
   item_id: Item;
-  
+
 
   @ApiProperty({
     default: 'now()',
     type: Date,
     description: 'The date-time that was created',
+    nullable: false,
   })
   @Column({
     name: 'created_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
-  created_at: Date;
+  createdAt: Date;
 
+
+  @ApiProperty({
+    default: null,
+    type: Date,
+    description: 'The date-time that was deleted',
+    nullable: true,
+  })
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
     default: null,
+    nullable: true,
   })
   deletedAt?: Date;
 }

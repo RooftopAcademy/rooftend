@@ -14,7 +14,10 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'carts' })
 export class Cart {
-  @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint'
+  })
   @ApiProperty({
     name: 'id',
     type: 'integer',
