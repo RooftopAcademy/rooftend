@@ -26,7 +26,7 @@ import PaymentMethodsService from '../services/payment-method.service';
 @ApiTags('Payment Methods')
 @Controller('payment-methods')
 export default class PaymentMethodsController {
-  constructor(private readonly service: PaymentMethodsService) {}
+  constructor(private readonly service: PaymentMethodsService) { }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
@@ -76,7 +76,9 @@ export default class PaymentMethodsController {
   })
   @ApiParam({
     name: 'id',
-    format: 'number',
+    type: Number,
+    required: true,
+    example: 2,
   })
   async findOne(@Param('id') id: number): Promise<PaymentMethod> {
     const payment_method: PaymentMethod = await this.service.findOne(id);

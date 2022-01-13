@@ -1,13 +1,14 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn,
-  CreateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from '../../users/entities/user.entity';
 
 /**
@@ -21,13 +22,24 @@ export class SupportRequest {
     description: 'The id of the request',
     example: 1,
   })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint',
+  })
   id: number;
 
+  @ApiProperty({
+    description: 'The date when has been created',
+    default: 'CURRENT_TIMESTAMP',
+    type: Date,
+    format: 'date-time',
+    example: '2021-11-18T01:46:52.589Z',
+    nullable: false,
+  })
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   createdAt: Date;
 
@@ -38,6 +50,7 @@ export class SupportRequest {
     example: "The system doesn't let me post an item, what's wrong?",
   })
   @Column({
+    name: 'content',
     type: 'character varying',
     nullable: false,
   })

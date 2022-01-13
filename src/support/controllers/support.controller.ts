@@ -28,7 +28,7 @@ import { User } from '../../users/entities/user.entity';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('support')
 export class SupportController {
-  constructor(private readonly supportService: SupportService) {}
+  constructor(private readonly supportService: SupportService) { }
 
   @ApiOperation({ summary: 'Returns all support categories' })
   @ApiResponse({
@@ -75,7 +75,7 @@ export class SupportController {
       ],
     },
   })
-  @ApiParam({ name: 'id', type: Number, required: true })
+  @ApiParam({ name: 'id', type: Number, required: true, example: 3 })
   @HttpCode(200)
   @Get('categories/:id')
   async getQuestionsByCategoryId(@Param('id', ParseIntPipe) id: number) {
