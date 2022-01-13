@@ -4,25 +4,29 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('categories')
 export class Category {
   @ApiProperty({
-    type:Number,
+    type: Number,
     description: 'The id of the category',
     example: 1,
+    readOnly: true,
   })
   @PrimaryGeneratedColumn({
     unsigned: true,
     type: 'smallint',
   })
   id: number;
-  
+
   @ApiProperty({
-    type:String,
-    maxLength:100,
+    type: String,
+    maxLength: 100,
     description: 'The name of the category',
     example: 'Technology',
+    nullable: false,
   })
   @Column({
+    name: 'name',
     type: 'character varying',
     length: 100,
+    nullable: false,
   })
   name: string;
 

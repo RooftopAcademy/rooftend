@@ -91,6 +91,7 @@ export class QuestionsService {
   }
   async delete(questionId: number): Promise<Status> {
     try {
+      await this.findOneQuestion(questionId)
       await this.questionsRepository.softDelete(questionId)
       return STATUS.DELETED
     }
@@ -101,12 +102,20 @@ export class QuestionsService {
 
   async addAnswer(questionId: number, answerId: null | number): Promise<UpdateResult> {
     try {
-
       return await this.questionsRepository.update(questionId, { 'answerId': answerId });
     }
     catch (err) {
       throw new NotFoundException();
     }
+  }
+
+  async findOneQuestion(questionId: number) {
+    let question = await this.questionsRepository.findOne(questionId)
+    console.log(question)
+    if (!question) {
+      throw new NotFoundException()
+    }
+    return question
   }
 
   async findUnanswered(questionId: number) {

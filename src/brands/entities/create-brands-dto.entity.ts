@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class createBrandDTO {
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     example: '',
@@ -10,6 +11,7 @@ export class createBrandDTO {
   })
   name: string;
 
+  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     example: '',
