@@ -33,12 +33,14 @@ export class ShippingMethod {
 
   @ApiProperty({
     type: 'integer',
-    description: 'Company logo Id',
-    example: 13,
+    description: 'URL of the company logo',
+    example: 'https://images.net/logos/84646',
   })
   @Column({
-    name: 'photo_id',
-    type: 'bigint',
+    name: 'logo_url',
+    type: 'character varying',
+    length: 500,
+    nullable: true,
   })
-  photoId: number;
+  logoURL: string;
 }
