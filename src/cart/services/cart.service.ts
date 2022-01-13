@@ -23,8 +23,8 @@ export class CartService {
         cart.user.id = Number(cart.user.id);
         const ability = this.caslAbilityFactory.createForUser(user);
         if (ability.cannot(Permission.Read, subject('Cart', cart))){
-            throw new ForbiddenException();
-        }
+            throw new ForbiddenException()
+        };
         return cart;
         
     }
@@ -40,6 +40,11 @@ export class CartService {
         if (ability.cannot(Permission.Read, subject('Cart', cart))){
             throw new ForbiddenException();
         }
+        return cart;
+    }
+
+    async findOne(id:number): Promise<Cart>{
+        const cart: Cart = await this.cartRepo.findOne(id);
         return cart;
     }
 

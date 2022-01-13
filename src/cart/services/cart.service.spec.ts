@@ -40,7 +40,7 @@ describe('CartService', () => {
 
     it('should create a new cart and return it', async () => {
         const cart = { currencyCode: 'ab1', amount: 555, userId: 1 };
-        expect(await service.create(cart)).toEqual({
+        expect(await service.create()).toEqual({
             id: expect.any(Number),
             currencyCode: cart.currencyCode,
             amount: cart.amount,
