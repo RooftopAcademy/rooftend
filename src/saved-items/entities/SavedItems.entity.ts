@@ -22,12 +22,9 @@ export class SavedItemsEntity {
   })
   id: number;
 
-  @Column({
-    type: 'bigint',
-    name: 'item_id',
-  })
+
   @ManyToMany(() => Item)
-  @JoinTable()
+  @JoinTable({ name: 'item_id' })
   @ApiProperty({
     example: 1,
     description: 'The id of the item',
