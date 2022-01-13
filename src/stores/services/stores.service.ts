@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
-import { Store } from '../models/stores.entity';
+import { Store } from '../entities/stores.entity';
 import { DeleteResult } from 'typeorm/browser';
 import {
   IPaginationOptions,
   paginateRaw,
 } from 'nestjs-typeorm-paginate';
-import { ReadStoreDto } from '../models/read-store.dto';
-import { CreateStoreDto } from '../models/create-store.dto';
+import { ReadStoreDto } from '../entities/read-store.dto';
+import { CreateStoreDto } from '../entities/create-store.dto';
 
 @Injectable()
 export class StoresService {
   constructor(
     @InjectRepository(Store)
     private readonly storesRepository: Repository<Store>,
-  ) {}
+  ) { }
 
   async paginate(options: IPaginationOptions) {
     return paginateRaw<Store>(
