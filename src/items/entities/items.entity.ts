@@ -6,7 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany, DeleteDateColumn,
+  OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -99,8 +100,8 @@ export class Item {
   @JoinColumn({
     name: 'category_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the Item Category' })
-  categoryId: Category;
+  @ApiProperty({ type: () => Category, description: 'Item Category' })
+  category: Category;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
@@ -109,10 +110,10 @@ export class Item {
   questions: Question[];
 
   @DeleteDateColumn({
-    name : "deleted_at",
-    type : "timestamptz"
+    name: 'deleted_at',
+    type: 'timestamptz',
   })
-  deletedAt? : Date
+  deletedAt?: Date;
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
