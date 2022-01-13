@@ -1,7 +1,15 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  CreateDateColumn,
+  DeleteDateColumn,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
+
 import { Item } from '../../items/entities/items.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('history')
 export class History {
@@ -38,10 +46,9 @@ export class History {
     description: 'The date-time that was created',
     nullable: false,
   })
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;

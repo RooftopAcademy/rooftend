@@ -1,8 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
-import { PolymorphicParent } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity implements PolymorphicChildInterface {
@@ -23,13 +26,12 @@ export class PhotosEntity implements PolymorphicChildInterface {
     type: Date,
     format: 'date-time',
     description: 'Creation date',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
-  @Column({
+  @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
