@@ -1,16 +1,15 @@
 import {
   Body,
   Controller,
-  Delete,
+  Delete, ForbiddenException,
   Get,
   HttpCode,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ItemsService } from '../services/items.service';
-import { Item } from '../entities/items.entity';
 
 import {
   ApiOperation,
@@ -20,13 +19,21 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
+
+import { ItemsService } from '../services/items.service';
+import { Item } from '../entities/items.entity';
 import { User } from '../../users/entities/user.entity';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
+import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 
 @ApiTags('Items')
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService) {}
+  constructor(private readonly ItemsService: ItemsService,
+              private readonly caslAbilityFactory: CaslAbilityFactory) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -36,8 +43,18 @@ export class ItemsController {
   })
   @Get()
   @HttpCode(200)
-  getAll(): Promise<Item[]> {
-    return this.ItemsService.findAll();
+  getAll(
+    @Query('sellerId') sellerId : null,
+    @Query('categoryId') categoryId : null,
+    @Query('orderBy') orderBy : null,
+    @Query('dir') dir : string = 'ASC',
+  ): Promise<Pagination<Item, IPaginationMeta>> {
+    const user = new User()
+    user.id = 1
+
+    return this.ItemsService.findAll({
+      exclude : true, sellerId, categoryId, orderBy
+    }, user);
   }
 
   @ApiOperation({ summary: 'Get a single item by ID' })
@@ -92,11 +109,18 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item Not Found',
   })
-  update(@Param('id') id: number, @Body() body: any): Promise<Item> {
+  async update(@Param('id') id: number, @Body() body: any): Promise<Item> {
     const user = new User();
     user.id = 1;
 
-    return this.ItemsService.update(user, id, body);
+    const item = await this.ItemsService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(Permission.Update, subject('Item', item))) {
+      throw new ForbiddenException();
+    }
+
+    return this.ItemsService.update(item, body);
   }
 
   @ApiOperation({ summary: 'Delete a item by ID' })
