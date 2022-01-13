@@ -1,6 +1,5 @@
-import { Controller, Get, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, HttpCode } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-
 import { ShippingMethodDTO } from '../dto/shipping-method.dto';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
@@ -33,17 +32,5 @@ export class ShippingMethodsController {
   @HttpCode(200)
   getAll(): Promise<ShippingMethodDTO[]> {
     return this.shippingMethodsService.findAll();
-  }
-
-  @Get('count')
-  @HttpCode(200)
-  getCount() {
-    return this.shippingMethodsService.getCount();
-  }
-
-  @Get(':id')
-  @HttpCode(200)
-  getOne(@Param('id') id: number) {
-    return this.shippingMethodsService.findOne(id);
   }
 }

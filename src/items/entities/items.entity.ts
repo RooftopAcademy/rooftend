@@ -124,7 +124,7 @@ export class Item {
   })
   brand?: Brand;
 
-  @ManyToOne(() => User, (user) => user.items)
+  @ManyToOne(() => User, (user) => user.items, { eager: true })
   @JoinColumn({
     name: 'user_id',
   })

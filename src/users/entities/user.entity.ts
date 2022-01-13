@@ -5,16 +5,14 @@ import {
   OneToMany,
   DeleteDateColumn,
 } from 'typeorm';
-import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-import { PhotosEntity } from '../../photos/models/photos.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
+import { History } from '../../history/models/history.entity';
+import { Item } from '../../items/entities/items.entity';
+import { Question } from '../../questions/entities/question.entity';
 import { Review } from '../../review/review.entity';
 import { Search } from '../../search/entities/search.entity';
-import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
-import { Item } from '../../items/entities/items.entity';
-import { History } from '../../history/models/history.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
-import { Question } from '../../questions/entities/question.entity';
 
 @Entity('users')
 export class User {
@@ -88,11 +86,6 @@ export class User {
   @Column({ name: 'completed', default: false })
   completed: boolean;
 
-  @PolymorphicChildren(() => PhotosEntity, {
-    eager: false,
-  })
-  photos: PhotosEntity[];
-
   /**
    * Reviews sent to other users
    */
@@ -102,10 +95,9 @@ export class User {
   /**
    * Reviews received from other users after buy
    */
-  @PolymorphicChildren(() => Review, { eager: false })
+  // @PolymorphicChildren(() => Review, { eager: false })
+  @OneToMany(() => Review, (review) => review.subject)
   receivedReviews: Review[];
-
-  entities: [];
 
   /**
    * Published items bookmarked by the user
