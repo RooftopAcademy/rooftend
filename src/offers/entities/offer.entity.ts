@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -29,10 +30,9 @@ export class Offer {
     description: 'Created date',
     example: '2021-10-19 10:23:54+03'
   })
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 

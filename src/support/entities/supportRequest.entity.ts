@@ -1,13 +1,14 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn,
-  CreateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from '../../users/entities/user.entity';
 
 /**
@@ -38,7 +39,6 @@ export class SupportRequest {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;

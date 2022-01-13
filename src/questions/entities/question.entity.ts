@@ -2,17 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  DeleteDateColumn,
+  JoinColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn,
   PrimaryGeneratedColumn,
-  DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
 import { Answer } from './answer.entity';
 import { Type } from 'class-transformer';
+
 import { Item } from '../../items/entities/items.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('questions')
 export class Question {
@@ -89,7 +90,6 @@ export class Question {
     name: 'created_at',
     type: 'timestamptz',
     nullable: false,
-    default: 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 

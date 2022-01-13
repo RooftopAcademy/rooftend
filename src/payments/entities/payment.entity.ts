@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import PaymentStatus from './payment-status.enum';
 
 @Entity({
@@ -33,7 +34,6 @@ export class Payment {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
@@ -47,7 +47,6 @@ export class Payment {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 

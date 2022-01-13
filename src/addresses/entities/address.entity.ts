@@ -1,12 +1,11 @@
-import { Type } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -35,7 +34,6 @@ export class Address {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
@@ -49,7 +47,6 @@ export class Address {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 

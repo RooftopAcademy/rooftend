@@ -1,11 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   PrimaryGeneratedColumn,
   OneToOne,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Brand } from '../../brands/entities/brands.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -31,10 +34,9 @@ export class Store {
     default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
@@ -46,10 +48,9 @@ export class Store {
     example: '2021-11-26T20:24:45.386Z',
     readOnly: true,
   })
-  @Column({
+  @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   updatedAt: Date;
