@@ -12,7 +12,10 @@ export class PhotosEntity implements PolymorphicChildInterface {
     description: "Photo's ID",
     readOnly: true
   })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    type: 'bigint',
+    unsigned: true,
+  })
   id: number;
 
   @ApiProperty({
@@ -20,12 +23,13 @@ export class PhotosEntity implements PolymorphicChildInterface {
     type: Date,
     format: 'date-time',
     description: 'Creation date',
-    default: 'Current date',
+    default: 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
@@ -39,7 +43,7 @@ export class PhotosEntity implements PolymorphicChildInterface {
   })
   @Column({
     name: 'url',
-    type: 'varchar',
+    type: 'character varying',
     length: 200,
     nullable: false,
   })
@@ -84,11 +88,29 @@ export class PhotosEntity implements PolymorphicChildInterface {
   })
   size: number;
 
-  @Column({ type: 'integer', name: 'subject_id', nullable: false })
+  @ApiProperty({
+    example: 2,
+    type: Number,
+    description: "Entity Id that has the photo",
+    nullable: false,
+  })
+  @Column({
+    type: 'bigint',
+    name: 'subject_id',
+    nullable: false
+  })
   entityId: number;
 
+
+  @ApiProperty({
+    example: 'item',
+    type: String,
+    description: "Type of the entity that has the photo",
+    nullable: false,
+    maxLength: 100,
+  })
   @Column({
-    type: 'varchar',
+    type: 'character varying',
     length: 100,
     name: 'subject_type',
     nullable: false,
@@ -96,15 +118,17 @@ export class PhotosEntity implements PolymorphicChildInterface {
   entityType: string;
 
   @ApiProperty({
-    example: 'https://localhost:3000/galery/items/yellow_one.jpg',
+    example: 'https://localhost:3000/gallery/items/yellow_one.jpg',
     type: String,
     description: 'Url to redirect the user',
+    nullable: false,
+    maxLength: 200,
   })
   @Column({
-    type: 'varchar',
+    type: 'character varying',
     length: 200,
     name: 'redirect_url',
-    nullable: true,
+    nullable: false,
   })
   redirectUrl: string;
 }
