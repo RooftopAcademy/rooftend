@@ -44,7 +44,7 @@ export class Search {
 
   @ApiProperty({
     description: 'The timestamp of the creation',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2021-11-18T01:46:52.589Z',
@@ -54,7 +54,7 @@ export class Search {
     name: 'created_at',
     type: 'timestamptz',
     nullable: false,
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 }

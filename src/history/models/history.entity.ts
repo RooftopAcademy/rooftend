@@ -41,7 +41,7 @@ export class History {
   @Column({
     name: 'created_at',
     type: 'timestamp',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
