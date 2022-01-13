@@ -73,11 +73,6 @@ export class User {
   @Column({ default: false })
   completed: boolean;
 
-  @PolymorphicChildren(() => PhotosEntity, {
-    eager: false,
-  })
-  photos: PhotosEntity[];
-
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
