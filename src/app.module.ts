@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AccountStatusModule } from './account-status/account-status.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { CustomMessagesModule } from './custom-messages/custom-messages.module';
@@ -33,9 +36,11 @@ import { UsersModule } from './users/users.module';
 import { SavedItemsModule } from './saved-items/saved-items.module';
 import { SupportModule } from './support/support.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -46,8 +51,13 @@ import { SupportModule } from './support/support.module';
       autoLoadEntities: true,
       // synchronize: true,
     }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 600,
+    }),
 
     AccountStatusModule,
+    AuthenticationModule,
     BrandsModule,
     CartItemModule,
     CartModule,
