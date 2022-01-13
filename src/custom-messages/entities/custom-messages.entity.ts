@@ -42,7 +42,7 @@ export class CustomMessage {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Message's creation date" })
   createdAt: Date;
@@ -50,7 +50,7 @@ export class CustomMessage {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Message's last update date" })
   updatedAt: Date;

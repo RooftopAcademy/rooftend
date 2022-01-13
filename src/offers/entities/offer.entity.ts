@@ -32,7 +32,7 @@ export class Offer {
   @Column({
     name: 'created_at',
     type: 'timestamptz',
-    default: 'CURRENT_TIMESTAMP',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
