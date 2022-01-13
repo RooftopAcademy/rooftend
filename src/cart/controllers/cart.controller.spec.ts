@@ -11,7 +11,7 @@ describe('CartController', () => {
     newUser.id = 1;
 
     const mockCartService = {
-        findCart: jest.fn(cart => ({
+        findCart: jest.fn(()=> Promise.resolve({
             
             id: Date.now(),
             created_at: Date.now(),
@@ -22,7 +22,7 @@ describe('CartController', () => {
             user: newUser,
             
         })),
-        findCartById: jest.fn().mockImplementation((id) => ({
+        findOne: jest.fn().mockImplementation(() => Promise.resolve({
             id: 3, 
             created_at: Date.now(), 
             updated_at: Date.now(), 
@@ -102,7 +102,7 @@ describe('CartController', () => {
             }
           ]
         });
-        expect(mockCartService.findCartById).toHaveBeenCalled();
+        expect(mockCartService.findOne).toHaveBeenCalled();
     });
 
     it('should return the latest valid  cart', () => {
@@ -119,7 +119,7 @@ describe('CartController', () => {
     });
 
     it('should return a ForbiddenError message', async () => {
-        mockCartService.findCartById.mockImplementationOnce(() => {
+        mockCartService.findOne.mockImplementationOnce(() => {
           throw new ForbiddenException();
         });
   
@@ -131,12 +131,36 @@ describe('CartController', () => {
       });
   
       it('should return a NotFoundError message', async () => {
-        mockCartService.findCartById.mockImplementationOnce(() => {
+        mockCartService.findOne.mockImplementationOnce(() => {
           throw new NotFoundException();
         });
   
         try {
           expect(await controller.getCartById(3)).toThrow(NotFoundException);
+        } catch (error) {
+          expect(error.message).toEqual('Not Found');
+        }
+      });
+
+      it('should return a ForbiddenError message', async () => {
+        mockCartService.findCart.mockImplementationOnce(() => {
+          throw new ForbiddenException();
+        });
+  
+        try {
+          expect(await controller.getCartById(3)).toThrow(ForbiddenException);
+        } catch (error) {
+          expect(error.message).toEqual('Forbidden');
+        }
+      });
+  
+      it('should return a NotFoundError message', async () => {
+        mockCartService.findCart.mockImplementationOnce(() => {
+          throw new NotFoundException();
+        });
+  
+        try {
+          expect(await controller.getCart()).toThrow(NotFoundException);
         } catch (error) {
           expect(error.message).toEqual('Not Found');
         }
