@@ -29,7 +29,7 @@ export class SupportRequest {
 
   @ApiProperty({
     description: 'The date when has been created',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2021-11-18T01:46:52.589Z',

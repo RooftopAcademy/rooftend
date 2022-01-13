@@ -39,7 +39,7 @@ export class Item {
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Item's creation date",
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
   })
@@ -50,7 +50,7 @@ export class Item {
     type: 'timestamptz',
   })
   @ApiProperty({
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2016-03-26 10:10:10-05:00',

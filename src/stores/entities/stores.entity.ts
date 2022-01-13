@@ -30,7 +30,7 @@ export class Store {
     format: 'date-time',
     description: 'Created date',
     example: '2021-11-26T20:24:45.386Z',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   @CreateDateColumn({
