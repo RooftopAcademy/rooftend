@@ -5,10 +5,7 @@ import {
   OneToMany,
   DeleteDateColumn,
 } from 'typeorm';
-import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-
-import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Search } from '../../search/entities/search.entity';
 import { History } from '../../history/models/history.entity';
 import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
@@ -69,7 +66,11 @@ export class User {
     description: 'Account status assigned to that user ',
     type: Number,
   })
-  @Column({ type: 'integer', nullable: false })
+  @Column({
+    type: 'integer',
+    nullable: false,
+    default: AccountStatusesEnum.PENDING,
+  })
   account_status: AccountStatusesEnum;
 
   @ApiProperty({
@@ -99,7 +100,7 @@ export class User {
    * Reviews received from other users after buy
    */
   // @PolymorphicChildren(() => Review, { eager: false })
-  @OneToMany(() => Review, review => review.subject)
+  @OneToMany(() => Review, (review) => review.subject)
   receivedReviews: Review[];
 
   /**
