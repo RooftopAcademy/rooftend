@@ -19,6 +19,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiTags('Brands')
 @Controller('brands')
@@ -49,6 +50,7 @@ export class BrandsController {
     example: 10,
   })
   @Get()
+  @Public()
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -80,6 +82,7 @@ export class BrandsController {
     type: Number,
   })
   @Get(':id')
+  @Public()
   @HttpCode(200)
   findOne(@Param('id') id: number) {
     return this.brandService.findOne(id);
