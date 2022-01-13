@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
+  OneToMany, DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -123,12 +123,12 @@ export class Item {
   })
   brand?: Brand;
 
-  @ManyToOne(() => User, (user) => user.items)
+  @ManyToOne(() => User, (user) => user.items, { eager: true })
   @JoinColumn({
     name: 'user_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: number;
+  @ApiProperty({ type: () => User })
+  user: User;
 
   @ManyToOne(() => Category)
   @JoinColumn({
@@ -142,6 +142,12 @@ export class Item {
 
   @OneToMany(() => Question, (question) => question.item)
   questions: Question[];
+
+  @DeleteDateColumn({
+    name : "deleted_at",
+    type : "timestamp with local time zone"
+  })
+  deletedAt? : Date
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];

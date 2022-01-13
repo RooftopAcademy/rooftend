@@ -2,7 +2,9 @@ import {
   Controller,
   Get,
   HttpCode,
+  Param
 } from '@nestjs/common';
+
 import {
   ApiOkResponse,
   ApiOperation,
@@ -15,9 +17,7 @@ import { ShippingMethodsService } from '../services/shipping-methods.service';
 @ApiTags('Shipping Methods')
 @Controller('shipping-methods')
 export class ShippingMethodsController {
-  constructor(
-    private shippingMethodsService: ShippingMethodsService
-  ) { }
+  constructor(private shippingMethodsService: ShippingMethodsService) {}
 
   @ApiOperation({
     summary: 'Get all shipping methods',
