@@ -2,6 +2,8 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  HttpCode,
+  Param,
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -55,5 +58,21 @@ export class BrandsController {
       limit,
       route: '/brands',
     });
+  }
+  @ApiOperation({ summary: 'Get a brand by id' })
+  @ApiOkResponse({
+    status: 200,
+    description: 'The found brand with that id',
+    type: Brand,
+  })
+  @ApiParam({
+    name: 'id',
+    example: 1,
+    type: Number,
+  })
+  @Get(':id')
+  @HttpCode(200)
+  findOne(@Param('id') id: number) {
+    return this.brandService.findOne(id);
   }
 }

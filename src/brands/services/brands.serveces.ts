@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -16,5 +16,14 @@ export class BrandsService {
   ) {}
   async paginate(options: IPaginationOptions): Promise<Pagination<Brand>> {
     return paginate<Brand>(this.brandRepo, options);
+  }
+  async findOne(id: number): Promise<Brand> {
+    const category: Brand = await this.brandRepo.findOne(id, {
+      relations: ['subCategories'],
+    });
+    if (!category) {
+      throw new NotFoundException(`Brand with id ${id} not found.`);
+    }
+    return category;
   }
 }
