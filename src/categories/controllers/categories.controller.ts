@@ -2,17 +2,16 @@ import {
   Controller,
   Get,
   HttpCode,
-  Param,
-  Res,
   DefaultValuePipe,
   ParseIntPipe,
   Query,
   NotFoundException,
+  Param,
 } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from '../entities/categories.entity';
-import { Response } from 'express';
+import { Public } from '../../authentication/decorators/public.decorator';
 import {
   ApiOperation,
   ApiTags,
@@ -25,12 +24,10 @@ import {
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
-  paginate() {
-    throw new Error('Method not implemented.');
-  }
   public constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Returns all available categories' })
   @ApiOkResponse({
     status: 200,
@@ -90,12 +87,6 @@ export class CategoriesController {
       },
     },
   })
-  @ApiNotFoundResponse({
-    description: 'No categories available',
-    schema: {
-      example: new NotFoundException('No categories available').getResponse(),
-    },
-  })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -123,6 +114,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
+  @Public()
   @HttpCode(200)
   @ApiOperation({ summary: ' Gets one category by id' })
   @ApiParam({ name: 'id', type: Number, required: true, example: 1 })
