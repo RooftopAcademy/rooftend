@@ -34,7 +34,7 @@ export class PhonesService {
         return phone;
       }
 
-      const error: HttpErrorMessage = { message: 'Not Found', code: 404 };
+      const error = { message: 'Not Found', code: 404 };
 
       return Promise.reject(error);
     });
