@@ -32,7 +32,6 @@ export class SupportCategory {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;

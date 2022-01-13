@@ -89,7 +89,6 @@ export class Question {
     name: 'created_at',
     type: 'timestamptz',
     nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 

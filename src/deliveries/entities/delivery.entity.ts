@@ -33,7 +33,6 @@ export class Delivery {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
@@ -47,7 +46,6 @@ export class Delivery {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 

@@ -60,7 +60,6 @@ export class Favorite {
     name: 'updated_at',
     type: 'timestamptz',
     nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
 }

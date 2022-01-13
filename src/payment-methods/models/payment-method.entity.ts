@@ -63,7 +63,6 @@ export default class PaymentMethod {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @Exclude({ toPlainOnly: true })
   created_at: Date;
@@ -77,7 +76,6 @@ export default class PaymentMethod {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @Exclude({ toPlainOnly: true })
   updated_at: Date;

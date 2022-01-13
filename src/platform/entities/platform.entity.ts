@@ -35,7 +35,6 @@ export class Platform {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
@@ -51,7 +50,6 @@ export class Platform {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   updatedAt: Date;
