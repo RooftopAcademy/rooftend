@@ -1,3 +1,4 @@
+import { Type } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Entity,
@@ -13,6 +14,7 @@ import {
 })
 export class Address {
   @ApiProperty({
+    readOnly: true,
     description: 'Address Id number',
     type: 'integer',
     example: 1,
@@ -28,7 +30,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
-    example: '2021-12-15',
+    example: '2021-11-18T01:46:52.589Z',
   })
   @CreateDateColumn({
     name: 'created_at',
@@ -42,7 +44,7 @@ export class Address {
     default: 'Current date',
     type: 'date',
     format: 'date-time',
-    example: '2021-12-15',
+    example: '2021-11-18T01:46:52.589Z',
   })
   @UpdateDateColumn({
     name: 'updated_at',
@@ -51,6 +53,13 @@ export class Address {
   })
   updatedAt: Date;
 
+  @ApiProperty({
+    description: 'Timestamp when was deleted',
+    default: null,
+    type: 'timestamptz',
+    example: '2021-11-18T01:46:52.589Z',
+    format: 'date-time',
+  })
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
@@ -62,11 +71,14 @@ export class Address {
     description: '3 digits ISO country code',
     type: 'string',
     example: 'ARG',
+    maxLength: 3,
+    nullable: false,
   })
   @Column({
     name: 'country_code',
     type: 'char',
     length: 3,
+    nullable: false,
   })
   countryCode: string;
 
@@ -74,11 +86,14 @@ export class Address {
     description: 'Country state name',
     type: 'string',
     example: 'Córdoba',
+    maxLength: 100,
+    nullable: false,
   })
   @Column({
     name: 'country_state',
     type: 'char',
     length: 100,
+    nullable: false,
   })
   countryState: string;
 
@@ -86,11 +101,14 @@ export class Address {
     description: 'City name',
     type: 'string',
     example: 'San Francisco',
+    maxLength: 100,
+    nullable: false,
   })
   @Column({
     name: 'city_name',
     type: 'char',
     length: 200,
+    nullable: false,
   })
   cityName: string;
 
@@ -98,11 +116,14 @@ export class Address {
     description: 'Street name',
     type: 'string',
     example: '9 de Julio',
+    maxLength: 200,
+    nullable: false,
   })
   @Column({
     name: 'street_name',
     type: 'char',
     length: 200,
+    nullable: false,
   })
   streetName: string;
 
@@ -110,10 +131,12 @@ export class Address {
     description: 'Street number',
     type: 'integer',
     example: 3850,
+    nullable: false,
   })
   @Column({
     name: 'street_number',
     type: 'integer',
+    nullable: false,
   })
   streetNumber: number;
 
@@ -121,11 +144,13 @@ export class Address {
     description: 'Zip code',
     type: 'string',
     example: 'X2400AIQ',
+    nullable: false,
   })
   @Column({
     name: 'zip_code',
     type: 'char',
     length: 10,
+    nullable: false,
   })
   zipCode: string;
 
@@ -175,10 +200,12 @@ export class Address {
     description: 'Id of the entity this address belongs',
     example: 4,
     type: 'big-integer',
+    nullable: false,
   })
   @Column({
     name: 'subject_id',
     type: 'bigint',
+    nullable: false,
   })
   subjectId: number;
 
@@ -186,11 +213,14 @@ export class Address {
     description: 'Entity type this address belongs',
     example: 'User',
     type: 'string',
+    maxLength: 100,
+    nullable: false,
   })
   @Column({
     name: 'subject_type',
     type: 'char',
     length: 100,
+    nullable: false,
   })
   subjectType: string;
 }

@@ -4,24 +4,43 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({ name: 'brands' })
 export class Brand {
   @PrimaryGeneratedColumn({
+    unsigned: true,
     type: 'bigint',
   })
-  @ApiProperty({ example: 1, description: 'The id of the brand', type: Number })
+  @ApiProperty(
+    {
+      example: 1,
+      description: 'The id of the brand',
+      type: Number,
+      readOnly: true,
+    })
   id: number;
 
-  @Column()
+  @Column({
+    name: 'content',
+    type: 'character varying',
+    nullable: false,
+    length: 30,
+  })
   @ApiProperty({
     example: 'nike',
     description: 'The name of the brand',
     type: String,
+    nullable: false,
+    maxLength: 30,
   })
   name: string;
 
-  @Column()
+  @Column({
+    name: 'photo_url',
+    type: 'character varying',
+    nullable: false,
+  })
   @ApiProperty({
-    example: '',
+    example: 'https://logos-marcas.com/wp-content/uploads/2020/04/Nike-Logo.png',
     description: 'The logo of the brand',
     type: String,
+    nullable: false,
   })
-  photoId: string;
+  photoUrl: string;
 }

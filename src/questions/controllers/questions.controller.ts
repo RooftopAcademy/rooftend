@@ -39,7 +39,8 @@ export class QuestionsController {
   constructor(private QuestionsService: QuestionsService,
     private readonly answersService: AnswersService,) { }
 
-  @Get('/')
+
+  @ApiOperation({ summary: 'Get all questions answered of corresponding item' })
   @HttpCode(200)
   @ApiNotFoundResponse({
     status: 404,
@@ -70,6 +71,7 @@ export class QuestionsController {
     description: 'Item id',
     example: 10,
   })
+  @Get('/')
   async find(
     @Query('item_id',) item_id = 2,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
@@ -125,7 +127,7 @@ export class QuestionsController {
     );
   }
 
-  @Get('/sent')
+  @ApiOperation({ summary: 'get questions sent by user' })
   @HttpCode(200)
   @ApiNotFoundResponse({
     status: 404,
@@ -149,6 +151,7 @@ export class QuestionsController {
     description: 'limit of paginated questions',
     example: 10,
   })
+  @Get('/sent')
   async findSent(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -195,9 +198,6 @@ export class QuestionsController {
   @ApiNotFoundResponse({
     status: 404,
     description: 'Not found',
-  })
-  @ApiBadRequestResponse({
-    description: 'Error, the deletion was not completed',
   })
   async deleteQuestion(@Param('id') id: number): Promise<Status> {
     return await this.QuestionsService.delete(id);

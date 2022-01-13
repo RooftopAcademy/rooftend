@@ -6,7 +6,7 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity implements PolymorphicChildInterface {
-  @ApiProperty({ 
+  @ApiProperty({
     name: 'id',
     type: Number,
     description: "Photo's ID",
@@ -26,7 +26,7 @@ export class PhotosEntity implements PolymorphicChildInterface {
     type: 'timestamp with time zone',
     name: 'created_at',
     default: () => 'CURRENT_TIMESTAMP',
-    nullable: true,
+    nullable: false,
   })
   createdAt: Date;
 
@@ -34,24 +34,55 @@ export class PhotosEntity implements PolymorphicChildInterface {
     example: 'https://localhost:3000/galery/items/yellow_one.jpg',
     type: String,
     description: 'Route to the photo',
+    nullable: false,
+    maxLength: 200,
   })
-  @Column({ type: 'varchar', length: 200, nullable: false })
+  @Column({
+    name: 'url',
+    type: 'varchar',
+    length: 200,
+    nullable: false,
+  })
   url: string;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's width" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's width",
+    nullable: false
+  })
+  @Column({
+    name: 'width',
+    type: 'smallint',
+    nullable: false
+  })
   width: number;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's height" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's height",
+    nullable: false,
+  })
+  @Column({
+    name: 'height',
+    type: 'smallint',
+    nullable: false
+  })
   height: number;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's size" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's size",
+    nullable: false,
+  })
+  @Column({
+    name: 'size',
+    type: 'smallint',
+    nullable: false,
+  })
   size: number;
-
-  @PolymorphicParent(() => [User]) // Also items could be a parent
-  subject: User;
 
   @Column({ type: 'integer', name: 'subject_id', nullable: false })
   entityId: number;
