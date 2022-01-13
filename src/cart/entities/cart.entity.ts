@@ -79,6 +79,10 @@ export class Cart {
   })
   amount: number;
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> c3beef905c1580e32126b2865ed80567b7bb5ada
   @Column({
     length: 3,
     name: 'currency_code',

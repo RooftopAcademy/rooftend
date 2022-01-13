@@ -12,6 +12,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ShippingMethodDTO } from '../dto/shipping-method.dto';
+import { Controller, Get, HttpCode, Param } from '@nestjs/common';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
 @ApiTags('Shipping Methods')

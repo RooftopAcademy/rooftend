@@ -8,13 +8,13 @@ import {
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
-import { History } from '../../history/models/history.entity';
-import { Item } from '../../items/entities/items.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
+import { Search } from '../../search/entities/search.entity';
+import { History } from '../../history/models/history.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
+import { Item } from '../../items/entities/items.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { Review } from '../../review/review.entity';
-import { Search } from '../../search/entities/search.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
 
 @Entity('users')
