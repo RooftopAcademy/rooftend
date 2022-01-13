@@ -3,6 +3,7 @@ import {
   DefaultValuePipe,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Query,
@@ -47,7 +48,7 @@ export class BrandsController {
     description: 'limit of paginated questions',
     example: 10,
   })
-  @Get('/')
+  @Get()
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -64,6 +65,14 @@ export class BrandsController {
     status: 200,
     description: 'The found brand with that id',
     type: Brand,
+  })
+  @ApiNotFoundResponse({
+    description: 'Brand not found.',
+    schema: {
+      example: new NotFoundException(
+        'Brand with id 10 not found',
+      ).getResponse(),
+    },
   })
   @ApiParam({
     name: 'id',
