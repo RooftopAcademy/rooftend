@@ -2,28 +2,22 @@ import {
   Controller,
   Get,
   HttpCode,
-  Param,
-  Post,
-  Body,
-  Delete,
-  Patch,
-  Res,
   DefaultValuePipe,
   ParseIntPipe,
   Query,
   NotFoundException,
+  Param,
 } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from '../entities/categories.entity';
-import { Response } from 'express';
+import { Public } from '../../authentication/decorators/public.decorator';
 import {
   ApiOperation,
   ApiTags,
   ApiParam,
   ApiOkResponse,
   ApiNotFoundResponse,
-  ApiResponse,
   ApiQuery,
 } from '@nestjs/swagger';
 
@@ -33,6 +27,7 @@ export class CategoriesController {
   public constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Returns all available categories' })
   @ApiOkResponse({
     status: 200,
@@ -92,12 +87,6 @@ export class CategoriesController {
       },
     },
   })
-  @ApiNotFoundResponse({
-    description: 'No categories available',
-    schema: {
-      example: new NotFoundException('No categories available').getResponse(),
-    },
-  })
   @ApiQuery({
     name: 'page',
     type: Number,
@@ -125,6 +114,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
+  @Public()
   @HttpCode(200)
   @ApiOperation({ summary: ' Gets one category by id' })
   @ApiParam({ name: 'id', type: Number, required: true, example: 1 })
@@ -156,39 +146,7 @@ export class CategoriesController {
       ).getResponse(),
     },
   })
-  async findOne(@Param('id') id: number, @Res() res: Response) {
-    const data = await this.categoriesService.findOne(id);
-    if (data) return res.status(200).send(data).end();
-    res.status(404).end('Status Not Found');
-  }
-
-  @Post()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  create(@Res() res: Response) {
-    res.status(403).end();
-  }
-
-  @Patch()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  update(@Res() res: Response) {
-    res.status(403).end();
-  }
-
-  @Delete()
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  @HttpCode(403)
-  delete(@Res() res: Response) {
-    res.status(403).end();
+  async findOne(@Param('id') id: number) {
+    return this.categoriesService.findOneById(id);
   }
 }
