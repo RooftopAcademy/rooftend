@@ -4,19 +4,17 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   OneToOne,
-  JoinColumn,
-  ManyToOne,
   JoinTable,
 } from 'typeorm';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
-import { PhotosEntity } from '../../photos/models/photos.entity';
+
 import { Review } from '../../review/review.entity';
-import { Notification } from '../../notification/entities/notification.entity';
-import { Search } from '../../search/search.entity';
-import { QuestionsModule } from '../../questions/questions.module';
-import { userInfo } from 'os';
+
+import { Search } from '../../search/entities/search.entity';
+
+
 import { Question } from '../../questions/entities/question.entity';
 import { Item } from '../../items/entities/items.entity';
 import { History } from '../../history/models/history.entity';
@@ -73,11 +71,6 @@ export class User {
   @Column({ default: false })
   completed: boolean;
 
-  @PolymorphicChildren(() => PhotosEntity, {
-    eager: false,
-  })
-  photos: PhotosEntity[];
-
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
@@ -97,7 +90,7 @@ export class User {
   @OneToMany(() => History, (visit) => visit.user_id)
   visits: History[];
 
-  @OneToMany((type) => Question, (question) => question.userId)
+  @OneToMany((type) => Question, (question) => question.user)
   questions: Question[];
 
   /**

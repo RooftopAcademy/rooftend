@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export class CreateSavedItemDto {
+
+  @IsNumber()
   @ApiProperty({
     example: 1,
     description: 'The id of the item',
@@ -9,6 +12,7 @@ export class CreateSavedItemDto {
   })
   itemId: number;
 
+  @IsNumber()
   @ApiProperty({
     example: 1,
     description: 'The id of the user',
@@ -17,6 +21,7 @@ export class CreateSavedItemDto {
   })
   userId: number;
 
+  @IsNumber()
   @ApiProperty({
     example: 1,
     minimum: 1,
@@ -26,6 +31,7 @@ export class CreateSavedItemDto {
   })
   quantity: number;
 
+  @IsNumber()
   @ApiProperty({
     example: 1,
     description: 'The id of the user',

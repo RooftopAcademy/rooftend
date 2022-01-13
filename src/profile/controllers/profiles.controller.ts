@@ -10,11 +10,11 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ProfileService } from '../services/profile/profile.service';
+import { ProfileService } from '../services/profile.service';
 
 @Controller('profiles')
 export class ProfilesController {
-  public constructor(private readonly service: ProfileService) {}
+  public constructor(private readonly service: ProfileService) { }
   @Get()
   public index(@Req() req: Request) {
     return this.service.all();
