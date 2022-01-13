@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
+  OneToMany, DeleteDateColumn,
 } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -16,7 +16,6 @@ import { Category } from '../../categories/entities/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { History } from '../../history/models/history.entity';
-
 
 @Entity('items')
 export class Item {
@@ -126,12 +125,12 @@ export class Item {
   })
   brand?: Brand;
 
-  @ManyToOne(() => User, user => user.items)
+  @ManyToOne(() => User, (user) => user.items, { eager: true })
   @JoinColumn({
     name: 'user_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the item owner' })
-  userId: number;
+  @ApiProperty({ type: () => User })
+  user: User;
 
   @ManyToOne(() => Category)
   @JoinColumn({
@@ -146,6 +145,37 @@ export class Item {
   @OneToMany(() => Question, (question) => question.item)
   questions: Question[];
 
+  @DeleteDateColumn({
+    name : "deleted_at",
+    type : "timestamp with local time zone"
+  })
+  deletedAt? : Date
+
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
+
+  /**
+   * Check if item has availability
+   * @param qty
+   */
+  public isAvailable(qty = 0): boolean {
+    return this.stock > qty;
+  }
+
+  /**
+   * Check if item is active
+   * @description Item can be inactive when has been paused by the publisher or the admin
+   * @param void
+   */
+  public isActive(): boolean {
+    return true;
+  }
+
+  /**
+   * Get final price for given quantity
+   * @param qty
+   */
+  getFinalPrice(qty = 1): number {
+    return this.price * qty;
+  }
 }

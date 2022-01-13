@@ -3,20 +3,21 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  OneToOne,
-  JoinTable,
   DeleteDateColumn,
 } from 'typeorm';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 
-import { Review } from '../../review/review.entity';
-import { Search } from '../../search/entities/search.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 import { Question } from '../../questions/entities/question.entity';
 import { Item } from '../../items/entities/items.entity';
+import { PhotosEntity } from '../../photos/models/photos.entity';
+import { Review } from '../../review/review.entity';
+import { Search } from '../../search/entities/search.entity';
 import { History } from '../../history/models/history.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
+
+
 @Entity('users')
 export class User {
   @ApiProperty({
@@ -69,10 +70,8 @@ export class User {
     description: 'Account status assigned to that user ',
     type: Number,
   })
-  @Column({ name: 'account_status', type: 'integer', nullable: true })
-  @OneToOne(() => AccountStatusEntity, (status) => status.name)
-  @JoinTable()
-  accountStatus: AccountStatusEntity;
+  @Column({ type: 'integer', nullable: false })
+  account_status: AccountStatusesEnum;
 
   @ApiProperty({
     description: 'The date when the user has been soft deleted',
@@ -91,31 +90,54 @@ export class User {
   @Column({ name: 'completed', default: false })
   completed: boolean;
 
-  @OneToMany(() => Review, (review) => review.user)
-  reviews: Review[];
+  @PolymorphicChildren(() => PhotosEntity, {
+    eager: false,
+  })
+  photos: PhotosEntity[];
 
+  /**
+   * Reviews sent to other users
+   */
+  @OneToMany(() => Review, (review) => review.user)
+  publishedReviews: Review[];
+
+  /**
+   * Reviews received from other users after buy
+   */
   @PolymorphicChildren(() => Review, { eager: false })
   receivedReviews: Review[];
 
   entities: [];
 
-  favorites: [];
+  /**
+   * Published items bookmarked by the user
+   */
+  favorites: Array<Item> = [];
 
-  @OneToMany(() => Item, (item) => item.userId)
+  /**
+   * Items published by the user
+   */
+  @OneToMany(() => Item, (item) => item.user)
   items: Item[];
 
+  /**
+   * Search keywords from this user
+   */
   @OneToMany(() => Search, (search) => search.user)
   searches: Search[];
 
   @OneToMany(() => History, (visit) => visit.user_id)
   visits: History[];
 
-  @OneToMany((type) => Question, (question) => question.user)
-  questions: Question[];
-
-  /**
+  /*
    * A user can make many support requests
    */
   @OneToMany(() => SupportRequest, (supportRequest) => supportRequest.user)
   supportRequests: SupportRequest[];
+
+  /**
+   * Questions sent by the user
+   */
+  @OneToMany((type) => Question, (question) => question.user)
+  questions: Question[];
 }

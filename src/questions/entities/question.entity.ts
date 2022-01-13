@@ -16,7 +16,6 @@ import { Item } from '../../items/entities/items.entity';
 
 @Entity('questions')
 export class Question {
-
   @ApiProperty({
     type: Number,
     description: 'Question Id',
