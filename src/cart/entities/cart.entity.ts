@@ -69,7 +69,7 @@ export class Cart {
   @JoinColumn({ name: 'user_id' })
   userId: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'double precision', default: 0 })
   @ApiProperty({
     name: 'amount',
     type: 'integer',
@@ -79,11 +79,15 @@ export class Cart {
   })
   amount: number;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c3beef905c1580e32126b2865ed80567b7bb5ada
   @Column({
     length: 3,
     name: 'currency_code',
     type: 'character varying',
+    default: 'ARS',
   })
   @ApiProperty({
     name: 'currencyCode',
@@ -95,6 +99,15 @@ export class Cart {
   })
   currencyCode: string;
 
+  /**
+   * Items to be purchased
+   */
+  @OneToMany(() => CartItem, (item : CartItem) => item.cartId)
+  items : CartItem[]
+
+  /**
+   * @deprecated User items attribute instead of cartItemsId
+   */
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 }
