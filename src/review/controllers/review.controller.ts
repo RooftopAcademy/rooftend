@@ -3,15 +3,15 @@ import {
   ClassSerializerInterceptor,
   Controller,
   DefaultValuePipe,
-  Delete, ForbiddenException,
+  ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
-  Query, Req,
+  Query,
+  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -27,16 +27,17 @@ import { Review } from '../review.entity';
 
 import { ReviewService } from '../services/review.service';
 import { CartService } from '../../cart/services/cart.service';
-import { Request } from 'express';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
+import { Request } from 'express';
 
 @ApiTags('Reviews')
 @Controller('reviews')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService,
-              private readonly cartsService: CartService
+  constructor(
+    private readonly reviewService: ReviewService,
+    private readonly cartsService: CartService,
   ) {}
 
   @Get()
@@ -139,19 +140,22 @@ export class ReviewController {
   @Post()
   @HttpCode(201)
   async create(
-    @Req() req : Request,
-    @Query('purchaseId') purchaseId : number,
-    @Query('itemId') itemId : number,
-    @Body() body: any
+    @Req() req: Request,
+    @Query('purchaseId') purchaseId: number,
+    @Query('itemId') itemId: number,
+    @Body() body: any,
   ) {
-    let purchase = await this.cartsService.findOneFromUser(purchaseId, (req.user as User).id)
-    if (!purchase) throw new ForbiddenException()
+    const purchase = await this.cartsService.findOneFromUser(
+      purchaseId,
+      <User>req.user,
+    );
+    if (!purchase) throw new ForbiddenException();
 
-    let item = purchase.items.find((item : CartItem) => item.itemId == itemId)
-    if (!item) throw new ForbiddenException()
+    const item = purchase.items.find((item: CartItem) => item.itemId == itemId);
+    if (!item) throw new ForbiddenException();
 
-    let unreviewed = await this.reviewService.findUnreviewedItem(itemId)
-    if (!unreviewed) throw new ForbiddenException()
+    const unreviewed = await this.reviewService.findUnreviewedItem(itemId);
+    if (!unreviewed) throw new ForbiddenException();
 
     return this.reviewService.create(body);
   }

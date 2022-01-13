@@ -6,12 +6,12 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
+import { Search } from '../../search/entities/search.entity';
 import { History } from '../../history/models/history.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 import { Item } from '../../items/entities/items.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { Review } from '../../review/review.entity';
-import { Search } from '../../search/entities/search.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
 
 @Entity('users')
@@ -66,7 +66,11 @@ export class User {
     description: 'Account status assigned to that user ',
     type: Number,
   })
-  @Column({ type: 'integer', nullable: false })
+  @Column({
+    type: 'integer',
+    nullable: false,
+    default: AccountStatusesEnum.PENDING,
+  })
   account_status: AccountStatusesEnum;
 
   @ApiProperty({
