@@ -1,6 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, DeleteDateColumn, JoinColumn } from 'typeorm';
-
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ApiProperty } from "@nestjs/swagger";
+
 import { User } from '../../users/entities/user.entity';
 
 @Entity('custom_messages')
@@ -42,7 +51,6 @@ export class CustomMessage {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Message's creation date" })
   createdAt: Date;
@@ -50,7 +58,6 @@ export class CustomMessage {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({ example: '2016-03-26 10:10:10-05:00', description: "Message's last update date" })
   updatedAt: Date;

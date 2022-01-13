@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { User } from '../../users/entities/user.entity';
 
 @Entity('searches')
@@ -54,7 +55,6 @@ export class Search {
     name: 'created_at',
     type: 'timestamptz',
     nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 }

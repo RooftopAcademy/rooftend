@@ -8,8 +8,8 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-
 import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/entities/categories.entity';
@@ -35,12 +35,11 @@ export class Item {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Item's creation date",
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
   })
@@ -49,10 +48,9 @@ export class Item {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2016-03-26 10:10:10-05:00',

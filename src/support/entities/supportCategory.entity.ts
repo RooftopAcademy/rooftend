@@ -1,11 +1,12 @@
 import {
+  Column,
+  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  Column,
   OneToMany,
-  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { SupportQuestion } from './supportQuestion.entity';
 
 @Entity('support_categories')
@@ -23,7 +24,7 @@ export class SupportCategory {
 
   @ApiProperty({
     description: 'The date when has been created',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2021-11-18T01:46:52.589Z',
@@ -32,7 +33,6 @@ export class SupportCategory {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;
