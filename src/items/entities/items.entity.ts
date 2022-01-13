@@ -116,4 +116,29 @@ export class Item {
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
+
+  /**
+   * Check if item has availability
+   * @param qty
+   */
+  public isAvailable(qty = 0): boolean {
+    return this.stock > qty;
+  }
+
+  /**
+   * Check if item is active
+   * @description Item can be inactive when has been paused by the publisher or the admin
+   * @param void
+   */
+  public isActive(): boolean {
+    return true;
+  }
+
+  /**
+   * Get final price for given quantity
+   * @param qty
+   */
+  getFinalPrice(qty = 1): number {
+    return this.price * qty;
+  }
 }

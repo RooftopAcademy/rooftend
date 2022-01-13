@@ -1,4 +1,4 @@
- import {
+import {
   Body,
   Controller,
   Delete,
@@ -13,8 +13,8 @@ import { CartItemService } from '../services/cart-item.service';
 import { CartItem } from '../entities/cart-item.entity';
 
 class DTO {
-  quantity: number
-  subtotal: number
+  quantity: number;
+  subtotal: number;
 }
 
 import {
@@ -28,7 +28,8 @@ import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 @ApiTags('Cart Item')
 @Controller('carts')
 export class CartItemController {
-  constructor(private readonly cartItemService: CartItemService) { }
+  constructor(private readonly cartItemService: CartItemService) {
+  }
 
   @ApiOperation({ summary: 'Get all cart items' })
   @ApiResponse({
@@ -42,7 +43,7 @@ export class CartItemController {
     @Param('cartId') cartId: number,
     @Res({ passthrough: true }) response,
   ): Promise<CartItem[]> {
-    const cartItems: CartItem[] = await this.cartItemService.findAll(cartId);
+    const cartItems: CartItem[] = await this.cartItemService.findAllFromCart(cartId);
 
     return cartItems ? cartItems : response.status(404).end();
   }
@@ -58,14 +59,8 @@ export class CartItemController {
   async getOne(
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-    @Res({ passthrough: true }) response,
   ): Promise<CartItem> {
-    const cartItem: CartItem = await this.cartItemService.findOne(
-      cartId,
-      itemId,
-    );
-
-    return cartItem ? cartItem : response.status(404).end();
+    return await this.cartItemService.findOneFromCart(itemId, cartId);
   }
 
   @ApiOperation({ summary: 'Create a cart item' })
@@ -103,7 +98,7 @@ export class CartItemController {
     @Param('itemId') itemId: number,
     @Body() body: CreateCartItemDTO,
   ): Promise<CartItem> {
-    return this.cartItemService.update(cartId, itemId, body);
+    return this.cartItemService.create(cartId, itemId, body);
   }
 
   @ApiOperation({ summary: 'Delete a cart item by ID' })
@@ -120,7 +115,7 @@ export class CartItemController {
   delete(
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-  ): void {
+  ) {
     return this.cartItemService.delete(cartId, itemId);
   }
 }
