@@ -13,6 +13,7 @@ export class CartItemService {
   constructor(
     @InjectRepository(CartItem)
     private readonly cartItemRepo: Repository<CartItem>,
+    @InjectRepository(Item)
     private readonly items: Repository<Item>,
   ) {}
 
