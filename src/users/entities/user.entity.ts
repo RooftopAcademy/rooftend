@@ -89,11 +89,6 @@ export class User {
   @Column({ name: 'completed', default: false })
   completed: boolean;
 
-  @PolymorphicChildren(() => PhotosEntity, {
-    eager: false,
-  })
-  photos: PhotosEntity[];
-
   /**
    * Reviews sent to other users
    */
@@ -103,7 +98,8 @@ export class User {
   /**
    * Reviews received from other users after buy
    */
-  @PolymorphicChildren(() => Review, { eager: false })
+  // @PolymorphicChildren(() => Review, { eager: false })
+  @OneToMany(() => Review, review => review.subject)
   receivedReviews: Review[];
 
   /**

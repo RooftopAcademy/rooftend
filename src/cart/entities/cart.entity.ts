@@ -95,6 +95,15 @@ export class Cart {
   })
   currencyCode: string;
 
+  /**
+   * Items to be purchased
+   */
+  @OneToMany(() => CartItem, (item : CartItem) => item.cartId)
+  items : CartItem[]
+
+  /**
+   * @deprecated User items attribute instead of cartItemsId
+   */
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 }
