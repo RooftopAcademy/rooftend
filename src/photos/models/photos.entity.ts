@@ -6,13 +6,16 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'photos' })
 export class PhotosEntity implements PolymorphicChildInterface {
-  @ApiProperty({ 
+  @ApiProperty({
     name: 'id',
     type: Number,
     description: "Photo's ID",
     readOnly: true
   })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    type: 'bigint',
+    unsigned: true,
+  })
   id: number;
 
   @ApiProperty({
@@ -20,13 +23,14 @@ export class PhotosEntity implements PolymorphicChildInterface {
     type: Date,
     format: 'date-time',
     description: 'Creation date',
-    default: 'Current date',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   @Column({
     type: 'timestamp with time zone',
     name: 'created_at',
     default: () => 'CURRENT_TIMESTAMP',
-    nullable: true,
+    nullable: false,
   })
   createdAt: Date;
 
@@ -34,30 +38,79 @@ export class PhotosEntity implements PolymorphicChildInterface {
     example: 'https://localhost:3000/galery/items/yellow_one.jpg',
     type: String,
     description: 'Route to the photo',
+    nullable: false,
+    maxLength: 200,
   })
-  @Column({ type: 'varchar', length: 200, nullable: false })
+  @Column({
+    name: 'url',
+    type: 'character varying',
+    length: 200,
+    nullable: false,
+  })
   url: string;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's width" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's width",
+    nullable: false
+  })
+  @Column({
+    name: 'width',
+    type: 'smallint',
+    nullable: false
+  })
   width: number;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's height" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's height",
+    nullable: false,
+  })
+  @Column({
+    name: 'height',
+    type: 'smallint',
+    nullable: false
+  })
   height: number;
 
-  @ApiProperty({ example: 150, type: Number, description: "Photo's size" })
-  @Column({ type: 'smallint', nullable: false })
+  @ApiProperty({
+    example: 150,
+    type: Number,
+    description: "Photo's size",
+    nullable: false,
+  })
+  @Column({
+    name: 'size',
+    type: 'smallint',
+    nullable: false,
+  })
   size: number;
 
-  @PolymorphicParent(() => [User]) // Also items could be a parent
-  subject: User;
-
-  @Column({ type: 'integer', name: 'subject_id', nullable: false })
+  @ApiProperty({
+    example: 2,
+    type: Number,
+    description: "Entity Id that has the photo",
+    nullable: false,
+  })
+  @Column({
+    type: 'bigint',
+    name: 'subject_id',
+    nullable: false
+  })
   entityId: number;
 
+
+  @ApiProperty({
+    example: 'item',
+    type: String,
+    description: "Type of the entity that has the photo",
+    nullable: false,
+    maxLength: 100,
+  })
   @Column({
-    type: 'varchar',
+    type: 'character varying',
     length: 100,
     name: 'subject_type',
     nullable: false,
@@ -65,15 +118,17 @@ export class PhotosEntity implements PolymorphicChildInterface {
   entityType: string;
 
   @ApiProperty({
-    example: 'https://localhost:3000/galery/items/yellow_one.jpg',
+    example: 'https://localhost:3000/gallery/items/yellow_one.jpg',
     type: String,
     description: 'Url to redirect the user',
+    nullable: false,
+    maxLength: 200,
   })
   @Column({
-    type: 'varchar',
+    type: 'character varying',
     length: 200,
     name: 'redirect_url',
-    nullable: true,
+    nullable: false,
   })
   redirectUrl: string;
 }

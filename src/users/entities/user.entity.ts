@@ -10,6 +10,10 @@ import { PhotosEntity } from '../../photos/models/photos.entity';
 import { Review } from '../../review/review.entity';
 import { Search } from '../../search/search.entity';
 import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
+  OneToOne,
+  JoinTable,
+} from 'typeorm';
+import { AccountStatusEntity } from '../../account-status/models/account-status.entity';
 import { Item } from '../../items/entities/items.entity';
 import { History } from '../../history/models/history.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
@@ -98,14 +102,14 @@ export class User {
   visits: History[];
 
   /**
+   * Questions sent by the user
+   */
+  @OneToMany((type) => Question, (question) => question.user)
+  questions: Question[];
+
+  /**
    * A user can make many support requests
    */
   @OneToMany(() => SupportRequest, (supportRequest) => supportRequest.user)
   supportRequests: SupportRequest[];
-
-  /**
-   * Questions sent by the user
-   */
-  @OneToMany((type) => Question, (question) => question.userId)
-  questions: Question[];
 }

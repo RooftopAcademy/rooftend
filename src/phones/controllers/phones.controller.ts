@@ -13,6 +13,9 @@ import {
 } from '@nestjs/common';
 import {
   ApiBody,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -31,10 +34,9 @@ export class PhonesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all phones' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
-    description: 'The phones found',
-    type: [Phone],
+    description: 'Ok',
   })
   @ApiQuery({
     name: 'page',
@@ -46,6 +48,7 @@ export class PhonesController {
     name: 'limit',
     required: false,
     description: 'Limit of phones to return, max is 10',
+    type: Number,
   })
   getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -61,11 +64,13 @@ export class PhonesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get phone by id' })
-  @ApiResponse({ status: 200, description: 'The phone found', type: Phone })
-  @ApiQuery({
+  @ApiOkResponse({ status: 200, description: 'Ok', type: Phone })
+  @ApiParam({
     name: 'id',
-    required: true,
+    example: 1,
+    type: Number,
     description: 'Phone id',
+    required: true,
   })
   getOne(@Param('id') id: number) {
     return this.phonesService.findOne(id);
@@ -73,7 +78,7 @@ export class PhonesController {
 
   @Post()
   @ApiOperation({ summary: 'Create phone' })
-  @ApiResponse({ status: 201, description: 'Phone created' })
+  @ApiCreatedResponse({ status: 201, description: 'Created' })
   @ApiBody({ type: Phone })
   create(@Body() bodyParams: Phone) {
     return this.phonesService.create(bodyParams);
@@ -81,11 +86,12 @@ export class PhonesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update phone' })
-  @ApiResponse({ status: 200, description: 'Phone updated' })
-  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiResponse({ status: 200, description: 'Updated' })
+  @ApiNotFoundResponse({ status: 404, description: 'Not found' })
   @ApiParam({
     name: 'id',
     required: true,
+    type: Number,
     description: 'Phone id to be updated',
   })
   @ApiBody({ type: Phone })
@@ -111,10 +117,11 @@ export class PhonesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete phone' })
-  @ApiResponse({ status: 200, description: 'Phone deleted' })
-  @ApiResponse({ status: 404, description: 'Phone not found' })
+  @ApiOkResponse({ status: 200, description: 'Deleted' })
+  @ApiNotFoundResponse({ status: 404, description: 'Not found' })
   @ApiParam({
     name: 'id',
+    type: Number,
     required: true,
     description: 'Phone id to be deleted',
   })
