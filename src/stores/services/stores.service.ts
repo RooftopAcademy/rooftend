@@ -26,7 +26,11 @@ export class StoresService {
       options,
     );
   }
-
+  // async paginate(options: IPaginationOptions) {
+  //   return paginate<Store>(this.storesRepository, options, {
+  //     relations: ['brand', 'user'],
+  //   });
+  // }
   async getOne(id: string | number): Promise<ReadStoreDto> {
     const store: ReadStoreDto = await this.storesRepository
       .createQueryBuilder('store')
@@ -39,4 +43,13 @@ export class StoresService {
     }
     return store;
   }
+  // async getOne(id: string | number): Promise<ReadStoreDto> {
+  //   const store: Store = await this.storesRepository.findOne(id, {
+  //     relations: ['brand', 'user'],
+  //   });
+  //   if (!store) {
+  //     throw new NotFoundException(`Store with id ${id} not found`);
+  //   }
+  //   return store;
+  // }
 }

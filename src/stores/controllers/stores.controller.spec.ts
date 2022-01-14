@@ -25,9 +25,12 @@ describe('StoresController', () => {
     }),
     getOne: jest.fn().mockImplementation((id) => {
       return {
-        id: 1,
+        id,
         username: 'miUsuario',
         brand: 'Xiaomi',
+        // items:[
+        // {listado de items}
+        // ]
       };
     }),
   };
