@@ -2,6 +2,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CaslModule } from '../../auth/casl/casl.module';
 import { User } from '../../users/entities/user.entity';
+import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { FavoritesService } from '../services/favorites.service';
 import { FavoritesController } from './favorites.controller';
@@ -71,17 +72,21 @@ describe('FavoritesController', () => {
   });
 
   describe('create', () => {
-    it('should create a favorite.', () => {
+    it('should create a favorite.', async () => {
       const data: any = { item_id: 61 };
-      const token: any = 1;
-      const dto = {
+      //const token: any = 1;
+      const token: any = { 
+        user: 1,
+        item_id: 1,
+      };
+      const dto: CreateFavoriteDto = {
         id: 1,
         user: 1,
         item_id: 1,
         updated_at: Date.now(),
       };
   
-      expect(controller.create(token, data, dto)).toEqual({
+      expect(controller.create(token, data)).toEqual({
         "message": "Created",
         "statusCode": 201,
       });
