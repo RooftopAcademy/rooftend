@@ -16,6 +16,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -176,6 +177,7 @@ export class FavoritesController {
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
   })
+  @ApiBearerAuth()
   @ApiQuery({
     name: 'token',
     type: Number,
@@ -257,6 +259,7 @@ export class FavoritesController {
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
   })
+  @ApiBearerAuth()
   @ApiForbiddenResponse({
     description: 'Forbidden.',
   })
@@ -269,12 +272,13 @@ export class FavoritesController {
     example: 1,
   })
   public create(
+    @Req() req: Request,
     @Query('token') token: number,
     @Body() createFavoriteDto: CreateFavoriteDto
     ) {
-    token = 1
+    const user: any = <User>req.user;
 
-    this.favoritesService.create(createFavoriteDto, token);
+    this.favoritesService.create(createFavoriteDto, user);
 
     return ({
       "statusCode": 201,
