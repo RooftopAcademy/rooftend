@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import { Store } from '../../stores/entities/stores.entity';
 
 @Entity({ name: 'brands' })
@@ -44,6 +44,6 @@ export class Brand {
     nullable: false,
   })
   photoUrl: string;
-  @ManyToOne(() => Store, (store) => store.brand)
+  @OneToOne(() => Store, (store) => store.brand)
   store?: Store;
 }
