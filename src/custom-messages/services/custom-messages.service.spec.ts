@@ -10,6 +10,7 @@ describe('CustomMessagesService', () => {
   let service: CustomMessagesService;
 
   const newUser = new User();
+  newUser.id = 1;
 
   const genericCustomMessage = {
     id: 1,
@@ -27,7 +28,10 @@ describe('CustomMessagesService', () => {
       Object.assign(customMessage, { id: 4, user: newUser }),
     ),
     merge: jest.fn((customMessage, body) => Object.assign(customMessage, body)),
-    find: jest.fn(({ user }): CustomMessage[] => [
+    find: jest.fn(({ user: { id } }): CustomMessage[] => { 
+      const user = new User();
+      user.id = id;
+      return [
       {
         id: 1,
         createdAt: new Date(),
@@ -44,7 +48,7 @@ describe('CustomMessagesService', () => {
         user,
         subject: 'Tema 2',
       },
-    ]),
+    ]}),
     findOne: jest.fn(() => genericCustomMessage),
   };
 

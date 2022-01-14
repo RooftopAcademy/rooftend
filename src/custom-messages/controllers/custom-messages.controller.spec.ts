@@ -18,9 +18,7 @@ describe('ControllersController', () => {
   newUser.id = 20;
 
   const request: any = {
-    user: {
-      result: newUser,
-    },
+    user: newUser
   };
 
   const genericCustomMessage = plainToClass(CustomMessage, {
