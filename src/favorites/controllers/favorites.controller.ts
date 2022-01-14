@@ -11,7 +11,9 @@ import {
   Query,
   HttpException,
   HttpStatus,
-  UseGuards,
+  Req,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -27,15 +29,21 @@ import { FavoritesService } from '../services/favorites.service';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { Request } from 'express';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoritesController {
-  constructor(private readonly favoritesService: FavoritesService) {}
+  constructor(
+    private readonly favoritesService: FavoritesService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {  };
 
   @Get()
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Get favorites.' })
   @ApiOkResponse({
@@ -179,25 +187,35 @@ export class FavoritesController {
     example: 1,
   })
   public async paginate(
-    @Query('token') token: number,
+    @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Favorite>> {
-    limit = 10;
-    token = 1;
-    
+    const user: User = <User>req.user;
+    const favorite = await this.favoritesService.findFavorite(user.id);
+
+
+    if(!favorite) {
+      throw new NotFoundException('Favorite not found.');
+    };
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
+      throw new ForbiddenException();
+    };
+
     return this.favoritesService.paginate(
       {
         page,
         limit,
         route: '/favorites',
       },
-      token,
+      user,
     );
   };
 
   @Get(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(403)
   @ApiForbiddenResponse({
     status: 403,
@@ -217,7 +235,6 @@ export class FavoritesController {
   };
 
   @Post()
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   @ApiOperation({ summary: 'Create Favorite.' })
   @ApiCreatedResponse({
@@ -256,7 +273,6 @@ export class FavoritesController {
   };
 
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Delete Favorite' })
   @ApiOkResponse({
