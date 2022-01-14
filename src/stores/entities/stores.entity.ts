@@ -1,5 +1,4 @@
 import {
-  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -55,37 +54,28 @@ export class Store {
   })
   updatedAt: Date;
 
-  @OneToOne(() => Brand)
+  @OneToOne(() => Brand, (brand) => brand.store)
+  @ApiProperty({
+    type: Brand,
+    example: 4,
+    description: 'The brand to which the store belongs',
+  })
   @JoinColumn({
     name: 'brand_id',
   })
   brand: Brand;
 
-  @ApiProperty({
-    type: 'bigint',
-    description: 'The brand to which the store belongs',
-  })
-  @Column({
-    name: 'brand_id',
-    type: 'bigint',
-    nullable: false,
-  })
-  brandId: number;
-
   @OneToOne(() => User)
+  // (user) => user.store
+  @ApiProperty({
+    type: User,
+    example: '',
+    description: 'The user to who the store belongs',
+  })
   @JoinColumn({
     name: 'user_id',
   })
   user: User;
 
-  @ApiProperty({
-    type: User,
-    description: 'The user to who the store belongs',
-  })
-  @Column({
-    name: 'user_id',
-    type: 'bigint',
-    nullable: false,
-  })
-  userId: number;
+  // Relación con items?
 }
