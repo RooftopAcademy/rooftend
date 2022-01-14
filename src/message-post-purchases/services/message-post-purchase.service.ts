@@ -17,7 +17,7 @@ export class MessagePostPurchaseService {
 
     async find(cartId: number, options: IPaginationOptions): Promise<Pagination<MessagePostPurchase>>{
       const queryBuilder = getConnection().createQueryBuilder()
-        .select(["mgp.message","mgp.sent_at"])
+        .select(["mgp.id","mgp.message","mgp.sent_at"])
         .from(MessagePostPurchase, "mgp")
         .innerJoin("mgp.sender_id", "users")
         .addSelect("users.username")

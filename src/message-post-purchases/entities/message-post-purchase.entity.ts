@@ -67,9 +67,9 @@ export class MessagePostPurchase {
     @Column({
         name: 'sent_at',
         type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
+        default: 'CURRENT_TIMESTAMP',
     })
-    sentAt: Date;
+    sent_at: Date;
 
     /**
      * Represent when user was received
