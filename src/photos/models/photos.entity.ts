@@ -95,16 +95,13 @@ export class PhotosEntity {
 
   @ApiProperty({
     example: 1,
-    description: 'Id to the related item.',
-  })
-  @Column({
-    name: 'item_id',
-    unsigned: true,
-    type: 'bigint'
+    description: 'Items related to photo',
   })
   @ManyToOne((type) => Item, (item) => item.id)
-  @JoinColumn({ referencedColumnName: 'id' })
-  item_id: number;
+  @JoinColumn({ 
+    name: 'item',
+  })
+  item: Item;
 
   @ApiProperty({
     example: 'https://localhost:3000/gallery/items/yellow_one.jpg',
