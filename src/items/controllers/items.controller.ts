@@ -40,7 +40,7 @@ export class ItemsController {
   constructor(
     private readonly ItemsService: ItemsService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -212,9 +212,16 @@ export class ItemsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
+  async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
     const fromRequest: any = req.user;
     const user: User = fromRequest?.result;
+
+    const item = await this.ItemsService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(Permission.Delete, subject('Item', item))) {
+      throw new ForbiddenException();
+    }
 
     return this.ItemsService.delete(user, id);
   }
