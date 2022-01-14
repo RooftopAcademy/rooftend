@@ -78,7 +78,7 @@ export class User {
     default: null,
     type: 'date',
     format: 'date-time',
-    example: '2021-12-16',
+    example: '2022-01-14 18:27:50.29667+01',
   })
   @DeleteDateColumn({
     name: 'deleted_at',

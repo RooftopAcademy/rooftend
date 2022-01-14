@@ -2,46 +2,73 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
 import { CreateUserDTO } from '../entities/create-user-dto.entity';
+import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) { }
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
-    return paginate<User>(this.userRepo, options);
-  }
+  async returnLoggedUser(id: number): Promise<Partial<User>> {
+    const user = await this.userRepo.findOne(id);
 
-  findAll() {
-    return this.userRepo.find();
-  }
-
-  findOneById(id: number): Promise<User> {
-    return this.userRepo.findOne(id);
+    const { password, ...result } = user;
+    
+    return result;
   }
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepo.findOne({ email });
   }
 
+  findOneByUsername(username: string): Promise<User> {
+    return this.userRepo.findOne({ username });
+  }
+
   async create(user: CreateUserDTO) {
     const newUser: User = await this.userRepo.create(user);
+
     return await this.userRepo.save(newUser);
   }
 
-  async update(id: number, body: any): Promise<User> {
+  async update(id: number, body: any): Promise<{ message: string; }> {
     const user = await this.userRepo.findOne(id);
+
     this.userRepo.merge(user, body);
-    return this.userRepo.save(user);
+
+    this.userRepo.save(user);
+
+    return { message: 'Data modified, please login again' };
   }
 
-  delete(id: number) {
-    return this.userRepo.softDelete(id);
+  async validateCurrentPassword(user: User, currentPassword: string) {
+    const foundUser = await this.findOneByEmail(user.email);
+
+    return await bcrypt.compare(currentPassword, foundUser.password);
+  }
+
+  async updatePassword(id: number, editPasswordDTO: EditPasswordDTO) {
+    const user = await this.returnLoggedUser(id);
+
+    user.password = await bcrypt.hash(editPasswordDTO.newPassword, 10);
+
+    this.userRepo.save(user);
+
+    return { message: 'Password updated, please login again' };
+  }
+
+  async delete(id: number) {
+    this.userRepo.softDelete(id);
+
+    const user = await this.userRepo.findOne(id);
+
+    user.account_status = AccountStatusesEnum.INACTIVE;
+
+    this.userRepo.save(user);
+
+    return { message: 'User deleted' };
   }
 }
