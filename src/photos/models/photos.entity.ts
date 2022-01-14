@@ -95,11 +95,11 @@ export class PhotosEntity {
 
   @ApiProperty({
     example: 1,
-    description: 'Items related to photo',
+    description: 'Items related to photos.',
   })
   @ManyToOne((type) => Item, (item) => item.id)
   @JoinColumn({ 
-    name: 'item',
+    name: 'item_id',
   })
   item: Item;
 
