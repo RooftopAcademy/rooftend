@@ -1,6 +1,8 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CaslModule } from '../../auth/casl/casl.module';
+import { User } from '../../users/entities/user.entity';
+import { Favorite } from '../entities/favorite.entity';
 import { FavoritesService } from '../services/favorites.service';
 import { FavoritesController } from './favorites.controller';
 
@@ -8,15 +10,27 @@ describe('FavoritesController', () => {
   let controller: FavoritesController;
 
   const mockFavoriteService = {
-    paginate: jest.fn(),
+    paginate: jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        user: 1,
+        item_id: 1,
+        createdAt: new Date(),
+      },
+    ]),
     create: jest.fn(dto => {
       return {
         ...dto,
         user_id: 24
       }
     }),
-    delete: jest.fn()
+    delete: jest.fn(),
+    findFavorite: jest.fn(() => new Favorite()),
   };
+
+  const response: any = {
+    user: new User()
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,11 +53,8 @@ describe('FavoritesController', () => {
     it('should get 10 favorites records.', () => {
       const page = 1;
       const limit = 10;
-      const token = 1;
   
-      expect(controller.paginate(token, page, limit)).not.toBeUndefined();
-  
-      expect(mockFavoriteService.paginate).toHaveBeenCalled();
+      expect(controller.paginate(response, page, limit)).not.toBeUndefined();
     });
 
     it('should return a ForbiddenError message', async () => {
@@ -52,7 +63,7 @@ describe('FavoritesController', () => {
       });
 
       try {
-        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+        expect(await controller.paginate(response, 1)).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
       };
@@ -78,7 +89,7 @@ describe('FavoritesController', () => {
       });
 
       try {
-        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+        expect(await controller.paginate(response, 1)).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
       }
@@ -101,7 +112,7 @@ describe('FavoritesController', () => {
       });
 
       try {
-        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+        expect(await controller.paginate(response, 1)).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
       }
