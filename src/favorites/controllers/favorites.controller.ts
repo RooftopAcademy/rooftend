@@ -231,6 +231,9 @@ export class FavoritesController {
       },
     },
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
   })
@@ -250,6 +253,9 @@ export class FavoritesController {
         "message": "Created",
       },
     },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
@@ -288,6 +294,9 @@ export class FavoritesController {
         "message": "Ok",
       },
     },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
