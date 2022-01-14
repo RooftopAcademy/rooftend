@@ -23,7 +23,8 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiTags
+  ApiTags,
+  ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { FavoritesService } from '../services/favorites.service';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
@@ -171,6 +172,9 @@ export class FavoritesController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @ApiQuery({
     name: 'token',
