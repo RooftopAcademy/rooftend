@@ -1,80 +1,97 @@
+import { plainToClass } from 'class-transformer';
+import { User } from '../../users/entities/user.entity';
+import { Item } from '../entities/items.entity';
+import { Brand } from '../../brands/entities/brands.entity';
+import { Category } from '../../categories/entities/categories.entity';
+
+const userId = 1;
+const newUser = plainToClass(User, {
+  id: userId,
+  username: null,
+  password: '5vOC1yGAT2Km0Lt',
+  email: 'Dewitt.Turcotte52@hotmail.com',
+});
+const mockUser = plainToClass(User, {
+  id: userId,
+  username: null,
+  password: '5vOC1yGAT2Km0Lt',
+  email: 'Dewitt.Turcotte52@hotmail.com',
+});
+
+const genericItem = plainToClass(Item, {
+  id: 3,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  title: 'Name 2',
+  description: 'Des 2',
+  price: 2,
+  stock: 2,
+  user: mockUser,
+});
+
+const list = {
+  items: [
+    {
+      id: 2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      title: 'Name',
+      description: 'Des',
+      price: 1,
+      stock: 1,
+      brandId: new Brand(),
+      user: newUser,
+      categoryId: new Category(),
+      cartItemsId: [],
+      questions: [],
+    },
+    {
+      id: 3,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      title: 'Name 2',
+      description: 'Des 2',
+      price: 2,
+      stock: 2,
+      brandId: new Brand(),
+      user: newUser,
+      categoryId: new Category(),
+      cartItemsId: [],
+      questions: [],
+    },
+  ],
+  meta: {
+    itemCount: 2,
+    totalItems: 2,
+    totalPages: 1,
+    currentPage: 1,
+  },
+};
+jest.mock('nestjs-typeorm-paginate', () => ({
+  paginate: jest.fn().mockReturnValue(list),
+}));
+
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Brand } from '../../brands/entities/brands.entity';
-import { Category } from '../../categories/entities/categories.entity';
-import { User } from '../../users/entities/user.entity';
 import { CreateItemDTO } from '../entities/create.item.dto';
-import { Item } from '../entities/items.entity';
 import { ItemsService } from './items.service';
 
 describe('ItemsService', () => {
   let service: ItemsService;
-  const userId = 1;
-  const newUser = plainToClass(User, {
-    id: userId,
-    username: null,
-    password: '5vOC1yGAT2Km0Lt',
-    email: 'Dewitt.Turcotte52@hotmail.com',
-  });
-  const mockUser = plainToClass(User, {
-    id: userId,
-    username: null,
-    password: '5vOC1yGAT2Km0Lt',
-    email: 'Dewitt.Turcotte52@hotmail.com',
-  });
-
-  const genericItem = plainToClass(Item, {
-    id: 3,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    title: 'Name 2',
-    description: 'Des 2',
-    price: 2,
-    stock: 2,
-    user: mockUser,
-  });
 
   const mockItemsRepository = {
-    find: jest.fn(() =>
-      Promise.resolve([
-        {
-          id: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          title: 'Name',
-          description: 'Des',
-          price: 1,
-          stock: 1,
-          brandId: new Brand(),
-          user: newUser,
-          categoryId: new Category(),
-          cartItemsId: [],
-          questions: [],
-        },
-        {
-          id: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          title: 'Name 2',
-          description: 'Des 2',
-          price: 2,
-          stock: 2,
-          brandId: new Brand(),
-          user: newUser,
-          categoryId: new Category(),
-          cartItemsId: [],
-          questions: [],
-        },
-      ]),
-    ),
     findOne: jest.fn(() => Promise.resolve(genericItem)),
     create: jest.fn((body) => Object.assign(body, { id: 4 })),
     merge: jest.fn((item, body) => Object.assign({ item, body })),
     save: jest.fn((item) => Promise.resolve(item)),
     delete: jest.fn(() => Promise.resolve(true)),
+    createQueryBuilder: jest.fn(() => ({
+      leftJoinAndSelect() {},
+      orderBy() {},
+      andWhere() {},
+    })),
   };
 
   beforeEach(async () => {
@@ -98,36 +115,44 @@ describe('ItemsService', () => {
 
   describe('all', () => {
     it('should return an array of Items', async () => {
-      expect(await service.findAll({}, { limit: 10, page: 0 })).toEqual([
-        {
-          id: 2,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          title: 'Name',
-          description: 'Des',
-          price: 1,
-          stock: 1,
-          brandId: expect.any(Brand),
-          user: newUser,
-          categoryId: expect.any(Category),
-          cartItemsId: [],
-          questions: [],
+      expect(await service.findAll({}, { limit: 10, page: 1 })).toEqual({
+        items: [
+          {
+            id: 2,
+            createdAt: expect.any(Date),
+            updatedAt: expect.any(Date),
+            title: 'Name',
+            description: 'Des',
+            price: 1,
+            stock: 1,
+            brandId: expect.any(Brand),
+            user: newUser,
+            categoryId: expect.any(Category),
+            cartItemsId: [],
+            questions: [],
+          },
+          {
+            id: 3,
+            createdAt: expect.any(Date),
+            updatedAt: expect.any(Date),
+            title: 'Name 2',
+            description: 'Des 2',
+            price: 2,
+            stock: 2,
+            brandId: expect.any(Brand),
+            user: newUser,
+            categoryId: expect.any(Category),
+            cartItemsId: [],
+            questions: [],
+          },
+        ],
+        meta: {
+          itemCount: 2,
+          totalItems: 2,
+          totalPages: 1,
+          currentPage: 1,
         },
-        {
-          id: 3,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          title: 'Name 2',
-          description: 'Des 2',
-          price: 2,
-          stock: 2,
-          brandId: expect.any(Brand),
-          user: newUser,
-          categoryId: expect.any(Category),
-          cartItemsId: [],
-          questions: [],
-        },
-      ]);
+      });
     });
   });
 
@@ -182,10 +207,9 @@ describe('ItemsService', () => {
 
   describe('update', () => {
     const updateMethod = async (dto) => {
-      const item = await service.findOne(genericItem.id)
-      return await service.update(item, dto)
-    }
-
+      const item = await service.findOne(genericItem.id);
+      return await service.update(item, dto);
+    };
 
     it('should update an Item', async () => {
       newUser.id = userId;
@@ -205,9 +229,7 @@ describe('ItemsService', () => {
         Promise.resolve({ ...genericItem, ...dto }),
       );
 
-      expect(await updateMethod(dto)).toEqual(
-        expected,
-      );
+      expect(await updateMethod(dto)).toEqual(expected);
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
       expect(mockItemsRepository.merge).toHaveBeenCalledWith(genericItem, dto);
@@ -220,9 +242,7 @@ describe('ItemsService', () => {
       };
 
       try {
-        expect(await updateMethod(dto)).toThrow(
-          NotFoundException
-        );
+        expect(await updateMethod(dto)).toThrow(NotFoundException);
       } catch (err) {
         expect(err.message).toEqual('Item Not Found');
       }
