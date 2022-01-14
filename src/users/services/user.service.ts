@@ -9,26 +9,38 @@ import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) { }
 
-  returnLoggedUser(id: number): Promise<User> {
-    return this.userRepo.findOne(id);
+  async returnLoggedUser(id: number): Promise<Partial<User>> {
+    const user = await this.userRepo.findOne(id);
+
+    const { password, ...result } = user;
+    
+    return result;
   }
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepo.findOne({ email });
   }
 
+  findOneByUsername(username: string): Promise<User> {
+    return this.userRepo.findOne({ username });
+  }
+
   async create(user: CreateUserDTO) {
     const newUser: User = await this.userRepo.create(user);
+
     return await this.userRepo.save(newUser);
   }
 
   async update(id: number, body: any): Promise<{ message: string; }> {
     const user = await this.userRepo.findOne(id);
+
     this.userRepo.merge(user, body);
+
     this.userRepo.save(user);
-    return { message: 'Data modified' };
+
+    return { message: 'Data modified, please login again' };
   }
 
   async validateCurrentPassword(user: User, currentPassword: string) {
@@ -38,14 +50,24 @@ export class UserService {
   }
 
   async updatePassword(id: number, editPasswordDTO: EditPasswordDTO) {
-    
     const user = await this.returnLoggedUser(id);
+
     user.password = await bcrypt.hash(editPasswordDTO.newPassword, 10);
+
     this.userRepo.save(user);
-    return editPasswordDTO;
+
+    return { message: 'Password updated, please login again' };
   }
 
-  delete(id: number) {
-    return this.userRepo.softDelete(id);
+  async delete(id: number) {
+    this.userRepo.softDelete(id);
+
+    const user = await this.userRepo.findOne(id);
+
+    user.account_status = 4;
+
+    this.userRepo.save(user);
+
+    return { message: 'User deleted' };
   }
 }
