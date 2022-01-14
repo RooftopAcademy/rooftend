@@ -11,12 +11,18 @@ import {
   DefaultValuePipe,
   HttpCode,
   Res,
+  UsePipes,
+  ValidationPipe,
+  Req,
+  ConflictException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 // import { CreateUserDTO } from '../entities/create-user-dto.entity';
 import { Response } from 'express';
 import { User } from '../entities/user.entity';
-
+import * as bcrypt from 'bcrypt';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,6 +30,7 @@ import {
   ApiTags,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -31,102 +38,97 @@ import {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({
-    status: 200,
-    description: 'A list with all the users',
-    type: User,
-  })
-  @Get()
-  findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ) {
-    limit = limit > 100 ? 100 : limit;
-    return this.userService.paginate({
-      page,
-      limit,
-      route: '/users',
-    });
-  }
-
-  @ApiOperation({ summary: 'Get a user by id' })
+  @ApiOperation({ summary: 'Get logged user' })
   @ApiResponse({
     status: 200,
     description: 'User found',
     type: User,
   })
-  @Get(':id')
+  @Get()
   @HttpCode(200)
-  findOne(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.userService
-      .findOneById(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('User not found');
-        }
-        return data;
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+  async findOne(@Req() req) {
+    const id = req.user.id;
+
+    return await this.userService.returnLoggedUser(id);
   }
 
-  // @Post()
-  // @HttpCode(201)
-  // @ApiOperation({ summary: 'Create a user' })
-  // @ApiResponse({
-  //   status: 201,
-  //   description: 'The user has been created successfully.',
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'The user could not be created',
-  // })
-  // async create(
-  //   @Body() CreateUserDTO: CreateUserDTO,
-  //   @Res({ passthrough: true }) response: Response,
-  // ) {
-  //   return this.userService
-  //     .create(CreateUserDTO)
-  //     .then(() => {
-  //       response.status(200).end('user created');
-  //     })
-  //     .catch((err) => {
-  //       response.status(400).end(err.message);
-  //     });
-  // }
+  @Patch('username')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update a username' })
+  @ApiResponse({
+    status: 200,
+    description: 'The username has been updated successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The username could not be updated',
+  })
+  updateUsername(
+    @Req() req,
+    @Body() username: string,
+  ) {
+    const id = req.user.id;
+    
+    return this.userService.update(id, username);
+  }
 
-  // @Patch(':id')
-  // @HttpCode(200)
-  // @ApiOperation({ summary: 'Update a user' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'The user has been updated successfully.',
-  // })
-  // @ApiBadRequestResponse({
-  //   description: 'The user could not be updated',
-  // })
-  // update(
-  //   @Param('id') id: number,
-  //   @Body() createUserDTO: CreateUserDTO,
-  //   @Res({ passthrough: true }) response: Response,
-  // ) {
-  //   return this.userService
-  //     .findOne(id)
-  //     .then((data) => {
-  //       if (!data) {
-  //         response.status(400).end('user not found');
-  //       }
-  //       this.userService.update(id, createUserDTO);
-  //       response.status(200).end('user updated');
-  //     })
-  //     .catch((err) => {
-  //       response.status(400).end(err.message);
-  //     });
-  // }
+  @Patch('email')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update a email' })
+  @ApiResponse({
+    status: 200,
+    description: 'The email has been updated successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The email could not be updated',
+  })
+  async updateEmail(
+    @Req() req,
+    @Body('email') newEmail: string,
+  ) {
+    const id = req.user.id;
+
+    const user = await this.userService.findOneByEmail(newEmail);
+
+    if(user) {
+      throw new HttpException('The email is already in use', HttpStatus.CONFLICT);
+    }
+
+    return this.userService.update(id, {email: newEmail});
+  }
+
+  @Patch('password')
+  @HttpCode(200)
+  @UsePipes(new ValidationPipe({ stopAtFirstError: true }))
+  @ApiOperation({ summary: 'Update a password' })
+  @ApiResponse({
+    status: 200,
+    description: 'The password has been updated successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'The password could not be updated',
+  })
+  async updatePassword(
+    @Req() req,
+    @Body() editPasswordDTO: EditPasswordDTO,
+  ) {
+    const id = req.user.id;
+
+    // Check if current password match
+
+    const passwordsMatch = await this.userService.validateCurrentPassword(req.user, editPasswordDTO.currentPassword);
+
+    // Check if current password is different from new password
+
+    if(!passwordsMatch) {
+      throw new HttpException("Invalid current password", HttpStatus.FORBIDDEN)
+    }
+
+    if(editPasswordDTO.currentPassword == editPasswordDTO.newPassword) {
+      throw new HttpException("New password should be different from the current one", HttpStatus.CONFLICT)
+    }
+
+    return this.userService.updatePassword(id, editPasswordDTO);
+  }
 
   @Delete(':id')
   @HttpCode(204)
@@ -143,7 +145,7 @@ export class UserController {
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.userService
-      .findOneById(id)
+      .returnLoggedUser(id)
       .then((data) => {
         if (!data) {
           response.status(400).end('User not found');
