@@ -56,7 +56,6 @@ export class CartController {
     @Param('id') id: number,
     ): Promise<Cart> {
     const user: any = req.user;
-    console.log(user);
     const cart: Cart = await this.cartService.findOne(id);
     if (!cart) {throw new NotFoundException('Valid cart not found')};
     const ability = this.caslAbilityFactory.createForUser(user);
