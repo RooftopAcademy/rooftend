@@ -10,7 +10,6 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -29,7 +28,6 @@ import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 import { User } from '../../users/entities/user.entity';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
@@ -154,7 +152,6 @@ export class ItemsController {
     description: 'Not Authorized',
   })
   @Post()
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(@Body() body: any): Promise<Item> {
     const user = new User();
@@ -176,7 +173,6 @@ export class ItemsController {
     description: 'Not Authorized',
   })
   @Patch(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(204)
   @ApiForbiddenResponse({
     description: 'Forbidden',
@@ -211,7 +207,6 @@ export class ItemsController {
     description: 'Not Authorized',
   })
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiForbiddenResponse({
     description: 'Forbidden',
