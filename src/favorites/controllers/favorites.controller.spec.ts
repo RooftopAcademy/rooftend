@@ -72,10 +72,16 @@ describe('FavoritesController', () => {
 
   describe('create', () => {
     it('should create a favorite.', () => {
-      const data = { item_id: 61 }
-      const token = 1
+      const data: any = { item_id: 61 };
+      const token: any = 1;
+      const dto = {
+        id: 1,
+        user: 1,
+        item_id: 1,
+        updated_at: Date.now(),
+      };
   
-      expect(controller.create(token, data)).toEqual({
+      expect(controller.create(token, data, dto)).toEqual({
         "message": "Created",
         "statusCode": 201,
       });
