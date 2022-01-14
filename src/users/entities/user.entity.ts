@@ -35,7 +35,6 @@ export class User {
     type: 'character varying',
     length: 50,
     nullable: true,
-    unique: true,
   })
   username: string;
 
@@ -60,7 +59,6 @@ export class User {
     type: 'character varying',
     length: 100,
     nullable: false,
-    unique: true,
   })
   email: string;
 
@@ -80,7 +78,7 @@ export class User {
     default: null,
     type: 'date',
     format: 'date-time',
-    example: '2021-12-16',
+    example: '2022-01-14 18:27:50.29667+01',
   })
   @DeleteDateColumn({
     name: 'deleted_at',
