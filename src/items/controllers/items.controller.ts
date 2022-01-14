@@ -35,6 +35,7 @@ import { Request } from 'express';
 import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiTags('Items')
+@ApiBearerAuth()
 @Controller('items')
 export class ItemsController {
   constructor(
