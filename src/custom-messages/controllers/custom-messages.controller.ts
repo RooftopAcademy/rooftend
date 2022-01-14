@@ -13,6 +13,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -101,6 +102,9 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
+  @ApiBody({
+    type: CreateCustomMessageDTO
+  })
   @ApiResponse({
     status: 201,
     description: 'The created custom message',
@@ -127,6 +131,9 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
+  @ApiBody({
+    type: UpdateCustomMessageDTO
+  })
   @ApiResponse({
     status: 204,
     description: 'The updated custom message',
