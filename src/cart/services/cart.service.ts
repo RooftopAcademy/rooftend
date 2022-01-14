@@ -8,15 +8,21 @@ import { Cart } from '../entities/cart.entity';
 @Injectable()
 export class CartService {
 
-    constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
+    constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) { }
 
     async findCart(userId: number): Promise<Cart> {
-        const cart = await this.cartRepo.findOne({select: ["id", "amount", "currencyCode"] ,where: { purchasedAt: null , user:{id:userId} }, relations: ["user"], order: { id: 'DESC' }});
+        const cart = await this.cartRepo.findOne({ select: ["id", "amount", "currencyCode"], where: { purchasedAt: null, user: { id: userId } }, relations: ["user"], order: { id: 'DESC' } });
         return cart;
     }
 
-    async findOne(id:number): Promise<Cart>{
-        const cart: Cart = await this.cartRepo.findOne(id, {relations: ["cartItems", "user"]});
+    /**
+     * Find cart owned by user
+     * @param id
+     * @param userId
+     * @param purchased
+     */
+    async findOne(id: number): Promise<Cart> {
+        const cart: Cart = await this.cartRepo.findOne(id, { relations: ["cartItems", "user"] });
         return cart;
     }
 
@@ -27,19 +33,19 @@ export class CartService {
      * @param purchased
      */
     findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
-      const q = this.cartRepo.createQueryBuilder();
+        const q = this.cartRepo.createQueryBuilder();
 
-      q.where({ userId: userId.id, id });
+        q.where({ userId: userId.id, id });
 
-      if (purchased) {
-        q.where({ purchasedAt: Not(IsNull()) });
-      }
+        if (purchased) {
+            q.where({ purchasedAt: Not(IsNull()) });
+        }
 
-      return q.getOneOrFail();
+        return q.getOneOrFail();
     }
 
     create(user: User): Promise<Cart> {
-        let cart = this.cartRepo.create({user});
+        let cart = this.cartRepo.create({ user });
         return this.cartRepo.save(cart);
     }
 
