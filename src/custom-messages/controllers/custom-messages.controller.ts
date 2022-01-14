@@ -74,7 +74,7 @@ export class CustomMessagesController {
   getAll(@Req() req: Request): Promise<CustomMessage[]> {
     const user: any = req.user;
 
-    return this.CustomMessagesService.findAll(user.result);
+    return this.CustomMessagesService.findAll(user);
   }
 
   @ApiOperation({ summary: 'Get a single custom message by ID' })
@@ -98,7 +98,7 @@ export class CustomMessagesController {
   getOne(@Req() req: Request, @Param('id') id: number): Promise<CustomMessage> {
     const user: any = req.user;
 
-    return this.failIfCannotAccess(Permission.Read, user.result, id);
+    return this.failIfCannotAccess(Permission.Read, user, id);
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
@@ -125,7 +125,7 @@ export class CustomMessagesController {
   ): Promise<CustomMessage> {
     const user: any = req.user;
 
-    return this.CustomMessagesService.create(user.result, body);
+    return this.CustomMessagesService.create(user, body);
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
@@ -158,7 +158,7 @@ export class CustomMessagesController {
 
     const customMessage: CustomMessage = await this.failIfCannotAccess(
       Permission.Update,
-      user.result,
+      user,
       id,
     );
 
@@ -188,7 +188,7 @@ export class CustomMessagesController {
 
     const customMessage: CustomMessage =
       await this.CustomMessagesService.findOne(id);
-    const ability = this.caslAbilityFactory.createForUser(user.result);
+    const ability = this.caslAbilityFactory.createForUser(user);
 
     if (
       ability.cannot(Permission.Delete, subject('CustomMessage', customMessage))
