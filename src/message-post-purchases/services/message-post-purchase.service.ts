@@ -21,7 +21,7 @@ export class MessagePostPurchaseService {
         .from(MessagePostPurchase, "mgp")
         .innerJoin("mgp.sender_id", "users")
         .addSelect("users.username")
-        .innerJoin("mgp.received_id", "user")
+        .innerJoin("mgp.receiver_id", "user")
         .addSelect("user.username")
         .where("mgp.cart_id = :cart_id", { cart_id: cartId})
 
