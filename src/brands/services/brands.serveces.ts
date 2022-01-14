@@ -18,12 +18,10 @@ export class BrandsService {
     return paginate<Brand>(this.brandRepo, options);
   }
   async findOne(id: number): Promise<Brand> {
-    const category: Brand = await this.brandRepo.findOne(id, {
-      relations: ['subCategories'],
-    });
-    if (!category) {
+    const brand: Brand = await this.brandRepo.findOne(id);
+    if (!brand) {
       throw new NotFoundException(`Brand with id ${id} not found.`);
     }
-    return category;
+    return brand;
   }
 }

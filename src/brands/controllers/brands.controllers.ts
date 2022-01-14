@@ -46,7 +46,7 @@ export class BrandsController {
     name: 'limit',
     type: Number,
     required: false,
-    description: 'limit of paginated questions',
+    description: 'limit of paginated brands',
     example: 10,
   })
   @Get()
@@ -65,7 +65,7 @@ export class BrandsController {
   @ApiOperation({ summary: 'Get a brand by id' })
   @ApiOkResponse({
     status: 200,
-    description: 'The found brand with that id',
+    description: 'Brand found',
     type: Brand,
   })
   @ApiNotFoundResponse({
