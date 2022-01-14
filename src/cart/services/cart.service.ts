@@ -10,8 +10,8 @@ export class CartService {
 
     constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
 
-    async findCart(): Promise<Cart> {
-        const cart = await this.cartRepo.findOne({select: ["id", "amount", "currencyCode"] ,where: { purchasedAt: null }, relations: ["user"], order: { id: 'DESC' }});
+    async findCart(userId: number): Promise<Cart> {
+        const cart = await this.cartRepo.findOne({select: ["id", "amount", "currencyCode"] ,where: { purchasedAt: null , user:{id:userId} }, relations: ["user"], order: { id: 'DESC' }});
         return cart;
     }
 

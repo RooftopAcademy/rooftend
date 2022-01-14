@@ -41,12 +41,9 @@ export class CartController {
   async getCart(@Req()req: Request): Promise<Cart> {
     const reqUser: any = req.user;
     const user: User = plainToClass(User, reqUser.result);
-    console.log(user);
-    const cart = await this.cartService.findCart();
+    const cart = await this.cartService.findCart(user.id);
     if (!cart){ throw new NotFoundException('Valid cart not found')};
     const ability = this.caslAbilityFactory.createForUser(user);
-    console.log(ability.can(Permission.Read, subject('Cart', cart)));
-    console.log(ability.relevantRuleFor(Permission.Read, subject('Cart', cart)));
     if (ability.cannot(Permission.Read, subject('Cart', cart))){
         throw new ForbiddenException()
     };
@@ -70,7 +67,6 @@ export class CartController {
     ): Promise<Cart> {
     const reqUser: any = req.user;
     const user: User = plainToClass(User, reqUser.result);
-    console.log(user);
     const cart: Cart = await this.cartService.findOne(id);
     if (!cart) {throw new NotFoundException('Valid cart not found')};
     const ability = this.caslAbilityFactory.createForUser(user);
