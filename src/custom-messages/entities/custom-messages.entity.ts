@@ -8,7 +8,6 @@ import {
   DeleteDateColumn,
   JoinColumn,
 } from 'typeorm';
-
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 
@@ -52,7 +51,6 @@ export class CustomMessage {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
@@ -63,7 +61,6 @@ export class CustomMessage {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',

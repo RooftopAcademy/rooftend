@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../../users/services/user.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
+import { LogInUserDTO } from '../../users/entities/log-in-user-dto.entity';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User } from '../../users/entities/user.entity';
@@ -54,7 +55,7 @@ export class AuthenticationService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: LogInUserDTO | CreateUserDTO) {
     const foundUser = await this.validateUser(user.email);
 
     const { password, ...result } = foundUser;
