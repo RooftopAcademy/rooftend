@@ -82,7 +82,6 @@ export class ItemsController {
     description: 'The item could not be created',
   })
   @Post()
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(@Body() body: any): Promise<Item> {
     const user = new User();
@@ -101,7 +100,6 @@ export class ItemsController {
     description: 'The item could not be updated',
   })
   @Patch(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(204)
   @ApiForbiddenResponse({
     description: 'Forbidden',
@@ -133,7 +131,6 @@ export class ItemsController {
     description: 'The item could not be deleted',
   })
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiForbiddenResponse({
     description: 'Forbidden',

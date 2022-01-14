@@ -33,7 +33,6 @@ export class PhonesService {
         this.phoneRepository.save(phone);
         return phone;
       }
-
       throw new NotFoundException();
     });
   }
