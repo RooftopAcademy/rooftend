@@ -1,20 +1,24 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
+
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'carts' })
 export class Cart {
-  @PrimaryGeneratedColumn({ unsigned: true, type: 'bigint' })
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint',
+  })
   @ApiProperty({
     name: 'id',
     type: 'integer',
@@ -27,7 +31,6 @@ export class Cart {
     name: 'created_at',
     nullable: false,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     select: false,
   })
   @ApiHideProperty()
@@ -37,7 +40,6 @@ export class Cart {
     name: 'updated_at',
     nullable: false,
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     select: false,
   })
   @ApiHideProperty()
@@ -90,6 +92,15 @@ export class Cart {
   })
   currencyCode: string;
 
+  /**
+   * Items to be purchased
+   */
+  @OneToMany(() => CartItem, (item: CartItem) => item.cartId)
+  items: CartItem[];
+
+  /**
+   * @deprecated User items attribute instead of cartItemsId
+   */
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 }

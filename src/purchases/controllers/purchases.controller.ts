@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Req } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Cart } from '../../cart/entities/cart.entity';
 import { User } from '../../users/entities/user.entity';
@@ -18,9 +18,11 @@ export class PurchasesController {
   })
   @Get()
   @HttpCode(200)
-  findAll() {
+  findAll(@Req() req) {
     const user = new User();
     user.id = 1;
+
+    console.log(req.user);
 
     return this.purchasesService.findAll(user.id);
   }

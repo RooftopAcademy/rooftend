@@ -1,11 +1,11 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -18,40 +18,66 @@ export class CartItem {
     unsigned: true,
     type: 'bigint',
   })
-  @ApiProperty({ example: 1, description: 'Cart Item ID' })
+  @ApiProperty({
+    example: 1,
+    description: 'Cart Item ID',
+    readOnly: true,
+    type: Number,
+  })
   id: number;
 
   @Column({
+    name: 'quantity',
     type: 'int',
+    nullable: false,
   })
-  @ApiProperty({ example: 10, description: 'Cart Item quantity in Cart' })
+  @ApiProperty({
+    type: Number,
+    example: 10,
+    description: 'Cart Item quantity in Cart',
+    nullable: false,
+    minimum: 1,
+  })
   quantity: number;
 
   @Column({
-    type: 'int',
+    name: 'subtotal',
+    type: 'bigint',
+    nullable: false,
   })
-  @ApiProperty({ example: 1000, description: 'Cart Item subtotal' })
+  @ApiProperty({
+    example: 1000,
+    description: 'Cart Item subtotal',
+    nullable: false,
+    type: Number
+  })
   subtotal: number;
 
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Cart Item's creation date",
+    format: 'date-time',
+    type: Date,
+    nullable: false,
   })
   createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Cart Item's last update date",
+    format: 'date-time',
+    type: Date,
+    nullable: false,
   })
   updatedAt: Date;
 
@@ -65,7 +91,7 @@ export class CartItem {
   })
   itemId: number;
 
-  @ManyToOne(() => Cart, (cart) => cart.cartItemsId)
+  @ManyToOne(() => Cart, (cart) => cart.items)
   @JoinColumn({
     name: 'cart_id',
   })
