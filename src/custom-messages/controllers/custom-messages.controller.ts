@@ -2,12 +2,13 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
   Patch,
   Post,
-  UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -23,11 +24,33 @@ import { CreateCustomMessageDTO } from '../entities/create-custom-messages.dto';
 import { CustomMessage } from '../entities/custom-messages.entity';
 import { UpdateCustomMessageDTO } from '../entities/update-custom-messages.dto';
 import { User } from '../../users/entities/user.entity';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Request } from 'express';
 
 @Controller('custom-messages')
 export class CustomMessagesController {
-  constructor(private readonly CustomMessagesService: CustomMessagesService) {}
+  constructor(
+    private readonly CustomMessagesService: CustomMessagesService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
+
+  private async failIfCanNotAccess(
+    permission: Permission,
+    user: User,
+    customMessageId: number,
+  ): Promise<CustomMessage> {
+    const customMessage: CustomMessage =
+      await this.CustomMessagesService.findOne(customMessageId);
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(permission, subject('CustomMessage', customMessage)))
+      throw new ForbiddenException();
+
+    return customMessage;
+  }
 
   @ApiOperation({ summary: 'Get all custom messages by User Id' })
   @ApiResponse({
@@ -40,11 +63,10 @@ export class CustomMessagesController {
     description: 'Forbidden',
   })
   @HttpCode(200)
-  getAll(): Promise<CustomMessage[]> {
-    const user: User = new User();
-    user.id = 1;
+  getAll(@Req() req: Request): Promise<CustomMessage[]> {
+    const user: any = req.user;
 
-    return this.CustomMessagesService.findAll(user);
+    return this.CustomMessagesService.findAll(user.result);
   }
 
   @ApiOperation({ summary: 'Get a single custom message by ID' })
@@ -60,13 +82,11 @@ export class CustomMessagesController {
     description: 'Not Found Custom Message',
   })
   @Get(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  getOne(@Param('id') id: number): Promise<CustomMessage> {
-    const user: User = new User();
-    user.id = 1;
+  getOne(@Req() req: Request, @Param('id') id: number): Promise<CustomMessage> {
+    const user: any = req.user;
 
-    return this.CustomMessagesService.findOne(user, id);
+    return this.failIfCanNotAccess(Permission.Read, user.result, id);
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
@@ -83,11 +103,13 @@ export class CustomMessagesController {
   })
   @Post()
   @HttpCode(201)
-  create(@Body() body: CreateCustomMessageDTO): Promise<CustomMessage> {
-    const user: User = new User();
-    user.id = 1;
+  create(
+    @Req() req: Request,
+    @Body() body: CreateCustomMessageDTO,
+  ): Promise<CustomMessage> {
+    const user: any = req.user;
 
-    return this.CustomMessagesService.create(user, body);
+    return this.CustomMessagesService.create(user.result, body);
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
@@ -106,16 +128,21 @@ export class CustomMessagesController {
     description: 'Not Found Custom Message',
   })
   @Patch(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(204)
-  update(
+  async update(
+    @Req() req: Request,
     @Param('id') id: number,
     @Body() body: UpdateCustomMessageDTO,
   ): Promise<CustomMessage> {
-    const user: User = new User();
-    user.id = 1;
+    const user: any = req.user;
 
-    return this.CustomMessagesService.update(user, id, body);
+    const customMessage: CustomMessage = await this.failIfCanNotAccess(
+      Permission.Update,
+      user.result,
+      id,
+    );
+
+    return this.CustomMessagesService.update(customMessage, body);
   }
 
   @ApiOperation({ summary: 'Delete a message by ID' })
@@ -131,12 +158,20 @@ export class CustomMessagesController {
     description: 'Forbidden',
   })
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  delete(@Param('id') id: number): Promise<boolean> {
-    const user: User = new User();
-    user.id = 1;
+  async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
+    const user: any = req.user;
 
-    return this.CustomMessagesService.delete(user, id);
+    const customMessage: CustomMessage =
+      await this.CustomMessagesService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user.result);
+
+    if (
+      ability.cannot(Permission.Delete, subject('CustomMessage', customMessage))
+    ) {
+      throw new ForbiddenException();
+    }
+
+    return this.CustomMessagesService.delete(id);
   }
 }
