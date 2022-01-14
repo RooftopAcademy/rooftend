@@ -182,7 +182,7 @@ export class CustomMessagesController {
   async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
     const user: any = req.user;
 
-    this.failIfCannotAccess(Permission.Delete, user, id);
+    await this.failIfCannotAccess(Permission.Delete, user, id);
 
     return this.CustomMessagesService.delete(id);
   }
