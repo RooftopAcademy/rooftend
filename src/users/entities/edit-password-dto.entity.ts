@@ -9,14 +9,14 @@ import { PasswordMatch } from "../class-validator/password-match.decorator";
 
 export class EditPasswordDTO {
   @ApiProperty({
-    description: 'Current password of user',
+    description: 'Current password of the user',
     type: String,
   })
   @IsString()
   currentPassword: string;
 
   @ApiProperty({
-    description: 'New password of user',
+    description: 'New password of the user',
     type: String,
   })
   @IsString()
@@ -39,7 +39,7 @@ export class EditPasswordDTO {
   newPassword: string;
 
   @ApiProperty({
-    description: 'New password confirmation of user',
+    description: 'New password confirmation of the user',
     type: String,
   })
   @IsString()
