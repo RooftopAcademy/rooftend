@@ -13,7 +13,6 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -24,9 +23,7 @@ import {
   ApiQuery,
   ApiTags
 } from '@nestjs/swagger';
-
 import { FavoritesService } from '../services/favorites.service';
-
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -249,7 +246,9 @@ export class FavoritesController {
     @Body() createFavoriteDto: CreateFavoriteDto
     ) {
     token = 1
+
     this.favoritesService.create(createFavoriteDto, token);
+
     return ({
       "statusCode": 201,
       "message": "Created",
@@ -282,6 +281,7 @@ export class FavoritesController {
   })
   public delete(@Param('id') id: number) {
     this.favoritesService.delete(id);
+    
     return ({
       "statusCode": 200,
       "message": "Ok"
