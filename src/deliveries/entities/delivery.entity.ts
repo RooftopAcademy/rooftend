@@ -2,10 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import DeliveryStatus from './delivery-status.enum';
 
 @Entity({
@@ -33,7 +34,6 @@ export class Delivery {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
@@ -47,7 +47,6 @@ export class Delivery {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 

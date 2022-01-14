@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from '../items/entities/items.entity';
 import { User } from '../users/entities/user.entity';
 import { SearchController } from './controllers/search.controller';
-import { Search } from './search.entity';
+import { Search } from './entities/search.entity';
 import { SearchService } from './services/search.service';
 
 @Module({
@@ -11,4 +11,4 @@ import { SearchService } from './services/search.service';
   providers: [SearchService],
   imports: [TypeOrmModule.forFeature([Search, Item, User])],
 })
-export class SearchModule {}
+export class SearchModule { }

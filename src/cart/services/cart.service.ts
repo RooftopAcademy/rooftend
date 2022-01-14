@@ -1,7 +1,7 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
 
@@ -18,6 +18,24 @@ export class CartService {
     async findOne(id:number): Promise<Cart>{
         const cart: Cart = await this.cartRepo.findOne(id, {relations: ["cartItems", "user"]});
         return cart;
+    }
+
+    /**
+     * Find cart owned by user
+     * @param id
+     * @param userId
+     * @param purchased
+     */
+    findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
+      const q = this.cartRepo.createQueryBuilder();
+
+      q.where({ userId: userId.id, id });
+
+      if (purchased) {
+        q.where({ purchasedAt: Not(IsNull()) });
+      }
+
+      return q.getOneOrFail();
     }
 
     create(user: User): Promise<Cart> {

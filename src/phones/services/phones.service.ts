@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Phone } from '../entities/phone.entity';
 import {
   paginate,
@@ -26,24 +26,20 @@ export class PhonesService {
     return this.phoneRepository.save(phone);
   }
 
-  async update(id: number, phoneChanges: any): Promise<String> {
-    try {
-      const phone = await this.phoneRepository.findOne(id);
-      this.phoneRepository.merge(phone, phoneChanges);
-      this.phoneRepository.save(phone);
-      return 'Phone updated';
-    } catch (e) {
-      return 'Phone not found id: ' + id;
-    }
+  async update(id: number, phoneChanges: any): Promise<Phone> {
+    return this.phoneRepository.findOne(id).then((phone) => {
+      if (phone) {
+        this.phoneRepository.merge(phone, phoneChanges);
+        this.phoneRepository.save(phone);
+        return phone;
+      }
+
+      throw new NotFoundException();
+    });
   }
 
-  async delete(id: number): Promise<String> {
-    try {
-      await this.phoneRepository.delete(id);
-      return 'Phone deleted';
-    } catch (e) {
-      return 'Phone not found';
-    }
+  async delete(id: number): Promise<DeleteResult> {
+    return await this.phoneRepository.delete(id);
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Phone>> {
