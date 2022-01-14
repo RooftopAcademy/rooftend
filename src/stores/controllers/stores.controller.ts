@@ -3,11 +3,9 @@ import {
   Get,
   Param,
   HttpCode,
-  Res,
   Query,
   DefaultValuePipe,
   ParseIntPipe,
-  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiNotFoundResponse,
@@ -19,7 +17,6 @@ import {
 } from '@nestjs/swagger';
 
 import { ReadStoreDto } from '../entities/read-store.dto';
-import { Response } from 'express';
 import { StoresService } from '../services/stores.service';
 import { Public } from '../../authentication/decorators/public.decorator';
 
