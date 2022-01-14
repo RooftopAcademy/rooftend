@@ -8,9 +8,9 @@ import { CaslModule } from '../auth/casl/casl.module';
 import { CartItemModule } from '../cart-item/cart-item.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Cart,User]), CaslModule, CartItemModule],
+  imports: [TypeOrmModule.forFeature([Cart, User]), CaslModule, CartItemModule],
   providers: [CartService],
   controllers: [CartController],
-  exports: [CartService]
+  exports: [CartService],
 })
 export class CartModule {}

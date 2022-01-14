@@ -104,5 +104,4 @@ export class Cart {
    */
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItems: CartItem[];
-
 }

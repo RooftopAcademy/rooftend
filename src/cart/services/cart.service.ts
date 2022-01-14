@@ -7,50 +7,56 @@ import { Cart } from '../entities/cart.entity';
 
 @Injectable()
 export class CartService {
+  constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
 
-    constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) { }
+  async findCart(userId: number): Promise<Cart> {
+    const cart = await this.cartRepo.findOne({
+      select: ['id', 'amount', 'currencyCode'],
+      where: { purchasedAt: null, user: { id: userId } },
+      relations: ['user'],
+      order: { id: 'DESC' },
+    });
+    return cart;
+  }
 
-    async findCart(userId: number): Promise<Cart> {
-        const cart = await this.cartRepo.findOne({ select: ["id", "amount", "currencyCode"], where: { purchasedAt: null, user: { id: userId } }, relations: ["user"], order: { id: 'DESC' } });
-        return cart;
+  /**
+   * Find cart owned by user
+   * @param id
+   * @param userId
+   * @param purchased
+   */
+  async findOne(id: number): Promise<Cart> {
+    const cart: Cart = await this.cartRepo.findOne(id, {
+      relations: ['cartItems', 'user'],
+    });
+    return cart;
+  }
+
+  /**
+   * Find cart owned by user
+   * @param id
+   * @param userId
+   * @param purchased
+   */
+  findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
+    const q = this.cartRepo.createQueryBuilder();
+
+    q.where({ userId: userId.id, id });
+
+    if (purchased) {
+      q.where({ purchasedAt: Not(IsNull()) });
     }
 
-    /**
-     * Find cart owned by user
-     * @param id
-     * @param userId
-     * @param purchased
-     */
-    async findOne(id: number): Promise<Cart> {
-        const cart: Cart = await this.cartRepo.findOne(id, { relations: ["cartItems", "user"] });
-        return cart;
-    }
+    return q.getOneOrFail();
+  }
 
-    /**
-     * Find cart owned by user
-     * @param id
-     * @param userId
-     * @param purchased
-     */
-    findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
-        const q = this.cartRepo.createQueryBuilder();
+  create(user: User): Promise<Cart> {
+    let cart = this.cartRepo.create({ user });
+    return this.cartRepo.save(cart);
+  }
 
-        q.where({ userId: userId.id, id });
-
-        if (purchased) {
-            q.where({ purchasedAt: Not(IsNull()) });
-        }
-
-        return q.getOneOrFail();
-    }
-
-    create(user: User): Promise<Cart> {
-        let cart = this.cartRepo.create({ user });
-        return this.cartRepo.save(cart);
-    }
-
-    @OnEvent('user.created')
-    handleUserCreatedEvent(user: User) {
-        this.create(user);
-    }
+  @OnEvent('user.created')
+  handleUserCreatedEvent(user: User) {
+    this.create(user);
+  }
 }
