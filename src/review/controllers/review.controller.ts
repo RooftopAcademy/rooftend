@@ -3,15 +3,15 @@ import {
   ClassSerializerInterceptor,
   Controller,
   DefaultValuePipe,
-  Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
   Query,
+  Req,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -26,12 +26,18 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { Review } from '../review.entity';
 
 import { ReviewService } from '../services/review.service';
+import { CartService } from '../../cart/services/cart.service';
+import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Reviews')
 @Controller('reviews')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  constructor(
+    private readonly reviewService: ReviewService,
+    private readonly cartsService: CartService,
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -132,19 +138,22 @@ export class ReviewController {
 
   @Post()
   @HttpCode(201)
-  create(@Body() body: any) {
+  async create(
+    @Req() req,
+    @Query('purchaseId') purchaseId: number,
+    @Query('itemId') itemId: number,
+    @Body() body: any,
+  ) {
+    const user: User = req.user;
+    const purchase = await this.cartsService.findOneFromUser(purchaseId, user);
+    if (!purchase) throw new ForbiddenException();
+
+    const item = purchase.items.find((item: CartItem) => item.itemId == itemId);
+    if (!item) throw new ForbiddenException();
+
+    const unreviewed = await this.reviewService.findUnreviewedItem(itemId);
+    if (!unreviewed) throw new ForbiddenException();
+
     return this.reviewService.create(body);
-  }
-
-  @Patch(':id')
-  @HttpCode(200)
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.reviewService.update(id, body);
-  }
-
-  @Delete(':id')
-  @HttpCode(204)
-  delete(@Param('id') id: string) {
-    return this.reviewService.delete(id);
   }
 }
