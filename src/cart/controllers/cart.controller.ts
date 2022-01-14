@@ -22,6 +22,7 @@ import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CartItemService } from '../../cart-item/services/cart-item.service';
 import { Public } from '../../authentication/decorators/public.decorator';
+import { plainToClass } from 'class-transformer';
 
 @ApiTags('Carts')
 @Controller('carts')
@@ -33,19 +34,19 @@ export class CartController {
     ) { }
 
   @Get()
-  //@Public()
-  //@UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Gets current available Cart ' })
   @ApiResponse({ status: 200, description: 'Succesfully found Cart' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
-  async getCart(): Promise<Cart> {
-    const user = new User();
-    //@ts-ignore
-    user.id = '1';
+  async getCart(@Req()req: Request): Promise<Cart> {
+    const reqUser: any = req.user;
+    const user: User = plainToClass(User, reqUser.result);
+    console.log(user);
     const cart = await this.cartService.findCart();
     if (!cart){ throw new NotFoundException('Valid cart not found')};
     const ability = this.caslAbilityFactory.createForUser(user);
+    console.log(ability.can(Permission.Read, subject('Cart', cart)));
+    console.log(ability.relevantRuleFor(Permission.Read, subject('Cart', cart)));
     if (ability.cannot(Permission.Read, subject('Cart', cart))){
         throw new ForbiddenException()
     };
@@ -58,8 +59,6 @@ export class CartController {
     type: "integer",
     required: true
   })
-  //@Public()
-  //@UseGuards(PoliciesGuard)
   @HttpCode(200)
   @ApiOperation({ summary: 'Gets one cart and its cart items given an Id' })
   @ApiResponse({ status: 200, description: 'Cart succesfully found with given id' })
@@ -69,10 +68,9 @@ export class CartController {
     @Req()req: Request,
     @Param('id') id: number,
     ): Promise<Cart> {
-    console.log(req.user);
-    const user = new User();
-    //@ts-ignore
-    user.id = '1'; 
+    const reqUser: any = req.user;
+    const user: User = plainToClass(User, reqUser.result);
+    console.log(user);
     const cart: Cart = await this.cartService.findOne(id);
     if (!cart) {throw new NotFoundException('Valid cart not found')};
     const ability = this.caslAbilityFactory.createForUser(user);

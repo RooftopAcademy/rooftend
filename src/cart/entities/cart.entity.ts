@@ -59,7 +59,7 @@ export class Cart {
   })
   purchasedAt: Date;
 
-  @ManyToOne(() => User, {eager: true})
+  @ManyToOne(() => User)
   @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
   user: User;
