@@ -22,6 +22,7 @@ import {
   ApiBearerAuth,
   ApiQuery,
   ApiUnauthorizedResponse,
+  ApiBody,
 } from '@nestjs/swagger';
 
 import { ItemsService } from '../services/items.service';
@@ -33,6 +34,8 @@ import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Public } from '../../authentication/decorators/public.decorator';
+import { CreateItemDTO } from '../entities/create.item.dto';
+import { UpdateItemDTO } from '../entities/update.item.dto';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -141,6 +144,9 @@ export class ItemsController {
   }
 
   @ApiOperation({ summary: 'Create a item' })
+  @ApiBody({
+    type: CreateItemDTO,
+  })
   @ApiResponse({
     status: 201,
     description: 'The created item',
@@ -154,13 +160,16 @@ export class ItemsController {
   })
   @Post()
   @HttpCode(201)
-  create(@Req() req: Request, @Body() body: any): Promise<Item> {
+  create(@Req() req: Request, @Body() body: CreateItemDTO): Promise<Item> {
     const user: any = req.user;
 
     return this.ItemsService.create(user, body);
   }
 
   @ApiOperation({ summary: 'Update a item by ID' })
+  @ApiBody({
+    type: UpdateItemDTO,
+  })
   @ApiResponse({
     status: 204,
     description: 'The updated item',
@@ -180,7 +189,11 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item Not Found',
   })
-  async update(@Req() req: Request, @Param('id') id: number, @Body() body: any): Promise<Item> {
+  async update(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Body() body: UpdateItemDTO,
+  ): Promise<Item> {
     const user: any = req.user;
 
     const item = await this.ItemsService.findOne(id);
