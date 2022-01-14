@@ -13,6 +13,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { User } from '../../users/entities/user.entity';
 import { CreateItemDTO } from '../entities/create.item.dto';
+import { UpdateItemDTO } from '../entities/update.item.dto';
 
 interface ItemSearchOptions {
   sellerId?: number;
@@ -86,14 +87,14 @@ export class ItemsService {
   }
 
   create(user: User, body: CreateItemDTO): Promise<Item> {
-    const item = this.ItemsRepo.create(body);
+    const item = this.ItemsRepo.create(<Item>(body as any));
     item.user = user;
 
     return this.ItemsRepo.save(item);
   }
 
-  async update(item: Item, body: any): Promise<Item> {
-    this.ItemsRepo.merge(item, body);
+  async update(item: Item, body: UpdateItemDTO): Promise<Item> {
+    this.ItemsRepo.merge(item, <Item>(body as any));
     return this.ItemsRepo.save(item);
   }
 
