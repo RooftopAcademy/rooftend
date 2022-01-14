@@ -35,70 +35,76 @@ describe('FavoritesController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should get 10 favorites records.', () => {
-    const page = 1
-    const limit = 10
-    const token = 1
+  describe('paginate', () => {
+    it('should get 10 favorites records.', () => {
+      const page = 1
+      const limit = 10
+      const token = 1
+  
+      expect(controller.paginate(token, page, limit)).not.toBeUndefined()
+  
+      expect(mockFavoriteService.paginate).toHaveBeenCalled()
+    });
 
-    expect(controller.paginate(token, page, limit)).not.toBeUndefined()
+    it('should return a ForbiddenError message', async () => {
+      mockFavoriteService.paginate.mockImplementationOnce(() => {
+        throw new ForbiddenException();
+      });
 
-    expect(mockFavoriteService.paginate).toHaveBeenCalled()
-  });
-
-  it('should return a ForbiddenError message', async () => {
-    mockFavoriteService.paginate.mockImplementationOnce(async () => {
-      throw new ForbiddenException();
-
-      try{
-        expect(await controller.paginate).toThrow(ForbiddenException);
-      } catch(error) {
+      try {
+        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+      } catch (error) {
         expect(error.message).toEqual('Forbidden');
-      };
+      }
     });
   });
 
-  it('should create a favorite.', () => {
-    const data = { item_id: 61 }
-    const token = 1
-
-    expect(controller.create(token, data)).toEqual({
-      "message": "Created",
-      "statusCode": 201,
+  describe('ccreate', () => {
+    it('should create a favorite.', () => {
+      const data = { item_id: 61 }
+      const token = 1
+  
+      expect(controller.create(token, data)).toEqual({
+        "message": "Created",
+        "statusCode": 201,
+      });
+  
+      expect(mockFavoriteService.create).toHaveBeenCalledWith(data, token)
     });
 
-    expect(mockFavoriteService.create).toHaveBeenCalledWith(data, token)
-  });
+    it('should return a ForbiddenError message', async () => {
+      mockFavoriteService.paginate.mockImplementationOnce(() => {
+        throw new ForbiddenException();
+      });
 
-  it('should return a ForbiddenError message', async () => {
-    mockFavoriteService.create.mockImplementationOnce(async () => {
-      throw new ForbiddenException();
-
-      try{
-        expect(await controller.create).toThrow(ForbiddenException);
-      } catch(error) {
+      try {
+        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+      } catch (error) {
         expect(error.message).toEqual('Forbidden');
-      };
+      }
     });
   });
 
-  it('should delete a favorite.', () => {
-    const okResponse = { "message": "Ok", "statusCode": 200}
-    const favoriteId = 1
+  describe('delete', () => {
+    it('should delete a favorite.', () => {
+      const okResponse = { "message": "Ok", "statusCode": 200}
+      const favoriteId = 1
+  
+      expect(controller.delete(favoriteId)).toStrictEqual(okResponse);
+  
+      expect(mockFavoriteService.delete).toHaveBeenCalledWith(favoriteId);
+    });
 
-    expect(controller.delete(favoriteId)).toStrictEqual(okResponse);
+    it('should return a ForbiddenError message', async () => {
+      mockFavoriteService.paginate.mockImplementationOnce(() => {
+        throw new ForbiddenException();
+      });
 
-    expect(mockFavoriteService.delete).toHaveBeenCalledWith(favoriteId);
-  });
-
-  it('should return a ForbiddenError message', async () => {
-    mockFavoriteService.delete.mockImplementationOnce(async () => {
-      throw new ForbiddenException();
-
-      try{
-        expect(await controller.delete).toThrow(ForbiddenException);
-      } catch(error) {
+      try {
+        expect(await controller.paginate(1)).toThrow(ForbiddenException);
+      } catch (error) {
         expect(error.message).toEqual('Forbidden');
-      };
+      }
     });
   });
 });
