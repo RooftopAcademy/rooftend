@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDTO } from '../entities/create-user-dto.entity';
 import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 
 @Injectable()
 export class UserService {
@@ -64,7 +65,7 @@ export class UserService {
 
     const user = await this.userRepo.findOne(id);
 
-    user.account_status = 4;
+    user.account_status = AccountStatusesEnum.INACTIVE;
 
     this.userRepo.save(user);
 
