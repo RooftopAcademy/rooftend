@@ -1,34 +1,29 @@
 import {
   Controller,
   Get,
-  Param,
-  Post,
   Body,
   Patch,
   Delete,
-  Query,
-  ParseIntPipe,
-  DefaultValuePipe,
   HttpCode,
-  Res,
   UsePipes,
   ValidationPipe,
   Req,
-  ConflictException,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-// import { CreateUserDTO } from '../entities/create-user-dto.entity';
-import { Response } from 'express';
 import { User } from '../entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiBadRequestResponse,
+  PartialType,
+  OmitType,
+  ApiBody,
+  ApiConflictResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
 
@@ -36,13 +31,15 @@ import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
-  @ApiOperation({ summary: 'Get logged user' })
+  @ApiOperation({ summary: 'Get the logged user' })
   @ApiResponse({
     status: 200,
     description: 'User found',
-    type: User,
+    type: PartialType(
+      OmitType(User, ['password'] as const),
+    ),
   })
   @Get()
   @HttpCode(200)
@@ -54,32 +51,50 @@ export class UserController {
 
   @Patch('username')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Update a username' })
+  @ApiOperation({ summary: 'Update username of logged user' })
   @ApiResponse({
     status: 200,
-    description: 'The username has been updated successfully.',
+    description: 'Data modified, please login again.',
   })
-  @ApiBadRequestResponse({
-    description: 'The username could not be updated',
+  @ApiConflictResponse({
+    status: 409,
+    description: "The username is already in use",
   })
-  updateUsername(
+  @ApiBody({
+    schema: {
+      example: { "username": "New username" }
+    }
+  })
+  async updateUsername(
     @Req() req,
-    @Body() username: string,
+    @Body('username') newUsername: string,
   ) {
     const id = req.user.id;
-    
-    return this.userService.update(id, username);
+
+    const user = await this.userService.findOneByUsername(newUsername);
+
+    if (user) {
+      throw new HttpException('The username is already in use', HttpStatus.CONFLICT);
+    }
+
+    return await this.userService.update(id, { username: newUsername });
   }
 
   @Patch('email')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Update a email' })
+  @ApiOperation({ summary: 'Update email of logged user' })
   @ApiResponse({
     status: 200,
-    description: 'The email has been updated successfully.',
+    description: 'Data modified, please login again.',
   })
-  @ApiBadRequestResponse({
-    description: 'The email could not be updated',
+  @ApiConflictResponse({
+    status: 409,
+    description: "The email is already in use",
+  })
+  @ApiBody({
+    schema: {
+      example: { "email": "New email" }
+    }
   })
   async updateEmail(
     @Req() req,
@@ -89,23 +104,28 @@ export class UserController {
 
     const user = await this.userService.findOneByEmail(newEmail);
 
-    if(user) {
+    if (user) {
       throw new HttpException('The email is already in use', HttpStatus.CONFLICT);
     }
 
-    return this.userService.update(id, {email: newEmail});
+    return this.userService.update(id, { email: newEmail });
   }
 
   @Patch('password')
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ stopAtFirstError: true }))
-  @ApiOperation({ summary: 'Update a password' })
+  @ApiOperation({ summary: 'Update password of logged user' })
   @ApiResponse({
     status: 200,
-    description: 'The password has been updated successfully.',
+    description: 'Password updated, please login again.',
   })
-  @ApiBadRequestResponse({
-    description: 'The password could not be updated',
+  @ApiConflictResponse({
+    status: 409,
+    description: "New password should be different from the current one",
+  })
+  @ApiForbiddenResponse({
+    status: 403,
+    description: "Invalid current password",
   })
   async updatePassword(
     @Req() req,
@@ -113,48 +133,32 @@ export class UserController {
   ) {
     const id = req.user.id;
 
-    // Check if current password match
-
     const passwordsMatch = await this.userService.validateCurrentPassword(req.user, editPasswordDTO.currentPassword);
 
-    // Check if current password is different from new password
-
-    if(!passwordsMatch) {
+    if (!passwordsMatch) {
       throw new HttpException("Invalid current password", HttpStatus.FORBIDDEN)
     }
 
-    if(editPasswordDTO.currentPassword == editPasswordDTO.newPassword) {
+    if (editPasswordDTO.currentPassword == editPasswordDTO.newPassword) {
       throw new HttpException("New password should be different from the current one", HttpStatus.CONFLICT)
     }
 
     return this.userService.updatePassword(id, editPasswordDTO);
   }
 
-  @Delete(':id')
+  @Delete()
   @HttpCode(204)
-  @ApiOperation({ summary: 'Remove a user' })
+  @ApiOperation({ summary: 'Remove the logged user' })
   @ApiResponse({
     status: 200,
-    description: 'The user has been removed successfully.',
+    description: 'User deleted.',
   })
   @ApiBadRequestResponse({
     description: 'The user could not be removed',
   })
-  remove(
-    @Param('id') id: number,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.userService
-      .returnLoggedUser(id)
-      .then((data) => {
-        if (!data) {
-          response.status(400).end('User not found');
-        }
-        this.userService.delete(id);
-        response.status(200).end('User removed');
-      })
-      .catch((err) => {
-        response.status(400).end(err.message);
-      });
+  remove(@Req() req) {
+    const id = req.user.id;
+
+    return this.userService.delete(id);
   }
 }
