@@ -2,13 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { ApiProperty } from '@nestjs/swagger';
+import { Item } from '../../items/entities/items.entity';
 
 @Entity({ name: 'photos' })
-export class PhotosEntity implements PolymorphicChildInterface {
+export class PhotosEntity {
   @ApiProperty({
     name: 'id',
     type: Number,
@@ -91,33 +94,17 @@ export class PhotosEntity implements PolymorphicChildInterface {
   size: number;
 
   @ApiProperty({
-    example: 2,
-    type: Number,
-    description: "Entity Id that has the photo",
-    nullable: false,
+    example: 1,
+    description: 'Id to the related item.',
   })
   @Column({
-    type: 'bigint',
-    name: 'subject_id',
-    nullable: false
+    name: 'item_id',
+    unsigned: true,
+    type: 'bigint'
   })
-  entityId: number;
-
-
-  @ApiProperty({
-    example: 'item',
-    type: String,
-    description: "Type of the entity that has the photo",
-    nullable: false,
-    maxLength: 100,
-  })
-  @Column({
-    type: 'character varying',
-    length: 100,
-    name: 'subject_type',
-    nullable: false,
-  })
-  entityType: string;
+  @ManyToOne((type) => Item, (item) => item.id)
+  @JoinColumn({ referencedColumnName: 'id' })
+  item_id: number;
 
   @ApiProperty({
     example: 'https://localhost:3000/gallery/items/yellow_one.jpg',
