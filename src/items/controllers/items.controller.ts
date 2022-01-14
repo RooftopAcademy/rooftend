@@ -40,7 +40,7 @@ export class ItemsController {
   constructor(
     private readonly ItemsService: ItemsService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -154,9 +154,9 @@ export class ItemsController {
   })
   @Post()
   @HttpCode(201)
-  create(@Body() body: any): Promise<Item> {
-    const user = new User();
-    user.id = 1;
+  create(@Req() req: Request, @Body() body: any): Promise<Item> {
+    const fromRequest: any = req.user;
+    const user: User = fromRequest?.result;
 
     return this.ItemsService.create(user, body);
   }
@@ -181,9 +181,9 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item Not Found',
   })
-  async update(@Param('id') id: number, @Body() body: any): Promise<Item> {
-    const user = new User();
-    user.id = 1;
+  async update(@Req() req: Request, @Param('id') id: number, @Body() body: any): Promise<Item> {
+    const fromRequest: any = req.user;
+    const user: User = fromRequest?.result;
 
     const item = await this.ItemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
@@ -212,9 +212,9 @@ export class ItemsController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  delete(@Param('id') id: number): Promise<boolean> {
-    const user = new User();
-    user.id = 1;
+  delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
+    const fromRequest: any = req.user;
+    const user: User = fromRequest?.result;
 
     return this.ItemsService.delete(user, id);
   }
