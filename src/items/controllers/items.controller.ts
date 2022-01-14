@@ -223,6 +223,6 @@ export class ItemsController {
       throw new ForbiddenException();
     }
 
-    return this.ItemsService.delete(user, id);
+    return this.ItemsService.delete(id);
   }
 }
