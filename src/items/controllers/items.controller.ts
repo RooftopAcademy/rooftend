@@ -103,9 +103,6 @@ export class ItemsController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
-    const fromRequest: any = req.user;
-    const user: User = fromRequest?.result;
-
     page = page >= 1 ? page : 1;
     limit = limit <= 100 ? limit : 100;
 
@@ -121,7 +118,7 @@ export class ItemsController {
         limit,
         page,
       },
-      user,
+      <User>req.user,
     );
   }
 
