@@ -1,6 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Brand } from '../entities/brands.entity';
-import { createBrandDTO } from '../entities/create-brands-dto.entity';
 import { BrandsService } from '../services/brands.serveces';
 import { BrandsController } from './brands.controllers';
 
@@ -8,17 +6,34 @@ describe('brandsController', () => {
   let controller: BrandsController;
 
   const mockBrandService = {
-    create: jest.fn((dto) => {
+    paginate: jest.fn().mockImplementation(() => {
+      return [
+        {
+          items: [
+            {
+              id: 1,
+              name: 'nike',
+              photoUrl:
+                'https://logos-marcas.com/wp-content/uploads/2020/04/Nike-Logo.png',
+            },
+            {
+              id: 2,
+              name: 'adidas',
+              photoUrl:
+                'https://logos-marcas.com/wp-content/uploads/2020/04/Adidas-Logo.png',
+            },
+          ],
+        },
+      ];
+    }),
+    findOne: jest.fn().mockImplementation(() => {
       return {
-        id: expect.any(Number),
-        ...dto,
+        id: 1,
+        name: 'nike',
+        photoUrl:
+          'https://logos-marcas.com/wp-content/uploads/2020/04/Nike-Logo.png',
       };
     }),
-
-    update: jest.fn((id, dto) => ({
-      id,
-      ...dto,
-    })),
   };
 
   beforeEach(async () => {
@@ -36,21 +51,38 @@ describe('brandsController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-
-  it('should create a brand', () => {
-    expect(controller.create({ name: 'Mario', photoId: 'ph id' })).toEqual({
-      id: expect.any(Number),
-      name: 'Mario',
-      photoId: 'ph id',
+  describe('paginate', () =>{
+    it('Should return a list of brands', async () =>{
+      expect(await controller.index()).toEqual([
+        {
+          items: [
+            {
+              id: 1,
+              name: 'nike',
+              photoUrl:
+                'https://logos-marcas.com/wp-content/uploads/2020/04/Nike-Logo.png',
+            },
+            {
+              id: 2,
+              name: 'adidas',
+              photoUrl:
+                'https://logos-marcas.com/wp-content/uploads/2020/04/Adidas-Logo.png',
+            },
+          ],
+        },
+      ]);
     });
   });
-
-  it('should update a brand', () => {
-    const dto: createBrandDTO = { name: 'Mario', photoId: 'ph id' };
-    expect(controller.update(1, dto)).toEqual({
-      id: expect.any(Number),
-      name: 'Mario',
-      photoId: 'ph id',
+  describe('findOne', () => {
+    it('should return a brand by its id', async () => {
+      expect(await controller.findOne(1)).toEqual({
+        id: 1,
+        name: 'nike',
+        photoUrl:
+          'https://logos-marcas.com/wp-content/uploads/2020/04/Nike-Logo.png',
+      });
+      expect(mockBrandService.findOne).toHaveBeenCalled();
+      expect(mockBrandService.findOne).toHaveBeenCalledWith(1);
     });
   });
 });
