@@ -54,7 +54,7 @@ export class AuthenticationController {
 
     await this.authService.create(user);
 
-    return this.authService.login(user);
+    return this.authService.registry(user);
   }
 
   @HttpCode(200)
