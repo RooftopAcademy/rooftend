@@ -32,6 +32,7 @@ import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Request } from 'express';
 
+@ApiBearerAuth()
 @ApiTags('Custom Messages')
 @Controller('custom-messages')
 export class CustomMessagesController {
@@ -57,7 +58,6 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Get all custom messages by User Id' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'All the custom messages from the authenticated user',
@@ -78,7 +78,6 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Get a single custom message by ID' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The custom message found with the passed ID',
@@ -102,7 +101,6 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'The created custom message',
@@ -129,7 +127,6 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The updated custom message',
@@ -166,7 +163,6 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Delete a message by ID' })
-  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'If the message was removed or not',
