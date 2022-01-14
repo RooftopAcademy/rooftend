@@ -17,6 +17,13 @@ export class CreateMessageDTO {
   sender_id: number;
 
   @ApiProperty({
+    description: 'The sender id',
+    type: Number,
+  })
+  @IsInt()
+  received_id: number;
+
+  @ApiProperty({
     description: 'Message of purchase',
     type: String,
   })
