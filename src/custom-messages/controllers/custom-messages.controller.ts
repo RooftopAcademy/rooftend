@@ -16,6 +16,7 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { CustomMessagesService } from '../services/custom-messages.service';
@@ -58,6 +59,9 @@ export class CustomMessagesController {
     description: 'All the custom messages from the authenticated user',
     type: [CustomMessage],
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
   @Get()
   @ApiForbiddenResponse({
     description: 'Forbidden',
@@ -81,6 +85,9 @@ export class CustomMessagesController {
   @ApiNotFoundResponse({
     description: 'Not Found Custom Message',
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
   @Get(':id')
   @HttpCode(200)
   getOne(@Req() req: Request, @Param('id') id: number): Promise<CustomMessage> {
@@ -100,6 +107,9 @@ export class CustomMessagesController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @Post()
   @HttpCode(201)
@@ -126,6 +136,9 @@ export class CustomMessagesController {
   })
   @ApiNotFoundResponse({
     description: 'Not Found Custom Message',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @Patch(':id')
   @HttpCode(204)
@@ -156,6 +169,9 @@ export class CustomMessagesController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @Delete(':id')
   @HttpCode(200)
