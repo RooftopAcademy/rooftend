@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryService } from '@nestjs-query/core';
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 
 import { CustomMessage } from '../entities/custom-messages.entity';
+import { User } from '../../users/entities/user.entity';
+import { CreateCustomMessageDTO } from '../entities/create-custom-messages.dto';
+import { UpdateCustomMessageDTO } from '../entities/update-custom-messages.dto';
 
 @Injectable()
 @QueryService(CustomMessage)
@@ -16,21 +19,31 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
     super(CustomMessageRepo, { useSoftDelete: true });
   }
 
-  findAll(userId: number): Promise<CustomMessage[]> {
-    return this.CustomMessageRepo.find({ userId });
+  findAll(user: User): Promise<CustomMessage[]> {
+    return this.CustomMessageRepo.find({ user: { id: user.id } });
   }
 
-  findOne(id: number): Promise<CustomMessage> {
-    return this.CustomMessageRepo.findOne(id);
+  async findOne(id: number): Promise<CustomMessage> {
+    const customMessage: CustomMessage = await this.CustomMessageRepo.findOne(
+      id,
+    );
+
+    if (!customMessage) throw new NotFoundException('Not Found Custom Message');
+
+    return customMessage;
   }
 
-  create(body: any): Promise<CustomMessage[]> {
-    const customMessage = this.CustomMessageRepo.create(body)
+  create(user: User, body: CreateCustomMessageDTO): Promise<CustomMessage> {
+    const customMessage: CustomMessage = this.CustomMessageRepo.create(body);
+    customMessage.user = user;
+
     return this.CustomMessageRepo.save(customMessage);
   }
 
-  async update(id: number, body: any): Promise<CustomMessage> {
-    const customMessage = await this.findOne(id);
+  async update(
+    customMessage: CustomMessage,
+    body: UpdateCustomMessageDTO,
+  ): Promise<CustomMessage> {
     this.CustomMessageRepo.merge(customMessage, body);
     return this.CustomMessageRepo.save(customMessage);
   }
