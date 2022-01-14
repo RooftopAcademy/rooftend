@@ -276,7 +276,7 @@ export class FavoritesController {
     @Query('token') token: number,
     @Body() createFavoriteDto: CreateFavoriteDto
     ) {
-    const user: any = <User>req.user;
+      const user: any = <User>req.user;
 
     this.favoritesService.create(createFavoriteDto, user);
 
