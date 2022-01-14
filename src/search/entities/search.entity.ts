@@ -7,7 +7,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+
+import { User } from '../../users/entities/user.entity';
 
 @Entity('searches')
 export class Search {
@@ -29,16 +30,31 @@ export class Search {
   @ManyToOne(() => User, (user) => user.searches, { eager: true })
   user?: User;
 
-  @Column({ type: 'character varying', length: 100 })
+  @ApiProperty({
+    type: String,
+    maxLength: 100,
+    description: 'search keywords',
+    example: 'palabra clave',
+  })
+  @Column({
+    name: 'keywords',
+    type: 'character varying',
+    length: 100,
+  })
   keywords: string;
 
   @ApiProperty({
+    description: 'The timestamp of the creation',
+    default: () => 'CURRENT_TIMESTAMP',
     type: Date,
-    default: 'now()',
-    example: '2021-11-12T01:46:52.589Z',
-    description: 'The timestamp of the creation of the review.',
+    format: 'date-time',
+    example: '2021-11-18T01:46:52.589Z',
+    nullable: false,
   })
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
-  @Type(() => Date)
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    nullable: false,
+  })
   createdAt: Date;
 }

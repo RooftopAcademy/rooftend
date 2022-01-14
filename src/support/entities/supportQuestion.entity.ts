@@ -1,12 +1,13 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
 import { SupportCategory } from './supportCategory.entity';
 
 /**
@@ -20,13 +21,25 @@ export class SupportQuestion {
     description: 'The id of the question',
     example: 1,
   })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    unsigned: true,
+    type: 'bigint',
+  })
   id: number;
 
+
+  @ApiProperty({
+    description: 'The date when has been created',
+    default: 'CURRENT_TIMESTAMP',
+    type: Date,
+    format: 'date-time',
+    example: '2021-11-18T01:46:52.589Z',
+    nullable: false,
+  })
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   createdAt: Date;
 
@@ -37,6 +50,7 @@ export class SupportQuestion {
     example: 'How to choose which seller to buy from',
   })
   @Column({
+    name: 'content',
     type: 'character varying',
     length: 200,
     nullable: false,
@@ -47,8 +61,10 @@ export class SupportQuestion {
     type: String,
     description: 'The answer itself',
     example: "Check the seller's reputation",
+    nullable: false,
   })
   @Column({
+    name: 'answer',
     type: 'character varying',
     nullable: false,
   })
