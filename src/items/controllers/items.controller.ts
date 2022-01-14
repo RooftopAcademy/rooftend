@@ -22,6 +22,7 @@ import {
   ApiNotFoundResponse,
   ApiBearerAuth,
   ApiQuery,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { ItemsService } from '../services/items.service';
@@ -149,6 +150,9 @@ export class ItemsController {
   @ApiBadRequestResponse({
     description: 'The item could not be created',
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
   @Post()
   @UseGuards(PoliciesGuard)
   @HttpCode(201)
@@ -167,6 +171,9 @@ export class ItemsController {
   })
   @ApiBadRequestResponse({
     description: 'The item could not be updated',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @Patch(':id')
   @UseGuards(PoliciesGuard)
@@ -199,6 +206,9 @@ export class ItemsController {
   })
   @ApiBadRequestResponse({
     description: 'The item could not be deleted',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
   })
   @Delete(':id')
   @UseGuards(PoliciesGuard)
