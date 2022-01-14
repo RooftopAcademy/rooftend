@@ -35,6 +35,7 @@ export class User {
     type: 'character varying',
     length: 50,
     nullable: true,
+    unique: true,
   })
   username: string;
 
@@ -59,6 +60,7 @@ export class User {
     type: 'character varying',
     length: 100,
     nullable: false,
+    unique: true,
   })
   email: string;
 
