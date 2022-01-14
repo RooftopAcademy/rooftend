@@ -1,11 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateCustomMessageDTO } from './create-custom-messages.dto'
 
-export class UpdateCustomMessageDTO {
-  @IsOptional()
-  @IsString()
-  subject?: string;
-
-  @IsOptional()
-  @IsString()
-  message?: string;
-}
+export class UpdateCustomMessageDTO extends PartialType(CreateCustomMessageDTO) {} 
