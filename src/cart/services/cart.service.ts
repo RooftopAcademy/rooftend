@@ -24,10 +24,10 @@ export class CartService {
    * @param userId
    * @param purchased
    */
-  findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
+  findOneFromUser(id: number, user: User, purchased = true): Promise<Cart> {
     const q = this.cartRepo.createQueryBuilder();
 
-    q.where({ userId: userId.id, id });
+    q.where({ userId: user.id, id });
 
     if (purchased) {
       q.where({ purchasedAt: Not(IsNull()) });
