@@ -55,6 +55,16 @@ export class AuthenticationService {
     return null;
   }
 
+  async registry(user: LogInUserDTO | CreateUserDTO) {
+    const foundUser = await this.validateUser(user.email);
+
+    const { password, ...result } = foundUser;
+
+    return {
+      accessToken: this.jwtService.sign(result),
+    };
+  }
+
   async login(user: LogInUserDTO | CreateUserDTO) {
     const foundUser = await this.validateUser(user.email);
 
