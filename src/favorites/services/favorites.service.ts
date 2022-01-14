@@ -51,12 +51,15 @@ export class FavoritesService {
   ): Promise<void> {
     const preFavorite = { ...createFavoriteDto, user_id: token };
     const newFavorite = this.favoritesRepo.create(preFavorite);
+
     await this.favoritesRepo.save(newFavorite);
+    
     return;
   }
 
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
+
     return;
   }
 }

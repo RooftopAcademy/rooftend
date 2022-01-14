@@ -33,17 +33,30 @@ describe('FavoritesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new favorite record.', async () => {
-    const createFavoriteDto: CreateFavoriteDto = { item_id: 62 }
-    const token = 1
-    expect(await service.create(createFavoriteDto, token)).toBeUndefined()
-    expect(mockFavoriteRepository.create).toHaveBeenCalledWith({...createFavoriteDto, "user_id": token})
-    expect(mockFavoriteRepository.save).toHaveBeenCalled()
-  })
+  describe('paginate', () => {
+    it('should return an favorite pagination')
+  });
 
-  it('should delete a favorite.', async () => {
-    const itemid = 1
-    expect(await service.delete(itemid)).toBeUndefined()
-    expect(mockFavoriteRepository.delete).toHaveBeenCalledWith(itemid)
-  })
+  describe('create', () => {
+    it('should create a new favorite record.', async () => {
+      const createFavoriteDto: CreateFavoriteDto = { item_id: 62 }
+      const token = 1
+
+      expect(await service.create(createFavoriteDto, token)).toBeUndefined();
+
+      expect(mockFavoriteRepository.create).toHaveBeenCalledWith({...createFavoriteDto, "user_id": token});
+
+      expect(mockFavoriteRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete a favorite.', async () => {
+      const itemid = 1;
+
+      expect(await service.delete(itemid)).toBeUndefined();
+
+      expect(mockFavoriteRepository.delete).toHaveBeenCalledWith(itemid);
+    });
+  });
 });

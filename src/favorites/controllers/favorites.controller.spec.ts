@@ -37,13 +37,13 @@ describe('FavoritesController', () => {
 
   describe('paginate', () => {
     it('should get 10 favorites records.', () => {
-      const page = 1
-      const limit = 10
-      const token = 1
+      const page = 1;
+      const limit = 10;
+      const token = 1;
   
-      expect(controller.paginate(token, page, limit)).not.toBeUndefined()
+      expect(controller.paginate(token, page, limit)).not.toBeUndefined();
   
-      expect(mockFavoriteService.paginate).toHaveBeenCalled()
+      expect(mockFavoriteService.paginate).toHaveBeenCalled();
     });
 
     it('should return a ForbiddenError message', async () => {
@@ -55,11 +55,11 @@ describe('FavoritesController', () => {
         expect(await controller.paginate(1)).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
-      }
+      };
     });
   });
 
-  describe('ccreate', () => {
+  describe('create', () => {
     it('should create a favorite.', () => {
       const data = { item_id: 61 }
       const token = 1
