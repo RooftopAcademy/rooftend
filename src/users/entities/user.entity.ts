@@ -126,7 +126,7 @@ export class User {
   /**
    * Questions sent by the user
    */
-  @OneToMany((type) => Question, (question) => question.user)
+  @OneToMany(() => Question, (question) => question.user)
   questions: Question[];
 
   /**

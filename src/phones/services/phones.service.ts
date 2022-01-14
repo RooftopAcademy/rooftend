@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { Phone } from '../entities/phone.entity';
@@ -33,10 +33,7 @@ export class PhonesService {
         this.phoneRepository.save(phone);
         return phone;
       }
-
-      const error = { message: 'Not Found', code: 404 };
-
-      return Promise.reject(error);
+      throw new NotFoundException();
     });
   }
 

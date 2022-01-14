@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -14,32 +14,14 @@ export class BrandsService {
     @InjectRepository(Brand)
     private brandRepo: Repository<Brand>,
   ) {}
-
-  findOne(id: number) {
-    return this.brandRepo.findOne(id);
-  }
-
-  findAll() {
-    return this.brandRepo.find();
-  }
-
-  create(body: any) {
-    const newBrand = this.brandRepo.create(body);
-    return this.brandRepo.save(newBrand);
-  }
-
-  async update(id: number, body: any) {
-    const brand = await this.brandRepo.findOne(id);
-    this.brandRepo.merge(brand, body);
-    return this.brandRepo.save(brand);
-  }
-
-  async delete(id: number) {
-    await this.brandRepo.delete(id);
-    return true;
-  }
-
   async paginate(options: IPaginationOptions): Promise<Pagination<Brand>> {
     return paginate<Brand>(this.brandRepo, options);
+  }
+  async findOne(id: number): Promise<Brand> {
+    const brand: Brand = await this.brandRepo.findOne(id);
+    if (!brand) {
+      throw new NotFoundException(`Brand with id ${id} not found.`);
+    }
+    return brand;
   }
 }
