@@ -1,5 +1,22 @@
+const itemsList = [{ id: 1, user: 1, item_id: 1, createdAt: Date.now() }];
+
+const list = {
+  items: itemsList.slice(0, 2),
+    meta: {
+      itemCount: 2,
+      totalItems: 2,
+      totalPages: 1,
+      currentPage: 1,
+    },
+}
+jest.mock('nestjs-typeorm-paginate', () => ({
+  paginate: jest.fn().mockResolvedValue(list),
+}));
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { User } from '../../users/entities/user.entity';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { FavoritesService } from './favorites.service';
@@ -8,7 +25,10 @@ describe('FavoritesService', () => {
   let service: FavoritesService;
 
   const mockFavoriteRepository = {
-    paginate: jest.fn(),
+    paginate: jest.fn().mockResolvedValue({
+      page: '1',
+      limit: '10',
+    }),
     create: jest.fn(),
     save: jest.fn().mockImplementation(favorite => Promise.resolve({
       id: Date.now(),
@@ -34,7 +54,14 @@ describe('FavoritesService', () => {
   });
 
   describe('paginate', () => {
-    it('should return an favorite pagination')
+    it('should return an favorite pagination', async () => {
+      const options: IPaginationOptions = { 
+        page: 1, 
+        limit: 10, 
+      }
+
+      expect((await service.paginate(options, new User))).toEqual(list);
+    })
   });
 
   describe('create', () => {
