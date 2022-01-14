@@ -155,8 +155,7 @@ export class ItemsController {
   @Post()
   @HttpCode(201)
   create(@Req() req: Request, @Body() body: any): Promise<Item> {
-    const fromRequest: any = req.user;
-    const user: User = fromRequest?.result;
+    const user: any = req.user;
 
     return this.ItemsService.create(user, body);
   }
@@ -182,8 +181,7 @@ export class ItemsController {
     description: 'Item Not Found',
   })
   async update(@Req() req: Request, @Param('id') id: number, @Body() body: any): Promise<Item> {
-    const fromRequest: any = req.user;
-    const user: User = fromRequest?.result;
+    const user: any = req.user;
 
     const item = await this.ItemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
@@ -213,8 +211,7 @@ export class ItemsController {
     description: 'Forbidden',
   })
   async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
-    const fromRequest: any = req.user;
-    const user: User = fromRequest?.result;
+    const user: any = req.user;
 
     const item = await this.ItemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
