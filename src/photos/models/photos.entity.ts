@@ -6,7 +6,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
-import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { Item } from '../../items/entities/items.entity';
 
