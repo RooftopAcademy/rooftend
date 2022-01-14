@@ -8,7 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request} from 'express';
-import { ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
@@ -29,6 +29,8 @@ export class CartController {
   @ApiOperation({ summary: 'Gets current available Cart ' })
   @ApiResponse({ status: 200, description: 'Succesfully found Cart' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
+  @ApiUnauthorizedResponse({description: 'Not Authorized'})
+  @ApiBearerAuth()
   async getCart(@Req()req: Request): Promise<Cart> {
     const user: any = req.user;
     const cart = await this.cartService.findCart(user.id);
@@ -51,6 +53,8 @@ export class CartController {
   @ApiResponse({ status: 200, description: 'Cart succesfully found with given id' })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   @ApiNotFoundResponse({ status: 404, description: 'No Cart was found that matches that id' })
+  @ApiUnauthorizedResponse({description: 'Not Authorized'})
+  @ApiBearerAuth()
   async getCartById(
     @Req()req: Request,
     @Param('id') id: number,
