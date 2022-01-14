@@ -2,17 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  DeleteDateColumn,
+  JoinColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn,
   PrimaryGeneratedColumn,
-  DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
 import { Answer } from './answer.entity';
 import { Type } from 'class-transformer';
+
 import { Item } from '../../items/entities/items.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('questions')
 export class Question {
@@ -43,24 +44,24 @@ export class Question {
   @ManyToOne(() => Item, (item) => item.questions)
   @JoinColumn({ name: 'item_id' })
   @ApiProperty({
-    type: Number,
+    type: Item,
     description: 'Id of the item where questions was asked',
     nullable: false,
     readOnly: true,
     example: 2,
   })
-  itemId: number;
+  item: Item;
 
   @ManyToOne(() => User, (user) => user.questions)
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({
-    type: Number,
-    description: 'Id of who ask the question',
+    type: User,
+    description: 'User that ask the question',
     nullable: false,
     readOnly: true,
     example: 2,
   })
-  userId: number;
+  user: User;
 
   @ApiProperty({
     type: String,
@@ -79,7 +80,7 @@ export class Question {
 
   @ApiProperty({
     description: 'The date when question has been created',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2021-11-18T01:46:52.589Z',
@@ -88,7 +89,6 @@ export class Question {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
     nullable: false,
   })
   createdAt: Date;

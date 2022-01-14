@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, IsNull, Not, Repository } from 'typeorm';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
@@ -16,6 +16,24 @@ export class CartService {
 
   findOne(id: number): Promise<Cart> {
     return this.cartRepo.findOne(id);
+  }
+
+  /**
+   * Find cart owned by user
+   * @param id
+   * @param userId
+   * @param purchased
+   */
+  findOneFromUser(id: number, user: User, purchased = true): Promise<Cart> {
+    const q = this.cartRepo.createQueryBuilder();
+
+    q.where({ userId: user.id, id });
+
+    if (purchased) {
+      q.where({ purchasedAt: Not(IsNull()) });
+    }
+
+    return q.getOneOrFail();
   }
 
   create(user: User): Promise<Cart> {

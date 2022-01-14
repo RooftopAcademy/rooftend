@@ -6,10 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany, DeleteDateColumn,
+  OneToMany,
+  DeleteDateColumn,
 } from 'typeorm';
-
 import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from '../../users/entities/user.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/entities/categories.entity';
@@ -34,12 +35,11 @@ export class Item {
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
     example: '2016-03-26 10:10:10-05:00',
     description: "Item's creation date",
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
   })
@@ -48,10 +48,9 @@ export class Item {
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
   })
   @ApiProperty({
-    default: () => 'CURRENT_TIMESTAMP',
+    default: 'CURRENT_TIMESTAMP',
     type: Date,
     format: 'date-time',
     example: '2016-03-26 10:10:10-05:00',
@@ -102,10 +101,14 @@ export class Item {
 
   @Column({
     type: 'int',
+    name: 'stock',
+    nullable: false,
   })
   @ApiProperty({
+    nullable: false,
     example: 10,
     description: 'Item Stock',
+    type: Number,
   })
   stock: number;
 
@@ -114,6 +117,7 @@ export class Item {
     name: 'brand',
   })
   @ApiProperty({
+    type: Brand,
     example: 10,
     description: 'Brand of item',
     nullable: true,
@@ -137,15 +141,40 @@ export class Item {
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
   cartItemsId: CartItem[];
 
-  @OneToMany(() => Question, (question) => question.itemId)
+  @OneToMany(() => Question, (question) => question.item)
   questions: Question[];
 
   @DeleteDateColumn({
-    name : "deleted_at",
-    type : "timestamp"
+    name: 'deleted_at',
+    type: 'timestamptz',
   })
-  deletedAt? : Date
+  deletedAt?: Date;
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
+
+  /**
+   * Check if item has availability
+   * @param qty
+   */
+  public isAvailable(qty = 0): boolean {
+    return this.stock > qty;
+  }
+
+  /**
+   * Check if item is active
+   * @description Item can be inactive when has been paused by the publisher or the admin
+   * @param void
+   */
+  public isActive(): boolean {
+    return true;
+  }
+
+  /**
+   * Get final price for given quantity
+   * @param qty
+   */
+  getFinalPrice(qty = 1): number {
+    return this.price * qty;
+  }
 }

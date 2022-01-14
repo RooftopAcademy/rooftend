@@ -9,6 +9,7 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  Res, NotFoundException, ForbiddenException, Req,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -23,18 +24,19 @@ import {
 } from '@nestjs/swagger';
 import { PhonesService } from '../services/phones.service';
 import { Phone } from '../entities/phone.entity';
+import { Request, Response } from 'express';
 
 @ApiTags('Phones')
 @Controller('phones')
 export class PhonesController {
-  constructor(private phonesService: PhonesService) { }
+  constructor(private phonesService: PhonesService) {
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get all phones' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
-    description: 'The phones found',
-    type: [Phone],
+    description: 'Ok',
   })
   @ApiQuery({
     name: 'page',
@@ -46,6 +48,7 @@ export class PhonesController {
     name: 'limit',
     required: false,
     description: 'Limit of phones to return, max is 10',
+    type: Number,
   })
   getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -66,7 +69,8 @@ export class PhonesController {
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Phone id'
+    description: 'Phone id',
+    required: true,
   })
   getOne(@Param('id') id: number) {
     return this.phonesService.findOne(id);
@@ -91,8 +95,24 @@ export class PhonesController {
     description: 'Phone id to be updated',
   })
   @ApiBody({ type: Phone })
-  update(@Param('id') id: number, @Body() bodyParams: any) {
-    return this.phonesService.update(id, bodyParams);
+  async update(@Param('id') id: number, @Body() bodyParams: any, @Req() req: Request) {
+    const { res } = req;
+
+    try {
+      await this.phonesService.update(id, bodyParams);
+      return res.send({ message: 'Updated' });
+    } catch (err) {
+      return res.status(err.code).send(err);
+    }
+
+    // return this.phonesService
+    //   .update(id, bodyParams)
+    //   .then(() => {
+    //     res.send({ message: 'Updated' });
+    //   })
+    //   .catch((err: HttpErrorMessage) => {
+    //     res.status(err.code).send(err);
+    //   });
   }
 
   @Delete(':id')

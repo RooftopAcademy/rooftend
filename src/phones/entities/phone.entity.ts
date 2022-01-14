@@ -23,6 +23,7 @@ export class Phone {
     nullable: false,
   })
   @ApiProperty({
+    nullable: false,
     example: '+54',
     description: 'Country code',
     type: 'string',
@@ -40,7 +41,7 @@ export class Phone {
     example: '2202',
     description: 'Area code',
     type: 'string',
-    maxLength: 4,
+    maxLength: 6,
     nullable: false,
   })
   area_code: string;
@@ -48,14 +49,14 @@ export class Phone {
   @Column({
     name: 'phone_number',
     type: 'character varying',
-    length: 6,
+    length: 10,
     nullable: false,
   })
   @ApiProperty({
     example: '1234678',
     description: 'Phone number',
     type: 'string',
-    maxLength: 4,
+    maxLength: 10,
     nullable: false,
   })
   phone_number: string;

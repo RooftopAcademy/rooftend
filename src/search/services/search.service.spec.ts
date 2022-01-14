@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Item } from '../../items/entities/items.entity';
 import { User } from '../../users/entities/user.entity';
-import { Search } from '../search.entity';
+import { Search } from '../entities/search.entity';
 import { SearchService } from './search.service';
 
 describe('SearchService', () => {
