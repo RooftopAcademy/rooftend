@@ -20,7 +20,7 @@ export class CustomMessagesService extends TypeOrmQueryService<CustomMessage> {
   }
 
   findAll(user: User): Promise<CustomMessage[]> {
-    return this.CustomMessageRepo.find({ user });
+    return this.CustomMessageRepo.find({ user: { id: user.id } });
   }
 
   async findOne(id: number): Promise<CustomMessage> {
