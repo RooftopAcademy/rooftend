@@ -24,7 +24,6 @@ import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 import { User } from '../../users/entities/user.entity';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
