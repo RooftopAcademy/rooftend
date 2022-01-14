@@ -6,44 +6,23 @@ import {
   IPaginationOptions,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
-import { PhotosEntity } from '../../photos/models/photos.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
     private readonly favoritesRepo: Repository<Favorite>,
-  ) {}
+  ) {};
 
   async paginate(
     options: IPaginationOptions,
-    token: number,
+    user: User,
   ): Promise<Pagination<Favorite>> {
-    const favorites = this.favoritesRepo
-      .createQueryBuilder('favorite')
-      .where('favorite.user_id = :token', { token })
-      .leftJoinAndMapOne('favorite.item', 'favorite.item_id', 'items')
-      .leftJoinAndMapOne(
-        'items.photos',
-        PhotosEntity,
-        'photos',
-        'favorite.item_id = photos.subject_id and photos.subject_type = :item',
-        { item: 'item' },
-      )
-      .select(['favorite.id'])
-      .addSelect([
-        'items.title',
-        'items.description',
-        'items.price',
-        'items.stock',
-        'photos.url',
-      ]);
-
-    return paginate<Favorite>(favorites, options);
-  }
+    return paginate<Favorite>(this.favoritesRepo, options, { where: { user: { id: user.id } } });
+  };
 
   async create(
     createFavoriteDto: CreateFavoriteDto,
@@ -55,11 +34,19 @@ export class FavoritesService {
     await this.favoritesRepo.save(newFavorite);
     
     return;
-  }
+  };
 
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
 
     return;
-  }
+  };
+
+  async findFavorite(userId: number): Promise<Favorite> {
+    const favorite = await this.favoritesRepo.findOne({
+      select: ['id'], where: { purchasedAt: null , user:{ id:userId }, relations: ['user'], order: { id: 'DESC' } },
+    });
+
+    return favorite;
+  };
 }
