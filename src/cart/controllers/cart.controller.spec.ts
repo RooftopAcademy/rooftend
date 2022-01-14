@@ -15,9 +15,7 @@ describe('CartController', () => {
     mockUser.id = userId;
     newUser.id = 1;
     const request: any = {
-      user: {
-        result: newUser,
-      },
+      user: newUser
     };
 
     const cartMock = plainToClass(Cart, ({
