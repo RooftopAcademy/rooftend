@@ -12,10 +12,12 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
@@ -30,6 +32,7 @@ import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Request } from 'express';
 
+@ApiTags('Custom Messages')
 @Controller('custom-messages')
 export class CustomMessagesController {
   constructor(
@@ -37,7 +40,7 @@ export class CustomMessagesController {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
-  private async failIfCanNotAccess(
+  private async failIfCannotAccess(
     permission: Permission,
     user: User,
     customMessageId: number,
@@ -54,6 +57,7 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Get all custom messages by User Id' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'All the custom messages from the authenticated user',
@@ -74,6 +78,7 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Get a single custom message by ID' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The custom message found with the passed ID',
@@ -93,10 +98,11 @@ export class CustomMessagesController {
   getOne(@Req() req: Request, @Param('id') id: number): Promise<CustomMessage> {
     const user: any = req.user;
 
-    return this.failIfCanNotAccess(Permission.Read, user.result, id);
+    return this.failIfCannotAccess(Permission.Read, user.result, id);
   }
 
   @ApiOperation({ summary: 'Create a custom message' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'The created custom message',
@@ -123,6 +129,7 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Update a custom message by ID' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The updated custom message',
@@ -149,7 +156,7 @@ export class CustomMessagesController {
   ): Promise<CustomMessage> {
     const user: any = req.user;
 
-    const customMessage: CustomMessage = await this.failIfCanNotAccess(
+    const customMessage: CustomMessage = await this.failIfCannotAccess(
       Permission.Update,
       user.result,
       id,
@@ -159,6 +166,7 @@ export class CustomMessagesController {
   }
 
   @ApiOperation({ summary: 'Delete a message by ID' })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'If the message was removed or not',
