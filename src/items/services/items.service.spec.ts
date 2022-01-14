@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
@@ -98,7 +98,7 @@ describe('ItemsService', () => {
 
   describe('all', () => {
     it('should return an array of Items', async () => {
-      expect(await service.findAll()).toEqual([
+      expect(await service.findAll({}, { limit: 10, page: 0 })).toEqual([
         {
           id: 2,
           createdAt: expect.any(Date),
@@ -181,6 +181,12 @@ describe('ItemsService', () => {
   });
 
   describe('update', () => {
+    const updateMethod = async (dto) => {
+      const item = await service.findOne(genericItem.id)
+      return await service.update(item, dto)
+    }
+
+
     it('should update an Item', async () => {
       newUser.id = userId;
       const dto = {
@@ -199,31 +205,12 @@ describe('ItemsService', () => {
         Promise.resolve({ ...genericItem, ...dto }),
       );
 
-      expect(await service.update(newUser, genericItem.id, dto)).toEqual(
+      expect(await updateMethod(dto)).toEqual(
         expected,
       );
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
       expect(mockItemsRepository.merge).toHaveBeenCalledWith(genericItem, dto);
-    });
-
-    it('should throw ForbiddenException', async () => {
-      newUser.id = userId + 1;
-      const dto = {
-        stock: 500,
-      };
-
-      try {
-        expect(await service.update(newUser, genericItem.id, dto)).toThrow(
-          ForbiddenException,
-        );
-      } catch (err) {
-        expect(err.message).toEqual('Forbidden');
-      }
-
-      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
-      expect(mockItemsRepository.merge).toHaveBeenCalledTimes(1);
-      expect(mockItemsRepository.save).toHaveBeenCalledTimes(2);
     });
 
     it('should throw NotFoundException', async () => {
@@ -233,8 +220,8 @@ describe('ItemsService', () => {
       };
 
       try {
-        expect(await service.update(newUser, genericItem.id, dto)).toThrow(
-          NotFoundException,
+        expect(await updateMethod(dto)).toThrow(
+          NotFoundException
         );
       } catch (err) {
         expect(err.message).toEqual('Item Not Found');
@@ -249,25 +236,10 @@ describe('ItemsService', () => {
   describe('remove', () => {
     it('should remove an Item', async () => {
       newUser.id = userId;
-      expect(await service.delete(newUser, genericItem.id)).toEqual(true);
+      expect(await service.delete(genericItem.id)).toEqual(true);
 
       expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
       expect(mockItemsRepository.delete).toHaveBeenCalled();
-    });
-
-    it('should throw ForbiddenException', async () => {
-      newUser.id = userId + 1;
-
-      try {
-        expect(await service.delete(newUser, genericItem.id)).toThrow(
-          ForbiddenException,
-        );
-      } catch (err) {
-        expect(err.message).toBe('Forbidden');
-      }
-
-      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
-      expect(mockItemsRepository.delete).toHaveBeenCalledTimes(1);
     });
   });
 });
