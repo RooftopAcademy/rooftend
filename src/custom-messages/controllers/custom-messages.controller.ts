@@ -186,15 +186,7 @@ export class CustomMessagesController {
   async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
     const user: any = req.user;
 
-    const customMessage: CustomMessage =
-      await this.CustomMessagesService.findOne(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if (
-      ability.cannot(Permission.Delete, subject('CustomMessage', customMessage))
-    ) {
-      throw new ForbiddenException();
-    }
+    this.failIfCannotAccess(Permission.Delete, user, id);
 
     return this.CustomMessagesService.delete(id);
   }
