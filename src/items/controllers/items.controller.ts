@@ -130,6 +130,7 @@ export class ItemsController {
     description: 'A Item found with the passed ID',
     type: Item,
   })
+  @Public()
   @Get(':id')
   @HttpCode(200)
   @ApiNotFoundResponse({
