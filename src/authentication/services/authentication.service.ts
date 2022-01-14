@@ -58,6 +58,15 @@ export class AuthenticationService {
   async login(user: LogInUserDTO | CreateUserDTO) {
     const foundUser = await this.validateUser(user.email);
 
+    const passwordValidation = await this.validatePassword(
+      foundUser,
+      user.password,
+    );
+
+    if (!passwordValidation) {
+      throw new HttpException('WRONG_PASSWORD', HttpStatus.FORBIDDEN);
+    }
+
     const { password, ...result } = foundUser;
 
     return {
