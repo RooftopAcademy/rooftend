@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Store } from '../entities/stores.entity';
@@ -28,11 +28,15 @@ export class StoresService {
   }
 
   async getOne(id: string | number): Promise<ReadStoreDto> {
-    return await this.storesRepository
+    const store: ReadStoreDto = await this.storesRepository
       .createQueryBuilder('store')
       .leftJoinAndSelect('store.brand', 'brand')
       .select(['brand.name AS "brand"'])
       .where('store.id = :id', { id })
       .getRawOne();
+    if (!store) {
+      throw new NotFoundException(`Store with id ${id} not found`);
+    }
+    return store;
   }
 }

@@ -21,6 +21,7 @@ import {
 import { ReadStoreDto } from '../entities/read-store.dto';
 import { Response } from 'express';
 import { StoresService } from '../services/stores.service';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiTags('Stores')
 @Controller('stores')
@@ -52,7 +53,7 @@ export class StoresController {
           first: '/stores?limit=10',
           previous: '',
           next: '',
-          last: '/stores?page=1&limit=10',
+          last: '',
         },
       },
     },
@@ -62,16 +63,17 @@ export class StoresController {
     type: Number,
     description: 'Requiered page',
     required: false,
-    example: 3,
+    example: 1,
   })
   @ApiQuery({
     name: 'limit',
     type: Number,
     description: 'Limit of paginated stores',
     required: false,
-    example: 25,
+    example: 10,
   })
   @Get()
+  @Public()
   @HttpCode(200)
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
@@ -112,15 +114,9 @@ export class StoresController {
     example: 8,
   })
   @Get(':id')
+  @Public()
   @HttpCode(200)
-  async getOne(
-    @Param('id') id: number,
-    @Res() res: Response,
-  ): Promise<ReadStoreDto | void> {
-    const data = await this.storesService.getOne(id);
-
-    if (!data) throw new NotFoundException('Store not found');
-
-    return res.status(200).send(data).end();
+  async getOne(@Param('id') id: number) {
+    return await this.storesService.getOne(id);
   }
 }
