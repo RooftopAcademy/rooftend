@@ -32,6 +32,7 @@ import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { CreateItemDto } from '../entities/create.item.dto';
 import { UpdateItemDto } from '../entities/update.item.dto';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiTags('Items')
 @Controller('items')
@@ -93,6 +94,7 @@ export class ItemsController {
     description: 'Max amount of items per page',
     example: 10,
   })
+  @Public()
   @Get()
   @HttpCode(200)
   getAll(
@@ -131,6 +133,7 @@ export class ItemsController {
     description: 'A Item found with the passed ID',
     type: Item,
   })
+  @Public()
   @Get(':id')
   @HttpCode(200)
   @ApiNotFoundResponse({
