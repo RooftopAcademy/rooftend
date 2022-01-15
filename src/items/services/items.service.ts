@@ -13,11 +13,12 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { User } from '../../users/entities/user.entity';
-import { CreateItemDTO } from '../entities/create.item.dto';
+import { CreateItemDto } from '../entities/create.item.dto';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
+import { UpdateItemDto } from '../entities/update.item.dto';
 
 @Injectable()
 export class ItemsService {
@@ -79,14 +80,14 @@ export class ItemsService {
     return item;
   }
 
-  create(user: User, body: CreateItemDTO): Promise<Item> {
+  create(user: User, body: CreateItemDto): Promise<Item> {
     const item = this.itemsRepo.create(body);
     item.user = user;
 
     return this.itemsRepo.save(item);
   }
 
-  async update(item: Item, body: any): Promise<Item> {
+  async update(item: Item, body: UpdateItemDto): Promise<Item> {
     this.itemsRepo.merge(item, body);
     return this.itemsRepo.save(item);
   }

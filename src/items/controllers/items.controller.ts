@@ -30,6 +30,8 @@ import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { CreateItemDto } from '../entities/create.item.dto';
+import { UpdateItemDto } from '../entities/update.item.dto';
 
 @ApiTags('Items')
 @Controller('items')
@@ -150,7 +152,7 @@ export class ItemsController {
   @Post()
   @UseGuards(PoliciesGuard)
   @HttpCode(201)
-  create(@Body() body: any): Promise<Item> {
+  create(@Body() body: CreateItemDto): Promise<Item> {
     const user = new User();
     user.id = 1;
 
@@ -175,7 +177,10 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item Not Found',
   })
-  async update(@Param('id') id: number, @Body() body: any): Promise<Item> {
+  async update(
+    @Param('id') id: number,
+    @Body() body: UpdateItemDto,
+  ): Promise<Item> {
     const user = new User();
     user.id = 1;
 
