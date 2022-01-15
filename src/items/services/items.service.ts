@@ -39,7 +39,7 @@ export class ItemsService {
     paginationOptions: IPaginationOptions,
     user?: User,
   ): Promise<Pagination<Item>> {
-    let q = this.itemsRepo.createQueryBuilder();
+    const q = this.itemsRepo.createQueryBuilder();
 
     /**
      * Exclude current user from search
