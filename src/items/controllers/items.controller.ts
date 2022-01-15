@@ -38,6 +38,17 @@ export class ItemsController {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
+  /**
+   * Retuns paginated list of items
+   * @todo add authorization
+   * @param sellerId - Show only items published by the iser with this id
+   * @param categoryId - Show only items published in the category with this id
+   * @param orderBy - Sort items by this property
+   * @param dir - Sort direction
+   * @param page - Page of the result
+   * @param limit - Max amount of items per page
+   * @returns Filtered items according to preceding criteria
+   */
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
     status: 200,

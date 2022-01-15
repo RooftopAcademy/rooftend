@@ -28,8 +28,10 @@ export class ItemsService {
   ) {}
 
   /**
+   * Returns paginated list of items
    * @param user User who performs this query
-   * @param options
+   * @param searchOptions
+   * @param paginationOptions
    */
   findAll(
     searchOptions: ItemSearchOptions,
