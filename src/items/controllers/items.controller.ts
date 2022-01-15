@@ -1,7 +1,8 @@
 import {
   Body,
   Controller,
-  Delete, ForbiddenException,
+  Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
@@ -32,8 +33,10 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 @ApiTags('Items')
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService,
-              private readonly caslAbilityFactory: CaslAbilityFactory) {}
+  constructor(
+    private readonly ItemsService: ItemsService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   @ApiOperation({ summary: 'Get all items' })
   @ApiResponse({
@@ -44,17 +47,23 @@ export class ItemsController {
   @Get()
   @HttpCode(200)
   getAll(
-    @Query('sellerId') sellerId : null,
-    @Query('categoryId') categoryId : null,
-    @Query('orderBy') orderBy : null,
-    @Query('dir') dir : string = 'ASC',
+    @Query('sellerId') sellerId: null,
+    @Query('categoryId') categoryId: null,
+    @Query('orderBy') orderBy: null,
+    @Query('dir') dir: string = 'ASC',
   ): Promise<Pagination<Item, IPaginationMeta>> {
-    const user = new User()
-    user.id = 1
+    const user = new User();
+    user.id = 1;
 
-    return this.ItemsService.findAll({
-      exclude : true, sellerId, categoryId, orderBy
-    }, user);
+    return this.ItemsService.findAll(
+      {
+        exclude: true,
+        sellerId,
+        categoryId,
+        orderBy,
+      },
+      user,
+    );
   }
 
   @ApiOperation({ summary: 'Get a single item by ID' })

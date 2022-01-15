@@ -15,12 +15,12 @@ import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 
 interface ItemSearchOptions {
-  sellerId? : Number,
-  userId? : Number,
-  categoryId? : Number,
-  exclude? : boolean,
-  orderBy? : string,
-  dir? : "ASC" | "DESC"
+  sellerId?: Number;
+  userId?: Number;
+  categoryId?: Number;
+  exclude?: boolean;
+  orderBy?: string;
+  dir?: 'ASC' | 'DESC';
 }
 
 @Injectable()
@@ -35,38 +35,38 @@ export class ItemsService {
    * @param user User who performs this query
    * @param options
    */
-  findAll(options : ItemSearchOptions, user? : User): Promise<Pagination<Item>> {
+  findAll(options: ItemSearchOptions, user?: User): Promise<Pagination<Item>> {
     let q = this.ItemsRepo.createQueryBuilder();
 
     /**
      * Exclude current user from search
      */
     if (options.exclude && user) {
-      q.andWhere({ 'user_id' : Not(user.id) })
+      q.andWhere({ user_id: Not(user.id) });
     }
 
     /**
      * Get only items published by given user id (as seller profile)
      */
     if (options.sellerId) {
-      q.andWhere({ 'user_id' : options.sellerId })
+      q.andWhere({ user_id: options.sellerId });
     }
 
     /**
      * Get only items from selected category
      */
     if (options.categoryId) {
-      q.andWhere({ 'category_id' : options.categoryId })
+      q.andWhere({ category_id: options.categoryId });
     }
 
     /**
      * Ordering by field and direction
      */
     if (options.orderBy) {
-      q.orderBy(options.orderBy, options.dir)
+      q.orderBy(options.orderBy, options.dir);
     }
 
-    return paginate(q, { limit : 1, page : 1 });
+    return paginate(q, { limit: 1, page: 1 });
   }
 
   async findOne(id: number): Promise<Item> {
