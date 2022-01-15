@@ -6,7 +6,7 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from '../entities/items.entity';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   IPaginationOptions,
   paginate,
@@ -39,27 +39,33 @@ export class ItemsService {
     paginationOptions: IPaginationOptions,
     user?: User,
   ): Promise<Pagination<Item>> {
-    const q = this.itemsRepo.createQueryBuilder();
+    const q = this.itemsRepo.createQueryBuilder('items');
+
+    q.leftJoinAndSelect('items.user', 'user');
+    q.leftJoinAndSelect('items.category', 'category');
+    q.leftJoinAndSelect('items.brand', 'brand');
 
     /**
      * Exclude current user from search
      */
     if (searchOptions.exclude && user) {
-      q.andWhere({ user_id: Not(user.id) });
+      q.andWhere('user.id != :userId', { userId: user.id });
     }
 
     /**
      * Get only items published by given user id (as seller profile)
      */
     if (searchOptions.sellerId) {
-      q.andWhere({ user_id: searchOptions.sellerId });
+      q.andWhere('user.id = :sellerId', { sellerId: searchOptions.sellerId });
     }
 
     /**
      * Get only items from selected category
      */
     if (searchOptions.categoryId) {
-      q.andWhere({ category_id: searchOptions.categoryId });
+      q.andWhere('category.id = :categoryId', {
+        categoryId: searchOptions.categoryId,
+      });
     }
 
     /**

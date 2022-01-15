@@ -9,6 +9,8 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
@@ -20,7 +22,11 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiQuery,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+
+import { Request } from 'express';
 
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
@@ -53,11 +59,51 @@ export class ItemsController {
    * @param limit - Max amount of items per page
    * @returns Filtered items according to preceding criteria
    */
-  @ApiOperation({ summary: 'Get all items' })
+  @ApiOperation({ summary: 'Get all items with optional filters' })
   @ApiResponse({
     status: 200,
-    description: 'A list with all the items',
-    type: [Item],
+    description: 'A paginated item list',
+    schema: {
+      example: {
+        items: [
+          {
+            id: '331',
+            createdAt: '2022-01-15T21:56:42.157Z',
+            updatedAt: '2022-01-15T21:56:42.157Z',
+            title: 'Gherkin - Sour',
+            description:
+              'Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.',
+            price: 4271.85,
+            stock: 1174,
+            deletedAt: null,
+            user: {
+              id: '64',
+              username: 'kdougharty1r',
+              email: 'modriscole1r@cnn.com',
+              account_status: 2,
+              deletedAt: null,
+              completed: false,
+            },
+            category: {
+              id: 65,
+              name: 'Clothing',
+            },
+            brand: {
+              id: '66',
+              name: 'functionalities',
+              photoUrl: 'http://dummyimage.com/100x100.png/cc0000/ffffff',
+            },
+          },
+        ],
+        meta: {
+          totalItems: 21,
+          itemCount: 1,
+          itemsPerPage: 1,
+          totalPages: 21,
+          currentPage: 1,
+        },
+      },
+    },
   })
   @ApiQuery({
     required: false,
@@ -94,10 +140,12 @@ export class ItemsController {
     description: 'Max amount of items per page',
     example: 10,
   })
+  @ApiBearerAuth()
   @Public()
   @Get()
   @HttpCode(200)
   getAll(
+    @Req() req: Request,
     @Query('sellerId') sellerId?: number,
     @Query('categoryId') categoryId?: number,
     @Query('orderBy') orderBy?: string,
@@ -105,9 +153,6 @@ export class ItemsController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
-    const user = new User();
-    user.id = 1;
-
     page = page >= 1 ? page : 1;
     limit = limit <= 100 ? limit : 10;
 
@@ -123,7 +168,7 @@ export class ItemsController {
         page,
         limit,
       },
-      user,
+      <User>req.user,
     );
   }
 
@@ -143,7 +188,7 @@ export class ItemsController {
     return this.itemsService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create a item' })
+  @ApiOperation({ summary: 'Create an item' })
   @ApiResponse({
     status: 201,
     description: 'The created item',
@@ -151,6 +196,12 @@ export class ItemsController {
   })
   @ApiBadRequestResponse({
     description: 'The item could not be created',
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
   })
   @Post()
   @UseGuards(PoliciesGuard)
@@ -180,6 +231,12 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item Not Found',
   })
+  @ApiUnauthorizedResponse({
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
+  })
   async update(
     @Param('id') id: number,
     @Body() body: UpdateItemDto,
@@ -205,6 +262,12 @@ export class ItemsController {
   })
   @ApiBadRequestResponse({
     description: 'The item could not be deleted',
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
   })
   @Delete(':id')
   @UseGuards(PoliciesGuard)
