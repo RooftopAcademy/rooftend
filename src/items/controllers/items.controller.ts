@@ -47,13 +47,18 @@ export class ItemsController {
   @Get()
   @HttpCode(200)
   getAll(
-    @Query('sellerId') sellerId: null,
-    @Query('categoryId') categoryId: null,
-    @Query('orderBy') orderBy: null,
-    @Query('dir') dir: string = 'ASC',
+    @Query('sellerId') sellerId?: number,
+    @Query('categoryId') categoryId?: number,
+    @Query('orderBy') orderBy?: string,
+    @Query('dir') dir: 'ASC' | 'DESC' = 'ASC',
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
     const user = new User();
     user.id = 1;
+
+    page = page >= 1 ? page : 1;
+    limit = limit <= 100 ? limit : 10;
 
     return this.ItemsService.findAll(
       {
@@ -61,6 +66,11 @@ export class ItemsController {
         sellerId,
         categoryId,
         orderBy,
+        dir,
+      },
+      {
+        page,
+        limit,
       },
       user,
     );
