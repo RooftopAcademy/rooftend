@@ -114,7 +114,7 @@ export class Item {
 
   @ManyToOne(() => Brand)
   @JoinColumn({
-    name: 'brand',
+    name: 'brand_id',
   })
   @ApiProperty({
     type: Brand,
