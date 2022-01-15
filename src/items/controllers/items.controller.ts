@@ -19,6 +19,7 @@ import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 
 import { ItemsService } from '../services/items.service';
@@ -41,7 +42,7 @@ export class ItemsController {
   /**
    * Retuns paginated list of items
    * @todo add authorization
-   * @param sellerId - Show only items published by the iser with this id
+   * @param sellerId - Show only items published by the user with this id
    * @param categoryId - Show only items published in the category with this id
    * @param orderBy - Sort items by this property
    * @param dir - Sort direction
@@ -54,6 +55,41 @@ export class ItemsController {
     status: 200,
     description: 'A list with all the items',
     type: [Item],
+  })
+  @ApiQuery({
+    required: false,
+    name: 'sellerId',
+    description: 'Show only items published by the user with this id',
+  })
+  @ApiQuery({
+    required: false,
+    name: 'categoryId',
+    description: 'Show only items published in the category with this id',
+  })
+  @ApiQuery({
+    required: false,
+    name: 'orderBy',
+    description: 'Sort items by this property',
+    example: 'price',
+  })
+  @ApiQuery({
+    required: false,
+    name: 'dir',
+    description: 'Sort direction',
+    enum: ['ASC', 'DESC'],
+    example: 'ASC',
+  })
+  @ApiQuery({
+    required: false,
+    name: 'page',
+    description: 'Page of the result',
+    example: 1,
+  })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    description: 'Max amount of items per page',
+    example: 10,
   })
   @Get()
   @HttpCode(200)
