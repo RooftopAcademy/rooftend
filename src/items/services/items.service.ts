@@ -13,15 +13,7 @@ import { CreateItemDTO } from '../entities/create.item.dto';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
-
-interface ItemSearchOptions {
-  sellerId?: Number;
-  userId?: Number;
-  categoryId?: Number;
-  exclude?: boolean;
-  orderBy?: string;
-  dir?: 'ASC' | 'DESC';
-}
+import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
 
 @Injectable()
 export class ItemsService {
