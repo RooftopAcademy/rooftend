@@ -23,7 +23,7 @@ import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
-    private readonly ItemsRepo: Repository<Item>,
+    private readonly itemsRepo: Repository<Item>,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
@@ -38,7 +38,7 @@ export class ItemsService {
     paginationOptions: IPaginationOptions,
     user?: User,
   ): Promise<Pagination<Item>> {
-    let q = this.ItemsRepo.createQueryBuilder();
+    let q = this.itemsRepo.createQueryBuilder();
 
     /**
      * Exclude current user from search
@@ -72,7 +72,7 @@ export class ItemsService {
   }
 
   async findOne(id: number): Promise<Item> {
-    const item = await this.ItemsRepo.findOne(id);
+    const item = await this.itemsRepo.findOne(id);
 
     if (!item) throw new NotFoundException('Item Not Found');
 
@@ -80,15 +80,15 @@ export class ItemsService {
   }
 
   create(user: User, body: CreateItemDTO): Promise<Item> {
-    const item = this.ItemsRepo.create(body);
+    const item = this.itemsRepo.create(body);
     item.user = user;
 
-    return this.ItemsRepo.save(item);
+    return this.itemsRepo.save(item);
   }
 
   async update(item: Item, body: any): Promise<Item> {
-    this.ItemsRepo.merge(item, body);
-    return this.ItemsRepo.save(item);
+    this.itemsRepo.merge(item, body);
+    return this.itemsRepo.save(item);
   }
 
   async delete(user: User, id: number): Promise<boolean> {
@@ -100,7 +100,7 @@ export class ItemsService {
       throw new ForbiddenException();
     }
 
-    await this.ItemsRepo.delete(id);
+    await this.itemsRepo.delete(id);
     return true;
   }
 }

@@ -35,7 +35,7 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 @Controller('items')
 export class ItemsController {
   constructor(
-    private readonly ItemsService: ItemsService,
+    private readonly itemsService: ItemsService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
@@ -107,7 +107,7 @@ export class ItemsController {
     page = page >= 1 ? page : 1;
     limit = limit <= 100 ? limit : 10;
 
-    return this.ItemsService.findAll(
+    return this.itemsService.findAll(
       {
         exclude: true,
         sellerId,
@@ -135,7 +135,7 @@ export class ItemsController {
     description: 'Item Not Found',
   })
   getOne(@Param('id') id: number): Promise<Item> {
-    return this.ItemsService.findOne(id);
+    return this.itemsService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Create a item' })
@@ -154,7 +154,7 @@ export class ItemsController {
     const user = new User();
     user.id = 1;
 
-    return this.ItemsService.create(user, body);
+    return this.itemsService.create(user, body);
   }
 
   @ApiOperation({ summary: 'Update a item by ID' })
@@ -179,14 +179,14 @@ export class ItemsController {
     const user = new User();
     user.id = 1;
 
-    const item = await this.ItemsService.findOne(id);
+    const item = await this.itemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if (ability.cannot(Permission.Update, subject('Item', item))) {
       throw new ForbiddenException();
     }
 
-    return this.ItemsService.update(item, body);
+    return this.itemsService.update(item, body);
   }
 
   @ApiOperation({ summary: 'Delete a item by ID' })
@@ -208,6 +208,6 @@ export class ItemsController {
     const user = new User();
     user.id = 1;
 
-    return this.ItemsService.delete(user, id);
+    return this.itemsService.delete(user, id);
   }
 }
