@@ -44,6 +44,7 @@ export class CreateItemDto {
   stock: number;
 
   @IsNumber()
+  @Max(256)
   @ApiProperty({
     description: 'Id of the item category',
     example: 1,
