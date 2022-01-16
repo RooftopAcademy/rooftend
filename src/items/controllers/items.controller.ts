@@ -14,7 +14,6 @@ import {
   Req,
   UnauthorizedException,
   UnprocessableEntityException,
-  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -37,7 +36,6 @@ import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
 import { User } from '../../users/entities/user.entity';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
@@ -45,8 +43,10 @@ import { CreateItemDto } from '../entities/create.item.dto';
 import { UpdateItemDto } from '../entities/update.item.dto';
 import { Public } from '../../authentication/decorators/public.decorator';
 import STATUS from '../../statusCodes/statusCodes';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('Items')
+@ApiBearerAuth()
 @Controller('items')
 export class ItemsController {
   constructor(
@@ -159,8 +159,10 @@ export class ItemsController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
+    const user: User = <User>req.user;
+
     page = page >= 1 ? page : 1;
-    limit = limit <= 100 ? limit : 10;
+    limit = limit <= 100 ? limit : 100;
 
     return this.itemsService.findAll(
       {
@@ -171,10 +173,10 @@ export class ItemsController {
         dir,
       },
       {
-        page,
         limit,
+        page,
       },
-      <User>req.user,
+      user,
     );
   }
 
@@ -227,11 +229,9 @@ export class ItemsController {
   })
   @ApiBearerAuth()
   @Post()
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
-  create(@Body() body: CreateItemDto): Promise<Item> {
-    const user = new User();
-    user.id = 1;
+  create(@Req() req: Request, @Body() body: CreateItemDto): Promise<Item> {
+    const user: User = <User>req.user;
 
     return this.itemsService.create(user, body);
   }
@@ -273,14 +273,13 @@ export class ItemsController {
   })
   @ApiBearerAuth()
   @Patch(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async update(
+    @Req() req: Request,
     @Param('id') id: number,
     @Body() body: UpdateItemDto,
   ): Promise<Item> {
-    const user = new User();
-    user.id = 1;
+    const user: User = <User>req.user;
 
     const item = await this.itemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
@@ -320,12 +319,20 @@ export class ItemsController {
   })
   @ApiBearerAuth()
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  delete(@Param('id') id: number): Promise<boolean> {
-    const user = new User();
-    user.id = 1;
+  async delete(
+    @Req() req: Request,
+    @Param('id') id: number,
+  ): Promise<DeleteResult> {
+    const user: User = <User>req.user;
 
-    return this.itemsService.delete(user, id);
+    const item = await this.itemsService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(Permission.Delete, subject('Item', item))) {
+      throw new ForbiddenException();
+    }
+
+    return this.itemsService.delete(item);
   }
 }

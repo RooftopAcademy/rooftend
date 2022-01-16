@@ -1,12 +1,8 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from '../entities/items.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   paginate,
@@ -14,9 +10,6 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { User } from '../../users/entities/user.entity';
 import { CreateItemDto } from '../entities/create.item.dto';
-import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Permission } from '../../auth/enums/permission.enum';
-import { subject } from '@casl/ability';
 import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
 import { UpdateItemDto } from '../entities/update.item.dto';
 
@@ -25,7 +18,6 @@ export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepo: Repository<Item>,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   /**
@@ -98,16 +90,7 @@ export class ItemsService {
     return this.itemsRepo.save(item);
   }
 
-  async delete(user: User, id: number): Promise<boolean> {
-    const item = await this.findOne(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-    item.user.id = Number(item.user.id);
-
-    if (ability.cannot(Permission.Delete, subject('Item', item))) {
-      throw new ForbiddenException();
-    }
-
-    await this.itemsRepo.delete(id);
-    return true;
+  async delete(item: Item): Promise<DeleteResult> {
+    return this.itemsRepo.delete(item);
   }
 }
