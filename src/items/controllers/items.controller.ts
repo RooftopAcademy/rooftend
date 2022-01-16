@@ -43,7 +43,6 @@ import { CreateItemDto } from '../entities/create.item.dto';
 import { UpdateItemDto } from '../entities/update.item.dto';
 import { Public } from '../../authentication/decorators/public.decorator';
 import STATUS from '../../statusCodes/statusCodes';
-import { DeleteResult } from 'typeorm';
 import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Items')
@@ -323,10 +322,7 @@ export class ItemsController {
   @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(200)
-  async delete(
-    @Req() req: Request,
-    @Param('id') id: number,
-  ): Promise<DeleteResult> {
+  async delete(@Req() req: Request, @Param('id') id: number): Promise<Status> {
     const user: User = <User>req.user;
 
     const item = await this.itemsService.findOne(id);
@@ -336,6 +332,8 @@ export class ItemsController {
       throw new ForbiddenException();
     }
 
-    return this.itemsService.delete(item);
+    await this.itemsService.delete(item);
+
+    return STATUS.DELETED;
   }
 }
