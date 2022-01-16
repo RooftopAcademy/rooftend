@@ -1,16 +1,19 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
   Req,
   UnauthorizedException,
+  UnprocessableEntityException,
   UseGuards,
 } from '@nestjs/common';
 
@@ -24,6 +27,8 @@ import {
   ApiQuery,
   ApiBearerAuth,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
+  ApiBody,
 } from '@nestjs/swagger';
 
 import { Request } from 'express';
@@ -39,6 +44,7 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { CreateItemDto } from '../entities/create.item.dto';
 import { UpdateItemDto } from '../entities/update.item.dto';
 import { Public } from '../../authentication/decorators/public.decorator';
+import STATUS from '../../statusCodes/statusCodes';
 
 @ApiTags('Items')
 @Controller('items')
@@ -183,6 +189,9 @@ export class ItemsController {
   @HttpCode(200)
   @ApiNotFoundResponse({
     description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
   })
   getOne(@Param('id') id: number): Promise<Item> {
     return this.itemsService.findOne(id);
@@ -195,7 +204,12 @@ export class ItemsController {
     type: Item,
   })
   @ApiBadRequestResponse({
-    description: 'The item could not be created',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'title must be longer than or equal to 1 characters',
+      ]).getResponse(),
+    },
   })
   @ApiUnauthorizedResponse({
     schema: {
@@ -203,6 +217,15 @@ export class ItemsController {
     },
     description: 'User is not logged in',
   })
+  @ApiUnprocessableEntityResponse({
+    description: 'The categoryId or brandId supplied does not exist',
+    schema: {
+      example: new UnprocessableEntityException(
+        'Category does not exist',
+      ).getResponse(),
+    },
+  })
+  @ApiBearerAuth()
   @Post()
   @UseGuards(PoliciesGuard)
   @HttpCode(201)
@@ -213,23 +236,22 @@ export class ItemsController {
     return this.itemsService.create(user, body);
   }
 
-  @ApiOperation({ summary: 'Update a item by ID' })
+  @ApiOperation({ summary: 'Update an item by ID' })
+  @ApiBody({ required: false })
   @ApiResponse({
-    status: 204,
-    description: 'The updated item',
-    type: Item,
+    status: 200,
+    description: 'Item updated successfully',
+    schema: {
+      example: STATUS.OK,
+    },
   })
   @ApiBadRequestResponse({
-    description: 'The item could not be updated',
-  })
-  @Patch(':id')
-  @UseGuards(PoliciesGuard)
-  @HttpCode(204)
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  @ApiNotFoundResponse({
-    description: 'Item Not Found',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'title must be longer than or equal to 1 characters',
+      ]).getResponse(),
+    },
   })
   @ApiUnauthorizedResponse({
     schema: {
@@ -237,6 +259,22 @@ export class ItemsController {
     },
     description: 'User is not logged in',
   })
+  @ApiForbiddenResponse({
+    description: 'User is not authorized to update this item',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
+  })
+  @ApiBearerAuth()
+  @Patch(':id')
+  @UseGuards(PoliciesGuard)
+  @HttpCode(200)
   async update(
     @Param('id') id: number,
     @Body() body: UpdateItemDto,
@@ -254,14 +292,13 @@ export class ItemsController {
     return this.itemsService.update(item, body);
   }
 
-  @ApiOperation({ summary: 'Delete a item by ID' })
+  @ApiOperation({ summary: 'Delete an item by ID' })
   @ApiResponse({
     status: 200,
-    description: 'If the item was removed or not',
-    type: Boolean,
-  })
-  @ApiBadRequestResponse({
-    description: 'The item could not be deleted',
+    description: 'Item deleted sucessfully',
+    schema: {
+      example: STATUS.DELETED,
+    },
   })
   @ApiUnauthorizedResponse({
     schema: {
@@ -269,12 +306,22 @@ export class ItemsController {
     },
     description: 'User is not logged in',
   })
+  @ApiForbiddenResponse({
+    description: 'User is not authorized to delete this item',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
+  })
+  @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(PoliciesGuard)
   @HttpCode(200)
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
   delete(@Param('id') id: number): Promise<boolean> {
     const user = new User();
     user.id = 1;
