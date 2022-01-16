@@ -44,6 +44,7 @@ import { UpdateItemDto } from '../entities/update.item.dto';
 import { Public } from '../../authentication/decorators/public.decorator';
 import STATUS from '../../statusCodes/statusCodes';
 import { DeleteResult } from 'typeorm';
+import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Items')
 @ApiBearerAuth()
@@ -237,7 +238,7 @@ export class ItemsController {
   }
 
   @ApiOperation({ summary: 'Update an item by ID' })
-  @ApiBody({ required: false })
+  @ApiBody({ type: UpdateItemDto, required: false })
   @ApiResponse({
     status: 200,
     description: 'Item updated successfully',
@@ -278,7 +279,7 @@ export class ItemsController {
     @Req() req: Request,
     @Param('id') id: number,
     @Body() body: UpdateItemDto,
-  ): Promise<Item> {
+  ): Promise<Status> {
     const user: User = <User>req.user;
 
     const item = await this.itemsService.findOne(id);
@@ -288,7 +289,9 @@ export class ItemsController {
       throw new ForbiddenException();
     }
 
-    return this.itemsService.update(item, body);
+    await this.itemsService.update(item, body);
+
+    return STATUS.OK;
   }
 
   @ApiOperation({ summary: 'Delete an item by ID' })

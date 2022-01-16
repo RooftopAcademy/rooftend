@@ -6,7 +6,7 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from '../entities/items.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import {
   IPaginationOptions,
   paginate,
@@ -115,9 +115,8 @@ export class ItemsService {
     return this.itemsRepo.save(item);
   }
 
-  async update(item: Item, body: UpdateItemDto): Promise<Item> {
-    this.itemsRepo.merge(item, body);
-    return this.itemsRepo.save(item);
+  async update(item: Item, body: UpdateItemDto): Promise<UpdateResult> {
+    return this.itemsRepo.update(item, body);
   }
 
   async delete(item: Item): Promise<DeleteResult> {
