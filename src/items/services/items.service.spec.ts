@@ -1,8 +1,17 @@
+import {
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Item } from '../entities/items.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { Category } from '../../categories/entities/categories.entity';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { CreateItemDto } from '../entities/create.item.dto';
+import { Item } from '../entities/items.entity';
 
 const userId = 1;
 const newUser = plainToClass(User, {
@@ -10,23 +19,6 @@ const newUser = plainToClass(User, {
   username: null,
   password: '5vOC1yGAT2Km0Lt',
   email: 'Dewitt.Turcotte52@hotmail.com',
-});
-const mockUser = plainToClass(User, {
-  id: userId,
-  username: null,
-  password: '5vOC1yGAT2Km0Lt',
-  email: 'Dewitt.Turcotte52@hotmail.com',
-});
-
-const genericItem = plainToClass(Item, {
-  id: 3,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  title: 'Name 2',
-  description: 'Des 2',
-  price: 2,
-  stock: 2,
-  user: mockUser,
 });
 
 const list = {
@@ -71,27 +63,74 @@ jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn().mockReturnValue(list),
 }));
 
-import { NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { CreateItemDto } from '../entities/create.item.dto';
+// imported here so the mock in line 60 works
 import { ItemsService } from './items.service';
 
 describe('ItemsService', () => {
+  const mockUser = plainToClass(User, {
+    id: userId,
+    username: null,
+    password: '5vOC1yGAT2Km0Lt',
+    email: 'Dewitt.Turcotte52@hotmail.com',
+  });
+
+  const genericItem = plainToClass(Item, {
+    id: 3,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: 'Name 2',
+    description: 'Des 2',
+    price: 2,
+    stock: 2,
+    user: mockUser,
+  });
+
+  const genericBrand: Brand = {
+    id: 1,
+    name: 'Generic brand',
+    photoUrl: 'https://site.com/photos/123',
+  };
+
+  const genericCategory: Category = {
+    id: 1,
+    name: 'Generic category',
+    parentCategory: null,
+    subCategories: [],
+  };
+
   let service: ItemsService;
 
   const mockItemsRepository = {
     findOne: jest.fn(() => Promise.resolve(genericItem)),
-    create: jest.fn((body) => Object.assign(body, { id: 4 })),
-    merge: jest.fn((item, body) => Object.assign({ item, body })),
+    create: jest.fn((body: CreateItemDto) => ({
+      id: 4,
+      title: body.title,
+      description: body.description,
+      price: body.price,
+      stock: body.stock,
+    })),
     save: jest.fn((item) => Promise.resolve(item)),
-    delete: jest.fn(() => Promise.resolve(true)),
+    update: jest.fn().mockResolvedValue(new UpdateResult()),
+    delete: jest.fn().mockResolvedValue(new DeleteResult()),
     createQueryBuilder: jest.fn(() => ({
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
     })),
+  };
+
+  const mockBrandsRepository = {
+    findOne: jest.fn(
+      (id: number): Promise<Brand | null> =>
+        Promise.resolve(id == 1 ? genericBrand : null),
+    ),
+  };
+
+  const mockCategoriesRepository = {
+    findOne: jest.fn(
+      (id: number): Promise<Category | null> =>
+        Promise.resolve(id == 1 ? genericCategory : null),
+    ),
   };
 
   beforeEach(async () => {
@@ -102,11 +141,23 @@ describe('ItemsService', () => {
           provide: getRepositoryToken(Item),
           useValue: mockItemsRepository,
         },
+        {
+          provide: getRepositoryToken(Brand),
+          useValue: mockBrandsRepository,
+        },
+        {
+          provide: getRepositoryToken(Category),
+          useValue: mockCategoriesRepository,
+        },
         CaslAbilityFactory,
       ],
     }).compile();
 
     service = module.get<ItemsService>(ItemsService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -194,8 +245,13 @@ describe('ItemsService', () => {
 
       const expected = {
         id: 4,
-        ...dto,
+        title: 'Name 2',
+        description: 'Des 2',
+        price: 2,
+        stock: 2,
         user: newUser,
+        category: genericCategory,
+        brand: genericBrand,
       };
 
       expect(await service.create(newUser, dto)).toEqual(expected);
@@ -203,63 +259,63 @@ describe('ItemsService', () => {
       expect(mockItemsRepository.create).toHaveBeenCalledWith(dto);
       expect(mockItemsRepository.save).toHaveBeenCalledWith(expected);
     });
+
+    it('Wrong category id - Should throw UnprocessableEntityExepction', async () => {
+      const dto: CreateItemDto = {
+        title: 'Name 2',
+        description: 'Des 2',
+        price: 2,
+        stock: 2,
+        categoryId: 2,
+      };
+
+      await expect(service.create(newUser, dto)).rejects.toThrowError(
+        UnprocessableEntityException,
+      );
+
+      expect(mockBrandsRepository.findOne).not.toHaveBeenCalled();
+    });
+
+    it('Wrong brand id - Should throw UnprocessableEntityExepction', async () => {
+      const dto: CreateItemDto = {
+        title: 'Name 2',
+        description: 'Des 2',
+        price: 2,
+        stock: 2,
+        categoryId: 1,
+        brandId: 2,
+      };
+
+      await expect(service.create(newUser, dto)).rejects.toThrowError(
+        UnprocessableEntityException,
+      );
+
+      expect(mockBrandsRepository.findOne).toHaveBeenLastCalledWith(
+        dto.brandId,
+      );
+    });
   });
 
   describe('update', () => {
-    const updateMethod = async (dto) => {
-      const item = await service.findOne(genericItem.id);
-      return await service.update(item, dto);
-    };
-
     it('should update an Item', async () => {
-      newUser.id = userId;
       const dto = {
         price: 100,
         stock: 500,
       };
 
-      const expected = {
-        ...genericItem,
-        ...dto,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      };
-
-      mockItemsRepository.save.mockReturnValueOnce(
-        Promise.resolve({ ...genericItem, ...dto }),
+      expect(await service.update(genericItem, dto)).toBeInstanceOf(
+        UpdateResult,
       );
 
-      expect(await updateMethod(dto)).toEqual(expected);
-
-      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
-      expect(mockItemsRepository.merge).toHaveBeenCalledWith(genericItem, dto);
-    });
-
-    it('should throw NotFoundException', async () => {
-      mockItemsRepository.findOne.mockReturnValueOnce(null);
-      const dto = {
-        stock: 500,
-      };
-
-      try {
-        expect(await updateMethod(dto)).toThrow(NotFoundException);
-      } catch (err) {
-        expect(err.message).toEqual('Item Not Found');
-      }
-
-      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem.id);
-      expect(mockItemsRepository.merge).toHaveBeenCalledTimes(1);
-      expect(mockItemsRepository.save).toHaveBeenCalledTimes(2);
+      expect(mockItemsRepository.update).toHaveBeenCalledWith(genericItem, dto);
     });
   });
 
   describe('remove', () => {
     it('should remove an Item', async () => {
-      newUser.id = userId;
-      expect(await service.delete(genericItem)).toEqual(true);
+      expect(await service.delete(genericItem)).toBeInstanceOf(DeleteResult);
 
-      expect(mockItemsRepository.findOne).toHaveBeenCalledWith(genericItem);
-      expect(mockItemsRepository.delete).toHaveBeenCalled();
+      expect(mockItemsRepository.delete).toHaveBeenLastCalledWith(genericItem);
     });
   });
 });
