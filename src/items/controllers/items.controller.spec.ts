@@ -184,8 +184,6 @@ describe('ItemsController', () => {
     };
 
     it('should create a Item', async () => {
-      console.log(await mockItemsService.create(request.user, dto));
-
       expect(await controller.create(request, dto)).toEqual({
         id: 4,
         title: dto.title,
