@@ -81,7 +81,9 @@ export class ItemsService {
   }
 
   async findOne(id: number): Promise<Item> {
-    const item = await this.itemsRepo.findOne(id);
+    const item = await this.itemsRepo.findOne(id, {
+      relations: ['user', 'category', 'brand'],
+    });
 
     if (!item) throw new NotFoundException('Item Not Found');
 
