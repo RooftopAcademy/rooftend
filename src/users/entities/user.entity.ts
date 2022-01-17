@@ -67,11 +67,9 @@ export class User {
     name: 'account_status',
     default: AccountStatusesEnum.PENDING,
     enum: AccountStatusesEnum,
+    select: false,
   })
   account_status: AccountStatusesEnum;
-  //deberíamos tener un get en account status, para saber el estado del user?....
-  //si el usuario figura como banned o pending o algun otro?, permitimos que modifique password u otras cosas????
-  //un usuario banned no se debería poder loguear...
 
   @ApiHideProperty()
   @DeleteDateColumn({
