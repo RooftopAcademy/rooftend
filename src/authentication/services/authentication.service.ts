@@ -42,7 +42,10 @@ export class AuthenticationService {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
     // ésto se debe implementar cuando hayamos creado los emails de autenticacion
-    // if (user.account_status != AccountStatusesEnum.ACTIVE) {
+    // if (
+    //   (await this.usersService.findAccountStatus(user.id)) !=
+    //   AccountStatusesEnum.ACTIVE
+    // ) {
     //   throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
     // }
 

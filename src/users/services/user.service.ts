@@ -25,6 +25,13 @@ export class UserService {
     return foundUser.password;
   }
 
+  async findAccountStatus(id: number): Promise<AccountStatusesEnum> {
+    const foundUser = await this.userRepo.findOne(id, {
+      select: ['account_status'],
+    });
+    return foundUser.account_status;
+  }
+
   findOneByUsername(username: string): Promise<User> {
     return this.userRepo.findOne({ username });
   }
