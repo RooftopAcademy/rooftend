@@ -10,18 +10,19 @@ import { AccountStatusesEnum } from '../../account-status/models/AccountStatuses
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private userRepo: Repository<User>) { }
+  constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
   async returnLoggedUser(id: number): Promise<Partial<User>> {
-    const user = await this.userRepo.findOne(id);
-
-    const { password, ...result } = user;
-    
-    return result;
+    return await this.userRepo.findOne(id);
   }
 
   findOneByEmail(email: string): Promise<User> {
     return this.userRepo.findOne({ email });
+  }
+
+  async findPassword(id: number): Promise<string> {
+    const foundUser = await this.userRepo.findOne(id, { select: ['password'] });
+    return foundUser.password;
   }
 
   findOneByUsername(username: string): Promise<User> {
@@ -34,7 +35,7 @@ export class UserService {
     return await this.userRepo.save(newUser);
   }
 
-  async update(id: number, body: any): Promise<{ message: string; }> {
+  async update(id: number, body: any): Promise<{ message: string }> {
     const user = await this.userRepo.findOne(id);
 
     this.userRepo.merge(user, body);
