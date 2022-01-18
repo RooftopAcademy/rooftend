@@ -16,6 +16,9 @@ import {
   ApiTags,
   ApiBadRequestResponse,
   ApiParam,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { CreatePlatformDTO } from '../entities/create-platform-dto.entity';
 import { Platform } from '../entities/platform.entity';
@@ -26,13 +29,12 @@ import { UpdatePlatformDTO } from '../entities/update-platform-dto.entity';
 @ApiTags('Platforms')
 @Controller('platforms')
 export class PlatformController {
-  constructor(private platformService: PlatformService) {}
+  constructor(private platformService: PlatformService) { }
 
   @ApiOperation({ summary: 'Get all platforms' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
     description: 'A list with all the platforms',
-    type: [Platform],
   })
   @Get()
   @HttpCode(200)
@@ -41,7 +43,7 @@ export class PlatformController {
   }
 
   @ApiOperation({ summary: 'Get a platform by id' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
     description: 'The found platform with that id',
     type: Platform,
@@ -61,9 +63,9 @@ export class PlatformController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a platform' })
-  @ApiResponse({
+  @ApiCreatedResponse({
     status: 201,
-    description: 'The platform has been created successfully.',
+    description: 'Created',
     type: Platform,
   })
   @ApiBadRequestResponse({
@@ -77,17 +79,19 @@ export class PlatformController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(200)
   @ApiOperation({ summary: 'Update a platform' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
-    description: 'The platform has been updated successfully.',
+    description: 'Updated',
   })
   @ApiParam({
     name: 'id',
     example: 1,
     type: Number,
+    required: true,
   })
-  @ApiBadRequestResponse({
-    description: 'The platform could not be updated',
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not Found',
   })
   update(
     @Param('id') id: string | number,
@@ -97,19 +101,21 @@ export class PlatformController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   @ApiOperation({ summary: 'Delete a platform' })
-  @ApiResponse({
-    status: 204,
-    description: 'The platform has been deleted successfully.',
+  @ApiOkResponse({
+    status: 200,
+    description: 'Deleted',
   })
   @ApiParam({
     name: 'id',
     example: 1,
     type: Number,
+    required: true,
   })
-  @ApiBadRequestResponse({
-    description: 'The platform could not be deleted',
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Not found',
   })
   delete(@Param('id') id: string | number) {
     return this.platformService.delete(id);

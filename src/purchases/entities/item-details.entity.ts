@@ -21,6 +21,7 @@ export class ItemDetails {
     type: 'number',
     format: 'integer',
     example: 1369,
+    minimum: 1,
   })
   quantity: number;
 

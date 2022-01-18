@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { plainToClass } from 'class-transformer';
 
 import { CaslModule } from '../../auth/casl/casl.module';
 import { Brand } from '../../brands/entities/brands.entity';
@@ -7,71 +8,88 @@ import { Category } from '../../categories/entities/categories.entity';
 import { User } from '../../users/entities/user.entity';
 
 import { CreateItemDTO } from '../entities/create.item.dto';
+import { Item } from '../entities/items.entity';
 
 import { ItemsService } from '../services/items.service';
 import { ItemsController } from './items.controller';
 
 describe('ItemsController', () => {
   let controller: ItemsController;
-  const newUser = new User();
-  newUser.id = 1;
+  const mockUser = new User();
+  mockUser.id = 1;
 
-  const mockItemsService = {
-    findAll: jest.fn().mockImplementation(() =>
-      Promise.resolve([
-        {
-          id: 2,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          title: 'Name',
-          description: 'Des',
-          price: 1,
-          stock: 1,
-          user: newUser,
-        },
-        {
-          id: 3,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          title: 'Name 2',
-          description: 'Des 2',
-          price: 2,
-          stock: 2,
-          user: newUser,
-        },
-      ]),
-    ),
-    findOne: jest.fn().mockImplementation(() =>
-      Promise.resolve({
+  const request: any = {
+    user: new User()
+  }
+  request.user.id = 1;
+
+  const paginatedList = {
+    items: [
+      {
+        id: 2,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        title: 'Name',
+        description: 'Des',
+        price: 1,
+        stock: 1,
+        brandId: expect.any(Brand),
+        user: request.user,
+        categoryId: expect.any(Category),
+        cartItemsId: [],
+        questions: [],
+      },
+      {
         id: 3,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
         title: 'Name 2',
         description: 'Des 2',
         price: 2,
         stock: 2,
-        user: newUser,
-      }),
+        brandId: expect.any(Brand),
+        user: request.user,
+        categoryId: expect.any(Category),
+        cartItemsId: [],
+        questions: [],
+      },
+    ],
+    meta: {
+      itemCount: 2,
+      totalItems: 2,
+      totalPages: 1,
+      currentPage: 1,
+    },
+  }
+
+  const genericItem = plainToClass(Item, {
+    id: 3,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: 'Name 2',
+    description: 'Des 2',
+    price: 2,
+    stock: 2,
+    user: mockUser,
+  })
+
+
+  const mockItemsService = {
+    findAll: jest.fn().mockImplementation(() =>
+      Promise.resolve(paginatedList),
+    ),
+    findOne: jest.fn().mockImplementation(() =>
+      Promise.resolve(genericItem),
     ),
     create: jest.fn().mockImplementation((user, body) => {
       Object.assign(body, { id: 4, user });
       return Promise.resolve(body);
     }),
-    update: jest.fn().mockImplementation((user, id, body) => {
-      return Promise.resolve({
-        ...{
-          id: id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          title: 'Name 2',
-          description: 'Des 2',
-          price: 2,
-          stock: 2,
-          user,
-        },
+    update: jest.fn().mockImplementation((item, body) => Promise.resolve({
+        ...item,
         ...body,
-      });
-    }),
+      })
+    ),
     delete: jest.fn().mockImplementation(() => true),
   };
 
@@ -94,28 +112,7 @@ describe('ItemsController', () => {
 
   describe('all', () => {
     it('should return an array of Items', async () => {
-      expect(await controller.getAll()).toEqual([
-        {
-          id: 2,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          title: 'Name',
-          description: 'Des',
-          price: 1,
-          stock: 1,
-          user: newUser,
-        },
-        {
-          id: 3,
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-          title: 'Name 2',
-          description: 'Des 2',
-          price: 2,
-          stock: 2,
-          user: newUser,
-        },
-      ]);
+      expect(await controller.getAll(request, null, null, null)).toEqual(paginatedList);
     });
   });
 
@@ -129,7 +126,7 @@ describe('ItemsController', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        user: newUser,
+        user: request.user,
       });
     });
 
@@ -169,10 +166,10 @@ describe('ItemsController', () => {
         categoryId: new Category(),
       };
 
-      expect(await controller.create(dto)).toEqual({
+      expect(await controller.create(request, dto)).toEqual({
         id: 4,
         ...dto,
-        user: newUser,
+        user: request.user,
       });
 
       expect(mockItemsService.create).toHaveBeenCalledWith(
@@ -184,6 +181,7 @@ describe('ItemsController', () => {
 
   describe('update', () => {
     it('should update an Item', async () => {
+      request.user.id = mockUser.id
       const item = {
         id: 3,
         createdAt: expect.any(Date),
@@ -192,7 +190,7 @@ describe('ItemsController', () => {
         description: 'Des 2',
         price: 2,
         stock: 2,
-        user: newUser,
+        user: request.user,
       };
 
       const dto = {
@@ -200,68 +198,47 @@ describe('ItemsController', () => {
         stock: 500,
       };
 
-      expect(await controller.update(item.id, dto)).toEqual({
+      expect(await controller.update(request, item.id, dto)).toEqual({
         ...item,
         price: 100,
         stock: 500,
       });
 
-      expect(mockItemsService.update).toHaveBeenCalledWith(
-        expect.any(User),
-        item.id,
+      expect(mockItemsService.update).toHaveBeenLastCalledWith(
+        item,
         dto,
       );
     });
 
     it('should return a ForbiddenError message', async () => {
-      mockItemsService.update.mockImplementationOnce(() => {
-        throw new ForbiddenException();
-      });
-      const dto = {
-        stock: 500,
-      };
+      request.user.id = mockUser.id + 1;
 
       try {
-        expect(await controller.update(10, dto)).toThrow(ForbiddenException);
+        expect(await controller.update(request, 10, {})).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
-        expect(mockItemsService.update).toHaveBeenCalledWith(
-          expect.any(User),
-          10,
-          dto,
-        );
       }
     });
 
     it('should return a NotFoundError message', async () => {
-      mockItemsService.update.mockImplementationOnce(() => {
+      request.user.id = mockUser.id;
+      mockItemsService.findOne.mockImplementationOnce(() => {
         throw new NotFoundException();
       });
-      const dto = {
-        stock: 500,
-      };
 
       try {
-        expect(await controller.update(10, dto)).toThrow(NotFoundException);
+        expect(await controller.update(request, 10, {})).toThrow(NotFoundException);
       } catch (error) {
         expect(error.message).toEqual('Not Found');
-        expect(mockItemsService.update).toHaveBeenCalledWith(
-          expect.any(User),
-          10,
-          dto,
-        );
       }
     });
   });
 
   describe('remove', () => {
     it('should remove an Item', async () => {
-      expect(await controller.delete(10)).toEqual(true);
+      expect(await controller.delete(request, 10)).toEqual(true);
 
-      expect(mockItemsService.delete).toHaveBeenCalledWith(
-        expect.any(User),
-        10,
-      );
+      expect(mockItemsService.delete).toHaveBeenCalledWith(10);
     });
 
     it('should return a ForbiddenError message', async () => {
@@ -270,7 +247,7 @@ describe('ItemsController', () => {
       });
 
       try {
-        expect(await controller.delete(10)).toThrow(ForbiddenException);
+        expect(await controller.delete(request, 10)).toThrow(ForbiddenException);
       } catch (error) {
         expect(error.message).toEqual('Forbidden');
       }

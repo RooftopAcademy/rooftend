@@ -1,18 +1,23 @@
 import {
-  Column,
   Entity,
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
   DeleteDateColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('history')
 export class History {
-  @ApiProperty({ example: 1, description: 'The id of the History' })
+  @ApiProperty({
+    example: 1,
+    description: 'The id of the History',
+    readOnly: true,
+    type: Number,
+  })
   @PrimaryGeneratedColumn({
     type: 'bigint',
     unsigned: true,
@@ -25,6 +30,10 @@ export class History {
   user: User;
 
   @ManyToOne(() => Item)
+  @ApiProperty({
+    example: 1,
+    description: 'Item Id'
+  })
   @JoinColumn({ name: 'item_id' })
   item_id: Item;
 
@@ -32,18 +41,26 @@ export class History {
     default: 'now()',
     type: Date,
     description: 'The date-time that was created',
+    nullable: false,
   })
-  @Column({
+  @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
-  created_at: Date;
+  createdAt: Date;
 
+  @ApiProperty({
+    default: null,
+    type: Date,
+    description: 'The date-time that was deleted',
+    nullable: true,
+  })
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
     default: null,
+    nullable: true,
   })
   deletedAt?: Date;
 }

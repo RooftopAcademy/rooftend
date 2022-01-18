@@ -13,20 +13,18 @@ import { ApiProperty } from '@nestjs/swagger';
 export class SavedItemsEntity {
   @PrimaryGeneratedColumn({
     type: 'bigint',
+    unsigned: true,
   })
   @ApiProperty({
     example: 1,
     description: 'The id of the saved item',
-    type: 'bigint',
+    type: Number,
   })
   id: number;
 
-  @Column({
-    type: 'bigint',
-    name: 'item_id',
-  })
+
   @ManyToMany(() => Item)
-  @JoinTable()
+  @JoinTable({ name: 'item_id' })
   @ApiProperty({
     example: 1,
     description: 'The id of the item',
@@ -35,12 +33,9 @@ export class SavedItemsEntity {
   })
   itemId: number;
 
-  @Column({
-    type: 'bigint',
-    name: 'user_id',
-  })
+
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({ name: 'user_id' })
   @ApiProperty({
     example: 1,
     description: 'The id of the user',
@@ -50,7 +45,9 @@ export class SavedItemsEntity {
   userId: number;
 
   @Column({
+    name: 'quantity',
     type: 'int',
+    nullable: false,
   })
   @ApiProperty({
     example: 1,
@@ -62,7 +59,9 @@ export class SavedItemsEntity {
   quantity: number;
 
   @Column({
+    name: 'price',
     type: 'int',
+    nullable: false,
   })
   @ApiProperty({
     example: 1,
