@@ -1,22 +1,22 @@
 const itemsList = [{ id: 1, user_id: 1, createdAt: Date.now() }];
 
-  jest.mock('nestjs-typeorm-paginate', () => ({
-    paginate: jest.fn().mockResolvedValue({
-      items: itemsList.slice(0, 2),
-      meta: {
-        itemCount: 2,
-        totalItems: 2,
-        totalPages: 1,
-        currentPage: 1,
-      },
-    }),
-  }));
+jest.mock('nestjs-typeorm-paginate', () => ({
+  paginate: jest.fn().mockResolvedValue({
+    items: itemsList.slice(0, 2),
+    meta: {
+      itemCount: 2,
+      totalItems: 2,
+      totalPages: 1,
+      currentPage: 1,
+    },
+  }),
+}));
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { History } from '../models/history.entity';
-import { HistoryService } from './history.service'; 
+import { HistoryService } from './history.service';
 import { User } from '../../users/entities/user.entity';
 
 describe('HistoryService', () => {
@@ -35,13 +35,14 @@ describe('HistoryService', () => {
   };
 
   const mockHistoryRepository = {
-    find: jest.fn(() => Promise.resolve([
-      {
-        id: 1,
-        user_id: 1,
-        createdAt: new Date(),
-      },
-    ]),
+    find: jest.fn(() =>
+      Promise.resolve([
+        {
+          id: 1,
+          user_id: 1,
+          createdAt: new Date(),
+        },
+      ]),
     ),
     delete: jest.fn(() => Promise.resolve(true)),
   };
@@ -76,17 +77,19 @@ describe('HistoryService', () => {
 
       jest.mock('nestjs-typeorm-paginate', () => ({
         paginate: jest.fn().mockResolvedValue({
-            items: itemsList.slice(0, 2),
-            meta: {
-              itemCount: 2,
-              totalItems: 2,
-              totalPages: 1,
-              currentPage: 1,
-            }
-          }),
+          items: itemsList.slice(0, 2),
+          meta: {
+            itemCount: 2,
+            totalItems: 2,
+            totalPages: 1,
+            currentPage: 1,
+          },
+        }),
       }));
 
-      expect((await service.paginate(options, new User)).items.length).toBe(itemsList.length);
-    })
-  })
+      expect((await service.paginate(options, new User())).items.length).toBe(
+        itemsList.length,
+      );
+    });
+  });
 });
