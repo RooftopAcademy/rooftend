@@ -13,7 +13,6 @@ import { Cart } from '../../cart/entities/cart.entity';
 import { CustomMessage } from '../../custom-messages/entities/custom-messages.entity';
 import { Item } from '../../items/entities/items.entity';
 
-// TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
 type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
