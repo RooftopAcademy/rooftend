@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  DeleteDateColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
@@ -17,11 +25,9 @@ export class History {
   @ApiProperty({ example: 1, description: 'The user that has the history' })
   user: User;
 
-
   @ManyToOne(() => Item)
   @JoinColumn({ name: 'item_id' })
   item_id: Item;
-  
 
   @ApiProperty({
     default: 'now()',
