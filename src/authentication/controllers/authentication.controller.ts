@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   Post,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -52,9 +53,9 @@ export class AuthenticationController {
   async register(@Body() user: CreateUserDTO) {
     await this.authService.checkEmail(user);
 
-    await this.authService.create(user);
+    const newUser = await this.authService.create(user);
 
-    return this.authService.registry(user);
+    return this.authService.registry(newUser);
   }
 
   @HttpCode(200)
@@ -81,7 +82,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('login')
-  async login(@Body() user: LogInUserDTO) {
-    return this.authService.login(user);
+  async login(@Body() user: LogInUserDTO, @Req() req) {
+    return this.authService.login(req.user, user.password);
   }
 }
