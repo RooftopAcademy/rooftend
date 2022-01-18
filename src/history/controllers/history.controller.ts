@@ -2,23 +2,28 @@ import {
   Controller,
   DefaultValuePipe,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { HistoryService } from '../services/history.service';
 import { History } from '../models/history.entity';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
-import { User } from '../../users/entities/user.entity';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
 
 @ApiTags('history')
 @Controller('history')
 export class HistoryController {
-  constructor(private readonly historyService: HistoryService) {};
+  constructor(
+    private readonly historyService: HistoryService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {};
 
   @ApiOperation({ summary: 'Get all history' })
   @ApiResponse({
@@ -29,17 +34,30 @@ export class HistoryController {
   @ApiForbiddenResponse({
     description: 'Forbidden.',
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
+  @ApiBearerAuth()
   @Get()
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async getAll(
+    @Param('id') id: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
-    let user = new User;
-    user.id = 1;
+    const user: any = id;
+    const history = await this.historyService.findHistory(user);
 
-    limit = limit > 100 ? 100 : limit;
+    if(!history) {
+      throw new NotFoundException('History not found.');
+    };
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if(ability.cannot(Permission.Read, subject('History', history))) {
+      throw new ForbiddenException();
+    };
+
     return this.historyService.paginate({
       page,
       limit,
@@ -50,7 +68,6 @@ export class HistoryController {
   };
 
   @Delete(':id')
-  @UseGuards(PoliciesGuard)
   @ApiOperation({ summary: 'Remove a history' })
   @ApiResponse({
     status: 200,
