@@ -1,6 +1,15 @@
-import { Controller, Get, HttpCode } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ShippingMethodDTO } from '../dto/shipping-method.dto';
+import {
+  Controller,
+  Get,
+  HttpCode,
+} from '@nestjs/common';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+
+import { ShippingMethod } from '../entities/shipping-method.entity';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
 
 @ApiTags('Shipping Methods')
@@ -31,7 +40,7 @@ export class ShippingMethodsController {
   })
   @Get()
   @HttpCode(200)
-  getAll(): Promise<ShippingMethodDTO[]> {
+  getAll(): Promise<ShippingMethod[]> {
     return this.shippingMethodsService.findAll();
   }
 }
