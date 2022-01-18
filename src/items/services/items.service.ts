@@ -122,6 +122,6 @@ export class ItemsService {
   }
 
   async delete(item: Item): Promise<DeleteResult> {
-    return this.itemsRepo.delete(item);
+    return this.itemsRepo.softDelete(item);
   }
 }
