@@ -2,12 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -152,12 +154,14 @@ export class ItemsController {
   @HttpCode(200)
   getAll(
     @Req() req: Request,
-    @Query('sellerId') sellerId?: number,
-    @Query('categoryId') categoryId?: number,
+    @Query('sellerId', new DefaultValuePipe(null), ParseIntPipe)
+    sellerId?: number,
+    @Query('categoryId', new DefaultValuePipe(null), ParseIntPipe)
+    categoryId?: number,
     @Query('orderBy') orderBy?: string,
-    @Query('dir') dir: 'ASC' | 'DESC' = 'ASC',
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @Query('dir', new DefaultValuePipe('ASC')) dir: 'ASC' | 'DESC' = 'ASC',
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
     const user: User = <User>req.user;
 
