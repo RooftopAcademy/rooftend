@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import {
   IPaginationOptions,
   paginate,
@@ -16,21 +16,29 @@ export class HistoryService {
     private readonly historyRepo: Repository<History>,
   ) {}
 
-  async delete(id: number): Promise<boolean> {
-    await this.historyRepo.delete(id);
-    
-    return true;
-  };
+  delete(id: number) {
+    return this.historyRepo.softDelete(id);
+  }
 
-  async paginate(options: IPaginationOptions, user: User): Promise<Pagination<History>> {
-    return paginate<History>(this.historyRepo, options, { where: { user: { id: user.id } } });
-  };
+  async paginate(
+    options: IPaginationOptions,
+    user: User,
+  ): Promise<Pagination<History>> {
+    return paginate<History>(this.historyRepo, options, {
+      where: { user: { id: user.id } },
+    });
+  }
 
-  async findHistory(userId: number): Promise<History> {
+  async findHistory(id: number): Promise<History> {
     const history = await this.historyRepo.findOne({
-      select: ['id'], where: { purchasedAt: null , user:{ id:userId }, relations: ['user'], order: { id: 'DESC' } },
+      select: ['id'],
+      where: {
+        id: id,
+        purchasedAt: null,
+        relations: ['user'],
+      },
     });
 
     return history;
-  };
+  }
 }
