@@ -9,20 +9,25 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Req,
 } from '@nestjs/common';
-import { 
-  ApiBearerAuth, 
-  ApiForbiddenResponse, 
-  ApiOperation, 
-  ApiResponse, 
-  ApiTags, 
-  ApiUnauthorizedResponse 
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { HistoryService } from '../services/history.service';
 import { History } from '../models/history.entity';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
+import { User } from '../../users/entities/user.entity';
+import { Request } from 'express';
+import STATUS from '../../statusCodes/statusCodes';
+import { identity } from 'rxjs';
 
 @ApiTags('history')
 @Controller('history')
@@ -30,7 +35,7 @@ export class HistoryController {
   constructor(
     private readonly historyService: HistoryService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {};
+  ) {}
 
   @ApiOperation({ summary: 'Get all history' })
   @ApiResponse({
@@ -38,8 +43,10 @@ export class HistoryController {
     description: 'A list with all the History',
     type: History,
   })
+  //Agregar la docu del schema
   @ApiForbiddenResponse({
     description: 'Forbidden.',
+    //Agregar los ejemplos
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
@@ -48,31 +55,21 @@ export class HistoryController {
   @Get()
   @HttpCode(200)
   async getAll(
-    @Param('id') id: number,
+    @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
-    const user: any = id;
-    const history = await this.historyService.findHistory(user);
+    const user: User = <User>req.user;
 
-    if(!history) {
-      throw new NotFoundException('History not found.');
-    };
-
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if(ability.cannot(Permission.Read, subject('History', history))) {
-      throw new ForbiddenException();
-    };
-
-    return this.historyService.paginate({
-      page,
-      limit,
-      route: '/history',
-    },
+    return this.historyService.paginate(
+      {
+        page,
+        limit,
+        route: '/history',
+      },
       user,
     );
-  };
+  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remove a history' })
@@ -88,20 +85,22 @@ export class HistoryController {
   })
   @ApiBearerAuth()
   @HttpCode(200)
-  async delete(@Param('id') id: number): Promise<boolean> {
-    const user: any = id;
-    const history = await this.historyService.findHistory(user);
+  async delete(@Req() req: Request, @Param('id') id: number) {
+    const user: User = <User>req.user;
+    const history = await this.historyService.findHistory(id);
 
-    if(!history) {
+    if (!history) {
       throw new NotFoundException('History not found.');
-    };
+    }
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    if(ability.cannot(Permission.Delete, subject('History', history))) {
+    if (ability.cannot(Permission.Delete, subject('History', history))) {
       throw new ForbiddenException();
-    };
+    }
 
-    return this.historyService.delete(id);
-  };
+    await this.historyService.delete(id);
+
+    return STATUS.DELETED;
+  }
 }
