@@ -10,7 +10,14 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { 
+  ApiBearerAuth, 
+  ApiForbiddenResponse, 
+  ApiOperation, 
+  ApiResponse, 
+  ApiTags, 
+  ApiUnauthorizedResponse 
+} from '@nestjs/swagger';
 import { HistoryService } from '../services/history.service';
 import { History } from '../models/history.entity';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
@@ -76,8 +83,25 @@ export class HistoryController {
   @ApiForbiddenResponse({
     description: 'Forbidden.',
   })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
+  @ApiBearerAuth()
   @HttpCode(200)
-  delete(@Param('id') id: number): Promise<boolean> {
+  async delete(@Param('id') id: number): Promise<boolean> {
+    const user: any = id;
+    const history = await this.historyService.findHistory(user);
+
+    if(!history) {
+      throw new NotFoundException('History not found.');
+    };
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if(ability.cannot(Permission.Delete, subject('History', history))) {
+      throw new ForbiddenException();
+    };
+
     return this.historyService.delete(id);
   };
 }
