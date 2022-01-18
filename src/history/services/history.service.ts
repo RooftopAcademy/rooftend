@@ -25,4 +25,12 @@ export class HistoryService {
   async paginate(options: IPaginationOptions, user: User): Promise<Pagination<History>> {
     return paginate<History>(this.historyRepo, options, { where: { user: { id: user.id } } });
   };
+
+  async findHistory(userId: number): Promise<History> {
+    const history = await this.historyRepo.findOne({
+      select: ['id'], where: { purchasedAt: null , user:{ id:userId }, relations: ['user'], order: { id: 'DESC' } },
+    });
+
+    return history;
+  };
 }
