@@ -111,7 +111,7 @@ describe('ItemsService', () => {
     })),
     save: jest.fn((item) => Promise.resolve(item)),
     update: jest.fn().mockResolvedValue(new UpdateResult()),
-    delete: jest.fn().mockResolvedValue(new DeleteResult()),
+    softDelete: jest.fn().mockResolvedValue(new DeleteResult()),
     createQueryBuilder: jest.fn(() => ({
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -315,7 +315,9 @@ describe('ItemsService', () => {
     it('should remove an Item', async () => {
       expect(await service.delete(genericItem)).toBeInstanceOf(DeleteResult);
 
-      expect(mockItemsRepository.delete).toHaveBeenLastCalledWith(genericItem);
+      expect(mockItemsRepository.softDelete).toHaveBeenLastCalledWith(
+        genericItem,
+      );
     });
   });
 });
