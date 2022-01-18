@@ -13,6 +13,7 @@ export class ShippingMethodsController {
   })
   @ApiOkResponse({
     description: 'Get a list of shipping methods',
+    status: 200,
     schema: {
       example: [
         {
