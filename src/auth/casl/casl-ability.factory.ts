@@ -13,7 +13,9 @@ import { Cart } from '../../cart/entities/cart.entity';
 import { CustomMessage } from '../../custom-messages/entities/custom-messages.entity';
 import { Item } from '../../items/entities/items.entity';
 
-type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage> | 'all';
+type Subjects =
+  | InferSubjects<typeof Item | typeof Cart | typeof CustomMessage>
+  | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -24,14 +26,20 @@ export class CaslAbilityFactory {
       Ability<[Permission, Subjects]>
     >(Ability as AbilityClass<AppAbility>);
 
-    can<FlatClass<Cart>>(Permission.Read, Cart, { "user.id": user.id });
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
+
+    can<FlatClass<Cart>>(Permission.Read, Cart, { 'user.id': user.id });
+
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
-      'user.id': Number(user.id),
+      'user.id': user.id,
     });
 
-    can<FlatClass<CustomMessage>>([Permission.Read, Permission.Delete, Permission.Update], CustomMessage, { "user.id": user.id });
+    can<FlatClass<CustomMessage>>(
+      [Permission.Read, Permission.Delete, Permission.Update],
+      CustomMessage,
+      { 'user.id': user.id },
+    );
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
