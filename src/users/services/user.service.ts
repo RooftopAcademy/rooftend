@@ -61,6 +61,12 @@ export class UserService {
     return { message: 'Password updated, please login again' };
   }
 
+  async updateAccountStatus(user: User, accountStatus: AccountStatusesEnum) {
+    /**
+     * 
+     */
+  }
+
   async delete(id: number) {
     this.userRepo.softDelete(id);
 
