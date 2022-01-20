@@ -53,9 +53,13 @@ export class AuthenticationController {
   async register(@Body() user: CreateUserDTO) {
     await this.authService.checkEmail(user);
 
-    const newUser = await this.authService.create(user);
+    await this.authService.create(user);
+  }
 
-    return this.authService.registry(newUser);
+  @Public()
+  @Post('confirm-user')
+  async confirmUser(@Body('transaction') transaction: string) {
+    return this.authService.confirmRegistry(transaction);
   }
 
   @HttpCode(200)
