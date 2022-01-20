@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpCode,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -16,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
@@ -33,16 +35,6 @@ export class AuthenticationController {
   @HttpCode(201)
   @ApiOperation({ summary: 'Register an user' })
   @ApiBody({ type: CreateUserDTO })
-  @ApiResponse({
-    status: 201,
-    description: 'The user was registered',
-    schema: {
-      example: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjVAZ21haWwuY29tIiwiaWF0IjoxNjQxOTEzNzUyLCJleHAiOjE2NDE5MTM4MTJ9.MzLodS6l0APNS5Y1l6Gfc8biA1S0TBasUjikB7E_hEU',
-      },
-    },
-  })
   @ApiConflictResponse({
     description: 'The user is allready registered',
     status: 409,
@@ -56,8 +48,33 @@ export class AuthenticationController {
     await this.authService.create(user);
   }
 
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Confirmation of a registered user' })
+  @ApiBody({ schema: {
+    example: {
+      "transaction": "c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec"
+    }
+  } })
+  @ApiResponse({
+    status: 204,
+    description: 'The user was confirmed successfully',
+    schema: {
+      example: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjVAZ21haWwuY29tIiwiaWF0IjoxNjQxOTEzNzUyLCJleHAiOjE2NDE5MTM4MTJ9.MzLodS6l0APNS5Y1l6Gfc8biA1S0TBasUjikB7E_hEU',
+      },
+    },
+  })
+  @ApiConflictResponse({
+    description: 'The user is already active',
+    status: 409,
+  })
+  @ApiForbiddenResponse({
+    description: 'The user is inactive or blocked',
+    status: 403,
+  })
   @Public()
-  @Post('confirm-user')
+  @Patch('confirm-user')
   async confirmUser(@Body('transaction') transaction: string) {
     return this.authService.confirmRegistry(transaction);
   }
