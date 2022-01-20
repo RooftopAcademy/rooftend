@@ -18,9 +18,9 @@ export class Notification {
     unsigned: true,
     type: 'bigint',
   })
-  @ManyToOne((type) => User, (user) => user.id)
-  @JoinColumn({ referencedColumnName : "id" })
-  user_id: number;
+  @ManyToOne((type) => User)
+  @JoinColumn({ name:"user_id" })
+  user: User;
 
   @ApiProperty({
     example: 'http://localhost:3000/notifications',
