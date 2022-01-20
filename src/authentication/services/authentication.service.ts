@@ -44,10 +44,12 @@ export class AuthenticationService {
   async validateUser(email: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
+    console.log(user.account_status)
+
     // ésto se debe implementar cuando hayamos creado los emails de autenticacion
-    // if (user.account_status != AccountStatusesEnum.ACTIVE) {
-    //   throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
-    // }
+    if (user.account_status != AccountStatusesEnum.ACTIVE) {
+      throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
+    }
 
     if (!user) {
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
