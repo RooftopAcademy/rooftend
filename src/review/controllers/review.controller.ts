@@ -29,7 +29,6 @@ import { ReviewService } from '../services/review.service';
 import { CartService } from '../../cart/services/cart.service';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
-import { Request } from 'express';
 
 @ApiTags('Reviews')
 @Controller('reviews')
@@ -140,15 +139,13 @@ export class ReviewController {
   @Post()
   @HttpCode(201)
   async create(
-    @Req() req: Request,
+    @Req() req,
     @Query('purchaseId') purchaseId: number,
     @Query('itemId') itemId: number,
     @Body() body: any,
   ) {
-    const purchase = await this.cartsService.findOneFromUser(
-      purchaseId,
-      <User>req.user,
-    );
+    const user: User = req.user;
+    const purchase = await this.cartsService.findOneFromUser(purchaseId, user);
     if (!purchase) throw new ForbiddenException();
 
     const item = purchase.items.find((item: CartItem) => item.itemId == itemId);

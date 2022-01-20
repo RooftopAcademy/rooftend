@@ -1,15 +1,21 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
   Req,
+  UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 
 import {
@@ -19,10 +25,14 @@ import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
-  ApiBearerAuth,
   ApiQuery,
+  ApiBearerAuth,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
+  ApiBody,
 } from '@nestjs/swagger';
+
+import { Request } from 'express';
 
 import { ItemsService } from '../services/items.service';
 import { Item } from '../entities/items.entity';
@@ -31,84 +41,134 @@ import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Request } from 'express';
+import { CreateItemDto } from '../entities/create.item.dto';
+import { UpdateItemDto } from '../entities/update.item.dto';
 import { Public } from '../../authentication/decorators/public.decorator';
+import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Items')
 @ApiBearerAuth()
 @Controller('items')
 export class ItemsController {
   constructor(
-    private readonly ItemsService: ItemsService,
+    private readonly itemsService: ItemsService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
-  @ApiOperation({ summary: 'Get all items' })
+  /**
+   * Retuns paginated list of items
+   * @todo add authorization
+   * @param sellerId - Show only items published by the user with this id
+   * @param categoryId - Show only items published in the category with this id
+   * @param orderBy - Sort items by this property
+   * @param dir - Sort direction
+   * @param page - Page of the result
+   * @param limit - Max amount of items per page
+   * @returns Filtered items according to preceding criteria
+   */
+  @ApiOperation({ summary: 'Get all items with optional filters' })
   @ApiResponse({
     status: 200,
-    description: 'A list with all the items',
-    type: [Item],
+    description: 'A paginated item list',
+    schema: {
+      example: {
+        items: [
+          {
+            id: '331',
+            createdAt: '2022-01-15T21:56:42.157Z',
+            updatedAt: '2022-01-15T21:56:42.157Z',
+            title: 'Gherkin - Sour',
+            description:
+              'Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.',
+            price: 4271.85,
+            stock: 1174,
+            deletedAt: null,
+            user: {
+              id: '64',
+              username: 'kdougharty1r',
+              email: 'modriscole1r@cnn.com',
+              account_status: 2,
+              deletedAt: null,
+              completed: false,
+            },
+            category: {
+              id: 65,
+              name: 'Clothing',
+            },
+            brand: {
+              id: '66',
+              name: 'functionalities',
+              photoUrl: 'http://dummyimage.com/100x100.png/cc0000/ffffff',
+            },
+          },
+        ],
+        meta: {
+          totalItems: 21,
+          itemCount: 1,
+          itemsPerPage: 1,
+          totalPages: 21,
+          currentPage: 1,
+        },
+      },
+    },
   })
-  @ApiBearerAuth()
   @ApiQuery({
+    required: false,
     name: 'sellerId',
-    type: Number,
-    required: false,
-    description: 'Id of the seller to filter',
+    description: 'Show only items published by the user with this id',
   })
   @ApiQuery({
+    required: false,
     name: 'categoryId',
-    type: Number,
-    required: false,
-    description: 'Id of the category to filter',
+    description: 'Show only items published in the category with this id',
   })
   @ApiQuery({
+    required: false,
     name: 'orderBy',
-    type: String,
-    enum: ['price'],
-    required: false,
-    description: 'Property of the item to sort by',
+    description: 'Sort items by this property',
+    example: 'price',
   })
   @ApiQuery({
+    required: false,
     name: 'dir',
-    type: String,
+    description: 'Sort direction',
     enum: ['ASC', 'DESC'],
     example: 'ASC',
-    required: false,
-    description: 'Sort direction',
   })
   @ApiQuery({
+    required: false,
     name: 'page',
-    type: Number,
-    required: false,
+    description: 'Page of the result',
     example: 1,
-    description: 'The page to be requested',
   })
   @ApiQuery({
-    name: 'limit',
-    type: Number,
     required: false,
+    name: 'limit',
+    description: 'Max amount of items per page',
     example: 10,
-    description: 'The amount of items to be requested for page',
   })
+  @ApiBearerAuth()
   @Public()
   @Get()
   @HttpCode(200)
   getAll(
     @Req() req: Request,
-    @Query('sellerId') sellerId: null,
-    @Query('categoryId') categoryId: null,
-    @Query('orderBy') orderBy: null,
-    @Query('dir') dir: 'ASC' | 'DESC' = 'ASC',
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @Query('sellerId', new DefaultValuePipe(null), ParseIntPipe)
+    sellerId?: number,
+    @Query('categoryId', new DefaultValuePipe(null), ParseIntPipe)
+    categoryId?: number,
+    @Query('orderBy') orderBy?: string,
+    @Query('dir', new DefaultValuePipe('ASC')) dir: 'ASC' | 'DESC' = 'ASC',
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Item, IPaginationMeta>> {
     const user: User = <User>req.user;
 
     page = page >= 1 ? page : 1;
     limit = limit <= 100 ? limit : 100;
 
-    return this.ItemsService.findAll(
+    return this.itemsService.findAll(
       {
         exclude: true,
         sellerId,
@@ -135,91 +195,149 @@ export class ItemsController {
   @HttpCode(200)
   @ApiNotFoundResponse({
     description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
   })
   getOne(@Param('id') id: number): Promise<Item> {
-    return this.ItemsService.findOne(id);
+    return this.itemsService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create a item' })
+  @ApiOperation({ summary: 'Create an item' })
   @ApiResponse({
     status: 201,
     description: 'The created item',
     type: Item,
   })
   @ApiBadRequestResponse({
-    description: 'The item could not be created',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'title must be longer than or equal to 1 characters',
+      ]).getResponse(),
+    },
   })
   @ApiUnauthorizedResponse({
-    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
   })
+  @ApiUnprocessableEntityResponse({
+    description: 'The categoryId or brandId supplied does not exist',
+    schema: {
+      example: new UnprocessableEntityException(
+        'Category does not exist',
+      ).getResponse(),
+    },
+  })
+  @ApiBearerAuth()
   @Post()
   @HttpCode(201)
-  create(@Req() req: Request, @Body() body: any): Promise<Item> {
-    const user: any = req.user;
+  create(@Req() req: Request, @Body() body: CreateItemDto): Promise<Item> {
+    const user: User = <User>req.user;
 
-    return this.ItemsService.create(user, body);
+    return this.itemsService.create(user, body);
   }
 
-  @ApiOperation({ summary: 'Update a item by ID' })
+  @ApiOperation({ summary: 'Update an item by ID' })
+  @ApiBody({ type: UpdateItemDto, required: false })
   @ApiResponse({
-    status: 204,
-    description: 'The updated item',
-    type: Item,
+    status: 200,
+    description: 'Item updated successfully',
+    schema: {
+      example: STATUS.OK,
+    },
   })
   @ApiBadRequestResponse({
-    description: 'The item could not be updated',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'title must be longer than or equal to 1 characters',
+      ]).getResponse(),
+    },
   })
   @ApiUnauthorizedResponse({
-    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
   })
-  @Patch(':id')
-  @HttpCode(204)
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to update this item',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiNotFoundResponse({
     description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
   })
-  async update(@Req() req: Request, @Param('id') id: number, @Body() body: any): Promise<Item> {
-    const user: any = req.user;
+  @ApiBearerAuth()
+  @Patch(':id')
+  @HttpCode(200)
+  async update(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Body() body: UpdateItemDto,
+  ): Promise<Status> {
+    const user: User = <User>req.user;
 
-    const item = await this.ItemsService.findOne(id);
+    const item = await this.itemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if (ability.cannot(Permission.Update, subject('Item', item))) {
       throw new ForbiddenException();
     }
 
-    return this.ItemsService.update(item, body);
+    await this.itemsService.update(item, body);
+
+    return STATUS.OK;
   }
 
-  @ApiOperation({ summary: 'Delete a item by ID' })
+  @ApiOperation({ summary: 'Delete an item by ID' })
   @ApiResponse({
     status: 200,
-    description: 'If the item was removed or not',
-    type: Boolean,
-  })
-  @ApiBadRequestResponse({
-    description: 'The item could not be deleted',
+    description: 'Item deleted sucessfully',
+    schema: {
+      example: STATUS.DELETED,
+    },
   })
   @ApiUnauthorizedResponse({
-    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
   })
+  @ApiForbiddenResponse({
+    description: 'User is not authorized to delete this item',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Item Not Found',
+    schema: {
+      example: new NotFoundException('Item not found').getResponse(),
+    },
+  })
+  @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(200)
-  @ApiForbiddenResponse({
-    description: 'Forbidden',
-  })
-  async delete(@Req() req: Request, @Param('id') id: number): Promise<boolean> {
-    const user: any = req.user;
+  async delete(@Req() req: Request, @Param('id') id: number): Promise<Status> {
+    const user: User = <User>req.user;
 
-    const item = await this.ItemsService.findOne(id);
+    const item = await this.itemsService.findOne(id);
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if (ability.cannot(Permission.Delete, subject('Item', item))) {
       throw new ForbiddenException();
     }
 
-    return this.ItemsService.delete(id);
+    await this.itemsService.delete(item);
+
+    return STATUS.DELETED;
   }
 }
