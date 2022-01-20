@@ -3,28 +3,30 @@ import {
   Controller,
   DefaultValuePipe,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiTags
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {
-  IPaginationMeta,
-  Pagination
-} from 'nestjs-typeorm-paginate';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Question } from '../entities/question.entity';
 import { QuestionsService } from '../services/questions.service';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
@@ -33,13 +35,20 @@ import STATUS from '../../statusCodes/statusCodes';
 import { AnswersService } from '../services/answers.service';
 import { AnswerDTO } from '../entities/answer.dto';
 import { User } from '../../users/entities/user.entity';
+import { Public } from '../../authentication/decorators/public.decorator';
+import { Request } from 'express';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 
 @ApiTags('Questions')
 @Controller('questions')
 export class QuestionsController {
-  constructor(private QuestionsService: QuestionsService,
-    private readonly answersService: AnswersService,) { }
-
+  constructor(
+    private QuestionsService: QuestionsService,
+    private readonly answersService: AnswersService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   @ApiOperation({ summary: 'Get all questions answered of corresponding item' })
   @HttpCode(200)
@@ -73,8 +82,9 @@ export class QuestionsController {
     example: 10,
   })
   @Get('/')
+  @Public()
   async find(
-    @Query('item_id',) item_id,
+    @Query('item_id') item_id,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Question, IPaginationMeta>> {
@@ -88,9 +98,15 @@ export class QuestionsController {
       item_id,
     );
   }
-
   @Get('/recived')
   @HttpCode(200)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden',
+  })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Not found',
@@ -114,22 +130,35 @@ export class QuestionsController {
     example: 10,
   })
   async findRecived(
+    @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Question, IPaginationMeta>> {
+  ) {
+    const user: User = <User>req.user;
     limit = limit > 100 ? 100 : limit;
-    return await this.QuestionsService.paginateRecived(
+    const questionRecived: any = await this.QuestionsService.findQuestion(
+      user.id,
+    );
+    if (!questionRecived) {
+      throw new NotFoundException('Question by userId not found');
+    }
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.cannot(Permission.Read, subject('Question', questionRecived))) {
+      throw new ForbiddenException();
+    }
+    return await this.QuestionsService.paginate(
       {
         page,
         limit,
         route: 'questions',
       },
-      2
+      user,
     );
   }
 
   @ApiOperation({ summary: 'get questions sent by user' })
   @HttpCode(200)
+  @ApiBearerAuth()
   @ApiNotFoundResponse({
     status: 404,
     description: 'Not found',
@@ -164,7 +193,7 @@ export class QuestionsController {
         limit,
         route: 'questions',
       },
-      2
+      2,
     );
   }
 
@@ -175,14 +204,17 @@ export class QuestionsController {
     status: 201,
     description: 'Created',
     schema: {
-      example: STATUS.CREATED
-    }
+      example: STATUS.CREATED,
+    },
   })
   @ApiBody({ type: CreateQuestionDTO })
-  async createQuestion(@Body() question: CreateQuestionDTO): Promise<Status> {
-    let user = new User()
-    user.id = 1
-    return await this.QuestionsService.create(question, user)
+  async createQuestion(
+    @Req() req: Request,
+    @Body() question: CreateQuestionDTO,
+  ): Promise<Status> {
+    const user = new User();
+    user.id = 1;
+    return await this.QuestionsService.create(question, user);
   }
 
   @Delete(':id')
@@ -197,7 +229,7 @@ export class QuestionsController {
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Id of question'
+    description: 'Id of question',
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -221,10 +253,11 @@ export class QuestionsController {
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Id of question'
+    description: 'Id of question',
   })
   @ApiBody({ type: AnswerDTO })
-  async createAnswer(@Body() answer: AnswerDTO, @Param('id') id: number)
+  async createAnswer(
+    @Req() req: Request,@Body() answer: AnswerDTO, @Param('id') id: number)
     : Promise<Status> {
     return await this.answersService.create(answer, id);
   }
@@ -237,13 +270,13 @@ export class QuestionsController {
     description: 'Deleted',
     schema: {
       example: STATUS.DELETED,
-    }
+    },
   })
   @ApiParam({
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Id of answer'
+    description: 'Id of answer',
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -253,7 +286,7 @@ export class QuestionsController {
     name: 'idQ',
     example: 1,
     type: Number,
-    description: 'Id of Question'
+    description: 'Id of Question',
   })
   async deleteAnswer(@Param('id') id: number, @Param('questionId') questionId: number):
     Promise<Status> {
