@@ -4,7 +4,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 import { User } from '../../users/entities/user.entity';
 import { createCipheriv } from 'crypto';
-import { CryptoSecurityKey } from '../constants/constants';
+import { cryptoConstants } from '../constants/constants';
 
 
 @Injectable()
@@ -15,19 +15,22 @@ export class MailService {
 
   async sendUserConfirmation(email: string) {
 
-    const cipher = createCipheriv(CryptoSecurityKey.algorithm, CryptoSecurityKey.key, CryptoSecurityKey.initialVector);
+    /**
+     * Data encryption
+     */
 
-    const obj = {email, date: Date.now() };
-
-    let transaction = cipher.update(JSON.stringify(obj), CryptoSecurityKey.inputEncoding, CryptoSecurityKey.outputEncoding);
-
+    const cipher = createCipheriv(cryptoConstants.ALGORITHM, cryptoConstants.KEY, cryptoConstants.INITIAL_VECTOR);
+    const obj = {email, date: Date.now()};
+    let transaction = cipher.update(JSON.stringify(obj), cryptoConstants.INPUT_ENCODING, cryptoConstants.OUTPUT_ENCODING);
     transaction += cipher.final("hex");
 
+    /**
+     * Sending the email
+     */
+    
     const url = `example.com/auth/confirm?transaction=${transaction}`;
-
     await this.mailerService.sendMail({
       to: email,
-      // from: 'Support Team', // override default from
       subject: 'Welcome to Roofstore! Please, confirm your email',
       template: '../registry-confirmation',
       context: {
