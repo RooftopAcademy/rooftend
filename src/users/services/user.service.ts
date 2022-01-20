@@ -62,8 +62,6 @@ export class UserService {
   }
 
   async updateAccountStatus(user: User) {
-
-    // this.userRepo.save(user);
     this.userRepo.update({ id: user.id }, { account_status: user.account_status });
   }
 
