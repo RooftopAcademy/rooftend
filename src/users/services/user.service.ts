@@ -61,10 +61,10 @@ export class UserService {
     return { message: 'Password updated, please login again' };
   }
 
-  async updateAccountStatus(user: User, accountStatus: AccountStatusesEnum) {
-    /**
-     * 
-     */
+  async updateAccountStatus(user: User) {
+
+    // this.userRepo.save(user);
+    this.userRepo.update({ id: user.id }, { account_status: user.account_status });
   }
 
   async delete(id: number) {
