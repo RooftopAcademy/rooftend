@@ -28,7 +28,6 @@ import {
 } from '@nestjs/swagger';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Question } from '../entities/question.entity';
-import { QuestionsService } from '../services/questions.service';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
 import Status from '../../statusCodes/status.interface';
 import STATUS from '../../statusCodes/statusCodes';
@@ -40,12 +39,13 @@ import { Request } from 'express';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { QuestionsService } from '../services/questions.service';
 
 @ApiTags('Questions')
 @Controller('questions')
 export class QuestionsController {
   constructor(
-    private QuestionsService: QuestionsService,
+    private questionsService: QuestionsService,
     private readonly answersService: AnswersService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
@@ -89,7 +89,7 @@ export class QuestionsController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Question, IPaginationMeta>> {
     limit = limit > 100 ? 100 : limit;
-    return await this.QuestionsService.paginateBy(
+    return await this.questionsService.paginateBy(
       {
         page,
         limit,
@@ -129,24 +129,26 @@ export class QuestionsController {
     description: 'limit of paginated questions',
     example: 10,
   })
-  async findRecived(
+  async findReceived(
     @Req() req: Request,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ) {
     const user: User = <User>req.user;
     limit = limit > 100 ? 100 : limit;
-    const questionRecived: any = await this.QuestionsService.findQuestion(
+    const questionReceived: any = await this.questionsService.findQuestion(
       user.id,
     );
-    if (!questionRecived) {
+    if (!questionReceived) {
       throw new NotFoundException('Question by userId not found');
     }
     const ability = this.caslAbilityFactory.createForUser(user);
-    if (ability.cannot(Permission.Read, subject('Question', questionRecived))) {
+    if (
+      ability.cannot(Permission.Read, subject('Question', questionReceived))
+    ) {
       throw new ForbiddenException();
     }
-    return await this.QuestionsService.paginate(
+    return await this.questionsService.paginate(
       {
         page,
         limit,
@@ -187,7 +189,7 @@ export class QuestionsController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Question, IPaginationMeta> | void> {
     limit = limit > 100 ? 100 : limit;
-    return await this.QuestionsService.paginateSent(
+    return await this.questionsService.paginateSent(
       {
         page,
         limit,
