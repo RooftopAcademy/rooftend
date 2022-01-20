@@ -5,6 +5,10 @@ import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User } from '../../users/entities/user.entity';
+import { MailService } from '../../mail/services/mail.service';
+import { createDecipheriv } from 'crypto';
+import { CryptoSecurityKey } from '../../mail/constants/constants';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,6 +16,7 @@ export class AuthenticationService {
     private usersService: UserService,
     private jwtService: JwtService,
     private eventEmitter: EventEmitter2,
+    private mailService: MailService,
   ) {}
 
   async checkEmail(user: CreateUserDTO) {
@@ -61,7 +66,38 @@ export class AuthenticationService {
     }
   }
 
-  async registry(user: User) {
+  async confirmRegistry(transaction: string) {
+    
+    const decipher = createDecipheriv(CryptoSecurityKey.algorithm, CryptoSecurityKey.key, CryptoSecurityKey.initialVector);
+
+    let decryptedData = decipher.update(transaction, CryptoSecurityKey.outputEncoding, CryptoSecurityKey.inputEncoding);
+
+    decryptedData += decipher.final("utf8");
+
+    const transactionInfo = JSON.parse(decryptedData);
+
+    const user = await this.usersService.findOneByEmail(transactionInfo.email);
+
+    const maxHours = 1000 * 60 * 60 * 24;
+    
+    const timeElapsed = Date.now() - transactionInfo.date
+    const transactionExpired = timeElapsed > maxHours;
+
+    if(transactionExpired) {
+      throw new HttpException('TRANSACTION_EXPIRED', HttpStatus.FORBIDDEN)
+    } 
+
+    if(user.account_status == AccountStatusesEnum.ACTIVE) {
+      throw new HttpException('USER_IS_ALREADY_ACTIVE', HttpStatus.CONFLICT);
+    }
+    if(user.account_status == AccountStatusesEnum.BLOCKED || user.account_status == AccountStatusesEnum.INACTIVE) {
+      throw new HttpException('USER_IS_INACTIVE_OR_BLOCKED', HttpStatus.FORBIDDEN);
+    }
+
+    user.account_status = AccountStatusesEnum.ACTIVE;
+
+    
+
     return {
       accessToken: this.jwtService.sign({ ...user }),
     };
@@ -76,4 +112,13 @@ export class AuthenticationService {
       accessToken: this.jwtService.sign({ ...user }),
     };
   }
+
+  async signUp(user: User) {
+    const token = Math.floor(1000 + Math.random() * 9000).toString();
+    // create user in db
+    // ...
+    // send confirmation mail
+    // await this.mailService.sendUserConfirmation(user, token);
+  }
+
 }
