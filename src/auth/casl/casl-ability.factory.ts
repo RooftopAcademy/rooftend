@@ -10,9 +10,10 @@ import { Permission } from '../enums/permission.enum';
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
 import { FlatClass } from '../types/flat-class.type';
+import { Question } from '../../questions/entities/question.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item> | 'all';
+type Subjects = InferSubjects<typeof Item | typeof Question> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -28,7 +29,7 @@ export class CaslAbilityFactory {
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
       'user.id': Number(user.id),
     });
-
+    can([Permission.Read], Question);
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) =>
