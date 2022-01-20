@@ -48,7 +48,6 @@ export class AuthenticationController {
     await this.authService.create(user);
   }
 
-  @HttpCode(204)
   @ApiOperation({ summary: 'Confirmation of a registered user' })
   @ApiBody({ schema: {
     example: {
