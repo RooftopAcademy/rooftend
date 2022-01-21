@@ -10,8 +10,6 @@ import { ConfigService } from '@nestjs/config';
     MailerModule.forRootAsync({
 
       useFactory: async (config: ConfigService) => ({
-        // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
-        // or
         transport: {
           service: 'gmail',
           auth: {
@@ -24,7 +22,7 @@ import { ConfigService } from '@nestjs/config';
         },
         template: {
           dir: join(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+          adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
           },
