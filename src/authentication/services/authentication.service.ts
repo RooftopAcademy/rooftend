@@ -69,18 +69,24 @@ export class AuthenticationService {
      * Decrypt of transaction data
      */
 
-    const decipher = createDecipheriv(
-      cryptoConstants.ALGORITHM,
-      cryptoConstants.KEY,
-      cryptoConstants.INITIAL_VECTOR,
-    );
-    let decryptedData = decipher.update(
-      transactionToken,
-      cryptoConstants.OUTPUT_ENCODING,
-      cryptoConstants.INPUT_ENCODING,
-    );
-    decryptedData += decipher.final('utf8');
-    const transactionTokenInfo = JSON.parse(decryptedData);
+    let transactionTokenInfo;
+
+    try {
+      const decipher = createDecipheriv(
+        cryptoConstants.ALGORITHM,
+        cryptoConstants.KEY,
+        cryptoConstants.INITIAL_VECTOR,
+      );
+      let decryptedData = decipher.update(
+        transactionToken,
+        cryptoConstants.OUTPUT_ENCODING,
+        cryptoConstants.INPUT_ENCODING,
+      );
+      decryptedData += decipher.final('utf8');
+      transactionTokenInfo = JSON.parse(decryptedData);
+    } catch {
+      throw new HttpException('TRANSACTION_TOKEN_NOT_VALID', 490);
+    }
 
     /**
      * Check of transaction validity
@@ -101,6 +107,10 @@ export class AuthenticationService {
     const user = await this.usersService.findOneByEmail(
       transactionTokenInfo.email,
     );
+
+    if (!user) {
+      throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+    }
 
     user.account_status = await this.usersService.findAccountStatus(user.id);
 
