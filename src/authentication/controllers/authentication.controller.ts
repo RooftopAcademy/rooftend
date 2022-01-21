@@ -140,7 +140,6 @@ export class AuthenticationController {
   @Public()
   @Post('login')
   async login(@Body() user: LogInUserDTO, @Req() req) {
-    console.log(req.user);
     return this.authService.login(req.user, user.password);
   }
 }
