@@ -42,13 +42,14 @@ export class AuthenticationService {
   async validateUser(email: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
-    user.account_status = await this.usersService.findAccountStatus(user.id);
-
     if (!user) {
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
     }
 
-    if (user.account_status != AccountStatusesEnum.ACTIVE) {
+    if (
+      (await this.usersService.findAccountStatus(user.id)) !=
+      AccountStatusesEnum.ACTIVE
+    ) {
       throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
     }
 
@@ -64,35 +65,56 @@ export class AuthenticationService {
   }
 
   async confirmRegistry(transactionToken: string) {
-
     /**
      * Decrypt of transaction data
      */
 
-    const decipher = createDecipheriv(cryptoConstants.ALGORITHM, cryptoConstants.KEY, cryptoConstants.INITIAL_VECTOR);
-    let decryptedData = decipher.update(transactionToken, cryptoConstants.OUTPUT_ENCODING, cryptoConstants.INPUT_ENCODING);
-    decryptedData += decipher.final("utf8");
+    const decipher = createDecipheriv(
+      cryptoConstants.ALGORITHM,
+      cryptoConstants.KEY,
+      cryptoConstants.INITIAL_VECTOR,
+    );
+    let decryptedData = decipher.update(
+      transactionToken,
+      cryptoConstants.OUTPUT_ENCODING,
+      cryptoConstants.INPUT_ENCODING,
+    );
+    decryptedData += decipher.final('utf8');
     const transactionTokenInfo = JSON.parse(decryptedData);
 
     /**
      * Check of transaction validity
      */
 
-    const timeElapsed = Date.now() - transactionTokenInfo.date
-    if(timeElapsed > cryptoConstants.VALIDITY_TIME) {
-      throw new HttpException('TRANSACTION_TOKEN_EXPIRED', HttpStatus.NOT_FOUND)
+    const timeElapsed = Date.now() - transactionTokenInfo.date;
+    if (timeElapsed > cryptoConstants.VALIDITY_TIME) {
+      throw new HttpException(
+        'TRANSACTION_TOKEN_EXPIRED',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     /**
      * Check account status of registered user
      */
 
-    const user = await this.usersService.findOneByEmail(transactionTokenInfo.email);
-    if(user.account_status == AccountStatusesEnum.ACTIVE) {
+    const user = await this.usersService.findOneByEmail(
+      transactionTokenInfo.email,
+    );
+
+    user.account_status = await this.usersService.findAccountStatus(user.id);
+
+    if (user.account_status == AccountStatusesEnum.ACTIVE) {
       throw new HttpException('USER_IS_ALREADY_ACTIVE', HttpStatus.CONFLICT);
     }
-    if(user.account_status == AccountStatusesEnum.BLOCKED || user.account_status == AccountStatusesEnum.INACTIVE) {
-      throw new HttpException('USER_IS_INACTIVE_OR_BLOCKED', HttpStatus.FORBIDDEN);
+    if (
+      user.account_status == AccountStatusesEnum.BLOCKED ||
+      user.account_status == AccountStatusesEnum.INACTIVE
+    ) {
+      throw new HttpException(
+        'USER_IS_INACTIVE_OR_BLOCKED',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     /**
@@ -101,8 +123,10 @@ export class AuthenticationService {
     user.account_status = AccountStatusesEnum.ACTIVE;
     this.usersService.updateAccountStatus(user);
 
+    const { account_status, ...result } = user;
+
     return {
-      accessToken: this.jwtService.sign({ ...user }),
+      accessToken: this.jwtService.sign(result),
     };
   }
 
@@ -115,5 +139,4 @@ export class AuthenticationService {
       accessToken: this.jwtService.sign({ ...user }),
     };
   }
-
 }

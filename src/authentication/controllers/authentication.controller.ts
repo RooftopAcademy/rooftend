@@ -32,7 +32,7 @@ import STATUS from '../../statusCodes/statusCodes';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private authService: AuthenticationService) { }
+  constructor(private authService: AuthenticationService) {}
 
   @HttpCode(201)
   @ApiOperation({ summary: 'Register an user' })
@@ -46,10 +46,10 @@ export class AuthenticationController {
     status: 409,
     schema: {
       examples: {
-        "statusCode": 409,
-        "message": "USER_IS_ALREADY_REGISTERED",
-      }
-    }
+        statusCode: 409,
+        message: 'USER_IS_ALREADY_REGISTERED',
+      },
+    },
   })
   @Public()
   @Post('register')
@@ -64,9 +64,10 @@ export class AuthenticationController {
   @ApiBody({
     schema: {
       example: {
-        "transaction_token": "c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec"
-      }
-    }
+        transaction_token:
+          'c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec',
+      },
+    },
   })
   @ApiOkResponse({
     status: 200,
@@ -83,30 +84,30 @@ export class AuthenticationController {
     status: 404,
     schema: {
       example: {
-        "statusCode": 404,
-        "message": "TRANSACTION_TOKEN_EXPIRED",
-      }
-    }
+        statusCode: 404,
+        message: 'TRANSACTION_TOKEN_EXPIRED',
+      },
+    },
   })
   @ApiConflictResponse({
     description: 'The user is already active',
     status: 409,
     schema: {
       example: {
-        "statusCode": 409,
-        "message": "USER_IS_ALREADY_ACTIVE",
-      }
-    }
+        statusCode: 409,
+        message: 'USER_IS_ALREADY_ACTIVE',
+      },
+    },
   })
   @ApiForbiddenResponse({
     description: 'The user is inactive or blocked',
     status: 403,
     schema: {
       example: {
-        "statusCode": 403,
-        "message": "USER_IS_INACTIVE_OR_BLOCKED",
-      }
-    }
+        statusCode: 403,
+        message: 'USER_IS_INACTIVE_OR_BLOCKED',
+      },
+    },
   })
   @Public()
   @Patch('confirm-user')
@@ -139,6 +140,7 @@ export class AuthenticationController {
   @Public()
   @Post('login')
   async login(@Body() user: LogInUserDTO, @Req() req) {
+    console.log(req.user);
     return this.authService.login(req.user, user.password);
   }
 }
