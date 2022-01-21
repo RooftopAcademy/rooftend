@@ -30,26 +30,24 @@ export class AuthenticationService {
     }
   }
 
-  async create(user: CreateUserDTO): Promise<User> {
+  async create(user: CreateUserDTO): Promise<void> {
     user.email = user.email.toLowerCase();
     user.password = await bcrypt.hash(user.password, 10);
 
     const newUser = await this.usersService.create(user);
 
     this.eventEmitter.emit('user.created', newUser);
-
-    return newUser;
   }
 
   async validateUser(email: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
-    if (user.account_status != AccountStatusesEnum.ACTIVE) {
-      throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
-    }
-
     if (!user) {
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+    }
+
+    if (user.account_status != AccountStatusesEnum.ACTIVE) {
+      throw new HttpException('USER_NOT_ACTIVE', HttpStatus.NOT_FOUND);
     }
 
     return user;
