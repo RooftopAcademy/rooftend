@@ -42,6 +42,8 @@ export class AuthenticationService {
   async validateUser(email: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
+    user.account_status = await this.usersService.findAccountStatus(user.id);
+
     if (!user) {
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
     }
