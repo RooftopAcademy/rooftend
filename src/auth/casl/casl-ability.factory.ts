@@ -12,9 +12,10 @@ import { FlatClass } from '../types/flat-class.type';
 import { Cart } from '../../cart/entities/cart.entity';
 import { CustomMessage } from '../../custom-messages/entities/custom-messages.entity';
 import { Item } from '../../items/entities/items.entity';
+import { Notification } from '../../notification/entities/notification.entity'
 
 type Subjects =
-  | InferSubjects<typeof Item | typeof Cart | typeof CustomMessage>
+  | InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof Notification>
   | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
@@ -29,6 +30,7 @@ export class CaslAbilityFactory {
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
 
     can<FlatClass<Cart>>(Permission.Read, Cart, { 'user.id': user.id });
+    can<FlatClass<Notification>>(Permission.Read, Notification, {'user.id': user.id});
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
