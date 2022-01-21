@@ -19,25 +19,40 @@ import {
   ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { LogInUserDTO } from '../../users/entities/log-in-user-dto.entity';
+import STATUS from '../../statusCodes/statusCodes';
 
 @ApiBearerAuth()
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private authService: AuthenticationService) {}
+  constructor(private authService: AuthenticationService) { }
 
   @HttpCode(201)
   @ApiOperation({ summary: 'Register an user' })
   @ApiBody({ type: CreateUserDTO })
+  @ApiOkResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: STATUS.CREATED
+    }
+  })
   @ApiConflictResponse({
     description: 'The user is allready registered',
     status: 409,
+    schema: {
+      example: {
+        "statusCode": 409,
+        "message": "USER_IS_ALREADY_REGISTERED",
+      }
+    }
   })
   @Public()
   @Post('register')
@@ -49,13 +64,15 @@ export class AuthenticationController {
   }
 
   @ApiOperation({ summary: 'Confirmation of a registered user' })
-  @ApiBody({ schema: {
-    example: {
-      "transaction": "c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec"
+  @ApiBody({
+    schema: {
+      example: {
+        "transaction": "c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec"
+      }
     }
-  } })
-  @ApiResponse({
-    status: 204,
+  })
+  @ApiOkResponse({
+    status: 200,
     description: 'The user was confirmed successfully',
     schema: {
       example: {
@@ -65,12 +82,34 @@ export class AuthenticationController {
     },
   })
   @ApiConflictResponse({
+    description: 'The transaction is expired0',
+    status: 409,
+    schema: {
+      example: {
+        "statusCode": 409,
+        "message": "TRANSACTION_EXPIRED",
+      }
+    }
+  })
+  @ApiConflictResponse({
     description: 'The user is already active',
     status: 409,
+    schema: {
+      example: {
+        "statusCode": 409,
+        "message": "USER_IS_ALREADY_ACTIVE",
+      }
+    }
   })
   @ApiForbiddenResponse({
     description: 'The user is inactive or blocked',
     status: 403,
+    schema: {
+      example: {
+        "statusCode": 403,
+        "message": "USER_IS_INACTIVE_OR_BLOCKED",
+      }
+    }
   })
   @Public()
   @Patch('confirm-user')
