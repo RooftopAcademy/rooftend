@@ -1,5 +1,5 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { User } from '../../users/entities/user.entity';
 
 @Entity({
@@ -13,13 +13,9 @@ export class Notification {
   id: number;
 
   @ApiProperty({ example: 1, description: 'Id to the related user.' })
-  @Column({
-    name: 'user_id',
-    unsigned: true,
-    type: 'bigint',
-  })
-  @ManyToOne((type) => User)
-  @JoinColumn({ name:"user_id" })
+  @ManyToOne(() => User)
+  @ApiHideProperty()
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ApiProperty({

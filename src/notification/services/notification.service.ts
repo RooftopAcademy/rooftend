@@ -19,8 +19,8 @@ export class NotificationService {
     return this.notificationRepo.find();
   }
 
-  findOne(id: number): Promise<Notification> {
-    return this.notificationRepo.findOne(id);
+  async findOne(id: number): Promise<Notification> {
+    return await this.notificationRepo.findOne(id);
   }
 
   create(body: any): Promise<Notification[]> {
@@ -39,12 +39,6 @@ export class NotificationService {
     this.notificationRepo.merge(notification, body);
 
     return this.notificationRepo.save(notification);
-  }
-
-  async delete(id: number): Promise<boolean> {
-    await this.notificationRepo.delete(id);
-
-    return true;
   }
 
   async paginate(
