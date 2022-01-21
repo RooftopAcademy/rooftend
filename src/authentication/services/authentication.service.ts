@@ -61,31 +61,31 @@ export class AuthenticationService {
     }
   }
 
-  async confirmRegistry(transaction: string) {
+  async confirmRegistry(transactionToken: string) {
 
     /**
      * Decrypt of transaction data
      */
 
     const decipher = createDecipheriv(cryptoConstants.ALGORITHM, cryptoConstants.KEY, cryptoConstants.INITIAL_VECTOR);
-    let decryptedData = decipher.update(transaction, cryptoConstants.OUTPUT_ENCODING, cryptoConstants.INPUT_ENCODING);
+    let decryptedData = decipher.update(transactionToken, cryptoConstants.OUTPUT_ENCODING, cryptoConstants.INPUT_ENCODING);
     decryptedData += decipher.final("utf8");
-    const transactionInfo = JSON.parse(decryptedData);
+    const transactionTokenInfo = JSON.parse(decryptedData);
 
     /**
      * Check of transaction validity
      */
 
-    const timeElapsed = Date.now() - transactionInfo.date
+    const timeElapsed = Date.now() - transactionTokenInfo.date
     if(timeElapsed > cryptoConstants.VALIDITY_TIME) {
-      throw new HttpException('TRANSACTION_EXPIRED', HttpStatus.FORBIDDEN)
+      throw new HttpException('TRANSACTION_TOKEN_EXPIRED', HttpStatus.NOT_FOUND)
     }
 
     /**
      * Check account status of registered user
      */
 
-    const user = await this.usersService.findOneByEmail(transactionInfo.email);
+    const user = await this.usersService.findOneByEmail(transactionTokenInfo.email);
     if(user.account_status == AccountStatusesEnum.ACTIVE) {
       throw new HttpException('USER_IS_ALREADY_ACTIVE', HttpStatus.CONFLICT);
     }

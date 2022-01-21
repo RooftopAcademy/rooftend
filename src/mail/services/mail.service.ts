@@ -21,14 +21,14 @@ export class MailService {
 
     const cipher = createCipheriv(cryptoConstants.ALGORITHM, cryptoConstants.KEY, cryptoConstants.INITIAL_VECTOR);
     const obj = {email, date: Date.now()};
-    let transaction = cipher.update(JSON.stringify(obj), cryptoConstants.INPUT_ENCODING, cryptoConstants.OUTPUT_ENCODING);
-    transaction += cipher.final("hex");
+    let transactionToken = cipher.update(JSON.stringify(obj), cryptoConstants.INPUT_ENCODING, cryptoConstants.OUTPUT_ENCODING);
+    transactionToken += cipher.final("hex");
 
     /**
      * Sending the email
      */
     
-    const url = `example.com/auth/confirm?transaction=${transaction}`;
+    const url = `example.com/auth/confirm?transaction-token=${transactionToken}`;
     await this.mailerService.sendMail({
       to: email,
       subject: 'Welcome to Roofstore! Please, confirm your email',
