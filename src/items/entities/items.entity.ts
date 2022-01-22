@@ -17,6 +17,8 @@ import { Category } from '../../categories/entities/categories.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { History } from '../../history/models/history.entity';
+import { ItemReviews } from '../../review/entities/itemReviews.entity';
+
 
 @Entity('items')
 export class Item {
@@ -152,6 +154,9 @@ export class Item {
 
   @OneToMany(() => History, (visit) => visit.item_id)
   visits: History[];
+
+  @OneToMany(() => ItemReviews, (review) => review.item)
+  reviews: ItemReviews[];
 
   /**
    * Check if item has availability
