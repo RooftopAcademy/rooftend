@@ -28,6 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 import { Question } from '../entities/question.entity';
+import { QuestionsService } from '../services/questions.service';
 import { CreateQuestionDTO } from '../entities/create-question-dto';
 import Status from '../../statusCodes/status.interface';
 import STATUS from '../../statusCodes/statusCodes';
@@ -39,7 +40,6 @@ import { Request } from 'express';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { QuestionsService } from '../services/questions.service';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -216,7 +216,7 @@ export class QuestionsController {
   ): Promise<Status> {
     const user = new User();
     user.id = 1;
-    return await this.QuestionsService.create(question, user);
+    return await this.questionsService.create(question, user);
   }
 
   @Delete(':id')
@@ -238,7 +238,7 @@ export class QuestionsController {
     description: 'Not found',
   })
   async deleteQuestion(@Param('id') id: number): Promise<Status> {
-    return await this.QuestionsService.delete(id);
+    return await this.questionsService.delete(id);
   }
 
   @Post(':id/answers')
@@ -249,7 +249,7 @@ export class QuestionsController {
     description: 'Created',
     schema: {
       example: STATUS.CREATED,
-    }
+    },
   })
   @ApiParam({
     name: 'id',
@@ -259,8 +259,10 @@ export class QuestionsController {
   })
   @ApiBody({ type: AnswerDTO })
   async createAnswer(
-    @Req() req: Request,@Body() answer: AnswerDTO, @Param('id') id: number)
-    : Promise<Status> {
+    @Req() req: Request,
+    @Body() answer: AnswerDTO,
+    @Param('id') id: number,
+  ): Promise<Status> {
     return await this.answersService.create(answer, id);
   }
 
@@ -290,9 +292,10 @@ export class QuestionsController {
     type: Number,
     description: 'Id of Question',
   })
-  async deleteAnswer(@Param('id') id: number, @Param('questionId') questionId: number):
-    Promise<Status> {
-    return await this.answersService.delete(id, questionId)
+  async deleteAnswer(
+    @Param('id') id: number,
+    @Param('questionId') questionId: number,
+  ): Promise<Status> {
+    return await this.answersService.delete(id, questionId);
   }
-
 }
