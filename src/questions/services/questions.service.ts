@@ -38,7 +38,7 @@ export class QuestionsService {
         .leftJoinAndMapOne('questions.user', 'questions.userId', 'user')
         .leftJoinAndMapOne('questions.answer', 'questions.answerId', 'answer')
         .select(['questions.content'])
-        .addSelect(['answer.content', 'answer.createdAt'])
+        .addSelect(['answer.content', 'answer.createdAt']);
       return await paginate<Question>(questions, options);
     } catch (err) {
       return null;
