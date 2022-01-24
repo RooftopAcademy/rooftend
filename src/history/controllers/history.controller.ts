@@ -16,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiForbiddenResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -97,6 +98,18 @@ export class HistoryController {
     schema: {
       example: new UnauthorizedException().getResponse(),
     },
+  })
+  @ApiQuery({
+    required: false,
+    name: 'page',
+    description: 'Page of the result',
+    example: 1,
+  })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    description: 'Max amount of items per page',
+    example: 10,
   })
   @ApiBearerAuth()
   @Get()
