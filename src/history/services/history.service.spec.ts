@@ -18,6 +18,7 @@ import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { History } from '../models/history.entity';
 import { HistoryService } from './history.service';
 import { User } from '../../users/entities/user.entity';
+import { DeleteResult } from 'typeorm';
 
 describe('HistoryService', () => {
   let service: HistoryService;
@@ -45,6 +46,7 @@ describe('HistoryService', () => {
       ]),
     ),
     delete: jest.fn(() => Promise.resolve(true)),
+    softDelete: jest.fn().mockResolvedValue(new DeleteResult()),
   };
 
   beforeEach(async () => {
@@ -66,8 +68,12 @@ describe('HistoryService', () => {
   });
 
   describe('delete', () => {
-    it('should delete am History', async () => {
-      expect(await service.delete(history.id)).toEqual(true);
+    it('should delete an History', async () => {
+      expect(await service.delete(history.id)).toBeInstanceOf(DeleteResult);
+
+      expect(mockHistoryRepository.softDelete).toHaveBeenLastCalledWith(
+        history.id,
+      );
     });
   });
 
