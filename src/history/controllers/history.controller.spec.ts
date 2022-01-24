@@ -7,6 +7,7 @@ import { Category } from '../../categories/entities/categories.entity';
 import { Item } from '../../items/entities/items.entity';
 import STATUS from '../../statusCodes/statusCodes';
 import { User } from '../../users/entities/user.entity';
+import { History } from '../models/history.entity';
 import { HistoryService } from '../services/history.service';
 import { HistoryController } from './history.controller';
 
@@ -29,7 +30,11 @@ describe('HistoryController', () => {
     findHistory: jest.fn().mockImplementation(() => {
       const user = new User()
       user.id = 1;
-      return Promise.resolve(user);
+
+      const history = new History()
+      history.user = user
+
+      return Promise.resolve(history); 
     }),
   };
 
@@ -39,8 +44,6 @@ describe('HistoryController', () => {
   const request: any = {
     user: mockUser,
   };
-  request.user.id = 1;
-
 
   const mockUser2 = new User();
   mockUser2.id = 2;
@@ -106,26 +109,14 @@ describe('HistoryController', () => {
     })
   });
 
-  /* describe('delete', () => {
-    const id = 1;
-
-    it('should deleted history', async () => {
-      expect(await controller.delete(request, id)).toEqual(STATUS.DELETED);
-
-      expect(mockHistoryService.delete).toHaveBeenLastCalledWith(id);
-    });
-  }); */
   describe('delete', () => {
-    /* it('should remove a History', async () => {
+    it('should remove a History', async () => {
       expect(await controller.delete(request, 1)).toEqual(STATUS.DELETED);
 
-      expect(mockHistoryService.delete).toHaveBeenCalledWith({
-        id: 1,
-        user: 1,
-        item: expect.any(Item),
-        createdAt: new Date(),
-      });
-    }); */
+      expect(mockHistoryService.delete).toHaveBeenCalledWith(
+        1,
+      );
+    });
 
     it('should return a ForbiddenException', async () => {
       await expect(controller.delete(request2, 1)).rejects.toThrowError(
