@@ -143,6 +143,7 @@ export class HistoryController {
   @HttpCode(200)
   async delete(@Req() req: Request, @Param('id') id: number) {
     const user: User = <User>req.user;
+    
     const history = await this.historyService.findHistory(id);
 
     if (!history) {
