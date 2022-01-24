@@ -3,7 +3,8 @@ import {
     Column,
     PrimaryGeneratedColumn,
     JoinColumn,
-    ManyToOne, 
+    ManyToOne,
+    CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Cart } from '../../cart/entities/cart.entity';
@@ -30,7 +31,7 @@ export class MessagePostPurchase {
     @JoinColumn({
         name: 'cart_id',
     })
-    cart_id: number;
+    cart_id: Cart;
 
     @ApiProperty({ example: 999, description: 'Id of the message owner', type: Number })
     @Column({ type: 'bigint', nullable: false })
@@ -44,9 +45,9 @@ export class MessagePostPurchase {
     @Column({ type: 'bigint', nullable: false })
     @ManyToOne(() => User)
     @JoinColumn({
-        name: 'received_id',
+        name: 'receiver_id',
     })
-    received_id: User;
+    receiver_id: User;
 
     @ApiProperty({
         description: 'Message description',
@@ -64,12 +65,11 @@ export class MessagePostPurchase {
         description: 'Send date of message',
         example: '2021-10-19 10:23:54+03'
     })
-    @Column({
+    @CreateDateColumn({
         name: 'sent_at',
         type: 'timestamptz',
-        default: () => 'CURRENT_TIMESTAMP',
     })
-    sentAt: Date;
+    sent_at: Date;
 
     /**
      * Represent when user was received
@@ -83,7 +83,7 @@ export class MessagePostPurchase {
     @Column({
         name: 'received_at',
         type: 'timestamptz',
-        default:  null,
+        default: null,
     })
     receivedAt: Date;
 

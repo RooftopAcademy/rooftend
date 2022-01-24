@@ -38,7 +38,7 @@ export class CaslAbilityFactory {
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
-      'user.id': Number(user.id),
+      'user.id': user.id,
     });
 
     return build({

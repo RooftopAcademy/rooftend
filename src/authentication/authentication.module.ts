@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
 import { jwtConstants } from './constants/constants';
 import { AuthenticationController } from './controllers/authentication.controller';
@@ -18,6 +19,7 @@ import { LocalStrategy } from './strategies/local.strategy';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
+    MailModule,
   ],
   controllers: [AuthenticationController],
   providers: [

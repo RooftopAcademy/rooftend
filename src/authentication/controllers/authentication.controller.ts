@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   HttpCode,
+  Patch,
   Post,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -15,13 +17,16 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { LogInUserDTO } from '../../users/entities/log-in-user-dto.entity';
+import STATUS from '../../statusCodes/statusCodes';
 
 @ApiBearerAuth()
 @ApiTags('Authentication')
@@ -34,17 +39,17 @@ export class AuthenticationController {
   @ApiBody({ type: CreateUserDTO })
   @ApiResponse({
     status: 201,
-    description: 'The user was registered',
-    schema: {
-      example: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjVAZ21haWwuY29tIiwiaWF0IjoxNjQxOTEzNzUyLCJleHAiOjE2NDE5MTM4MTJ9.MzLodS6l0APNS5Y1l6Gfc8biA1S0TBasUjikB7E_hEU',
-      },
-    },
+    description: 'Created',
   })
   @ApiConflictResponse({
     description: 'The user is allready registered',
     status: 409,
+    schema: {
+      examples: {
+        statusCode: 409,
+        message: 'USER_IS_ALREADY_REGISTERED',
+      },
+    },
   })
   @Public()
   @Post('register')
@@ -53,8 +58,61 @@ export class AuthenticationController {
     await this.authService.checkEmail(user);
 
     await this.authService.create(user);
+  }
 
-    return this.authService.registry(user);
+  @ApiOperation({ summary: 'Confirmation of a registered user' })
+  @ApiBody({
+    schema: {
+      example: {
+        transaction_token:
+          'c10e1c3a1e9487aefa7d1cde77bfb71105ba590994dec8adaa0e46b2437435805626d2cda4693451e418877a9e599b746f4ce0c000da1adbc7fdfc6de82d7aec',
+      },
+    },
+  })
+  @ApiOkResponse({
+    status: 200,
+    description: 'The user was confirmed successfully',
+    schema: {
+      example: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjVAZ21haWwuY29tIiwiaWF0IjoxNjQxOTEzNzUyLCJleHAiOjE2NDE5MTM4MTJ9.MzLodS6l0APNS5Y1l6Gfc8biA1S0TBasUjikB7E_hEU',
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'The transaction token is expired',
+    status: 404,
+    schema: {
+      example: {
+        statusCode: 404,
+        message: 'TRANSACTION_TOKEN_EXPIRED',
+      },
+    },
+  })
+  @ApiConflictResponse({
+    description: 'The user is already active',
+    status: 409,
+    schema: {
+      example: {
+        statusCode: 409,
+        message: 'USER_IS_ALREADY_ACTIVE',
+      },
+    },
+  })
+  @ApiForbiddenResponse({
+    description: 'The user is inactive or blocked',
+    status: 403,
+    schema: {
+      example: {
+        statusCode: 403,
+        message: 'USER_IS_INACTIVE_OR_BLOCKED',
+      },
+    },
+  })
+  @Public()
+  @Patch('confirm-user')
+  async confirmUser(@Body('transaction_token') transactionToken: string) {
+    return this.authService.confirmRegistry(transactionToken);
   }
 
   @HttpCode(200)
@@ -81,7 +139,7 @@ export class AuthenticationController {
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('login')
-  async login(@Body() user: LogInUserDTO) {
-    return this.authService.login(user);
+  async login(@Body() user: LogInUserDTO, @Req() req) {
+    return this.authService.login(req.user, user.password);
   }
 }

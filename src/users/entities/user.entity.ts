@@ -5,7 +5,7 @@ import {
   OneToMany,
   DeleteDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Search } from '../../search/entities/search.entity';
 import { History } from '../../history/models/history.entity';
 import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
@@ -39,15 +39,13 @@ export class User {
   })
   username: string;
 
-  @ApiProperty({
-    description: 'Password of user ',
-    type: String,
-  })
+  @ApiHideProperty()
   @Column({
     name: 'password',
     type: 'character varying',
     length: 100,
     nullable: false,
+    select: false,
   })
   password: string;
 
@@ -63,28 +61,23 @@ export class User {
   })
   email: string;
 
-  @ApiProperty({
-    description: 'Account status assigned to that user ',
-    type: Number,
-  })
+  @ApiHideProperty()
   @Column({
     type: 'integer',
     nullable: false,
+    name: 'account_status',
     default: AccountStatusesEnum.PENDING,
+    enum: AccountStatusesEnum,
+    select: false,
   })
   account_status: AccountStatusesEnum;
 
-  @ApiProperty({
-    description: 'The date when the user has been soft deleted',
-    default: null,
-    type: 'date',
-    format: 'date-time',
-    example: '2022-01-14 18:27:50.29667+01',
-  })
+  @ApiHideProperty()
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'timestamptz',
     default: null,
+    select: false,
   })
   deletedAt?: Date;
 
@@ -106,7 +99,7 @@ export class User {
   /**
    * Published items bookmarked by the user
    */
-  favorites: Array<Item> = [];
+  // favorites: Array<Item> = [];
 
   /**
    * Items published by the user
