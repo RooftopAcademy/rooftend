@@ -135,11 +135,11 @@ export class Item {
   @JoinColumn({
     name: 'category_id',
   })
-  @ApiProperty({ type: () => Category, description: 'Item Category' })
+  @ApiProperty({ type: Category, description: 'Item Category' })
   category: Category;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
-  cartItemsId: CartItem[];
+  cartItems: CartItem[];
 
   @OneToMany(() => Question, (question) => question.item)
   questions: Question[];

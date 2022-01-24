@@ -49,7 +49,7 @@ export class CartItem {
     example: 1000,
     description: 'Cart Item subtotal',
     nullable: false,
-    type: Number
+    type: Number,
   })
   subtotal: number;
 
@@ -81,7 +81,7 @@ export class CartItem {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Item, (item) => item.cartItemsId)
+  @ManyToOne(() => Item, (item) => item.cartItems)
   @JoinColumn({
     name: 'item_id',
   })
