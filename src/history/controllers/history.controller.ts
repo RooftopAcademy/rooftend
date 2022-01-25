@@ -47,45 +47,46 @@ export class HistoryController {
       example: {
         history: [
           {
-            id: '1',
-            user: {
-              id: '1',
-              username: 'kdougharty1r',
-              email: 'modriscole1r@cnn.com',
-              account_status: 2,
-              deletedAt: null,
-              completed: false,
+            "items": [
+              {
+                "id": "997",
+                "createdAt": "2022-01-25T18:27:06.694Z",
+                "deletedAt": null,
+                "item": {
+                  "id": "102",
+                  "createdAt": "2022-01-15T23:09:30.736Z",
+                  "updatedAt": "2022-01-15T23:09:30.736Z",
+                  "title": "Sloe Gin - Mcguinness",
+                  "description": "Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
+                  "price": 50174.66,
+                  "stock": 8039,
+                  "deletedAt": null,
+                  "user": {
+                    "id": "135",
+                    "username": "cpennells3q",
+                    "email": "ycockshott3q@spotify.com",
+                    "completed": false
+                  }
+                }
+              }
+            ],
+            "meta": {
+              "totalItems": 1,
+              "itemCount": 1,
+              "itemsPerPage": 10,
+              "totalPages": 1,
+              "currentPage": 1
             },
-            item: {
-              id: '1',
-              createdAt: '2022-01-15T21:56:42.157Z',
-              updatedAt: '2022-01-15T21:56:42.157Z',
-              title: 'GherkinSour',
-              description: 'Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.',
-              price: 4271.85,
-              stock: 1176,
-              brand: {
-                id: '66',
-                name: 'functionalities',
-                photoUrl: 'http://dummyimage.com/100x100.png/cc0000/ffffff',
-              },
-              user: {
-                id: '64',
-                username: 'kdougharty1r',
-                email: 'modriscole1r@cnn.com',
-                account_status: 2,
-                deletedAt: null,
-                completed: false,
-              },
-              category: {
-                id: 65,
-                name: 'Clothing',
-              },
-            }
-          }
-        ]
-      }
-    }
+            "links": {
+              "first": "/history?limit=10",
+              "previous": "",
+              "next": "",
+              "last": "/history?page=1&limit=10"
+            },
+          },
+        ],
+      },
+    },
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
