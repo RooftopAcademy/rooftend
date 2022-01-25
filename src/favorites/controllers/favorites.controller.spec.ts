@@ -1,6 +1,7 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CaslModule } from '../../auth/casl/casl.module';
+import STATUS from '../../statusCodes/statusCodes';
 import { User } from '../../users/entities/user.entity';
 import { Favorite } from '../entities/favorite.entity';
 import { FavoritesService } from '../services/favorites.service';
@@ -56,7 +57,7 @@ describe('FavoritesController', () => {
   
       expect(controller.paginate(response, page, limit)).not.toBeUndefined();
 
-      //expect(mockFavoriteService.paginate).toHaveBeenCalled();
+      //expect(mockFavoriteService.paginate).toHaveBeenCalled(); -> Va este test?
     });
 
     it('should return a ForbiddenError message', async () => {
@@ -109,11 +110,10 @@ describe('FavoritesController', () => {
   });
 
   describe('delete', () => {
-    it('should delete a favorite.', () => {
-      const okResponse = { "message": "Ok", "statusCode": 200}
+    it('should delete a favorite.', async () => {
       const favoriteId = 1;
   
-      expect(controller.delete(favoriteId)).toStrictEqual(okResponse);
+      expect(await controller.delete(favoriteId)).toEqual(STATUS.OK);
   
       expect(mockFavoriteService.delete).toHaveBeenCalledWith(favoriteId);
     });
