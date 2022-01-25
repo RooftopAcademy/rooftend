@@ -39,7 +39,7 @@ export class FavoritesService {
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
 
-    return;
+    //return
   };
 
   async findFavorite(userId: number): Promise<Favorite> {
