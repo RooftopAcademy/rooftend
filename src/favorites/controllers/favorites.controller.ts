@@ -340,9 +340,15 @@ export class FavoritesController {
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiParam({
     name: 'id',
