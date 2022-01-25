@@ -30,7 +30,7 @@ import { User } from '../../users/entities/user.entity';
 import { Request } from 'express';
 import STATUS from '../../statusCodes/statusCodes';
 
-@ApiTags('history')
+@ApiTags('History')
 @Controller('history')
 export class HistoryController {
   constructor(
