@@ -34,6 +34,7 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { User } from '../../users/entities/user.entity';
+import STATUS from '../../statusCodes/statusCodes';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -168,9 +169,6 @@ export class FavoritesController {
         }
       },
     }
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
@@ -333,7 +331,8 @@ export class FavoritesController {
     example: 1,
   })
   public async delete(@Param('id') id: number) {
-    const user: any = id
+    const user: any = id;
+
     const favorite = await this.favoritesService.findFavorite(id);
 
     if(!favorite) {
@@ -348,9 +347,6 @@ export class FavoritesController {
 
     this.favoritesService.delete(id);
     
-    return ({
-      "statusCode": 200,
-      "message": "Ok"
-    });
+    return STATUS.OK;
   };
 }
