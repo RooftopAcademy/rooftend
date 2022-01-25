@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CaslModule } from '../../auth/casl/casl.module';
 import STATUS from '../../statusCodes/statusCodes';
 import { User } from '../../users/entities/user.entity';
+import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { FavoritesService } from '../services/favorites.service';
 import { FavoritesController } from './favorites.controller';
@@ -19,11 +20,16 @@ describe('FavoritesController', () => {
         createdAt: new Date(),
       },
     ]),
-    create: jest.fn(dto => {
+    /* create: jest.fn(dto => {
       return {
         ...dto,
         user_id: 24
       }
+    }), */
+    create: jest.fn((user: User, body: CreateFavoriteDto) => {
+      Promise.resolve({
+        item_id: body.item_id,
+      });
     }),
     delete: jest.fn(),
     findFavorite: jest.fn(() => new Favorite()),
@@ -74,27 +80,28 @@ describe('FavoritesController', () => {
   });
 
   describe('create', () => {
-    /* it('should create a favorite.', () => {
-      const data: any = { item_id: 61 };
-      //const token: any = 1;
-      const token: any = { 
-        user: 1,
+    it('should create a favorite.', async () => {
+
+      const dto: CreateFavoriteDto = {
         item_id: 1,
       };
-      const dto = {
-        id: 1,
-        user: 1,
-        item_id: 1,
-        updated_at: Date.now(),
+
+      const mockUser = new User();
+      mockUser.id = 1;
+
+      const request: any = {
+        user: mockUser,
       };
-  
-      expect(controller.create(token, data, dto)).toEqual({
-        "message": "Created",
-        "statusCode": 201,
+      request.user.id = 1;
+
+      expect(await controller.create(request, dto)).toEqual({
+        item_id: dto.item_id,
       });
   
-      expect(mockFavoriteService.create).toHaveBeenCalledWith(data, token)
-    }); */
+      //VIEJO -> expect(mockFavoriteService.create).toHaveBeenCalledWith(data, token)
+
+      expect(mockFavoriteService.create).toHaveBeenCalledWith(request.user, dto);
+    });
 
     it('should return a ForbiddenError message', async () => {
       mockFavoriteService.paginate.mockImplementationOnce(() => {
