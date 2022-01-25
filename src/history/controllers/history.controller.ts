@@ -87,12 +87,6 @@ export class HistoryController {
       }
     }
   })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    schema: {
-      example: new ForbiddenException().getResponse(),
-    },
-  })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
     schema: {
