@@ -26,9 +26,10 @@ export class FavoritesService {
 
   async create(
     createFavoriteDto: CreateFavoriteDto,
-    token: number,
+    user: number,
   ): Promise<void> {
-    const preFavorite = { ...createFavoriteDto, user_id: token };
+    const preFavorite: any = { ...createFavoriteDto, user: user };
+    
     const newFavorite = this.favoritesRepo.create(preFavorite);
 
     await this.favoritesRepo.save(newFavorite);
