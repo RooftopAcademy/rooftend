@@ -254,17 +254,18 @@ export class FavoritesController {
     @Param('id') id: any,
   ) {
     const userId = id;
+
     const favorite = await this.favoritesService.findFavorite(userId);
 
     if(!favorite) {
       throw new NotFoundException('Favorite not found.');
-    };
+    }
 
     const ability = this.caslAbilityFactory.createForUser(userId);
 
     if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
       throw new ForbiddenException();
-    };
+    }
   };
 
   @Post()
