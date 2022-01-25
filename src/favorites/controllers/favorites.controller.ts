@@ -283,10 +283,16 @@ export class FavoritesController {
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiBearerAuth()
   @ApiForbiddenResponse({
     description: 'Forbidden.',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiBody({ type: CreateFavoriteDto })
   @ApiQuery({
