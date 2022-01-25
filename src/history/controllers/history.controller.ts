@@ -39,7 +39,7 @@ export class HistoryController {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
-  @ApiOperation({ summary: 'Get history records' })
+  @ApiOperation({ summary: 'A list with the items visited by the user' })
   @ApiResponse({
     status: 200,
     description: 'A list with all the History',
