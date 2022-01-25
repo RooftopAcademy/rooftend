@@ -15,6 +15,7 @@ import {
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -144,6 +145,12 @@ export class HistoryController {
     description: 'Not Authorized',
     schema: {
       example: new UnauthorizedException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'History Not Found',
+    schema: {
+      example: new NotFoundException('History not found').getResponse(),
     },
   })
   @ApiBearerAuth()
