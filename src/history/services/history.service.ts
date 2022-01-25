@@ -26,7 +26,7 @@ export class HistoryService {
   ): Promise<Pagination<History>> {
     return paginate<History>(this.historyRepo, options, {
       where: { user: { id: user.id } },
-      relations: ['items']
+      relations: ['item']
     });
   }
 
