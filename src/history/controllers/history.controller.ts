@@ -43,7 +43,6 @@ export class HistoryController {
   @ApiResponse({
     status: 200,
     description: 'A list with all the History',
-    type: History,
     schema: {
       example: {
         history: [
