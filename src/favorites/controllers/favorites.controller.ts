@@ -332,10 +332,7 @@ export class FavoritesController {
     status: 200,
     description: 'Ok',
     schema: {
-      example: {
-        "statusCode": 200,
-        "message": "Ok",
-      },
+      example: STATUS.DELETED,
     },
   })
   @ApiUnauthorizedResponse({
@@ -364,13 +361,13 @@ export class FavoritesController {
 
     if(!favorite) {
       throw new NotFoundException('Favorite not found.');
-    };
+    }
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
       throw new ForbiddenException();
-    };
+    }
 
     this.favoritesService.delete(id);
     
