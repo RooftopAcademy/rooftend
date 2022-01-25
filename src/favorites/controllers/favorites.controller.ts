@@ -307,24 +307,22 @@ export class FavoritesController {
     @Body() createFavoriteDto: CreateFavoriteDto
   ) {
     const user: any = <User>req.user;
+
     const favorite = await this.favoritesService.findFavorite(user.id);
 
     if(!favorite) {
       throw new NotFoundException('Favorite not found.');
-    };
+    }
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
       throw new ForbiddenException();
-    };
+    }
 
     this.favoritesService.create(createFavoriteDto, user);
 
-    return ({
-      "statusCode": 201,
-      "message": "Created",
-    });
+    return (STATUS.OK);
   };
 
   @Delete(':id')
