@@ -21,7 +21,7 @@ export class CreateMessageDTO {
     type: Number,
   })
   @IsInt()
-  received_id: number;
+  receiver_id: number;
 
   @ApiProperty({
     description: 'Message of purchase',
