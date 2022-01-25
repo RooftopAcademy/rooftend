@@ -12,6 +12,7 @@ import {
   Req,
   NotFoundException,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -172,6 +173,9 @@ export class FavoritesController {
   })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiBearerAuth()
   @ApiQuery({
@@ -187,6 +191,12 @@ export class FavoritesController {
     required: false,
     description: 'Current page number. Default value: 1.',
     example: 1,
+  })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    description: 'Max amount of items per page',
+    example: 10,
   })
   public async paginate(
     @Req() req: Request,
