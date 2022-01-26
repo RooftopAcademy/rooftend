@@ -64,7 +64,7 @@ export class Cart {
   @ManyToOne(() => User)
   @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
-  userId: number;
+  user: User;
 
   @Column({ type: 'double precision', default: 0 })
   @ApiProperty({
