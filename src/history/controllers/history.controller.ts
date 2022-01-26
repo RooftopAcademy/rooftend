@@ -47,41 +47,42 @@ export class HistoryController {
       example: {
         history: [
           {
-            "items": [
+            items: [
               {
-                "id": "997",
-                "createdAt": "2022-01-25T18:27:06.694Z",
-                "deletedAt": null,
-                "item": {
-                  "id": "102",
-                  "createdAt": "2022-01-15T23:09:30.736Z",
-                  "updatedAt": "2022-01-15T23:09:30.736Z",
-                  "title": "Sloe Gin - Mcguinness",
-                  "description": "Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-                  "price": 50174.66,
-                  "stock": 8039,
-                  "deletedAt": null,
-                  "user": {
-                    "id": "135",
-                    "username": "cpennells3q",
-                    "email": "ycockshott3q@spotify.com",
-                    "completed": false
-                  }
-                }
-              }
+                id: '997',
+                createdAt: '2022-01-25T18:27:06.694Z',
+                deletedAt: null,
+                item: {
+                  id: '102',
+                  createdAt: '2022-01-15T23:09:30.736Z',
+                  updatedAt: '2022-01-15T23:09:30.736Z',
+                  title: 'Sloe Gin - Mcguinness',
+                  description:
+                    'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.',
+                  price: 50174.66,
+                  stock: 8039,
+                  deletedAt: null,
+                  user: {
+                    id: '135',
+                    username: 'cpennells3q',
+                    email: 'ycockshott3q@spotify.com',
+                    completed: false,
+                  },
+                },
+              },
             ],
-            "meta": {
-              "totalItems": 1,
-              "itemCount": 1,
-              "itemsPerPage": 10,
-              "totalPages": 1,
-              "currentPage": 1
+            meta: {
+              totalItems: 1,
+              itemCount: 1,
+              itemsPerPage: 10,
+              totalPages: 1,
+              currentPage: 1,
             },
-            "links": {
-              "first": "/history?limit=10",
-              "previous": "",
-              "next": "",
-              "last": "/history?page=1&limit=10"
+            links: {
+              first: '/history?limit=10',
+              previous: '',
+              next: '',
+              last: '/history?page=1&limit=10',
             },
           },
         ],
@@ -157,7 +158,7 @@ export class HistoryController {
   @HttpCode(200)
   async delete(@Req() req: Request, @Param('id') id: number) {
     const user: User = <User>req.user;
-    
+
     const history = await this.historyService.findHistory(id);
 
     if (!history) {
