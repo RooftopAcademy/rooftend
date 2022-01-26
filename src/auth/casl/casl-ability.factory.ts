@@ -30,7 +30,7 @@ export class CaslAbilityFactory {
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
 
     can<FlatClass<Cart>>(Permission.Read, Cart, { 'user.id': user.id });
-    can<FlatClass<Notification>>(Permission.Read, Notification, {'user.id': user.id});
+    can<FlatClass<Notification>>([Permission.Read, Permission.Update], Notification, {'user.id': user.id});
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
