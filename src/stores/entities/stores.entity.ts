@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-
 import { Brand } from '../../brands/entities/brands.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -65,8 +64,7 @@ export class Store {
   })
   brand: Brand;
 
-  @OneToOne(() => User)
-  // (user) => user.store
+  @OneToOne(() => User, (user) => user.store)
   @ApiProperty({
     type: User,
     example: '',
@@ -76,6 +74,4 @@ export class Store {
     name: 'user_id',
   })
   user: User;
-
-  // Relación con items?
 }
