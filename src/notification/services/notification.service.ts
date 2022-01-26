@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Notification } from '../entities/notification.entity';
 import {
   paginate,
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { NotificationDto } from '../entities/notification.dto';
 
 @Injectable()
 export class NotificationService {
@@ -15,12 +16,12 @@ export class NotificationService {
     private notificationRepo: Repository<Notification>,
   ) {}
 
-  findAll(): Promise<Notification[]> {
-    return this.notificationRepo.find();
+  findOne(id: number): Promise<Notification> {
+    return this.notificationRepo.findOne(id, {relations:['user']});
   }
 
-  async findOne(id: number): Promise<Notification> {
-    return await this.notificationRepo.findOne(id);
+  async findNotification(userId: number): Promise<Notification> {
+    return await this.notificationRepo.findOne({where: { user: { id: userId } }, relations: ['user']});
   }
 
   create(body: any): Promise<Notification[]> {
@@ -29,15 +30,11 @@ export class NotificationService {
     return this.notificationRepo.save(notification);
   }
 
-  async update(id: number, body: any): Promise<Notification> {
-    const notification = await this.notificationRepo.findOne(id);
-
-    if (!notification) {
-      throw new Error('Notification not found.');
-    }
-
-    this.notificationRepo.merge(notification, body);
-
+  async update(notification:Notification, notificationUpdate: NotificationDto): Promise<Notification> {
+    console.log(notification);
+    console.log(notificationUpdate)
+    this.notificationRepo.merge(notification,notificationUpdate);
+    console.log(notification)
     return this.notificationRepo.save(notification);
   }
 

@@ -1,12 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class NotificationDto {
-    @ApiProperty({
-        description: 'The id of user.',
-        type: Number
-    })
-    user_id: number;
-
+    
     @ApiProperty({
         description: 'Link to where it redirects when the user clicks.',
         type: String

@@ -4,6 +4,12 @@ import { NotificationService } from './notification.service';
 describe('NotificationService', () => {
   let service: NotificationService;
 
+  const mockNotificationRepository ={
+    update: jest.fn().mockImplementation(() => ({
+
+    }))
+  }
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [NotificationService],

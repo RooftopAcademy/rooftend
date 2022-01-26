@@ -34,7 +34,7 @@ export class Notification {
     description: 'Shipping notification.',
   })
   @Column({
-    name: 'Title.',
+    name: 'title',
     type: 'character varying',
     length: 20,
   })
