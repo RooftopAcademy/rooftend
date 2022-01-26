@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from '../entities/cart-item.entity';
 import { Repository } from 'typeorm';
@@ -8,7 +8,7 @@ export class CartItemService {
   constructor(
     @InjectRepository(CartItem)
     private readonly cartItemRepo: Repository<CartItem>,
-  ) { }
+  ) {}
 
   findAll(cartId: number): Promise<CartItem[]> {
     return this.cartItemRepo.find({
@@ -16,11 +16,15 @@ export class CartItemService {
     });
   }
 
-  findOne(cartId: number, itemId: number): Promise<CartItem> {
-    return this.cartItemRepo.findOne({
+  async findOne(cartId: number, itemId: number): Promise<CartItem> {
+    const cartItem = this.cartItemRepo.findOne({
       cartId,
       itemId,
     });
+
+    if (!cartItem) throw new NotFoundException();
+
+    return cartItem;
   }
 
   create(cartId: number, itemId: number, body: any): Promise<CartItem> {
@@ -29,10 +33,7 @@ export class CartItemService {
   }
 
   async update(cartId: number, itemId: number, body: any): Promise<CartItem> {
-    const cartItem = await this.cartItemRepo.findOne({
-      cartId,
-      itemId,
-    });
+    const cartItem = await this.findOne(cartId, itemId);
     this.cartItemRepo.merge(cartItem, body);
     return this.cartItemRepo.save(cartItem);
   }
