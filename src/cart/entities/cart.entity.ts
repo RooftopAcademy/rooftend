@@ -64,15 +64,15 @@ export class Cart {
   @ManyToOne(() => User)
   @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
-  userId: number;
+  user: User;
 
   @Column({ type: 'double precision', default: 0 })
   @ApiProperty({
     name: 'amount',
     type: 'integer',
-    required: true,
     example: '666',
     description: 'Item amount in this cart',
+    default: '0',
   })
   amount: number;
 
@@ -89,6 +89,7 @@ export class Cart {
     example: 'ARS',
     description: 'Currency code of the user location',
     maxLength: 3,
+    default: 'ARS',
   })
   currencyCode: string;
 
@@ -102,5 +103,5 @@ export class Cart {
    * @deprecated User items attribute instead of cartItemsId
    */
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
-  cartItemsId: CartItem[];
+  cartItems: CartItem[];
 }

@@ -3,6 +3,7 @@ import {
   Get,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -15,7 +16,7 @@ import {
 import { Response } from 'express';
 import { AccountStatusesEnum } from '../models/AccountStatusesEnum';
 
-
+@ApiBearerAuth()
 @ApiTags('Account Status')
 @Controller('account-statuses')
 export class AccountStatusController {
