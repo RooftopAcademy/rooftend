@@ -8,6 +8,7 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Delivery } from '../../deliveries/entities/delivery.entity';
 import { PhotosEntity } from '../../photos/models/photos.entity';
+import { User } from '../../users/entities/user.entity';
 import { ItemDetails } from '../entities/item-details.entity';
 import { PurchaseDetails } from '../entities/purchase-details.entity';
 
@@ -18,34 +19,33 @@ export class PurchasesService {
     private cartRepository: Repository<Cart>,
   ) {}
 
-  async findAll(userId: number): Promise<Cart[]> {
+  async findAll(user: User): Promise<Cart[]> {
     return await this.cartRepository.find({
       where: {
-        userId,
+        user: { id: user.id },
         purchasedAt: Not(IsNull()),
       },
     });
   }
 
   async findOneById(
+    //Quitar el userID, dejar solo el id
     id: number | string,
     userId: number,
   ): Promise<PurchaseDetails> {
     const purchase = await this.cartRepository.findOne({
       where: {
         id,
-        userId,
+        purchasedAt: Not(IsNull()),
       },
+      //Agregar la relación con 'items'
     });
 
     if (!purchase) {
       throw new NotFoundException('Purchase not found');
     }
 
-    if (purchase.purchasedAt === null) {
-      throw new ForbiddenException('This cart has not been purchased');
-    }
-
+    //Consultar al que lo hizo que es lo que hace?
     const newQuery = await this.cartRepository
       .createQueryBuilder('carts')
       .where('carts.id = :id')
@@ -54,7 +54,6 @@ export class PurchasesService {
       .setParameter('userId', userId)
       .leftJoin('carts.cartItemsId', 'cart_item')
       .leftJoin('cart_item.itemId', 'items')
-      .leftJoin(PhotosEntity, 'photos', 'cart_item.item_id = photos.subject_id')
       .leftJoin(Delivery, 'deliveries', 'carts.id = deliveries.cart_id')
       .select('carts.purchased_at AS "purchasedAt"')
       .addSelect([

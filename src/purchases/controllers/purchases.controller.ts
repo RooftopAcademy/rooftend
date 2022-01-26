@@ -22,7 +22,7 @@ export class PurchasesController {
   findAll(@Req() req: Request) {
     const user: User = <User>req.user;
 
-    return this.purchasesService.findAll(user.id);
+    return this.purchasesService.findAll(user);
   }
 
   @ApiOperation({ summary: 'Get a purchase by id' })
@@ -43,6 +43,9 @@ export class PurchasesController {
     @Req() req: Request,  
   ) {
     const user: User = <User>req.user;
+
+    //Agregar las validaciones can
+    //Documentar los dos 400
 
     return this.purchasesService.findOneById(id, user.id);
   }
