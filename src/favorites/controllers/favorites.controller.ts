@@ -171,12 +171,6 @@ export class FavoritesController {
       },
     }
   })
-  @ApiUnauthorizedResponse({
-    description: 'Not Authorized',
-    schema: {
-      example: new UnauthorizedException().getResponse(),
-    },
-  })
   @ApiBearerAuth()
   @ApiQuery({
     name: 'token',
@@ -204,17 +198,8 @@ export class FavoritesController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Favorite>> {
     const user: User = <User>req.user;
+    
     const favorite = await this.favoritesService.findFavorite(user.id);
-
-    if(!favorite) {
-      throw new NotFoundException('Favorite not found.');
-    };
-
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
-      throw new ForbiddenException();
-    };
 
     return this.favoritesService.paginate(
       {
@@ -308,21 +293,11 @@ export class FavoritesController {
   ) {
     const user: any = <User>req.user;
 
-    const favorite = await this.favoritesService.findFavorite(user.id);
-
-    if(!favorite) {
-      throw new NotFoundException('Favorite not found.');
-    }
-
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
-      throw new ForbiddenException();
-    }
+    // QUitar docu de 404 y de la auth
 
     this.favoritesService.create(createFavoriteDto, user);
 
-    return (STATUS.OK);
+    return (STATUS.CREATED);
   };
 
   @Delete(':id')
