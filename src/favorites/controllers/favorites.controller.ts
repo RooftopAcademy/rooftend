@@ -218,8 +218,7 @@ export class FavoritesController {
     description: 'Forbidden',
     schema: {
       example: {
-        "statusCode": 403,
-        "message": "Forbidden",
+        example: new ForbiddenException().getResponse(),
       },
     },
   })
@@ -228,12 +227,6 @@ export class FavoritesController {
     schema: {
       example: new UnauthorizedException().getResponse(),
     },
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    schema: {
-      example: new ForbiddenException().getResponse(),
-    }
   })
   public async getById(
     @Param('id') id: any,
