@@ -39,7 +39,6 @@ export class CartItemController {
     description: 'Forbidden',
   })
   @Get(':cartId/items')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async getAll(
     @Param('cartId') cartId: number,
@@ -63,7 +62,6 @@ export class CartItemController {
     description: 'Not Found Item',
   })
   @Get(':cartId/items/:itemId')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   async getOne(
     @Param('cartId') cartId: number,
@@ -91,7 +89,6 @@ export class CartItemController {
     description: 'Forbidden',
   })
   @Post(':cartId/items/:itemId')
-  @UseGuards(PoliciesGuard)
   @HttpCode(201)
   create(
     @Param('cartId') cartId: number,
@@ -117,7 +114,6 @@ export class CartItemController {
     description: 'Not Found Item',
   })
   @Patch(':cartId/items/:itemId')
-  @UseGuards(PoliciesGuard)
   @HttpCode(204)
   update(
     @Param('cartId') cartId: number,
@@ -140,7 +136,6 @@ export class CartItemController {
     description: 'Forbidden',
   })
   @Delete(':cartId/items/:itemId')
-  @UseGuards(PoliciesGuard)
   @HttpCode(200)
   delete(
     @Param('cartId') cartId: number,
