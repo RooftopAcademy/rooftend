@@ -1,4 +1,9 @@
-const itemsList = [{ id: 1, user: 1, item_id: 1, createdAt: Date.now() }];
+const itemsList = [{
+  id: 1, 
+  user: 1, 
+  item_id: 1, 
+  createdAt: Date.now()
+}];
 
 const list = {
   items: itemsList.slice(0, 2),
@@ -8,7 +13,8 @@ const list = {
       totalPages: 1,
       currentPage: 1,
     },
-}
+};
+
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn().mockResolvedValue(list),
 }));
@@ -29,14 +35,16 @@ describe('FavoritesService', () => {
       page: '1',
       limit: '10',
     }),
-    create: jest.fn(),
+    create: jest.fn((body: CreateFavoriteDto) => ({
+      itemId: body.itemId,
+    })),
     save: jest.fn().mockImplementation(favorite => Promise.resolve({
       id: Date.now(),
       ...favorite,
-      updated_at: Date.now()
+      updated_at: Date.now(),
     })),
-    delete: jest.fn().mockImplementation(() => Promise.resolve())
-  }
+    delete: jest.fn().mockImplementation(() => Promise.resolve()),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -58,22 +66,33 @@ describe('FavoritesService', () => {
       const options: IPaginationOptions = { 
         page: 1, 
         limit: 10, 
-      }
+      };
 
       expect((await service.paginate(options, new User))).toEqual(list);
-    })
+    });
   });
 
   describe('create', () => {
     it('should create a new favorite record.', async () => {
-      const createFavoriteDto: CreateFavoriteDto = { item_id: 62 }
-      const token = 1
+      const createFavoriteDto: CreateFavoriteDto = { itemId: 62 };
 
-      expect(await service.create(createFavoriteDto, token)).toBeUndefined();
+      const user: User = new User();
+      user.id = 1;
 
-      expect(mockFavoriteRepository.create).toHaveBeenCalledWith({...createFavoriteDto, "user_id": token});
+      const dto = {
+        itemId: 62,
+        user: user,
+      };
 
-      expect(mockFavoriteRepository.save).toHaveBeenCalled();
+      const expected = {
+        itemId: 62,
+      };
+
+      expect(await service.create(createFavoriteDto, user)).toBeUndefined();
+
+      expect(mockFavoriteRepository.create).toHaveBeenCalledWith(dto);
+
+      expect(mockFavoriteRepository.save).toHaveBeenCalledWith(expected);
     });
   });
 
