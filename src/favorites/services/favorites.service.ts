@@ -26,7 +26,7 @@ export class FavoritesService {
 
   async create(
     createFavoriteDto: CreateFavoriteDto,
-    user: number,
+    user: User,
   ): Promise<void> {
     const preFavorite: any = { ...createFavoriteDto, user: user };
     
@@ -40,7 +40,7 @@ export class FavoritesService {
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
 
-    //return
+    return
   };
 
   async findFavorite(userId: number): Promise<Favorite> {
