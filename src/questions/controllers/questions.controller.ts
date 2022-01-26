@@ -98,7 +98,7 @@ export class QuestionsController {
       item_id,
     );
   }
-  @Get('/recived')
+  @Get('/received')
   @HttpCode(200)
   @ApiBearerAuth()
   @ApiUnauthorizedResponse({
@@ -106,10 +106,6 @@ export class QuestionsController {
   })
   @ApiForbiddenResponse({
     description: 'Forbidden',
-  })
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Not found',
   })
   @ApiOkResponse({
     status: 200,
@@ -139,9 +135,6 @@ export class QuestionsController {
     const questionReceived: any = await this.questionsService.findQuestion(
       user.id,
     );
-    if (!questionReceived) {
-      throw new NotFoundException('Question by userId not found');
-    }
     const ability = this.caslAbilityFactory.createForUser(user);
     if (
       ability.cannot(Permission.Read, subject('Question', questionReceived))
@@ -152,7 +145,7 @@ export class QuestionsController {
       {
         page,
         limit,
-        route: 'questions',
+        route: '/questions',
       },
       user,
     );
