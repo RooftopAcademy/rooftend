@@ -10,14 +10,20 @@ describe('StoresController', () => {
         {
           items: [
             {
-              id: 1,
-              username: 'miUsuario',
-              brand: 'Xiaomi',
+              id: '1',
+              brand: {
+                id: '1',
+                name: 'Asus',
+                photoUrl: 'http://dummyimage.com/100x100.png/dddddd/000000',
+              },
             },
             {
-              id: 2,
-              username: 'miUsuario',
-              brand: 'Nike',
+              id: '2',
+              brand: {
+                id: '5',
+                name: 'Xioami',
+                photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+              },
             },
           ],
         },
@@ -26,11 +32,11 @@ describe('StoresController', () => {
     getOne: jest.fn().mockImplementation((id) => {
       return {
         id,
-        username: 'miUsuario',
-        brand: 'Xiaomi',
-        // items:[
-        // {listado de items}
-        // ]
+        brand: {
+          id: '5',
+          name: 'Xioami',
+          photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+        },
       };
     }),
   };
@@ -56,14 +62,20 @@ describe('StoresController', () => {
         {
           items: [
             {
-              id: 1,
-              username: 'miUsuario',
-              brand: 'Xiaomi',
+              id: '1',
+              brand: {
+                id: '1',
+                name: 'Asus',
+                photoUrl: 'http://dummyimage.com/100x100.png/dddddd/000000',
+              },
             },
             {
-              id: 2,
-              username: 'miUsuario',
-              brand: 'Nike',
+              id: '2',
+              brand: {
+                id: '5',
+                name: 'Xioami',
+                photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+              },
             },
           ],
         },
@@ -72,13 +84,16 @@ describe('StoresController', () => {
   });
   describe('getOne', () => {
     it('Should return a store by its id', async () => {
-      expect(await controller.getOne(1)).toEqual({
-        id: 1,
-        username: 'miUsuario',
-        brand: 'Xiaomi',
+      expect(await controller.getOne(2)).toEqual({
+        id: 2,
+        brand: {
+          id: '5',
+          name: 'Xioami',
+          photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+        },
       });
       expect(mockStoresService.getOne).toHaveBeenCalled();
-      expect(mockStoresService.getOne).toHaveBeenCalledWith(1);
+      expect(mockStoresService.getOne).toHaveBeenCalledWith(2);
     });
   });
 });
