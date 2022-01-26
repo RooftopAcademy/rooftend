@@ -2,13 +2,14 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Param,
   Patch,
   Post,
+  Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { CartItemService } from '../services/cart-item.service';
 import { CartItem } from '../entities/cart-item.entity';
@@ -22,12 +23,30 @@ import {
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
-import { PoliciesGuard } from '../../auth/guards/policies.guard';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { User } from '../../users/entities/user.entity';
+import { Request } from 'express';
+import { subject } from '@casl/ability';
+import { Permission } from '../../auth/permission.enum';
+import { CartService } from '../../cart/services/cart.service';
 
 @ApiTags('Cart Item')
 @Controller('carts')
 export class CartItemController {
-  constructor(private readonly cartItemService: CartItemService) {}
+  constructor(
+    private readonly cartItemService: CartItemService,
+    private readonly cartService: CartService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
+
+  async failIfCannotAccess(user: User, cartId: number, permission: Permission) {
+    const cart = await this.cartService.findOne(cartId);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(permission, subject('Cart', cart))) {
+      throw new ForbiddenException();
+    }
+  }
 
   @ApiOperation({ summary: 'Get all cart items' })
   @ApiResponse({
@@ -41,9 +60,12 @@ export class CartItemController {
   @Get(':cartId/items')
   @HttpCode(200)
   async getAll(
+    @Req() req: Request,
     @Param('cartId') cartId: number,
     @Res({ passthrough: true }) response,
   ): Promise<CartItem[]> {
+    await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
+
     const cartItems: CartItem[] = await this.cartItemService.findAll(cartId);
 
     return cartItems ? cartItems : response.status(404).end();
@@ -64,10 +86,13 @@ export class CartItemController {
   @Get(':cartId/items/:itemId')
   @HttpCode(200)
   async getOne(
+    @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
     @Res({ passthrough: true }) response,
   ): Promise<CartItem> {
+    await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
+
     const cartItem: CartItem = await this.cartItemService.findOne(
       cartId,
       itemId,
@@ -90,11 +115,14 @@ export class CartItemController {
   })
   @Post(':cartId/items/:itemId')
   @HttpCode(201)
-  create(
+  async create(
+    @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
     @Body() body: CreateCartItemDTO,
   ): Promise<CartItem> {
+    await this.failIfCannotAccess(<User>req.user, cartId, Permission.Create);
+
     return this.cartItemService.create(cartId, itemId, body);
   }
 
@@ -115,11 +143,14 @@ export class CartItemController {
   })
   @Patch(':cartId/items/:itemId')
   @HttpCode(204)
-  update(
+  async update(
+    @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
     @Body() body: CreateCartItemDTO,
   ): Promise<CartItem> {
+    await this.failIfCannotAccess(<User>req.user, cartId, Permission.Update);
+
     return this.cartItemService.update(cartId, itemId, body);
   }
 
@@ -137,10 +168,13 @@ export class CartItemController {
   })
   @Delete(':cartId/items/:itemId')
   @HttpCode(200)
-  delete(
+  async delete(
+    @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-  ): void {
+  ): Promise<void> {
+    await this.failIfCannotAccess(<User>req.user, cartId, Permission.Delete);
+
     return this.cartItemService.delete(cartId, itemId);
   }
 }
