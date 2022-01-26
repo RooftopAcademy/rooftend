@@ -150,7 +150,7 @@ export class Item {
   })
   deletedAt?: Date;
 
-  @OneToMany(() => History, (visit) => visit.item_id)
+  @OneToMany(() => History, (visit) => visit.item)
   visits: History[];
 
   /**

@@ -1,7 +1,11 @@
-import { OmitType, PartialType } from "@nestjs/swagger";
-import { HistoryDto } from "./history.dto";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNumber } from "class-validator";
 
-export class CreateHistoryDto extends PartialType(
-  OmitType(HistoryDto, ['id', 'user_id', 'created_at'] as const),
-) {
+export class CreateHistoryDto {
+  @IsNumber()
+  @ApiProperty({
+    description: 'Unique identifier of the item',
+    example: '1',
+  })
+  itemId: number
 }

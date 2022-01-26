@@ -9,13 +9,13 @@ import { Injectable } from '@nestjs/common';
 import { Permission } from '../enums/permission.enum';
 import { User } from '../../users/entities/user.entity';
 import { FlatClass } from '../types/flat-class.type';
+import { History } from '../../history/models/history.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { CustomMessage } from '../../custom-messages/entities/custom-messages.entity';
 import { Item } from '../../items/entities/items.entity';
 
-type Subjects =
-  | InferSubjects<typeof Item | typeof Cart | typeof CustomMessage>
-  | 'all';
+// TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
+type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof History> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -32,6 +32,9 @@ export class CaslAbilityFactory {
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
+      'user.id': user.id,
+    });
+    can<FlatClass<History>>([Permission.Read, Permission.Delete], History, { 
       'user.id': user.id,
     });
 
