@@ -11,9 +11,6 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { CartItemService } from '../services/cart-item.service';
-import { CartItem } from '../entities/cart-item.entity';
-
 import {
   ApiOperation,
   ApiResponse,
@@ -22,13 +19,18 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
-import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { User } from '../../users/entities/user.entity';
 import { Request } from 'express';
 import { subject } from '@casl/ability';
-import { Permission } from '../../auth/permission.enum';
+import { Permission } from '../../auth/enums/permission.enum';
+
+import { CartItemService } from '../services/cart-item.service';
 import { CartService } from '../../cart/services/cart.service';
+
+import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
+
+import { CartItem } from '../entities/cart-item.entity';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Cart Item')
 @Controller('carts')
@@ -66,7 +68,9 @@ export class CartItemController {
   ): Promise<CartItem[]> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
 
-    const cartItems: CartItem[] = await this.cartItemService.findAll(cartId);
+    const cartItems: CartItem[] = await this.cartItemService.findAllFromCart(
+      cartId,
+    );
 
     return cartItems ? cartItems : response.status(404).end();
   }
@@ -89,7 +93,6 @@ export class CartItemController {
     @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-    @Res({ passthrough: true }) response,
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
 
@@ -98,7 +101,7 @@ export class CartItemController {
       itemId,
     );
 
-    return cartItem ? cartItem : response.status(404).end();
+    return await this.cartItemService.findOne(itemId, cartId);
   }
 
   @ApiOperation({ summary: 'Create a cart item' })

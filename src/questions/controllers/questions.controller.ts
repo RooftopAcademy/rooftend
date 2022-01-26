@@ -32,6 +32,7 @@ import Status from '../../statusCodes/status.interface';
 import STATUS from '../../statusCodes/statusCodes';
 import { AnswersService } from '../services/answers.service';
 import { AnswerDTO } from '../entities/answer.dto';
+import { User } from '../../users/entities/user.entity';
 
 @ApiTags('Questions')
 @Controller('questions')
@@ -39,7 +40,8 @@ export class QuestionsController {
   constructor(private QuestionsService: QuestionsService,
     private readonly answersService: AnswersService,) { }
 
-  @Get('/')
+
+  @ApiOperation({ summary: 'Get all questions answered of corresponding item' })
   @HttpCode(200)
   @ApiNotFoundResponse({
     status: 404,
@@ -70,8 +72,9 @@ export class QuestionsController {
     description: 'Item id',
     example: 10,
   })
+  @Get('/')
   async find(
-    @Query('item_id',) item_id = 2,
+    @Query('item_id',) item_id,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Question, IPaginationMeta>> {
@@ -125,7 +128,7 @@ export class QuestionsController {
     );
   }
 
-  @Get('/sent')
+  @ApiOperation({ summary: 'get questions sent by user' })
   @HttpCode(200)
   @ApiNotFoundResponse({
     status: 404,
@@ -149,6 +152,7 @@ export class QuestionsController {
     description: 'limit of paginated questions',
     example: 10,
   })
+  @Get('/sent')
   async findSent(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -176,7 +180,9 @@ export class QuestionsController {
   })
   @ApiBody({ type: CreateQuestionDTO })
   async createQuestion(@Body() question: CreateQuestionDTO): Promise<Status> {
-    return await this.QuestionsService.create(question, 2)
+    let user = new User()
+    user.id = 1
+    return await this.QuestionsService.create(question, user)
   }
 
   @Delete(':id')
@@ -187,6 +193,7 @@ export class QuestionsController {
     description: 'Deleted',
   })
   @ApiParam({
+    required: true,
     name: 'id',
     example: 1,
     type: Number,
@@ -195,9 +202,6 @@ export class QuestionsController {
   @ApiNotFoundResponse({
     status: 404,
     description: 'Not found',
-  })
-  @ApiBadRequestResponse({
-    description: 'Error, the deletion was not completed',
   })
   async deleteQuestion(@Param('id') id: number): Promise<Status> {
     return await this.QuestionsService.delete(id);
