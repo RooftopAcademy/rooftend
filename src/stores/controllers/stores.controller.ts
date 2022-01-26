@@ -18,7 +18,6 @@ import {
 
 import { StoresService } from '../services/stores.service';
 import { Public } from '../../authentication/decorators/public.decorator';
-import { Store } from '../entities/stores.entity';
 
 @ApiTags('Stores')
 @Controller('stores')
@@ -29,7 +28,7 @@ export class StoresController {
     summary: 'Get a list of stores',
   })
   @ApiOkResponse({
-    description: 'A list of stores',
+    description: 'List of stores',
     schema: {
       example: {
         items: [
@@ -96,12 +95,21 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Get store by Id',
+    summary: 'Get a store by Id',
   })
   @ApiOkResponse({
     status: 200,
     description: 'Ok',
-    type: Store,
+    schema: {
+      example: {
+        id: '2',
+        brand: {
+          id: '5',
+          name: 'Xioami',
+          photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+        },
+      },
+    },
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -109,7 +117,7 @@ export class StoresController {
     schema: {
       example: {
         statusCode: 404,
-        message: 'Store not found',
+        message: 'Store with id 8 not found',
         error: 'Not Found',
       },
     },
@@ -117,9 +125,8 @@ export class StoresController {
   @ApiParam({
     type: Number,
     name: 'id',
-    description: 'Id of the requested store',
     required: true,
-    example: 8,
+    example: 2,
   })
   @Get(':id')
   @Public()
