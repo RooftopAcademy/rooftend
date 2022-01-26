@@ -198,7 +198,7 @@ export class FavoritesController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ): Promise<Pagination<Favorite>> {
     const user: User = <User>req.user;
-    
+
     const favorite = await this.favoritesService.findFavorite(user.id);
 
     return this.favoritesService.paginate(
@@ -266,19 +266,7 @@ export class FavoritesController {
       },
     },
   })
-  @ApiUnauthorizedResponse({
-    description: 'Not Authorized',
-    schema: {
-      example: new UnauthorizedException().getResponse(),
-    },
-  })
   @ApiBearerAuth()
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    schema: {
-      example: new ForbiddenException().getResponse(),
-    },
-  })
   @ApiBody({ type: CreateFavoriteDto })
   @ApiQuery({
     name: 'token',
@@ -292,8 +280,6 @@ export class FavoritesController {
     @Body() createFavoriteDto: CreateFavoriteDto
   ) {
     const user: any = <User>req.user;
-
-    // QUitar docu de 404 y de la auth
 
     this.favoritesService.create(createFavoriteDto, user);
 
