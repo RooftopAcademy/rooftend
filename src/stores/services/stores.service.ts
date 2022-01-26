@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Store } from '../entities/stores.entity';
-import { IPaginationOptions, paginateRaw } from 'nestjs-typeorm-paginate';
-import { ReadStoreDto } from '../entities/read-store.dto';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class StoresService {
@@ -13,43 +12,23 @@ export class StoresService {
   ) {}
 
   async paginate(options: IPaginationOptions) {
-    return paginateRaw<Store>(
-      this.storesRepository
-        .createQueryBuilder('store')
-        .leftJoinAndSelect('store.user', 'user')
-        .leftJoinAndSelect('store.brand', 'brand')
-        .select([
-          'store.id::integer AS "id"',
-          'user.username AS "username"',
-          'brand.name AS "brand"',
-        ]),
-      options,
-    );
+    return paginate<Store>(this.storesRepository, options, {
+      select: ['id', 'brand'],
+      relations: ['brand'],
+    });
   }
-  // async paginate(options: IPaginationOptions) {
-  //   return paginate<Store>(this.storesRepository, options, {
-  //     relations: ['brand', 'user'],
-  //   });
-  // }
-  async getOne(id: string | number): Promise<ReadStoreDto> {
-    const store: ReadStoreDto = await this.storesRepository
-      .createQueryBuilder('store')
-      .leftJoinAndSelect('store.brand', 'brand')
-      .select(['brand.name AS "brand"'])
-      .where('store.id = :id', { id })
-      .getRawOne();
+
+  async getOne(id: string | number): Promise<Store> {
+    const store: Store = await this.storesRepository.findOne(id, {
+      select: ['id', 'brand'],
+      where: {
+        id: id,
+      },
+      relations: ['brand'],
+    });
     if (!store) {
       throw new NotFoundException(`Store with id ${id} not found`);
     }
     return store;
   }
-  // async getOne(id: string | number): Promise<ReadStoreDto> {
-  //   const store: Store = await this.storesRepository.findOne(id, {
-  //     relations: ['brand', 'user'],
-  //   });
-  //   if (!store) {
-  //     throw new NotFoundException(`Store with id ${id} not found`);
-  //   }
-  //   return store;
-  // }
 }
