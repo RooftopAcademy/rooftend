@@ -16,9 +16,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { ReadStoreDto } from '../entities/read-store.dto';
 import { StoresService } from '../services/stores.service';
 import { Public } from '../../authentication/decorators/public.decorator';
+import { Store } from '../entities/stores.entity';
 
 @ApiTags('Stores')
 @Controller('stores')
@@ -34,14 +34,25 @@ export class StoresController {
       example: {
         items: [
           {
-            id: '23',
-            username: 'miUsuario',
-            brand: 'Xiaomi',
+            id: '1',
+            brand: {
+              id: '1',
+              name: 'Asus',
+              photoUrl: 'http://dummyimage.com/100x100.png/dddddd/000000',
+            },
+          },
+          {
+            id: '2',
+            brand: {
+              id: '5',
+              name: 'Xioami',
+              photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+            },
           },
         ],
         meta: {
-          totalItems: 1,
-          itemCount: 1,
+          totalItems: 2,
+          itemCount: 2,
           itemsPerPage: 10,
           totalPages: 1,
           currentPage: 1,
@@ -50,7 +61,7 @@ export class StoresController {
           first: '/stores?limit=10',
           previous: '',
           next: '',
-          last: '',
+          last: '/stores?page=1&limit=10',
         },
       },
     },
@@ -90,7 +101,7 @@ export class StoresController {
   @ApiOkResponse({
     status: 200,
     description: 'Ok',
-    type: ReadStoreDto,
+    type: Store,
   })
   @ApiNotFoundResponse({
     status: 404,
