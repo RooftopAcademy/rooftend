@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   DeleteDateColumn,
+  OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Search } from '../../search/entities/search.entity';
@@ -13,6 +14,7 @@ import { Item } from '../../items/entities/items.entity';
 import { Question } from '../../questions/entities/question.entity';
 import { Review } from '../../review/review.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
+import { Store } from '../../stores/entities/stores.entity';
 
 @Entity('users')
 export class User {
@@ -134,4 +136,7 @@ export class User {
    */
   @OneToMany(() => SupportRequest, (supportRequest) => supportRequest.user)
   supportRequests: SupportRequest[];
+
+  @OneToOne(() => Store)
+  store?: Store;
 }
