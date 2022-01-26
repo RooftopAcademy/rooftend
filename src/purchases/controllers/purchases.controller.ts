@@ -4,6 +4,7 @@ import { Cart } from '../../cart/entities/cart.entity';
 import { User } from '../../users/entities/user.entity';
 import { PurchaseDetails } from '../entities/purchase-details.entity';
 import { PurchasesService } from '../services/purchases.service';
+import { Request } from 'express';
 
 @ApiTags('Purchases')
 @Controller('purchases')
@@ -18,11 +19,8 @@ export class PurchasesController {
   })
   @Get()
   @HttpCode(200)
-  findAll(@Req() req) {
-    const user = new User();
-    user.id = 1;
-
-    console.log(req.user);
+  findAll(@Req() req: Request) {
+    const user: User = <User>req.user;
 
     return this.purchasesService.findAll(user.id);
   }
@@ -40,9 +38,11 @@ export class PurchasesController {
   })
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: number | string) {
-    const user = new User();
-    user.id = 1;
+  findOne(
+    @Param('id') id: number | string,
+    @Req() req: Request,  
+  ) {
+    const user: User = <User>req.user;
 
     return this.purchasesService.findOneById(id, user.id);
   }
