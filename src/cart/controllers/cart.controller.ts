@@ -1,101 +1,89 @@
 import {
   Controller,
+  ForbiddenException,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
-  Body,
-  Post,
-  Put,
-  Delete,
+  Req,
 } from '@nestjs/common';
-import { ApiBody, ApiForbiddenResponse, ApiHeader, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { Request } from 'express';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Cart } from '../entities/cart.entity';
 import { CartService } from '../services/cart.service';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
 
 @ApiTags('Carts')
 @Controller('carts')
 export class CartController {
+  constructor(
+    private cartService: CartService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
-    constructor( private cartService : CartService ){}
-
-    @Get()
-    @ApiOperation({summary: 'Gets all carts'})
-    @ApiResponse({status: 201, description: 'Listing all Carts'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    getAll(): Promise<Cart[]>{
-        return this.cartService.findAll();
+  @Get()
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Gets current available Cart ' })
+  @ApiResponse({ status: 200, description: 'Succesfully found Cart' })
+  @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
+  @ApiUnauthorizedResponse({ description: 'Not Authorized' })
+  @ApiBearerAuth()
+  async getCart(@Req() req: Request): Promise<Cart> {
+    const user: any = req.user;
+    const cart = await this.cartService.findCart(user.id);
+    if (!cart) {
+      throw new NotFoundException('Valid cart not found');
     }
-
-    @Get(':id')
-    @ApiParam({
-        name: "id",
-        type: "integer",
-        required: true
-    })
-    @ApiOperation({summary: 'Gets one cart by Id'})
-    @ApiResponse({status: 201, description: 'Cart succesfully found'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    getOne(@Param('id') id : number): Promise<Cart>{
-        return this.cartService.findOne(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.cannot(Permission.Read, subject('Cart', cart))) {
+      throw new ForbiddenException();
     }
+    return cart;
+  }
 
-    @Get(':id/items')
-    @ApiParam({
-        name: "id",
-        type: "integer",
-        required: true
-    })
-    @ApiOperation({summary: 'Gets all cart-items from a cart that matches a given id'})
-    @ApiResponse({status: 201, description: 'Cart items  succesfully found'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    getCartItems(@Param('id') id : number){
-        return this.cartService.getCartItems(id);
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: 'integer',
+    required: true,
+  })
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Gets one cart and its cart items given an Id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Cart succesfully found with given id',
+  })
+  @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'No Cart was found that matches that id',
+  })
+  @ApiUnauthorizedResponse({ description: 'Not Authorized' })
+  @ApiBearerAuth()
+  async getCartById(
+    @Req() req: Request,
+    @Param('id') id: number,
+  ): Promise<Cart> {
+    const user: any = req.user;
+    const cart: Cart = await this.cartService.findOne(id);
+    if (!cart) {
+      throw new NotFoundException('Valid cart not found');
     }
-
-    @ApiBody({
-        type: Cart
-    })
-    @Post()
-    @ApiOperation({summary: 'Creates cart'})
-    @ApiResponse({status: 201, description: 'Cart succesfully created'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    create (@Body() body : any): Promise<Cart>{
-        return this.cartService.create(body);
+    const ability = this.caslAbilityFactory.createForUser(user);
+    if (ability.cannot(Permission.Read, subject('Cart', cart))) {
+      throw new ForbiddenException();
     }
-
-    @Put(':id')
-    @ApiParam({
-        name: "id",
-        type: "integer",
-        required: true
-    })
-    @ApiBody({
-        type: Cart
-    })
-    @ApiOperation({summary: 'Updates cart'})
-    @ApiResponse({status: 201, description: 'Cart succesfully updated'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    update(@Param('id') id : number, @Body() body : any): Promise<Cart>{
-        return this.cartService.update(id, body);
-    }
-
-    @Delete(':id')
-    @ApiParam({
-        name: "id",
-        type: "integer",
-        required: true
-    })
-    @ApiOperation({summary: 'Deletes a cart that matches the given id'})
-    @ApiResponse({status: 204, description: 'Cart succesfully deleted'})
-    @ApiForbiddenResponse({ status: 403, description: 'Forbidden.'})
-    @ApiNotFoundResponse({status: 404, description: 'No Cart was found that matches that id'})
-    delete(@Param('id') id : number ): Promise<void>{
-        return this.cartService.delete(id);
-    }
-
+    return cart;
+  }
 }
-
-

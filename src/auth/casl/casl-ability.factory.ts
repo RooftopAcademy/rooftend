@@ -8,12 +8,14 @@ import {
 import { Injectable } from '@nestjs/common';
 import { Permission } from '../enums/permission.enum';
 import { User } from '../../users/entities/user.entity';
-import { Item } from '../../items/entities/items.entity';
 import { FlatClass } from '../types/flat-class.type';
 import { Favorite } from '../../favorites/entities/favorite.entity';
-
+import { History } from '../../history/models/history.entity';
+import { Cart } from '../../cart/entities/cart.entity';
+import { CustomMessage } from '../../custom-messages/entities/custom-messages.entity';
+import { Item } from '../../items/entities/items.entity';
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item | typeof Favorite> | 'all';
+type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof History | typeof Favorite> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -25,9 +27,15 @@ export class CaslAbilityFactory {
     >(Ability as AbilityClass<AppAbility>);
 
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
+
+    can<FlatClass<Cart>>(Permission.Read, Cart, { 'user.id': user.id });
+
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
-      'user.id': Number(user.id),
+      'user.id': user.id,
+    });
+    can<FlatClass<History>>([Permission.Read, Permission.Delete], History, { 
+      'user.id': user.id,
     });
 
     can<FlatClass<Favorite>>([
@@ -37,6 +45,12 @@ export class CaslAbilityFactory {
     ], Favorite, {
       'user.id': user.id,
     });
+
+    can<FlatClass<CustomMessage>>(
+      [Permission.Read, Permission.Delete, Permission.Update],
+      CustomMessage,
+      { 'user.id': user.id },
+    );
 
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details

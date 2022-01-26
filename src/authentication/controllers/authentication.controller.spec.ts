@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { stringify } from 'querystring';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { LogInUserDTO } from '../../users/entities/log-in-user-dto.entity';
 import { AuthenticationService } from '../services/authentication.service';
@@ -23,6 +24,9 @@ describe('AuthenticationController', () => {
   const mockAuthenticationService = {
     checkEmail: jest.fn().mockReturnThis(),
     create: jest.fn().mockReturnThis(),
+    registry: jest.fn().mockReturnValue({
+      accessToken: 'tokenstring',
+    }),
     login: jest.fn().mockReturnValue({
       accessToken: 'tokenstring',
     }),
@@ -52,8 +56,7 @@ describe('AuthenticationController', () => {
       expect(register).toEqual({
         accessToken: expect.any(String),
       });
-      expect(mockAuthenticationService.login).toHaveBeenCalledTimes(1);
-      expect(mockAuthenticationService.login).toHaveBeenCalled();
+      expect(mockAuthenticationService.registry).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error if the password is missing lowercase letters', async () => {
@@ -137,7 +140,11 @@ describe('AuthenticationController', () => {
 
   describe('Login', () => {
     it('should login a valid user', async () => {
-      const login = await controller.login(mockBody);
+      const mockReq = {
+        user: {},
+      } as unknown as Request;
+
+      const login = await controller.login(mockBody, mockReq);
       expect(mockAuthenticationService.login).toHaveBeenCalled();
       expect(typeof login).toBe('object');
       expect(login).toEqual({

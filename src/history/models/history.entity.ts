@@ -1,13 +1,12 @@
 import {
   Entity,
-  CreateDateColumn,
-  DeleteDateColumn,
   JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  ManyToOne,
+  DeleteDateColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-
 import { Item } from '../../items/entities/items.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -27,9 +26,12 @@ export class History {
 
   @ManyToOne(() => User, (user) => user.visits)
   @JoinColumn({ name: 'user_id' })
-  @ApiProperty({ example: 1, description: 'The user that has the history' })
-  user_id: Number;
-
+  @ApiProperty({ 
+    example: 1, 
+    description: 'The user that has the history',
+    type: () => User,
+  })
+  user: User;
 
   @ManyToOne(() => Item)
   @ApiProperty({
@@ -37,8 +39,7 @@ export class History {
     description: 'Item Id'
   })
   @JoinColumn({ name: 'item_id' })
-  item_id: Item;
-
+  item: Item;
 
   @ApiProperty({
     default: 'now()',
@@ -52,7 +53,6 @@ export class History {
     nullable: false,
   })
   createdAt: Date;
-
 
   @ApiProperty({
     default: null,

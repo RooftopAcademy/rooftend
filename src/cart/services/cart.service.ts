@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, IsNull, Not, Repository } from 'typeorm';
-import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { IsNull, Not, Repository } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Cart } from '../entities/cart.entity';
 
@@ -10,12 +9,14 @@ import { Cart } from '../entities/cart.entity';
 export class CartService {
   constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
 
-  findAll(): Promise<Cart[]> {
-    return this.cartRepo.find();
-  }
-
-  findOne(id: number): Promise<Cart> {
-    return this.cartRepo.findOne(id);
+  async findCart(userId: number): Promise<Cart> {
+    const cart = await this.cartRepo.findOne({
+      select: ['id', 'amount', 'currencyCode'],
+      where: { purchasedAt: null, user: { id: userId } },
+      relations: ['user'],
+      order: { id: 'DESC' },
+    });
+    return cart;
   }
 
   /**
@@ -24,10 +25,23 @@ export class CartService {
    * @param userId
    * @param purchased
    */
-  findOneFromUser(id: number, user: User, purchased = true): Promise<Cart> {
+  async findOne(id: number): Promise<Cart> {
+    const cart: Cart = await this.cartRepo.findOne(id, {
+      relations: ['cartItems', 'user'],
+    });
+    return cart;
+  }
+
+  /**
+   * Find cart owned by user
+   * @param id
+   * @param userId
+   * @param purchased
+   */
+  findOneFromUser(id: number, userId: User, purchased = true): Promise<Cart> {
     const q = this.cartRepo.createQueryBuilder();
 
-    q.where({ userId: user.id, id });
+    q.where({ userId: userId.id, id });
 
     if (purchased) {
       q.where({ purchasedAt: Not(IsNull()) });
@@ -37,28 +51,8 @@ export class CartService {
   }
 
   create(user: User): Promise<Cart> {
-    const newCart = this.cartRepo.create({
-      userId: user.id,
-    });
-
-    return this.cartRepo.save(newCart);
-  }
-
-  async update(id: number, body: any): Promise<Cart> {
-    const cart = await this.cartRepo.findOne(id);
-    this.cartRepo.merge(cart, body);
+    let cart = this.cartRepo.create({ user });
     return this.cartRepo.save(cart);
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.cartRepo.delete(id);
-  }
-
-  async getCartItems(id: number) {
-    const cartItemsRepo = await getRepository(CartItem);
-    return cartItemsRepo.find({
-      cartId: id,
-    });
   }
 
   @OnEvent('user.created')
