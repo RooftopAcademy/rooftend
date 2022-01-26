@@ -7,5 +7,5 @@ export class CreateFavoriteDto {
     example: '1',
     description: 'represents the unique identifier of the item',
   })
-  item_id: Number
+  itemId: number
 }
