@@ -1,15 +1,21 @@
-import { Controller, Get, HttpCode, Param, Req } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, ForbiddenException, Get, HttpCode, NotFoundException, Param, Req, UnauthorizedException } from '@nestjs/common';
+import { ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Cart } from '../../cart/entities/cart.entity';
 import { User } from '../../users/entities/user.entity';
 import { PurchaseDetails } from '../entities/purchase-details.entity';
 import { PurchasesService } from '../services/purchases.service';
 import { Request } from 'express';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
 
 @ApiTags('Purchases')
 @Controller('purchases')
 export class PurchasesController {
-  constructor(private purchasesService: PurchasesService) {}
+  constructor(
+    private readonly purchasesService: PurchasesService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
   @ApiOperation({ summary: 'Get all purchases' })
   @ApiResponse({
@@ -31,6 +37,24 @@ export class PurchasesController {
     description: 'The found purchase with that id',
     type: PurchaseDetails,
   })
+  @ApiForbiddenResponse({
+    description: 'Forbidden.',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Purchases Not Found',
+    schema: {
+      example: new NotFoundException('Purchases not found').getResponse(),
+    },
+  })
   @ApiParam({
     name: 'id',
     example: 1,
@@ -38,15 +62,24 @@ export class PurchasesController {
   })
   @Get(':id')
   @HttpCode(200)
-  findOne(
+  async findOne(
     @Param('id') id: number | string,
     @Req() req: Request,  
   ) {
     const user: User = <User>req.user;
 
-    //Agregar las validaciones can
-    //Documentar los dos 400
+    const purchases = await this.purchasesService.findOneById(id);
 
-    return this.purchasesService.findOneById(id, user.id);
+    if(!history) {
+      throw new NotFoundException('Purchases not found.');
+    }
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if(ability.cannot(Permission.Read, subject('Purchases', purchases))) {
+      throw new ForbiddenException();
+    }
+
+    return this.purchasesService.findOneById(id);
   }
 }
