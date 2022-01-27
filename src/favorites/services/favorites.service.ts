@@ -21,7 +21,7 @@ export class FavoritesService {
     options: IPaginationOptions,
     user: User,
   ): Promise<Pagination<Favorite>> {
-    return paginate<Favorite>(this.favoritesRepo, options, { where: { user: { id: user.id } } });
+    return paginate<Favorite>(this.favoritesRepo, options, { where: { user: { id: user.id } }, relations: ['item'] });
   }
 
   async create(
@@ -40,12 +40,9 @@ export class FavoritesService {
   }
 
   async findFavorite(id: number): Promise<Favorite> {
-    const favorite = await this.favoritesRepo.findOne({
+    const favorite = await this.favoritesRepo.findOne(id, {
       select: ['id'], 
-      where: {
-        id: { id } 
-      },
-      relations: ['user'],
+      relations: ['user', 'item'],
     });
 
     return favorite;
