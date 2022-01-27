@@ -15,6 +15,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
@@ -261,14 +262,9 @@ export class FavoritesController {
     },
   })
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse()
+  @ApiBadRequestResponse()
   @ApiBody({ type: CreateFavoriteDto })
-  @ApiQuery({
-    name: 'token',
-    type: Number,
-    required: true,
-    description: 'Token.',
-    example: 1,
-  })
   public async create(
     @Req() req: Request,
     @Body() createFavoriteDto: CreateFavoriteDto
