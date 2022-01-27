@@ -8,6 +8,7 @@ import {
   ApiTags,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { Platform } from '../entities/platform.entity';
 import { PlatformService } from '../services/platform.service';
 
 @ApiTags('Platforms')
@@ -19,6 +20,7 @@ export class PlatformController {
   @ApiOkResponse({
     status: 200,
     description: 'A list with all the platforms',
+    type: [Platform],
   })
   @Get()
   @HttpCode(200)
