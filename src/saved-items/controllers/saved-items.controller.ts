@@ -88,34 +88,6 @@ export class SavedItemsController {
     };
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a saved item' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'The saved item has been successfully updated.',
-    schema: {
-      example: {
-        message: 'item with id 5 updated successfully',
-      },
-      properties: {
-        message: {
-          type: 'String',
-          description: 'message for successful update',
-          example: 'item with id 5 updated successfully',
-        },
-      },
-    },
-  })
-  async update(
-    @Res({ passthrough: true }) res: Response,
-    @Param() params,
-    @Body() updateSavedItemDto: UpdateSavedItemDto,
-  ) {
-    await this.savedItemsService.updateSavedItem(params.id, updateSavedItemDto);
-    res.status(HttpStatus.OK);
-    return `item with id ${params.id} updated successfully`;
-  }
-
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a saved item' })
   @ApiResponse({
