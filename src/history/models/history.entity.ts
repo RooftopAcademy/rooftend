@@ -26,8 +26,8 @@ export class History {
 
   @ManyToOne(() => User, (user) => user.visits)
   @JoinColumn({ name: 'user_id' })
-  @ApiProperty({ 
-    example: 1, 
+  @ApiProperty({
+    example: 1,
     description: 'The user that has the history',
     type: () => User,
   })
@@ -36,7 +36,7 @@ export class History {
   @ManyToOne(() => Item)
   @ApiProperty({
     example: 1,
-    description: 'Item Id'
+    description: 'Item Id',
   })
   @JoinColumn({ name: 'item_id' })
   item: Item;

@@ -15,26 +15,24 @@ describe('HistoryController', () => {
   let controller: HistoryController;
 
   const mockHistoryService = {
-    paginate: jest.fn().mockResolvedValue(
+    paginate: jest.fn().mockResolvedValue({
+      items: [
         {
-          items: [
-            {
-              id: 1,
-              user_id: 1,
-              createdAt: new Date(),
-            },
-          ],
+          id: 1,
+          user_id: 1,
+          createdAt: new Date(),
         },
-      ),
+      ],
+    }),
     delete: jest.fn(),
     findHistory: jest.fn().mockImplementation(() => {
-      const user = new User()
+      const user = new User();
       user.id = 1;
 
-      const history = new History()
-      history.user = user
+      const history = new History();
+      history.user = user;
 
-      return Promise.resolve(history); 
+      return Promise.resolve(history);
     }),
   };
 
@@ -61,7 +59,7 @@ describe('HistoryController', () => {
     brand: new Brand(),
     user: request.user,
     category: new Category(),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -69,16 +67,16 @@ describe('HistoryController', () => {
       providers: [HistoryService],
       imports: [CaslModule],
     })
-    .overrideProvider(HistoryService)
-    .useValue(mockHistoryService)
-    .compile();
+      .overrideProvider(HistoryService)
+      .useValue(mockHistoryService)
+      .compile();
 
     controller = module.get<HistoryController>(HistoryController);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });  
+  });
 
   describe('getAll', () => {
     const page = 1;
@@ -86,36 +84,32 @@ describe('HistoryController', () => {
     const route = '/history';
 
     it('should return a list of history', async () => {
-      expect(await controller.getAll(request)).toEqual(
-        {
-          items: [
-            {
-              id: 1,
-              user_id: 1,
-              createdAt: expect.any(Date),
-            },
-          ],
-        },
-      )
+      expect(await controller.getAll(request)).toEqual({
+        items: [
+          {
+            id: 1,
+            user_id: 1,
+            createdAt: expect.any(Date),
+          },
+        ],
+      });
 
       expect(mockHistoryService.paginate).toHaveBeenCalledWith(
         {
           page,
           limit,
-          route
+          route,
         },
         request.user,
       );
-    })
+    });
   });
 
   describe('delete', () => {
     it('should remove a History', async () => {
       expect(await controller.delete(request, 1)).toEqual(STATUS.DELETED);
 
-      expect(mockHistoryService.delete).toHaveBeenCalledWith(
-        1,
-      );
+      expect(mockHistoryService.delete).toHaveBeenCalledWith(1);
     });
 
     it('should return a ForbiddenException', async () => {
@@ -125,8 +119,10 @@ describe('HistoryController', () => {
     });
 
     it('should return a NotFoundException', async () => {
-      mockHistoryService.findHistory.mockRejectedValueOnce(new NotFoundException());
-  
+      mockHistoryService.findHistory.mockRejectedValueOnce(
+        new NotFoundException(),
+      );
+
       await expect(controller.delete(request, 1)).rejects.toThrowError(
         NotFoundException,
       );

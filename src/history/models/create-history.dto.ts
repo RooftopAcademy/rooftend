@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export class CreateHistoryDto {
   @IsNumber()
@@ -7,5 +7,5 @@ export class CreateHistoryDto {
     description: 'Unique identifier of the item',
     example: '1',
   })
-  itemId: number
+  itemId: number;
 }
