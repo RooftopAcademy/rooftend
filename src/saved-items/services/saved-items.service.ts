@@ -21,10 +21,6 @@ export class SavedItemsService {
     return this.savedItemsRepo.save(newSavedItem);
   }
 
-  updateSavedItem(id: number, updateSavedItemDto: UpdateSavedItemDto) {
-    return this.savedItemsRepo.update(id, updateSavedItemDto);
-  }
-
   removeSavedItem(id: number) {
     return this.savedItemsRepo.delete(id);
   }
