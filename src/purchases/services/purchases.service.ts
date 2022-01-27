@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Delivery } from '../../deliveries/entities/delivery.entity';
-import { PhotosEntity } from '../../photos/models/photos.entity';
 import { User } from '../../users/entities/user.entity';
 import { ItemDetails } from '../entities/item-details.entity';
 import { PurchaseDetails } from '../entities/purchase-details.entity';
@@ -29,29 +28,25 @@ export class PurchasesService {
   }
 
   async findOneById(
-    //Quitar el userID, dejar solo el id
     id: number | string,
-    userId: number,
   ): Promise<PurchaseDetails> {
     const purchase = await this.cartRepository.findOne({
       where: {
         id,
         purchasedAt: Not(IsNull()),
       },
-      //Agregar la relación con 'items'
+      relations: ['items'],
     });
 
     if (!purchase) {
       throw new NotFoundException('Purchase not found');
     }
 
-    //Consultar al que lo hizo que es lo que hace?
     const newQuery = await this.cartRepository
       .createQueryBuilder('carts')
       .where('carts.id = :id')
       .setParameter('id', id)
       .andWhere('carts.user_id =:userId')
-      .setParameter('userId', userId)
       .leftJoin('carts.cartItemsId', 'cart_item')
       .leftJoin('cart_item.itemId', 'items')
       .leftJoin(Delivery, 'deliveries', 'carts.id = deliveries.cart_id')
