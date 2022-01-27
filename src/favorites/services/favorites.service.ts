@@ -15,14 +15,14 @@ export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
     private readonly favoritesRepo: Repository<Favorite>,
-  ) {};
+  ) {}
 
   async paginate(
     options: IPaginationOptions,
     user: User,
   ): Promise<Pagination<Favorite>> {
     return paginate<Favorite>(this.favoritesRepo, options, { where: { user: { id: user.id } } });
-  };
+  }
 
   async create(
     createFavoriteDto: CreateFavoriteDto,
@@ -35,13 +35,13 @@ export class FavoritesService {
     await this.favoritesRepo.save(newFavorite);
     
     return;
-  };
+  }
 
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.delete(id);
 
-    return
-  };
+    return;
+  }
 
   async findFavorite(userId: number): Promise<Favorite> {
     const favorite = await this.favoritesRepo.findOne({
@@ -49,5 +49,5 @@ export class FavoritesService {
     });
 
     return favorite;
-  };
+  }
 }
