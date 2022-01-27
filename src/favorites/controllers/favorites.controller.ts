@@ -19,6 +19,7 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -301,6 +302,13 @@ export class FavoritesController {
       example: new ForbiddenException().getResponse(),
     },
   })
+  @ApiNotFoundResponse({
+    description: 'Favorites Not Found',
+    schema: {
+      example: new NotFoundException('Favorites not found').getResponse(),
+    },
+  })
+  @ApiBearerAuth()
   @ApiParam({
     name: 'id',
     type: Number,
