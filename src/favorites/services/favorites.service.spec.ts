@@ -43,7 +43,10 @@ describe('FavoritesService', () => {
       ...favorite,
       updated_at: Date.now(),
     })),
-    delete: jest.fn().mockImplementation(() => Promise.resolve()),
+    //delete: jest.fn().mockImplementation(() => Promise.resolve()),
+    softDelete: jest.fn().mockResolvedValue({
+      itemId: 62,
+    }),
   };
 
   beforeEach(async () => {
@@ -79,18 +82,20 @@ describe('FavoritesService', () => {
       const user: User = new User();
       user.id = 1;
 
-      const dto = {
-        itemId: 62,
-        user: user,
-      };
-
       const expected = {
         itemId: 62,
       };
 
+      const receivesCreate = {
+        itemId: 62,
+        user: {
+          id: 1
+        },
+      };
+
       expect(await service.create(createFavoriteDto, user)).toBeUndefined();
 
-      expect(mockFavoriteRepository.create).toHaveBeenCalledWith(dto);
+      expect(mockFavoriteRepository.create).toHaveBeenCalledWith(receivesCreate);
 
       expect(mockFavoriteRepository.save).toHaveBeenCalledWith(expected);
     });
@@ -98,11 +103,11 @@ describe('FavoritesService', () => {
 
   describe('delete', () => {
     it('should delete a favorite.', async () => {
-      const itemid = 1;
+      const itemid = 62;
 
       expect(await service.delete(itemid)).toBeUndefined();
 
-      expect(mockFavoriteRepository.delete).toHaveBeenCalledWith(itemid);
+      expect(mockFavoriteRepository.softDelete).toHaveBeenCalledWith(itemid);
     });
   });
 });
