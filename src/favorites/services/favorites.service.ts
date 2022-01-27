@@ -38,7 +38,7 @@ export class FavoritesService {
   }
 
   async delete(id: number): Promise<void> {
-    await this.favoritesRepo.delete(id);
+    await this.favoritesRepo.softDelete(id);
 
     return;
   }
