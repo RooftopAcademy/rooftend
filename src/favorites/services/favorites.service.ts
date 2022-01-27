@@ -39,9 +39,13 @@ export class FavoritesService {
     await this.favoritesRepo.softDelete(id);
   }
 
-  async findFavorite(userId: number): Promise<Favorite> {
+  async findFavorite(id: number): Promise<Favorite> {
     const favorite = await this.favoritesRepo.findOne({
-      select: ['id'], where: { purchasedAt: null , user:{ id:userId }, relations: ['user'], order: { id: 'DESC' } },
+      select: ['id'], 
+      where: {
+        id: { id } 
+      },
+      relations: ['user'],
     });
 
     return favorite;
