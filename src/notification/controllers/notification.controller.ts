@@ -28,7 +28,7 @@ import {
   ApiResponse, 
   ApiTags 
 } from '@nestjs/swagger';
-import { NotificationDto } from '../entities/notification.dto';
+import { UpdateNotificationDto } from '../entities/update.notification.dto';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Request } from 'express';
 import { Permission } from '../../auth/enums/permission.enum';
@@ -92,18 +92,17 @@ export class NotificationController {
   })
   @Put(':id')
   @ApiBody({
-    type: NotificationDto
+    type: UpdateNotificationDto
   })
   @ApiForbiddenResponse({ status: 403, description: 'Forbidden.' })
   @ApiBearerAuth()
    async update(
      @Req() req:Request, 
      @Param('id') id: number, 
-     @Body() NotificationDto: NotificationDto
+     @Body() body: UpdateNotificationDto
      ): Promise<Notification> {
     const user: any = req.user;
     const notification = await this.notificationServices.findOne(id);
-    console.log(user);
     if (!notification) {
       throw new NotFoundException('Notification not found.');
     }
@@ -111,7 +110,7 @@ export class NotificationController {
     if (ability.cannot(Permission.Read,  subject('Notification', notification))) {
       throw new ForbiddenException();
     }
-    return this.notificationServices.update(notification, NotificationDto);
+    return this.notificationServices.update(notification, body);
   }
 
 }

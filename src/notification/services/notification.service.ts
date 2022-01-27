@@ -7,7 +7,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { NotificationDto } from '../entities/notification.dto';
+import { UpdateNotificationDto } from '../entities/update.notification.dto';
 
 @Injectable()
 export class NotificationService {
@@ -30,11 +30,8 @@ export class NotificationService {
     return this.notificationRepo.save(notification);
   }
 
-  async update(notification:Notification, notificationUpdate: NotificationDto): Promise<Notification> {
-    console.log(notification);
-    console.log(notificationUpdate)
+  async update(notification:Notification, notificationUpdate: UpdateNotificationDto): Promise<Notification> {
     this.notificationRepo.merge(notification,notificationUpdate);
-    console.log(notification)
     return this.notificationRepo.save(notification);
   }
 

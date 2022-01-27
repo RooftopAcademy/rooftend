@@ -47,7 +47,6 @@ import { UsersModule } from './users/users.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       //synchronize: true,
-      logging:true,
     }),
     ThrottlerModule.forRoot({
       ttl: 60,

@@ -69,7 +69,7 @@ export class Notification {
   @Column({
     name: 'created_at',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @ApiProperty({
     example: '22/11/2021',
@@ -78,7 +78,7 @@ export class Notification {
   @Column({
     name: 'sent_at',
   })
-  sent_at: Date;
+  sentAt: Date;
 
   @ApiProperty({
     example: '23/11/2021',
@@ -87,7 +87,7 @@ export class Notification {
   @Column({
     name: 'read_at',
   })
-  read_at: Date;
+  readAt: Date;
 
   @ApiProperty({
     example: '23/11/2021',
@@ -96,5 +96,5 @@ export class Notification {
   @Column({
     name: 'deleted_at',
   })
-  deleted_at: Date;
+  deletedAt: Date;
 }
