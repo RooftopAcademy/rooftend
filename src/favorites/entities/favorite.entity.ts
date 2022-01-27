@@ -1,4 +1,5 @@
 import {
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   PrimaryGeneratedColumn,
@@ -28,7 +29,7 @@ export class Favorite {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({
-    type: 'integer',
+    type: 'User',
     description: 'The user ID who added the item to favorites',
     nullable: false,
     readOnly: true,
@@ -39,13 +40,13 @@ export class Favorite {
   @ManyToOne(() => Item)
   @JoinColumn({ name: 'item_id' })
   @ApiProperty({
-    type: 'integer',
+    type: 'Item',
     description: 'The Item ID that was added to favorites',
     nullable: false,
     readOnly: true,
     example: 3,
   })
-  itemId: Item;
+  item: Item;
 
   @ApiProperty({
     type: Date,
@@ -60,4 +61,17 @@ export class Favorite {
     nullable: false,
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    type: Date,
+    format: 'date',
+    default: 'now()',
+    description: 'The date the record was last deleted',
+    example: '2021-11-15 17:32:19.537+00',
+  })
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'timestamptz',
+  })
+  deletedAt: Date;
 }
