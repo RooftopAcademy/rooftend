@@ -33,14 +33,10 @@ export class FavoritesService {
     const newFavorite = this.favoritesRepo.create(preFavorite);
 
     await this.favoritesRepo.save(newFavorite);
-    
-    return;
   }
 
   async delete(id: number): Promise<void> {
     await this.favoritesRepo.softDelete(id);
-
-    return;
   }
 
   async findFavorite(userId: number): Promise<Favorite> {
