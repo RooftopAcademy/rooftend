@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import DeliveryStatus from '../../deliveries/entities/delivery-status.enum';
+import { User } from '../../users/entities/user.entity';
 import { ItemDetails } from './item-details.entity';
 
 export class PurchaseDetails {
@@ -25,4 +26,11 @@ export class PurchaseDetails {
       '[{"title":"shirt","quantity":5,"price":25.75,"photo":"www.photodelivery.com/fancyShirt"},{"title":"shoes","quantity":2,"price":75.76,"photo":"www.photodelivery.com/fancyShoes"}]',
   })
   itemDetails: Array<ItemDetails>;
+
+  @ApiProperty({
+      name: 'user',
+      type: 'User',
+      example: 'juan'
+  })
+  user: User;
 }
