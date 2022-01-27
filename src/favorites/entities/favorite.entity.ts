@@ -6,7 +6,6 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { ManyToOne } from 'typeorm';
-
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
 
@@ -27,7 +26,7 @@ export class Favorite {
   id: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'user' })
+  @JoinColumn({ name: 'user_id' })
   @ApiProperty({
     type: 'integer',
     description: 'The user ID who added the item to favorites',
@@ -46,7 +45,7 @@ export class Favorite {
     readOnly: true,
     example: 3,
   })
-  item_id: number;
+  itemId: Item;
 
   @ApiProperty({
     type: Date,
@@ -60,5 +59,5 @@ export class Favorite {
     type: 'timestamptz',
     nullable: false,
   })
-  updated_at: Date;
+  updatedAt: Date;
 }
