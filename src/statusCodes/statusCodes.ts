@@ -1,6 +1,5 @@
 import Status from "./status.interface";
 
-
 const STATUS: { [name: string]: Status } = {
     DELETED: {
         "statusCode": 200,
@@ -13,22 +12,11 @@ const STATUS: { [name: string]: Status } = {
     OK: {
         "statusCode": 200,
         "message": "Ok",
+    },
+    UPDATED: {
+      "statusCode": 200,
+      "message": "Updated",
     }
 }
 
 export default STATUS;
-
-// class Status {
-//     static DELETED = {
-//         "statusCode": 200,
-//         "message": "Deleted",
-//     }
-//     static CREATED = {
-//         "statusCode": 201,
-//         "message": "Created",
-//     }
-//     static OK = {
-//         "statusCode": 200,
-//         "message": "Ok",
-//     }
-// }

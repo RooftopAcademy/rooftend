@@ -7,7 +7,6 @@ import {
     Pagination,
     IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { User } from '../../users/entities/user.entity';
 
 
 @Injectable()
@@ -18,11 +17,11 @@ export class MessagePostPurchaseService {
 
     async find(cartId: number, options: IPaginationOptions): Promise<Pagination<MessagePostPurchase>>{
       const queryBuilder = getConnection().createQueryBuilder()
-        .select(["mgp.id", "mgp.message"])
+        .select(["mgp.id","mgp.message","mgp.sent_at"])
         .from(MessagePostPurchase, "mgp")
         .innerJoin("mgp.sender_id", "users")
         .addSelect("users.username")
-        .innerJoin("mgp.received_id", "user")
+        .innerJoin("mgp.receiver_id", "user")
         .addSelect("user.username")
         .where("mgp.cart_id = :cart_id", { cart_id: cartId})
 
