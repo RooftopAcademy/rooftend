@@ -103,12 +103,12 @@ export class Cart {
   /**
    * Items to be purchased
    */
-  @OneToMany(() => CartItem, (item: CartItem) => item.cartId)
+  @OneToMany(() => CartItem, (item: CartItem) => item.cart)
   items: CartItem[];
 
   /**
    * @deprecated User items attribute instead of cartItemsId
    */
-  @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
+  @OneToMany(() => CartItem, (cartItem) => cartItem.cart)
   cartItemsId: CartItem[];
 }
