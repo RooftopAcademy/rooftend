@@ -202,9 +202,6 @@ export class FavoritesController {
   ): Promise<Pagination<Favorite>> {
     const user: User = <User>req.user;
 
-    // Ver si se debe de agregar el NotFoundException
-    const favorite = await this.favoritesService.findFavorite(user.id);
-
     return this.favoritesService.paginate(
       {
         page,
