@@ -75,8 +75,6 @@ describe('FavoritesController', () => {
         },
       ])
 
-      expect(mockFavoriteService.findFavorite).toHaveBeenCalled();
-
       expect(mockFavoriteService.paginate).toHaveBeenCalledWith({ page, limit, route }, response.user);
     })
 
