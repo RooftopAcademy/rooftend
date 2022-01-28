@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -62,8 +63,14 @@ export class Cart {
   purchasedAt: Date;
 
   @ManyToOne(() => User)
-  @ApiHideProperty()
   @JoinColumn({ name: 'user_id' })
+  @ApiProperty({
+    description: 'Owner of the cart',
+  })
+  user: User;
+
+  @ApiHideProperty()
+  @RelationId((cart: Cart) => cart.user)
   userId: number;
 
   @Column({ type: 'double precision', default: 0 })
