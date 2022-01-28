@@ -21,7 +21,9 @@ jest.mock('nestjs-typeorm-paginate', () => ({
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { Item } from '../../items/entities/items.entity';
 import { User } from '../../users/entities/user.entity';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
@@ -43,18 +45,49 @@ describe('FavoritesService', () => {
       ...favorite,
       updated_at: Date.now(),
     })),
-    //delete: jest.fn().mockImplementation(() => Promise.resolve()),
     softDelete: jest.fn().mockResolvedValue({
       itemId: 62,
     }),
   };
+
+  const userId = 1;
+
+  const mockUser = plainToClass(User, {
+    id: userId,
+    username: null,
+    password: '5vOC1yGAT2Km0Lt',
+    email: 'Dewitt.Turcotte52@hotmail.com',
+  });
+
+  const genericItem = plainToClass(Item, {
+    id: 3,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    title: 'Name 2',
+    description: 'Des 2',
+    price: 2,
+    stock: 2,
+    user: mockUser,
+  });
+
+  const mockItemsRepository = {
+    findOne: jest.fn(
+      (id: number): Promise<Item | null> =>
+      Promise.resolve(id == 1 ? genericItem: null),
+    ),
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [FavoritesService , {
         provide: getRepositoryToken(Favorite),
         useValue: mockFavoriteRepository
-      }],
+      },
+      {
+        provide: getRepositoryToken(Item),
+        useValue: mockItemsRepository,
+      },
+    ],
     }).compile();
 
     service = module.get<FavoritesService>(FavoritesService);
@@ -77,17 +110,17 @@ describe('FavoritesService', () => {
 
   describe('create', () => {
     it('should create a new favorite record.', async () => {
-      const createFavoriteDto: CreateFavoriteDto = { itemId: 62 };
+      const createFavoriteDto: CreateFavoriteDto = { itemId: 1 };
 
       const user: User = new User();
       user.id = 1;
 
       const expected = {
-        itemId: 62,
+        itemId: 1,
       };
 
       const receivesCreate = {
-        itemId: 62,
+        itemId: 1,
         user: {
           id: 1
         },
