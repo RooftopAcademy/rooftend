@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   paginate,
@@ -9,12 +9,15 @@ import {
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
 import { Favorite } from '../entities/favorite.entity';
 import { User } from '../../users/entities/user.entity';
+import { Item } from '../../items/entities/items.entity';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     @InjectRepository(Favorite)
     private readonly favoritesRepo: Repository<Favorite>,
+    @InjectRepository(Item)
+    private readonly itemRepo: Repository<Item>,
   ) {}
 
   async paginate(
@@ -25,10 +28,16 @@ export class FavoritesService {
   }
 
   async create(
-    createFavoriteDto: CreateFavoriteDto,
+    body: CreateFavoriteDto,
     user: User,
   ): Promise<void> {
-    const preFavorite: any = { ...createFavoriteDto, user: user };
+    const itemExist = await this.itemRepo.findOne(body.itemId);
+
+    if(!itemExist) {
+      throw new UnprocessableEntityException('Item does not exist');
+    }
+
+    const preFavorite: any = { ...body, user: user };
     
     const newFavorite = this.favoritesRepo.create(preFavorite);
 
