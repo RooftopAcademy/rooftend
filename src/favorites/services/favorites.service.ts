@@ -18,7 +18,7 @@ export class FavoritesService {
     private readonly favoritesRepo: Repository<Favorite>,
     @InjectRepository(Item)
     private readonly itemRepo: Repository<Item>,
-  ) {}
+  ) { }
 
   async paginate(
     options: IPaginationOptions,
