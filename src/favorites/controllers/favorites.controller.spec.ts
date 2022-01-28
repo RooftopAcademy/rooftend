@@ -1,5 +1,6 @@
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { plainToClass } from 'class-transformer';
 import { CaslModule } from '../../auth/casl/casl.module';
 import STATUS from '../../statusCodes/statusCodes';
 import { User } from '../../users/entities/user.entity';
@@ -10,6 +11,9 @@ import { FavoritesController } from './favorites.controller';
 
 describe('FavoritesController', () => {
   let controller: FavoritesController;
+
+  const user: User = new User();
+  user.id = 1;
 
   const mockFavoriteService = {
     paginate: jest.fn().mockResolvedValue([
@@ -26,8 +30,11 @@ describe('FavoritesController', () => {
       });
     }),
     delete: jest.fn(),
-    findFavorite: jest.fn(() => new Favorite()),
-  };
+    findFavorite: jest.fn().mockImplementation((id) => Promise.resolve(plainToClass(Favorite,{
+      user: user,
+      id: id,
+    }))),
+  }
 
   const response: any = {
     user: new User()
@@ -44,17 +51,20 @@ describe('FavoritesController', () => {
       .compile();
 
     controller = module.get<FavoritesController>(FavoritesController);
-  });
+  })
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
+  })
 
   describe('paginate', () => {
     it('should get 10 favorites records.', async () => {
       const page = 1;
       const limit = 10;
       const route = '/favorites';
+
+      const user: User = new User();
+      user.id = 1;
   
       await expect(controller.paginate(response, page, limit)).resolves.toEqual([
         {
@@ -63,11 +73,25 @@ describe('FavoritesController', () => {
           item_id: 1,
           createdAt: expect.any(Date),
         },
-      ]);
+      ])
 
-      expect(mockFavoriteService.paginate).toHaveBeenCalledWith({page, limit, route}, response.user);
-    });
-  });
+      expect(mockFavoriteService.findFavorite).toHaveBeenCalled();
+
+      expect(mockFavoriteService.paginate).toHaveBeenCalledWith({ page, limit, route }, response.user);
+    })
+
+    it('should return a NotFoundException message', async () => {
+      mockFavoriteService.paginate.mockImplementationOnce(() => {
+        throw new NotFoundException();
+      })
+
+      try {
+        expect(await controller.paginate(response, 1)).toThrow(NotFoundException);
+      } catch (error) {
+        expect(error.message).toEqual('Not Found');
+      }
+    })
+  })
 
   describe('create', () => {
     it('should create a favorite.', async () => {
@@ -85,37 +109,28 @@ describe('FavoritesController', () => {
 
       expect(await controller.create(request, dto)).toEqual(
         STATUS.CREATED
-      );
+      )
   
       expect(mockFavoriteService.create).toHaveBeenCalledWith(dto, request.user);
-    });
-
-    it('should return a ForbiddenError message', async () => {
-      mockFavoriteService.paginate.mockImplementationOnce(() => {
-        throw new ForbiddenException();
-      });
-
-      try {
-        expect(await controller.paginate(response, 1)).toThrow(ForbiddenException);
-      } catch (error) {
-        expect(error.message).toEqual('Forbidden');
-      }
-    });
-  });
+    })
+  })
 
   describe('delete', () => {
     it('should delete a favorite.', async () => {
-      const favoriteId = 1;
-  
-      expect(await controller.delete(favoriteId)).toEqual(STATUS.OK);
-  
-      expect(mockFavoriteService.delete).toHaveBeenCalledWith(favoriteId);
-    });
+      const id = 1;
+
+      const request: any = {
+        user: user,
+      };
+      
+      expect(await controller.delete(request, 1)).toEqual(STATUS.DELETED);
+
+    })
 
     it('should return a ForbiddenError message', async () => {
       mockFavoriteService.paginate.mockImplementationOnce(() => {
         throw new ForbiddenException();
-      });
+      })
 
       try {
         expect(await controller.paginate(response, 1)).toThrow(ForbiddenException);
@@ -123,5 +138,11 @@ describe('FavoritesController', () => {
         expect(error.message).toEqual('Forbidden');
       }
     });
-  });
-});
+
+    it('should return a ForbiddenException', async () => {
+      await expect(controller.delete(response, 1)).rejects.toThrowError(
+        ForbiddenException,
+      )
+    });
+  })
+})
