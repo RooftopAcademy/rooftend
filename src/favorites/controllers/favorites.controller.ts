@@ -38,6 +38,7 @@ import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import { User } from '../../users/entities/user.entity';
 import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -45,7 +46,7 @@ export class FavoritesController {
   constructor(
     private readonly favoritesService: FavoritesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {  };
+  ) { };
 
   @Get()
   @HttpCode(200)
@@ -201,6 +202,7 @@ export class FavoritesController {
   ): Promise<Pagination<Favorite>> {
     const user: User = <User>req.user;
 
+    // Ver si se debe de agregar el NotFoundException
     const favorite = await this.favoritesService.findFavorite(user.id);
 
     return this.favoritesService.paginate(
@@ -230,18 +232,27 @@ export class FavoritesController {
       example: new UnauthorizedException().getResponse(),
     },
   })
+  @ApiBearerAuth()
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'The ID of the Favorite record to delete.',
+    example: 1,
+  })
   public async getById(
-    @Param('id') id: any,
+    @Param('id') id: number,
+    @Req() req: Request,
   ) {
-    const userId = id;
+    const user: User = <User>req.user;
 
-    const favorite = await this.favoritesService.findFavorite(userId);
+    const favorite = await this.favoritesService.findFavorite(id);
 
     if(!favorite) {
       throw new NotFoundException('Favorite not found.');
     }
 
-    const ability = this.caslAbilityFactory.createForUser(userId);
+    const ability = this.caslAbilityFactory.createForUser(user);
 
     if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
       throw new ForbiddenException();
@@ -312,8 +323,11 @@ export class FavoritesController {
     description: 'The ID of the Favorite record to delete.',
     example: 1,
   })
-  public async delete(@Param('id') id: number) {
-    const user: any = id;
+  public async delete(
+    @Req() req: Request,
+    @Param('id') id: number,
+  ): Promise<Status> {
+    const user: User = <User>req.user;
 
     const favorite = await this.favoritesService.findFavorite(id);
 
@@ -323,12 +337,12 @@ export class FavoritesController {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
+    if(ability.cannot(Permission.Delete, subject('Favorite', favorite))) {
       throw new ForbiddenException();
     }
 
     this.favoritesService.delete(id);
     
-    return STATUS.OK;
+    return STATUS.DELETED;
   };
 }
