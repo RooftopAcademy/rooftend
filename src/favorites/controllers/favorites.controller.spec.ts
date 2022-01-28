@@ -139,20 +139,6 @@ describe('FavoritesController', () => {
       expect(await controller.delete(request, 1)).toEqual(STATUS.DELETED);
     });
 
-    it('should return a ForbiddenError message', async () => {
-      mockFavoriteService.paginate.mockImplementationOnce(() => {
-        throw new ForbiddenException();
-      });
-
-      try {
-        expect(await controller.paginate(response, 1)).toThrow(
-          ForbiddenException,
-        );
-      } catch (error) {
-        expect(error.message).toEqual('Forbidden');
-      }
-    });
-
     it('should return a ForbiddenException', async () => {
       await expect(controller.delete(response, 1)).rejects.toThrowError(
         ForbiddenException,
