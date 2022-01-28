@@ -89,20 +89,6 @@ describe('FavoritesController', () => {
         response.user,
       );
     });
-
-    it('should return a NotFoundException message', async () => {
-      mockFavoriteService.paginate.mockImplementationOnce(() => {
-        throw new NotFoundException();
-      });
-
-      try {
-        expect(await controller.paginate(response, 1)).toThrow(
-          NotFoundException,
-        );
-      } catch (error) {
-        expect(error.message).toEqual('Not Found');
-      }
-    });
   });
 
   describe('create', () => {
@@ -130,8 +116,6 @@ describe('FavoritesController', () => {
 
   describe('delete', () => {
     it('should delete a favorite.', async () => {
-      const id = 1;
-
       const request: any = {
         user: user,
       };
