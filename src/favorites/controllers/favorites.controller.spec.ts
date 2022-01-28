@@ -128,5 +128,13 @@ describe('FavoritesController', () => {
         ForbiddenException,
       );
     });
+
+    it('should return a NotFoundException', async () => {
+      mockFavoriteService.findFavorite.mockRejectedValueOnce(new NotFoundException());
+
+      await expect(controller.delete(response, 1)).rejects.toThrowError(
+        NotFoundException,
+      );
+    });
   });
 });
