@@ -18,27 +18,27 @@ export class FavoritesService {
     private readonly favoritesRepo: Repository<Favorite>,
     @InjectRepository(Item)
     private readonly itemRepo: Repository<Item>,
-  ) { }
+  ) {}
 
   async paginate(
     options: IPaginationOptions,
     user: User,
   ): Promise<Pagination<Favorite>> {
-    return paginate<Favorite>(this.favoritesRepo, options, { where: { user: { id: user.id } }, relations: ['item'] });
+    return paginate<Favorite>(this.favoritesRepo, options, {
+      where: { user: { id: user.id } },
+      relations: ['item'],
+    });
   }
 
-  async create(
-    body: CreateFavoriteDto,
-    user: User,
-  ): Promise<void> {
+  async create(body: CreateFavoriteDto, user: User): Promise<void> {
     const itemExist = await this.itemRepo.findOne(body.itemId);
 
-    if(!itemExist) {
+    if (!itemExist) {
       throw new UnprocessableEntityException('Item does not exist');
     }
 
     const preFavorite: any = { ...body, user: user };
-    
+
     const newFavorite = this.favoritesRepo.create(preFavorite);
 
     await this.favoritesRepo.save(newFavorite);
@@ -50,7 +50,7 @@ export class FavoritesService {
 
   async findFavorite(id: number): Promise<Favorite> {
     const favorite = await this.favoritesRepo.findOne(id, {
-      select: ['id'], 
+      select: ['id'],
       relations: ['user', 'item'],
     });
 

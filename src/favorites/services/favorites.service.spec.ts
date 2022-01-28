@@ -1,18 +1,20 @@
-const itemsList = [{
-  id: 1, 
-  user: 1, 
-  item_id: 1, 
-  createdAt: Date.now()
-}];
+const itemsList = [
+  {
+    id: 1,
+    user: 1,
+    item_id: 1,
+    createdAt: Date.now(),
+  },
+];
 
 const list = {
   items: itemsList.slice(0, 2),
-    meta: {
-      itemCount: 2,
-      totalItems: 2,
-      totalPages: 1,
-      currentPage: 1,
-    },
+  meta: {
+    itemCount: 2,
+    totalItems: 2,
+    totalPages: 1,
+    currentPage: 1,
+  },
 };
 
 jest.mock('nestjs-typeorm-paginate', () => ({
@@ -40,11 +42,13 @@ describe('FavoritesService', () => {
     create: jest.fn((body: CreateFavoriteDto) => ({
       itemId: body.itemId,
     })),
-    save: jest.fn().mockImplementation(favorite => Promise.resolve({
-      id: Date.now(),
-      ...favorite,
-      updated_at: Date.now(),
-    })),
+    save: jest.fn().mockImplementation((favorite) =>
+      Promise.resolve({
+        id: Date.now(),
+        ...favorite,
+        updated_at: Date.now(),
+      }),
+    ),
     softDelete: jest.fn().mockResolvedValue({
       itemId: 62,
     }),
@@ -73,21 +77,23 @@ describe('FavoritesService', () => {
   const mockItemsRepository = {
     findOne: jest.fn(
       (id: number): Promise<Item | null> =>
-      Promise.resolve(id == 1 ? genericItem: null),
+        Promise.resolve(id == 1 ? genericItem : null),
     ),
-  }
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FavoritesService , {
-        provide: getRepositoryToken(Favorite),
-        useValue: mockFavoriteRepository
-      },
-      {
-        provide: getRepositoryToken(Item),
-        useValue: mockItemsRepository,
-      },
-    ],
+      providers: [
+        FavoritesService,
+        {
+          provide: getRepositoryToken(Favorite),
+          useValue: mockFavoriteRepository,
+        },
+        {
+          provide: getRepositoryToken(Item),
+          useValue: mockItemsRepository,
+        },
+      ],
     }).compile();
 
     service = module.get<FavoritesService>(FavoritesService);
@@ -99,12 +105,12 @@ describe('FavoritesService', () => {
 
   describe('paginate', () => {
     it('should return an favorite pagination', async () => {
-      const options: IPaginationOptions = { 
-        page: 1, 
-        limit: 10, 
+      const options: IPaginationOptions = {
+        page: 1,
+        limit: 10,
       };
 
-      expect((await service.paginate(options, new User))).toEqual(list);
+      expect(await service.paginate(options, new User())).toEqual(list);
     });
   });
 
@@ -122,13 +128,15 @@ describe('FavoritesService', () => {
       const receivesCreate = {
         itemId: 1,
         user: {
-          id: 1
+          id: 1,
         },
       };
 
       expect(await service.create(createFavoriteDto, user)).toBeUndefined();
 
-      expect(mockFavoriteRepository.create).toHaveBeenCalledWith(receivesCreate);
+      expect(mockFavoriteRepository.create).toHaveBeenCalledWith(
+        receivesCreate,
+      );
 
       expect(mockFavoriteRepository.save).toHaveBeenCalledWith(expected);
     });

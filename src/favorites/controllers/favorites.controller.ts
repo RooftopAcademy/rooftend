@@ -26,7 +26,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiTags,
-  ApiUnauthorizedResponse
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { FavoritesService } from '../services/favorites.service';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
@@ -46,7 +46,7 @@ export class FavoritesController {
   constructor(
     private readonly favoritesService: FavoritesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) { };
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -56,123 +56,134 @@ export class FavoritesController {
     description: 'List of favorites records. Maximum 10 records per page.',
     schema: {
       example: {
-        "items": [
+        items: [
           {
-            "id": 31,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-              "title": "Lorem ipsum dolor sit amet, consectetuer adipiscin",
-              "description": "More Lorem ipsum and dolorems",
-              "price": 1050.99,
-              "stock": 10
-            }
+            id: 31,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+              title: 'Lorem ipsum dolor sit amet, consectetuer adipiscin',
+              description: 'More Lorem ipsum and dolorems',
+              price: 1050.99,
+              stock: 10,
+            },
           },
           {
-            "id": 32,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-              "title": "Otra publicacion",
-              "description": "Otra descripcion",
-              "price": 250.99,
-              "stock": 10
-            }
+            id: 32,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+              title: 'Otra publicacion',
+              description: 'Otra descripcion',
+              price: 250.99,
+              stock: 10,
+            },
           },
           {
-            "id": 35,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-              "title": "Da Da Da - original Song",
-              "description": "Da DA DA!",
-              "price": 6450,
-              "stock": 104
-            }
+            id: 35,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+              title: 'Da Da Da - original Song',
+              description: 'Da DA DA!',
+              price: 6450,
+              stock: 104,
+            },
           },
           {
-            "id": 37,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-              "title": "La Vaca Lola - original Song",
-              "description": "No me acuerdo la letra",
-              "price": 1320,
-              "stock": 12
-            }
+            id: 37,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+              title: 'La Vaca Lola - original Song',
+              description: 'No me acuerdo la letra',
+              price: 1320,
+              stock: 12,
+            },
           },
           {
-            "id": 39,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-              "title": "La computadora de Canale",
-              "description": "Un poco usada, pero va.",
-              "price": 100000,
-              "stock": 181
-            }
+            id: 39,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+              title: 'La computadora de Canale',
+              description: 'Un poco usada, pero va.',
+              price: 100000,
+              stock: 181,
+            },
           },
           {
-            "id": 41,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-              "title": "Una galletita encontrada en el suelo",
-              "description": "Tiene pelos",
-              "price": 2,
-              "stock": 1
-            }
+            id: 41,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1633114128729-0a8dc13406b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+              title: 'Una galletita encontrada en el suelo',
+              description: 'Tiene pelos',
+              price: 2,
+              stock: 1,
+            },
           },
           {
-            "id": 33,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-              "title": "Una publicacion",
-              "description": "Una descripcion",
-              "price": 2250.99,
-              "stock": 104
-            }
+            id: 33,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+              title: 'Una publicacion',
+              description: 'Una descripcion',
+              price: 2250.99,
+              stock: 104,
+            },
           },
           {
-            "id": 36,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-              "title": "La Cucaracha - original Song",
-              "description": "Ya no puede caminar",
-              "price": 130,
-              "stock": 54
-            }
+            id: 36,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+              title: 'La Cucaracha - original Song',
+              description: 'Ya no puede caminar',
+              price: 130,
+              stock: 54,
+            },
           },
           {
-            "id": 38,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-              "title": "La peluca de Agustín",
-              "description": "Usada en la Demo Day.",
-              "price": 1440,
-              "stock": 11
-            }
+            id: 38,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+              title: 'La peluca de Agustín',
+              description: 'Usada en la Demo Day.',
+              price: 1440,
+              stock: 11,
+            },
           },
           {
-            "id": 40,
-            "item": {
-              "photos": "https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-              "title": "La Moto de Canale",
-              "description": "Pinchada la rueda, el asiento tiene olor feo pero sirve.",
-              "price": 140000,
-              "stock": 181
-            }
-          }
+            id: 40,
+            item: {
+              photos:
+                'https://images.unsplash.com/photo-1638486071991-860cc6b14338?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+              title: 'La Moto de Canale',
+              description:
+                'Pinchada la rueda, el asiento tiene olor feo pero sirve.',
+              price: 140000,
+              stock: 181,
+            },
+          },
         ],
-        "meta": {
-          "totalItems": 39,
-          "itemCount": 10,
-          "itemsPerPage": 10,
-          "totalPages": 2,
-          "currentPage": 1
+        meta: {
+          totalItems: 39,
+          itemCount: 10,
+          itemsPerPage: 10,
+          totalPages: 2,
+          currentPage: 1,
         },
-        "links": {
-          "first": "/favorites",
-          "previous": "",
-          "next": "/favorites?page=2",
-          "last": "/favorites?page=4"
-        }
+        links: {
+          first: '/favorites',
+          previous: '',
+          next: '/favorites?page=2',
+          last: '/favorites?page=4',
+        },
       },
-    }
+    },
   })
   @ApiBearerAuth()
   @ApiQuery({
@@ -210,7 +221,7 @@ export class FavoritesController {
       },
       user,
     );
-  };
+  }
 
   @Get(':id')
   @HttpCode(403)
@@ -237,24 +248,21 @@ export class FavoritesController {
     description: 'The ID of the Favorite record to delete.',
     example: 1,
   })
-  public async getById(
-    @Param('id') id: number,
-    @Req() req: Request,
-  ) {
+  public async getById(@Param('id') id: number, @Req() req: Request) {
     const user: User = <User>req.user;
 
     const favorite = await this.favoritesService.findFavorite(id);
 
-    if(!favorite) {
+    if (!favorite) {
       throw new NotFoundException('Favorite not found.');
     }
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    if(ability.cannot(Permission.Read, subject('Favorite', favorite))) {
+    if (ability.cannot(Permission.Read, subject('Favorite', favorite))) {
       throw new ForbiddenException();
     }
-  };
+  }
 
   @Post()
   @HttpCode(201)
@@ -264,8 +272,8 @@ export class FavoritesController {
     description: 'Created',
     schema: {
       example: {
-        "statusCode": 201,
-        "message": "Created",
+        statusCode: 201,
+        message: 'Created',
       },
     },
   })
@@ -275,14 +283,14 @@ export class FavoritesController {
   @ApiBody({ type: CreateFavoriteDto })
   public async create(
     @Req() req: Request,
-    @Body() createFavoriteDto: CreateFavoriteDto
+    @Body() createFavoriteDto: CreateFavoriteDto,
   ) {
     const user: any = <User>req.user;
 
     this.favoritesService.create(createFavoriteDto, user);
 
-    return (STATUS.CREATED);
-  };
+    return STATUS.CREATED;
+  }
 
   @Delete(':id')
   @HttpCode(200)
@@ -328,18 +336,18 @@ export class FavoritesController {
 
     const favorite = await this.favoritesService.findFavorite(id);
 
-    if(!favorite) {
+    if (!favorite) {
       throw new NotFoundException('Favorite not found.');
     }
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    if(ability.cannot(Permission.Delete, subject('Favorite', favorite))) {
+    if (ability.cannot(Permission.Delete, subject('Favorite', favorite))) {
       throw new ForbiddenException();
     }
 
     this.favoritesService.delete(id);
-    
+
     return STATUS.DELETED;
-  };
+  }
 }
