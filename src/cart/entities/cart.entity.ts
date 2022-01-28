@@ -65,6 +65,7 @@ export class Cart {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({
+    type: () => User,
     description: 'Owner of the cart',
   })
   user: User;

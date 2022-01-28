@@ -87,6 +87,7 @@ export class CartItem {
     name: 'item_id',
   })
   @ApiProperty({
+    type: () => Item,
     description: 'Item that the Cart Item represents',
   })
   item: Item;
