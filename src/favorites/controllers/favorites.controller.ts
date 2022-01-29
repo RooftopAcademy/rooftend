@@ -243,6 +243,12 @@ export class FavoritesController {
       },
     },
   })
+  @ApiNotFoundResponse({
+    description: 'Favorites Not Found',
+    schema: {
+      example: new NotFoundException('Favorites not found').getResponse(),
+    },
+  })
   @ApiUnauthorizedResponse({
     description: 'Not Authorized',
     schema: {
