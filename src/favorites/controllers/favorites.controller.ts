@@ -13,6 +13,7 @@ import {
   NotFoundException,
   ForbiddenException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -284,8 +285,20 @@ export class FavoritesController {
     },
   })
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse()
-  @ApiBadRequestResponse()
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+  })
+  @ApiBadRequestResponse({
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'the itemId must be a number',
+      ]).getResponse(),
+    },
+  })
   @ApiBody({ type: CreateFavoriteDto })
   public async create(
     @Req() req: Request,
