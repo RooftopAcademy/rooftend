@@ -186,6 +186,12 @@ export class FavoritesController {
     },
   })
   @ApiBearerAuth()
+  @ApiUnauthorizedResponse({
+    description: 'Not Authorized',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+  })
   @ApiQuery({
     name: 'token',
     type: Number,
