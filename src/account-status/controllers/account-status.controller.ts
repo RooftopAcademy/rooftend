@@ -4,16 +4,9 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
   ApiOperation,
-  ApiParam,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 import { AccountStatusesEnum } from '../models/AccountStatusesEnum';
 
 @ApiBearerAuth()
@@ -22,7 +15,6 @@ import { AccountStatusesEnum } from '../models/AccountStatusesEnum';
 export class AccountStatusController {
   @Get()
   @ApiOperation({ summary: 'Get all status' })
-  // @ApiResponse({ status: 200, description: 'OK', type: [AccountStatusesEnum] })
   findAll(): Record<string, number> {
     return {
       BLOCKED: AccountStatusesEnum.BLOCKED,
