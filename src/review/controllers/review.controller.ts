@@ -24,11 +24,11 @@ import {
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Review } from '../review.entity';
-
 import { ReviewService } from '../services/review.service';
 import { CartService } from '../../cart/services/cart.service';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
+import { Request } from 'express';
 
 @ApiTags('Reviews')
 @Controller('reviews')
@@ -139,20 +139,30 @@ export class ReviewController {
   @Post()
   @HttpCode(201)
   async create(
-    @Req() req,
+    @Req() req: Request,
     @Query('purchaseId') purchaseId: number,
     @Query('itemId') itemId: number,
     @Body() body: any,
   ) {
-    const user: User = req.user;
+    const user: User = <User>req.user;
+
     const purchase = await this.cartsService.findOneFromUser(purchaseId, user);
-    if (!purchase) throw new ForbiddenException();
+
+    if (!purchase){
+      throw new ForbiddenException();
+    } 
 
     const item = purchase.items.find((item: CartItem) => item.itemId == itemId);
-    if (!item) throw new ForbiddenException();
+
+    if (!item) {
+      throw new ForbiddenException();
+    }
 
     const unreviewed = await this.reviewService.findUnreviewedItem(itemId);
-    if (!unreviewed) throw new ForbiddenException();
+
+    if (!unreviewed) {
+      throw new ForbiddenException();
+    }
 
     return this.reviewService.create(body);
   }
