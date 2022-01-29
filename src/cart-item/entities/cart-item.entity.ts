@@ -5,9 +5,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 import { Cart } from '../../cart/entities/cart.entity';
 import { Item } from '../../items/entities/items.entity';
@@ -86,9 +87,13 @@ export class CartItem {
     name: 'item_id',
   })
   @ApiProperty({
-    example: 10,
-    description: 'Id of the Item that the Cart Item represents',
+    type: () => Item,
+    description: 'Item that the Cart Item represents',
   })
+  item: Item;
+
+  @ApiHideProperty()
+  @RelationId((ci: CartItem) => ci.item)
   itemId: number;
 
   @ManyToOne(() => Cart, (cart) => cart.items)
@@ -96,8 +101,11 @@ export class CartItem {
     name: 'cart_id',
   })
   @ApiProperty({
-    example: 999,
-    description: 'Id of the Cart which Cart Item belongs',
+    description: 'Cart which Cart Item belongs',
   })
+  cart: Cart;
+
+  @ApiHideProperty()
+  @RelationId((ci: CartItem) => ci.cart)
   cartId: number;
 }
