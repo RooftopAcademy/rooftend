@@ -14,6 +14,7 @@ import {
   ForbiddenException,
   UnauthorizedException,
   BadRequestException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -28,6 +29,7 @@ import {
   ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { FavoritesService } from '../services/favorites.service';
 import { CreateFavoriteDto } from '../dto/create-favorite.dto';
@@ -297,6 +299,14 @@ export class FavoritesController {
       example: new BadRequestException([
         'the itemId must be a number',
       ]).getResponse(),
+    },
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'The itemId supplied does not exist',
+    schema: {
+      example: new UnprocessableEntityException(
+        'Item does not exist',
+      ).getResponse(),
     },
   })
   @ApiBody({ type: CreateFavoriteDto })
