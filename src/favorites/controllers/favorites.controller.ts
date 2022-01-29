@@ -196,13 +196,6 @@ export class FavoritesController {
     },
   })
   @ApiQuery({
-    name: 'token',
-    type: Number,
-    required: true,
-    description: 'Token.',
-    example: 1,
-  })
-  @ApiQuery({
     name: 'page',
     type: Number,
     required: false,
