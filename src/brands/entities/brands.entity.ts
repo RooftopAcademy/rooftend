@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   UpdateDateColumn,
-  BeforeInsert,
 } from 'typeorm';
 
 @Entity({ name: 'brands' })
