@@ -8,9 +8,10 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Item } from '../../items/entities/items.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'photos' })
-export class PhotosEntity {
+export class Photos {
   @ApiProperty({
     name: 'id',
     type: Number,
@@ -116,4 +117,13 @@ export class PhotosEntity {
     nullable: false,
   })
   redirectUrl: string;
+
+  @ManyToOne(() => User, (user) => user.visits)
+  @JoinColumn({ name: 'user_id' })
+  @ApiProperty({
+    example: 1,
+    description: 'The user that has the photos',
+    type: () => User,
+  })
+  user: User;
 }
