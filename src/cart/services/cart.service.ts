@@ -38,7 +38,7 @@ export class CartService {
 
   create(user: User): Promise<Cart> {
     const newCart = this.cartRepo.create({
-      userId: user.id,
+      user,
     });
 
     return this.cartRepo.save(newCart);
@@ -61,7 +61,7 @@ export class CartService {
     });
   }
 
-  @OnEvent('user.created')
+  @OnEvent('user.confirmed')
   handleUserCreatedEvent(user: User) {
     this.create(user);
   }
