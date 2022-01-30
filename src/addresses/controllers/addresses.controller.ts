@@ -7,10 +7,14 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddressesService } from '../services/addresses.service';
 import { Address } from '../entities/address.entity';
+import { User } from '../../users/entities/user.entity';
+import { Request } from 'express';
+import { CreateAddressDto } from '../entities/create.address.dto';
 
 @ApiTags('Addresses')
 @ApiBearerAuth()
@@ -75,9 +79,19 @@ export class AddressesController {
     return this.addressesService.delete(id);
   }
 
+  @ApiOperation({
+    summary: 'Create an address',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The created address',
+    type: Address,
+  })
   @Post()
   @HttpCode(201)
-  public created(@Body() body) {
+  public created(
+    @Body() body: CreateAddressDto
+  ) {
     return this.addressesService.create(body);
   }
 }
