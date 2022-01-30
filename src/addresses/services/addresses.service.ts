@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Address } from '../entities/address.entity';
 
 @Injectable()
 export class AddressesService {
+  constructor(
+    @InjectRepository(Address)
+    private readonly addressRepo: Repository<Address>,
+  ) {  }
+
   findAll(): [] {
     return [];
   }
 
-  public find(id: string): string {
-    return `item ${id} found`;
+  public async findOne(id: string): Promise<Address> {
+    const address = await this.addressRepo.findOne(id, {
+      relations: ['user'],
+    });
+
+    return address;
   }
 
   edit(id: string): string {
