@@ -19,6 +19,7 @@ import { UpdateItemDto } from '../entities/update.item.dto';
 import { Category } from '../../categories/entities/categories.entity';
 import { Brand } from '../../brands/entities/brands.entity';
 import { CategoriesService } from '../../categories/services/categories.service';
+import { BrandsService } from '../../brands/services/brands.serveces';
 
 @Injectable()
 export class ItemsService {
@@ -30,6 +31,7 @@ export class ItemsService {
     @InjectRepository(Brand)
     private readonly brandsRepo: Repository<Brand>,
     private readonly categoriesService: CategoriesService,
+    private readonly brandsService: BrandsService,
   ) {}
 
   /**
@@ -97,7 +99,8 @@ export class ItemsService {
     item.user = user;
 
     if (body.brandId) {
-      const brand: Brand = await this.brandsRepo.findOne(body.brandId);
+      // const brand: Brand = await this.brandsRepo.findOne(body.brandId);
+      const brand: Brand = await this.brandsService.findOne(body.brandId);
 
       if (!brand) {
         throw new UnprocessableEntityException('Brand does not exist');
