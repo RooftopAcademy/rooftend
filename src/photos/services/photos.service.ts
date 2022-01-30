@@ -32,14 +32,6 @@ export class PhotosService {
     return from(this.photosRepository.find());
   }
 
-  findOne(id: string | number): Promise<PhotosEntity> {
-    return this.photosRepository.findOne(id);
-  }
-
-  update(id: number, body: any): Observable<UpdateResult> {
-    return from(this.photosRepository.update(id, body));
-  }
-
   delete(id: number): Observable<DeleteResult> {
     return from(this.photosRepository.delete(id));
   }
