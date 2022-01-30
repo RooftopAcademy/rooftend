@@ -18,16 +18,18 @@ import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
 import { UpdateItemDto } from '../entities/update.item.dto';
 import { Category } from '../../categories/entities/categories.entity';
 import { Brand } from '../../brands/entities/brands.entity';
+import { CategoriesService } from '../../categories/services/categories.service';
 
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepo: Repository<Item>,
-    @InjectRepository(Category)
-    private readonly categoriesRepo: Repository<Category>,
+    // @InjectRepository(Category)
+    // private readonly categoriesRepo: Repository<Category>,
     @InjectRepository(Brand)
     private readonly brandsRepo: Repository<Brand>,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   /**
@@ -104,7 +106,11 @@ export class ItemsService {
       item.brand = brand;
     }
 
-    const category: Category = await this.categoriesRepo.findOne(
+    // const category: Category = await this.categoriesRepo.findOne(
+    //   body.categoryId,
+    // );
+
+    const category: Category = await this.categoriesService.findOne(
       body.categoryId,
     );
 
