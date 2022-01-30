@@ -8,22 +8,59 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddressesService } from '../services/addresses.service';
+import { Address } from '../entities/address.entity';
 
+@ApiTags('Addresses')
+@ApiBearerAuth()
 @Controller('adresses')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
   @Get()
   @HttpCode(200)
+  @ApiResponse({
+    status: 100,
+    description: 'A list with all the Addreses',
+    schema: {
+      example: {
+        addresses: [
+          {
+            id: '1',
+            createdAt: '2022-01-15T21:56:42.157Z',
+            updatedAt: '2022-01-15T21:56:42.157Z',
+            countryCode: 'ARG',
+            countryState: 'safsa',
+            cityName: 'dsadsafds',
+            streetName: 'dsafsa',
+            streetNumber: '65762',
+            zipCode: 'sa52a',
+            subjectId: 1,
+            subjectType: 'dsa',
+          }
+        ]
+      }
+    }
+  })
   public findAll() {
     this.addressesService.findAll();
   }
 
+  @ApiOperation({
+    summary: 'Get a single address by ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A addresses found with the passed ID',
+    type: Address,
+  })
   @Get(':id')
   @HttpCode(200)
-  public find(@Param('id') id) {
-    return this.addressesService.find(id);
+  public find(
+    @Param('id') id: string
+  ): Promise<Address> {
+    return this.addressesService.findOne(id);
   }
 
   @Patch()
