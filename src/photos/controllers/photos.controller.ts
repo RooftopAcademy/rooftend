@@ -96,8 +96,11 @@ export class PhotosController {
     description: 'Not Found',
     status: 404,
   })
+  @ApiBearerAuth()
   @Delete(':id')
-  delete(@Param('id') id: number): Observable<DeleteResult> {
+  delete(
+    @Param('id') id: number
+  ): Observable<DeleteResult> {
     return this.photosService.delete(id);
   }
 }
