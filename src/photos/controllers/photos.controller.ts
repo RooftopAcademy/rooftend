@@ -55,7 +55,6 @@ export class PhotosController {
   @Post()
   create(
     @Body() photo: PhotosInterface,
-    @Req() req: Request,
   ) {
     this.photosService.create(photo);
 
@@ -84,15 +83,20 @@ export class PhotosController {
   })
   @Get()
   findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
-    limit = limit > 100 ? 100 : limit;
-    return this.photosService.paginate({
-      page,
-      limit,
-      route: '/photos',
-    });
+    const user: User = <User>req.user;
+
+    return this.photosService.paginate(
+      {
+        page,
+        limit,
+        route: '/photos',
+      },
+      user,
+    );
   }
 
   @ApiOperation({ summary: 'Delete a given photo' })
