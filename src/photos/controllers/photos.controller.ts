@@ -3,20 +3,20 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
   Post,
   Delete,
-  Res,
   Query,
   DefaultValuePipe,
   ParseIntPipe,
   HttpCode,
   Req,
+  NotFoundException,
+  ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PhotosInterface } from '../models/photos.interface';
 import { PhotosService } from '../services/photos.service';
-import { PhotosEntity } from '../models/photos.entity';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { Photos } from '../models/photos.entity';
 import { Observable } from 'rxjs';
 import {
   ApiCreatedResponse,
@@ -24,26 +24,33 @@ import {
   ApiResponse,
   ApiTags,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiBearerAuth,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { Request } from 'express';
+import { User } from '../../users/entities/user.entity';
+import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
+import { Permission } from '../../auth/enums/permission.enum';
+import { subject } from '@casl/ability';
+import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Photos')
 @Controller('photos')
 export class PhotosController {
   constructor(
-    private readonly photosService: PhotosService
+    private readonly photosService: PhotosService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) { }
   @ApiCreatedResponse({ 
-    type: PhotosEntity, 
+    type: Photos, 
     description: 'Created a new photo' 
   })
   @ApiOperation({ summary: 'Create a photo' })
-  @ApiBody({ type: PhotosEntity })
+  @ApiBody({ type: Photos })
   @HttpCode(201)
   @ApiBearerAuth()
   @Post()
@@ -72,7 +79,7 @@ export class PhotosController {
   @ApiResponse({
     status: 200,
     description: 'Returns all photos',
-    type: PhotosEntity,
+    type: Photos,
   })
   @Get()
   findAll(
@@ -88,19 +95,53 @@ export class PhotosController {
   }
 
   @ApiOperation({ summary: 'Delete a given photo' })
-  @ApiOkResponse({
+  @ApiResponse({
     status: 200,
-    description: 'Deleted',
+    description: 'Photo deleted sucessfully',
+    schema: {
+      example: STATUS.DELETED,
+    },
+  })
+  @ApiUnauthorizedResponse({
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+    description: 'User is not logged in',
+  })
+  @ApiForbiddenResponse({
+    description: 'User is not authorized to delete this photo',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiNotFoundResponse({
-    description: 'Not Found',
-    status: 404,
+    description: 'Photo Not Found',
+    schema: {
+      example: new NotFoundException('Photo not found').getResponse(),
+    }
   })
   @ApiBearerAuth()
   @Delete(':id')
-  delete(
-    @Param('id') id: number
-  ): Observable<DeleteResult> {
-    return this.photosService.delete(id);
+  async delete(
+    @Param('id') id: number,
+    @Req() req: Request,
+  ): Promise<Status> {
+    const user: User = <User>req.user;
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    const photo = await this.photosService.findOne(id);
+    
+    if(!photo) {
+      throw new NotFoundException('Photo not found');
+    }
+
+    if(ability.cannot(Permission.Delete, subject('Photos', Photos))) {
+      throw new ForbiddenException();
+    }
+
+    this.photosService.delete(photo);
+
+    return STATUS.DELETED;
   }
 }
