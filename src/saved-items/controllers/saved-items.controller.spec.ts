@@ -19,12 +19,6 @@ describe('SavedItemsController', () => {
           resolve({ id: 1, ...dto });
         }),
     ),
-    updateSavedItem: jest.fn(
-      (id, dto) =>
-        new Promise((resolve, reject) => {
-          resolve({ id, itemId: 1, userId: 1, ...dto });
-        }),
-    ),
   };
 
   beforeEach(async () => {
@@ -65,13 +59,6 @@ describe('SavedItemsController', () => {
         price: expect.any(Number),
       },
     });
-  });
-
-  it('should return a message for successful update', async () => {
-    const item = { quantity: 1, price: 1 };
-    expect(await controller.update(response, 1, item)).toEqual(
-      expect.any(String),
-    );
   });
 
   it('should return a message for successful delete', async () => {

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateSavedItemDto } from '../dto/createSavedItemDto';
-import { UpdateSavedItemDto } from '../dto/updateSavedItemDto';
 import { SavedItemsEntity } from '../entities/savedItems.entity';
 import { SavedItemsService } from './saved-items.service';
 
@@ -80,21 +79,6 @@ describe('SavedItemsService', () => {
     };
 
     expect(await service.createSavedItem(createSavedItemDto)).toEqual({
-      id: expect.any(Number),
-      itemId: expect.any(Number),
-      userId: expect.any(Number),
-      quantity: expect.any(Number),
-      price: expect.any(Number),
-    });
-  });
-
-  it('should update a saved item', async () => {
-    const updateSavedItemDto: UpdateSavedItemDto = {
-      quantity: 1,
-      price: 1,
-    };
-
-    expect(await service.updateSavedItem(1, updateSavedItemDto)).toEqual({
       id: expect.any(Number),
       itemId: expect.any(Number),
       userId: expect.any(Number),
