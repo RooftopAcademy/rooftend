@@ -26,10 +26,7 @@ export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepo: Repository<Item>,
-    // @InjectRepository(Category)
-    // private readonly categoriesRepo: Repository<Category>,
     @InjectRepository(Brand)
-    private readonly brandsRepo: Repository<Brand>,
     private readonly categoriesService: CategoriesService,
     private readonly brandsService: BrandsService,
   ) {}
@@ -99,7 +96,6 @@ export class ItemsService {
     item.user = user;
 
     if (body.brandId) {
-      // const brand: Brand = await this.brandsRepo.findOne(body.brandId);
       const brand: Brand = await this.brandsService.findOne(body.brandId);
 
       if (!brand) {
@@ -108,10 +104,6 @@ export class ItemsService {
 
       item.brand = brand;
     }
-
-    // const category: Category = await this.categoriesRepo.findOne(
-    //   body.categoryId,
-    // );
 
     const category: Category = await this.categoriesService.findOne(
       body.categoryId,
