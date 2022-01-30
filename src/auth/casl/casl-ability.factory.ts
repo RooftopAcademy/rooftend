@@ -16,7 +16,7 @@ import { Item } from '../../items/entities/items.entity';
 import { Photos } from '../../photos/models/photos.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof History> | typeof Photos | 'all';
+type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof History | typeof Photos> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
