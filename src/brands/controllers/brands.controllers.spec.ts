@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Brand } from '../entities/brands.entity';
 import { createBrandDTO } from '../entities/create-brands-dto.entity';
-import { BrandsService } from '../services/brands.serveces';
+import { BrandsService } from '../services/brands.service';
 import { BrandsController } from './brands.controllers';
 
 describe('brandsController', () => {
@@ -38,7 +37,7 @@ describe('brandsController', () => {
   });
 
   it('should create a brand', () => {
-    expect(controller.create({ name: 'Mario', photoId: 'ph id' })).toEqual({
+    expect(controller.create({ name: 'Mario', photoUrl: 'ph id' })).toEqual({
       id: expect.any(Number),
       name: 'Mario',
       photoId: 'ph id',
@@ -46,7 +45,7 @@ describe('brandsController', () => {
   });
 
   it('should update a brand', () => {
-    const dto: createBrandDTO = { name: 'Mario', photoId: 'ph id' };
+    const dto: createBrandDTO = { name: 'Mario', photoUrl: 'ph id' };
     expect(controller.update(1, dto)).toEqual({
       id: expect.any(Number),
       name: 'Mario',

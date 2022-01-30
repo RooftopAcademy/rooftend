@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -12,11 +13,11 @@ import {
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Brand } from '../entities/brands.entity';
-import { BrandsService } from '../services/brands.serveces';
+import { BrandsService } from '../services/brands.service';
 import { createBrandDTO } from '../entities/create-brands-dto.entity';
 import {
-  ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -25,17 +26,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../../authentication/decorators/public.decorator';
 
+@Public()
 @ApiTags('Brands')
 @Controller('brands')
 export class BrandsController {
-  constructor(private brandService: BrandsService) { }
+  constructor(private brandService: BrandsService) {}
 
   @ApiOperation({ summary: 'Paginate all brands' })
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Not found',
-  })
   @ApiOkResponse({
     status: 200,
     description: 'Ok',
@@ -47,22 +46,13 @@ export class BrandsController {
     description: 'Current page number',
     example: 1,
   })
-  @ApiQuery({
-    name: 'limit',
-    type: Number,
-    required: false,
-    description: 'limit of paginated questions',
-    example: 10,
-  })
   @Get('/')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<Brand>> {
-    limit = limit > 100 ? 100 : limit;
     return this.brandService.paginate({
       page,
-      limit,
+      limit: 50,
       route: '/brands',
     });
   }
@@ -73,50 +63,70 @@ export class BrandsController {
     description: 'Shows the search result for a brand by id',
     type: Brand,
   })
+  @ApiParam({
+    name: 'id',
+    type: 'number',
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'BRAND_NOT_FOUND',
+  })
   @Get(':id')
-  getOne(@Param('id') id: number) {
-    return this.brandService.findOne(id);
+  async getOne(@Param('id') id: number): Promise<Brand> {
+    return await this.brandService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create a brands' })
+  @ApiOperation({ summary: 'Create a brand' })
   @ApiResponse({
     status: 201,
     description: 'Created',
   })
+  @ApiConflictResponse({
+    status: 409,
+    description: 'BRAND_ALREADY_EXISTS',
+  })
   @ApiBody({ type: createBrandDTO })
   @Post()
-  create(@Body() createBrandDTO: createBrandDTO) {
-    return this.brandService.create(createBrandDTO);
+  async create(@Body() createBrandDTO: createBrandDTO): Promise<void> {
+    await this.brandService.create(createBrandDTO);
   }
 
-  @ApiOperation({ summary: 'Update a brands' })
+  @ApiOperation({ summary: 'Update a brand' })
   @ApiResponse({
     status: 200,
     description: 'Updated',
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'Not found',
+    description: 'BRAND_NOT_FOUND',
+  })
+  @ApiConflictResponse({
+    status: 409,
+    description: 'BRAND_NAME_ALREADY_EXISTS',
   })
   @ApiParam({
     name: 'id',
     example: 1,
     type: Number,
-    description: 'Brand id'
+    description: 'Brand id',
   })
   @Patch(':id')
-  update(@Param() id: number, @Body() createBrandDTO: createBrandDTO) {
-    return this.brandService.update(id, createBrandDTO);
+  async update(
+    @Param() id: number,
+    @Body() createBrandDTO: createBrandDTO,
+  ): Promise<void> {
+    await this.brandService.findOne(id);
+    await this.brandService.update(id, createBrandDTO);
   }
 
-  @ApiOperation({ summary: 'Delete a brands' })
+  @ApiOperation({ summary: 'Delete a brand' })
   @ApiOkResponse({
     status: 200,
     description: 'Deleted',
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'Not found',
+    description: 'BRAND_NOT_FOUND',
   })
   @ApiParam({
     name: 'id',
@@ -126,7 +136,9 @@ export class BrandsController {
     required: true,
   })
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.brandService.delete(id);
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.brandService.findOne(id);
+    await this.brandService.delete(id);
+    HttpStatus.OK;
   }
 }
