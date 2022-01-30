@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Photos } from '../models/photos.entity';
 import { PhotosInterface } from '../models/photos.interface';
 import { Observable, from } from 'rxjs';
@@ -9,31 +9,30 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { PhotosRepository } from '../repositories/photos.repository';
 
 @Injectable()
 export class PhotosService {
   constructor(
     @InjectRepository(Photos)
-    private readonly photosRepository: PhotosRepository,
+    private readonly photoRepo: Repository<Photos>,
   ) {}
 
   async paginate(
     options: IPaginationOptions,
   ): Promise<Pagination<Photos>> {
-    return paginate<Photos>(this.photosRepository, options);
+    return paginate<Photos>(this.photoRepo, options);
   }
 
   create(photo: PhotosInterface): Observable<PhotosInterface> {
-    return from(this.photosRepository.save(photo));
+    return from(this.photoRepo.save(photo));
   }
 
   findAll(): Observable<Photos[]> {
-    return from(this.photosRepository.find());
+    return from(this.photoRepo.find());
   }
 
   async findOne(id: number) {
-    const photo = await this.photosRepository.findOne(id, {
+    const photo = await this.photoRepo.findOne(id, {
       relations: ['user'],
     });
 
@@ -41,6 +40,6 @@ export class PhotosService {
   }
 
   delete(photo: Photos): Observable<DeleteResult> {
-    return from(this.photosRepository.delete(photo));
+    return from(this.photoRepo.delete(photo));
   }
 }
