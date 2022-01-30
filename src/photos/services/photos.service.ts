@@ -9,6 +9,7 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class PhotosService {
@@ -19,8 +20,11 @@ export class PhotosService {
 
   async paginate(
     options: IPaginationOptions,
+    user: User,
   ): Promise<Pagination<Photos>> {
-    return paginate<Photos>(this.photoRepo, options);
+    return paginate<Photos>(this.photoRepo, options, {
+      where: { user: { id: user.id } },
+    });
   }
 
   create(photo: PhotosInterface): Observable<PhotosInterface> {
