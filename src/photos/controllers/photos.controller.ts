@@ -10,6 +10,8 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  HttpCode,
+  Req,
 } from '@nestjs/common';
 import { PhotosInterface } from '../models/photos.interface';
 import { PhotosService } from '../services/photos.service';
@@ -26,18 +28,29 @@ import {
   ApiQuery,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiTags('Photos')
 @Controller('photos')
 export class PhotosController {
-  constructor(private readonly photosService: PhotosService) { }
-
-  @ApiCreatedResponse({ type: PhotosEntity, description: 'Created a new photo' })
+  constructor(
+    private readonly photosService: PhotosService
+  ) { }
+  @ApiCreatedResponse({ 
+    type: PhotosEntity, 
+    description: 'Created a new photo' 
+  })
   @ApiOperation({ summary: 'Create a photo' })
   @ApiBody({ type: PhotosEntity })
+  @HttpCode(201)
+  @ApiBearerAuth()
   @Post()
-  create(@Body() photo: PhotosInterface): Observable<PhotosInterface> {
+  create(
+    @Body() photo: PhotosInterface,
+    @Req() req: Request,
+  ): Observable<PhotosInterface> {
     return this.photosService.create(photo);
   }
 
@@ -72,52 +85,6 @@ export class PhotosController {
       limit,
       route: '/photos',
     });
-  }
-
-  @ApiOperation({ summary: 'Get a given photo' })
-  @ApiParam({
-    name: 'id',
-    type: Number,
-    required: true,
-    example: 2,
-  })
-  @ApiOkResponse({
-    status: 200,
-    description: 'Returns a given photo',
-    type: PhotosEntity,
-  })
-  @ApiNotFoundResponse({
-    description: 'Not found',
-    status: 404,
-  })
-  @Get(':id')
-  public findOne(@Param('id') id: number, @Res() res): void {
-    this.photosService
-      .findOne(id)
-      .then((data) => {
-        return data;
-      })
-      .catch((err) => {
-        return res.status(404).end(err.message);
-      });
-  }
-
-  @ApiOperation({ summary: 'Update a given photo' })
-  @ApiResponse({
-    status: 200,
-    description: 'Updated',
-  })
-  @ApiNotFoundResponse({
-    description: 'Not Found',
-    status: 404,
-  })
-  @ApiBody({ type: PhotosEntity })
-  @Patch(':id')
-  update(
-    @Param('id') id: number,
-    @Body() body: PhotosInterface,
-  ): Observable<UpdateResult> {
-    return this.photosService.update(id, body);
   }
 
   @ApiOperation({ summary: 'Delete a given photo' })
