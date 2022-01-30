@@ -17,7 +17,6 @@ import {
 import { PhotosInterface } from '../models/photos.interface';
 import { PhotosService } from '../services/photos.service';
 import { Photos } from '../models/photos.entity';
-import { Observable } from 'rxjs';
 import {
   ApiCreatedResponse,
   ApiBody,
@@ -57,8 +56,10 @@ export class PhotosController {
   create(
     @Body() photo: PhotosInterface,
     @Req() req: Request,
-  ): Observable<PhotosInterface> {
-    return this.photosService.create(photo);
+  ) {
+    this.photosService.create(photo);
+
+    return STATUS.CREATED;
   }
 
   @ApiOperation({ summary: 'Return all photos' })
