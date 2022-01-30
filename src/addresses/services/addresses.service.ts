@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Address } from '../entities/address.entity';
+import { CreateAddressDto } from '../entities/create.address.dto';
 
 @Injectable()
 export class AddressesService {
@@ -30,7 +31,7 @@ export class AddressesService {
     return `item ${id} removed`;
   }
 
-  create(body: string): string {
+  create(body: CreateAddressDto): string {
     return 'item created';
   }
 }
