@@ -30,6 +30,7 @@ import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 
 import { CartItem } from '../entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
+import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
 
 @ApiTags('Cart Item')
 @Controller('carts')
@@ -142,7 +143,7 @@ export class CartItemController {
     @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-    @Body() body: CreateCartItemDTO,
+    @Body() body: UpdateCartItemDTO,
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Update);
 
