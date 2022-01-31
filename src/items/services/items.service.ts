@@ -26,7 +26,6 @@ export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepo: Repository<Item>,
-    @InjectRepository(Brand)
     private readonly categoriesService: CategoriesService,
     private readonly brandsService: BrandsService,
   ) {}
