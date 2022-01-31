@@ -267,6 +267,8 @@ export class CartItemController {
   ): Promise<Status> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Delete);
 
-    return this.cartItemService.delete(cartId, itemId);
+    await this.cartItemService.delete(cartId, itemId);
+
+    return STATUS.DELETED;
   }
 }
