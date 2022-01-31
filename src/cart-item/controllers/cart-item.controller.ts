@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
   Req,
-  Res,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -64,7 +63,6 @@ export class CartItemController {
   async getAll(
     @Req() req: Request,
     @Param('cartId') cartId: number,
-    @Res({ passthrough: true }) response,
   ): Promise<CartItem[]> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
 
@@ -72,7 +70,7 @@ export class CartItemController {
       cartId,
     );
 
-    return cartItems ? cartItems : response.status(404).end();
+    return cartItems;
   }
 
   @ApiOperation({ summary: 'Get a single cart item by ID' })
