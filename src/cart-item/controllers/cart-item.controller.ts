@@ -1,14 +1,17 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -17,6 +20,8 @@ import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Request } from 'express';
@@ -31,8 +36,10 @@ import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { CartItem } from '../entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
 import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
+import STATUS from '../../statusCodes/statusCodes';
 
 @ApiTags('Cart Item')
+@ApiBearerAuth()
 @Controller('carts')
 export class CartItemController {
   constructor(
@@ -56,8 +63,23 @@ export class CartItemController {
     description: 'A list with all the cart items',
     type: [CartItem],
   })
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+  })
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to see this cart',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Cart not found',
+    schema: {
+      example: new NotFoundException('Cart not found').getResponse(),
+    },
   })
   @Get(':cartId/items')
   @HttpCode(200)
@@ -80,11 +102,23 @@ export class CartItemController {
     description: 'A Cart Item found with the passed ID',
     type: CartItem,
   })
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
+  })
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to see this cart',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiNotFoundResponse({
-    description: 'Not Found Item',
+    description: 'Cart or item not found',
+    schema: {
+      example: new NotFoundException('Cart not found').getResponse(),
+    },
   })
   @Get(':cartId/items/:itemId')
   @HttpCode(200)
@@ -105,10 +139,30 @@ export class CartItemController {
     type: CartItem,
   })
   @ApiBadRequestResponse({
-    description: 'The cart item could not be created',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'quantity must be a number',
+      ]).getResponse(),
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to add items to this cart',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Cart or item not found',
+    schema: {
+      example: new NotFoundException('Cart not found').getResponse(),
+    },
   })
   @Post(':cartId/items')
   @HttpCode(201)
@@ -137,13 +191,30 @@ export class CartItemController {
     type: CartItem,
   })
   @ApiBadRequestResponse({
-    description: 'The cart item could not be updated',
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'quantity must be a number',
+      ]).getResponse(),
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to edit items in this cart',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
   })
   @ApiNotFoundResponse({
-    description: 'Not Found Item',
+    description: 'Cart or item not found',
+    schema: {
+      example: new NotFoundException('Cart not found').getResponse(),
+    },
   })
   @Patch(':cartId/items/:itemId')
   @HttpCode(200)
@@ -161,14 +232,28 @@ export class CartItemController {
   @ApiOperation({ summary: 'Delete a cart item by ID' })
   @ApiResponse({
     status: 200,
-    description: 'If the cart item was removed or not',
-    type: null,
+    description: 'Item deleted successfully',
+    schema: {
+      example: STATUS.DELETED,
+    },
   })
-  @ApiBadRequestResponse({
-    description: 'The cart item could not be deleted',
+  @ApiUnauthorizedResponse({
+    description: 'User not logged in',
+    schema: {
+      example: new UnauthorizedException().getResponse(),
+    },
   })
   @ApiForbiddenResponse({
-    description: 'Forbidden',
+    description: 'User is not authorized to delete items from this cart',
+    schema: {
+      example: new ForbiddenException().getResponse(),
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Cart or item not found',
+    schema: {
+      example: new NotFoundException('Cart not found').getResponse(),
+    },
   })
   @Delete(':cartId/items/:itemId')
   @HttpCode(200)
