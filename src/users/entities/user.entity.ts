@@ -15,6 +15,7 @@ import { Question } from '../../questions/entities/question.entity';
 import { Review } from '../../review/review.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
 import { Store } from '../../stores/entities/stores.entity';
+import { Address } from '../../addresses/entities/address.entity';
 
 @Entity('users')
 export class User {
@@ -132,4 +133,7 @@ export class User {
 
   @OneToOne(() => Store)
   store?: Store;
+
+  @OneToMany(() => Address, (addres) => addres.user)
+  addresses: Address[];
 }
