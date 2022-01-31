@@ -154,9 +154,9 @@ export class ItemsController {
   @HttpCode(200)
   getAll(
     @Req() req: Request,
-    @Query('sellerId', new DefaultValuePipe(null), ParseIntPipe)
+    @Query('sellerId', new DefaultValuePipe(null))
     sellerId?: number,
-    @Query('categoryId', new DefaultValuePipe(null), ParseIntPipe)
+    @Query('categoryId', new DefaultValuePipe(null))
     categoryId?: number,
     @Query('orderBy') orderBy?: string,
     @Query('dir', new DefaultValuePipe('ASC')) dir: 'ASC' | 'DESC' = 'ASC',
