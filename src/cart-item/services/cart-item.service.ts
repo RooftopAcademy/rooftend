@@ -38,8 +38,11 @@ export class CartItemService {
    * @param cartId
    */
   async findOne(cartId: number, itemId: number): Promise<CartItem> {
-    const cartItem = this.cartItemRepo.findOne({
-      where: { cartId, itemId },
+    const cartItem = await this.cartItemRepo.findOne({
+      where: {
+        cart: { id: cartId },
+        item: { id: itemId },
+      },
       relations: ['item'],
     });
 
@@ -77,7 +80,12 @@ export class CartItemService {
 
     const subtotal = item.getFinalPrice(body.quantity);
 
-    const cartItem = this.cartItemRepo.create({ ...body, subtotal, cartId });
+    const cartItem = this.cartItemRepo.create({
+      ...body,
+      subtotal,
+      cart: { id: cartId },
+      item,
+    });
 
     return this.cartItemRepo.save(cartItem);
   }
