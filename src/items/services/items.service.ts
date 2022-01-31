@@ -1,104 +1,134 @@
 import {
-  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { Item } from '../entities/items.entity';
-import { Not, Repository } from 'typeorm';
-import { paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { User } from '../../users/entities/user.entity';
-import { CreateItemDTO } from '../entities/create.item.dto';
-import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Permission } from '../../auth/enums/permission.enum';
-import { subject } from '@casl/ability';
+import {
+  DeleteResult,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
 
-interface ItemSearchOptions {
-  sellerId? : Number,
-  userId? : Number,
-  categoryId? : Number,
-  exclude? : boolean,
-  orderBy? : string,
-  dir? : "ASC" | "DESC"
-}
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
+
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Brand } from '../../brands/entities/brands.entity';
+import { BrandsService } from '../../brands/services/brands.serveces';
+import { Category } from '../../categories/entities/categories.entity';
+import { CategoriesService } from '../../categories/services/categories.service';
+import { CreateItemDto } from '../entities/create.item.dto';
+import { Item } from '../entities/items.entity';
+import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
+import { User } from '../../users/entities/user.entity';
+import { UpdateItemDto } from '../entities/update.item.dto';
 
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
-    private readonly ItemsRepo: Repository<Item>,
-    private readonly caslAbilityFactory: CaslAbilityFactory,
+    private readonly itemsRepo: Repository<Item>,
+    private readonly categoriesService: CategoriesService,
+    private readonly brandsService: BrandsService,
   ) {}
 
   /**
+   * Returns paginated list of items
    * @param user User who performs this query
-   * @param options
+   * @param searchOptions
+   * @param paginationOptions
    */
-  findAll(options : ItemSearchOptions, user? : User): Promise<Pagination<Item>> {
-    let q = this.ItemsRepo.createQueryBuilder();
+  findAll(
+    searchOptions: ItemSearchOptions,
+    paginationOptions: IPaginationOptions,
+    user?: User,
+  ): Promise<Pagination<Item>> {
+    const q = this.itemsRepo.createQueryBuilder('items');
+
+    q.leftJoinAndSelect('items.user', 'user');
+    q.leftJoinAndSelect('items.category', 'category');
+    q.leftJoinAndSelect('items.brand', 'brand');
 
     /**
      * Exclude current user from search
      */
-    if (options.exclude && user) {
-      q.andWhere({ 'user_id' : Not(user.id) })
+    if (searchOptions.exclude && user) {
+      q.andWhere('user.id != :userId', { userId: user.id });
     }
 
     /**
      * Get only items published by given user id (as seller profile)
      */
-    if (options.sellerId) {
-      q.andWhere({ 'user_id' : options.sellerId })
+    if (searchOptions.sellerId) {
+      q.andWhere('user.id = :sellerId', { sellerId: searchOptions.sellerId });
     }
 
     /**
      * Get only items from selected category
      */
-    if (options.categoryId) {
-      q.andWhere({ 'category_id' : options.categoryId })
+    if (searchOptions.categoryId) {
+      q.andWhere('category.id = :categoryId', {
+        categoryId: searchOptions.categoryId,
+      });
     }
 
     /**
      * Ordering by field and direction
      */
-    if (options.orderBy) {
-      q.orderBy(options.orderBy, options.dir)
+    if (searchOptions.orderBy) {
+      q.orderBy(searchOptions.orderBy, searchOptions.dir);
     }
 
-    return paginate(q, { limit : 1, page : 1 });
+    return paginate(q, paginationOptions);
   }
 
   async findOne(id: number): Promise<Item> {
-    const item = await this.ItemsRepo.findOne(id);
+    const item = await this.itemsRepo.findOne(id, {
+      relations: ['user', 'category', 'brand'],
+    });
 
     if (!item) throw new NotFoundException('Item Not Found');
 
     return item;
   }
 
-  create(user: User, body: CreateItemDTO): Promise<Item> {
-    const item = this.ItemsRepo.create(body);
+  async create(user: User, body: CreateItemDto): Promise<Item> {
+    const item = this.itemsRepo.create(body);
     item.user = user;
 
-    return this.ItemsRepo.save(item);
-  }
+    if (body.brandId) {
+      const brand: Brand = await this.brandsService.findOne(body.brandId);
 
-  async update(item: Item, body: any): Promise<Item> {
-    this.ItemsRepo.merge(item, body);
-    return this.ItemsRepo.save(item);
-  }
+      if (!brand) {
+        throw new UnprocessableEntityException('Brand does not exist');
+      }
 
-  async delete(user: User, id: number): Promise<boolean> {
-    const item = await this.findOne(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-    item.user.id = Number(item.user.id);
-
-    if (ability.cannot(Permission.Delete, subject('Item', item))) {
-      throw new ForbiddenException();
+      item.brand = brand;
     }
 
-    await this.ItemsRepo.delete(id);
-    return true;
+    const category: Category = await this.categoriesService.findOne(
+      body.categoryId,
+    );
+
+    if (!category) {
+      throw new UnprocessableEntityException('Category does not exist');
+    }
+
+    item.category = category;
+
+    return this.itemsRepo.save(item);
+  }
+
+  async update(item: Item, body: UpdateItemDto): Promise<UpdateResult> {
+    return this.itemsRepo.update(item, body);
+  }
+
+  async delete(item: Item): Promise<DeleteResult> {
+    return this.itemsRepo.softDelete(item);
   }
 }

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { stringify } from 'querystring';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { LogInUserDTO } from '../../users/entities/log-in-user-dto.entity';
 import { AuthenticationService } from '../services/authentication.service';
@@ -23,6 +24,9 @@ describe('AuthenticationController', () => {
   const mockAuthenticationService = {
     checkEmail: jest.fn().mockReturnThis(),
     create: jest.fn().mockReturnThis(),
+    confirmRegistry: jest.fn().mockReturnValue({
+      accessToken: 'tokenstring',
+    }),
     login: jest.fn().mockReturnValue({
       accessToken: 'tokenstring',
     }),
@@ -46,14 +50,11 @@ describe('AuthenticationController', () => {
 
   afterEach(jest.clearAllMocks);
   describe('Registration', () => {
-    it('should register a new user', async () => {
+    it('should create a new user', async () => {
       const register = await controller.register(validUser);
-      expect(typeof register).toBe('object');
-      expect(register).toEqual({
-        accessToken: expect.any(String),
-      });
-      expect(mockAuthenticationService.login).toHaveBeenCalledTimes(1);
-      expect(mockAuthenticationService.login).toHaveBeenCalled();
+      expect(register).toBeUndefined();
+      expect(mockAuthenticationService.checkEmail).toHaveBeenCalledTimes(1);
+      expect(mockAuthenticationService.create).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error if the password is missing lowercase letters', async () => {
@@ -135,9 +136,27 @@ describe('AuthenticationController', () => {
     });
   });
 
+  describe('Confirm user', () => {
+    it('should confirm a user', async () => {
+      const mockTransToken = 'feb78257d3cdf2a2';
+      const confirmation = await controller.confirmUser(mockTransToken);
+      expect(typeof confirmation).toBe('object');
+      expect(confirmation).toEqual({
+        accessToken: expect.any(String),
+      });
+      expect(mockAuthenticationService.confirmRegistry).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+  });
+
   describe('Login', () => {
     it('should login a valid user', async () => {
-      const login = await controller.login(mockBody);
+      const mockReq = {
+        user: {},
+      } as unknown as Request;
+
+      const login = await controller.login(mockBody, mockReq);
       expect(mockAuthenticationService.login).toHaveBeenCalled();
       expect(typeof login).toBe('object');
       expect(login).toEqual({

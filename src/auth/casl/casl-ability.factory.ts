@@ -27,7 +27,7 @@ export class CaslAbilityFactory {
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
-      'user.id': Number(user.id),
+      'user.id': user.id,
     });
     can([Permission.Read], Question);
     return build({
