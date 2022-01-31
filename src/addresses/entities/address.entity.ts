@@ -4,9 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({
   name: 'addresses',
@@ -220,4 +223,11 @@ export class Address {
     nullable: false,
   })
   subjectType: string;
+
+  @ManyToOne(() => User, (user) => user.addresses, { eager: true })
+  @JoinColumn({
+    name: 'user_id',
+  })
+  @ApiProperty({ type: () => User })
+  user: User;
 }
