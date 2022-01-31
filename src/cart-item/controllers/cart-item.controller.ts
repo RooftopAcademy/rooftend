@@ -130,7 +130,7 @@ export class CartItemController {
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
 
-    return this.cartItemService.findOne(itemId, cartId);
+    return this.cartItemService.findOne(cartId, itemId);
   }
 
   @ApiOperation({ summary: 'Create a cart item' })
