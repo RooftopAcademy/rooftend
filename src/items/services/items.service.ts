@@ -4,30 +4,37 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { Item } from '../entities/items.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import {
+  DeleteResult,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
+
 import {
   IPaginationOptions,
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { User } from '../../users/entities/user.entity';
-import { CreateItemDto } from '../entities/create.item.dto';
-import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
-import { UpdateItemDto } from '../entities/update.item.dto';
-import { Category } from '../../categories/entities/categories.entity';
+
+import { InjectRepository } from '@nestjs/typeorm';
+
 import { Brand } from '../../brands/entities/brands.entity';
+import { BrandsService } from '../../brands/services/brands.serveces';
+import { Category } from '../../categories/entities/categories.entity';
+import { CategoriesService } from '../../categories/services/categories.service';
+import { CreateItemDto } from '../entities/create.item.dto';
+import { Item } from '../entities/items.entity';
+import { ItemSearchOptions } from '../interfaces/item-search-options.interface';
+import { User } from '../../users/entities/user.entity';
+import { UpdateItemDto } from '../entities/update.item.dto';
 
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepo: Repository<Item>,
-    @InjectRepository(Category)
-    private readonly categoriesRepo: Repository<Category>,
-    @InjectRepository(Brand)
-    private readonly brandsRepo: Repository<Brand>,
+    private readonly categoriesService: CategoriesService,
+    private readonly brandsService: BrandsService,
   ) {}
 
   /**
@@ -95,7 +102,7 @@ export class ItemsService {
     item.user = user;
 
     if (body.brandId) {
-      const brand: Brand = await this.brandsRepo.findOne(body.brandId);
+      const brand: Brand = await this.brandsService.findOne(body.brandId);
 
       if (!brand) {
         throw new UnprocessableEntityException('Brand does not exist');
@@ -104,7 +111,7 @@ export class ItemsService {
       item.brand = brand;
     }
 
-    const category: Category = await this.categoriesRepo.findOne(
+    const category: Category = await this.categoriesService.findOne(
       body.categoryId,
     );
 
