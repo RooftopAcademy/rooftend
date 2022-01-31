@@ -8,6 +8,7 @@ import { CartItem } from '../entities/cart-item.entity';
 import { Repository } from 'typeorm';
 import { Item } from '../../items/entities/items.entity';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
+import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
 
 @Injectable()
 export class CartItemService {
@@ -78,9 +79,15 @@ export class CartItemService {
     return this.cartItemRepo.save(cartItem);
   }
 
-  async update(cartId: number, itemId: number, body: any): Promise<CartItem> {
+  async update(
+    cartId: number,
+    itemId: number,
+    body: UpdateCartItemDTO,
+  ): Promise<CartItem> {
     const cartItem = await this.findOne(cartId, itemId);
     this.cartItemRepo.merge(cartItem, body);
+    cartItem.subtotal = cartItem.item.getFinalPrice(cartItem.quantity);
+
     return this.cartItemRepo.save(cartItem);
   }
 
