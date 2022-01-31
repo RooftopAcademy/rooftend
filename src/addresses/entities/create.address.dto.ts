@@ -23,7 +23,7 @@ export class CreateAddressDto {
     @ApiProperty({
         description: 'Country state name',
         type: 'string',
-        example: 'Córdoba',
+        example: 'dsds',
         maxLength: 100,
         nullable: false,
     })
@@ -34,7 +34,7 @@ export class CreateAddressDto {
     @ApiProperty({
         description: 'City name',
         type: 'string',
-        example: 'San Francisco',
+        example: 'ds dsdsd',
         maxLength: 100,
         nullable: false,
     })
