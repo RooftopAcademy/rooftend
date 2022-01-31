@@ -10,7 +10,7 @@ import { Item } from '../../items/entities/items.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('saved_items')
-export class SavedItemsEntity {
+export class SavedItem {
   @PrimaryGeneratedColumn({
     type: 'bigint',
     unsigned: true,
@@ -22,7 +22,6 @@ export class SavedItemsEntity {
   })
   id: number;
 
-
   @ManyToMany(() => Item)
   @JoinTable({ name: 'item_id' })
   @ApiProperty({
@@ -31,8 +30,7 @@ export class SavedItemsEntity {
     type: 'bigint',
     nullable: false,
   })
-  itemId: number;
-
+  item: Item;
 
   @ManyToMany(() => User)
   @JoinTable({ name: 'user_id' })
@@ -42,7 +40,7 @@ export class SavedItemsEntity {
     type: 'bigint',
     nullable: false,
   })
-  userId: number;
+  user: User;
 
   @Column({
     name: 'quantity',
