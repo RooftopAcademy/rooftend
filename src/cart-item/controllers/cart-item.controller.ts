@@ -132,7 +132,7 @@ export class CartItemController {
 
   @ApiOperation({ summary: 'Update a cart item by ID' })
   @ApiResponse({
-    status: 204,
+    status: 200,
     description: 'The updated cart item',
     type: CartItem,
   })
@@ -146,7 +146,7 @@ export class CartItemController {
     description: 'Not Found Item',
   })
   @Patch(':cartId/items/:itemId')
-  @HttpCode(204)
+  @HttpCode(200)
   async update(
     @Req() req: Request,
     @Param('cartId') cartId: number,
