@@ -6,11 +6,10 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 
-import { UserReviews } from '../entities/userReviews.entity';
 import { User } from '../../users/entities/user.entity';
 import Status from '../../statusCodes/status.interface';
 import STATUS from '../../statusCodes/statusCodes';
-import CreateReviewDTO from '../entities/review.create.dto';
+import ItemReviewDTO from '../entities/itemReview.create.dto';
 
 import { Item } from '../../items/entities/items.entity';
 import { Repository } from 'typeorm';
@@ -25,26 +24,25 @@ export class ItemReviewsService {
     private readonly itemsService: ItemsService,
   ) { }
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<ItemReviews>> {
-    return paginate<ItemReviews>(this.itemReviewsRepository, options);
-  }
+  async paginate(options: IPaginationOptions, itemId: number, filter?: 'POS' | 'NEG'): Promise<Pagination<ItemReviews>> {
+    let reviews = this.itemReviewsRepository.createQueryBuilder('reviews')
+      .leftJoin('reviews.item', 'items')
+      .where('items.id = :itemId', { itemId })
 
-  async findAll(): Promise<ItemReviews[]> {
-    return this.itemReviewsRepository.find();
-  }
-
-  async findOne(id: string | number): Promise<ItemReviews> {
-    const review: ItemReviews | undefined = await this.itemReviewsRepository.findOne(id);
-
-    if (!review) {
-      throw new NotFoundException(`Review with id ${id} not found.`);
+    if (filter == 'POS') {
+      reviews.andWhere('reviews.score > 3')
     }
-    return review;
+
+    if (filter == 'NEG') {
+      reviews.andWhere('reviews.score < 3')
+    }
+    return paginate<ItemReviews>(reviews, options)
   }
+
 
 
   // it would return the created entity
-  async create(review: CreateReviewDTO, user: User, itemId: number): Promise<Status> {
+  async create(review: ItemReviewDTO, user: User, itemId: number): Promise<Status> {
     try {
       const item = await this.itemsService.findOne(itemId);
       const reviewEntity = this.itemReviewsRepository.create({
@@ -64,13 +62,13 @@ export class ItemReviewsService {
   /**
    * Find if some item has been reviewed
    * Returns "1" if true or "0" if false
-   * @param itemId
-   */
-  findUnreviewedItem(itemId: number) {
-    let q = this.itemReviewsRepository.createQueryBuilder()
-
-    q.where({ entityType: "item", entityId: itemId }).getOne()
-
-    return q
-  }
+//    * @param itemId
+//    */
+  //   findUnreviewedItem(itemId: number) {
+  //     let q = this.itemReviewsRepository.createQueryBuilder('review')
+  //     q.where('review.item_id == :itemId', { itemId: itemId }).getOne()
+  //     console.log(q)
+  //     return q
+  //   }
+  // }
 }
