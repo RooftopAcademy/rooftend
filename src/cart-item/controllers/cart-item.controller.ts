@@ -154,7 +154,8 @@ export class CartItemController {
     },
   })
   @ApiForbiddenResponse({
-    description: 'User is not authorized to add items to this cart',
+    description:
+      'User is not authorized to add items to this cart, or item is inactive or out of stock',
     schema: {
       example: new ForbiddenException().getResponse(),
     },
@@ -206,7 +207,8 @@ export class CartItemController {
     },
   })
   @ApiForbiddenResponse({
-    description: 'User is not authorized to edit items in this cart',
+    description:
+      'User is not authorized to edit items in this cart, or item is inactive or out of stock',
     schema: {
       example: new ForbiddenException().getResponse(),
     },
