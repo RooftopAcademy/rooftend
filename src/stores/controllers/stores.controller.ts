@@ -1,91 +1,90 @@
 import {
   Controller,
   Get,
-  Post,
-  Delete,
-  Patch,
   Param,
   HttpCode,
-  Body,
-  Res,
   Query,
   DefaultValuePipe,
   ParseIntPipe,
-  NotFoundException,
 } from '@nestjs/common';
 import {
-  DeleteResult,
-  UpdateResult,
-} from 'typeorm';
-import {
-  ApiBody,
-  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { CreateStoreDto } from '../entities/create-store.dto';
-import { ReadStoreDto } from '../entities/read-store.dto';
-import { Response } from 'express';
 import { StoresService } from '../services/stores.service';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiTags('Stores')
 @Controller('stores')
 export class StoresController {
-  constructor(private storesService: StoresService) { }
+  constructor(private storesService: StoresService) {}
 
   @ApiOperation({
     summary: 'Get a list of stores',
   })
   @ApiOkResponse({
-    description: 'A list of stores',
+    description: 'List of stores',
     schema: {
       example: {
-        "items": [
+        items: [
           {
-            "id": "23",
-            "username": "miUsuario",
-            "brand": "Xiaomi"
-          }
+            id: '1',
+            brand: {
+              id: '1',
+              name: 'Asus',
+              photoUrl: 'http://dummyimage.com/100x100.png/dddddd/000000',
+            },
+          },
+          {
+            id: '2',
+            brand: {
+              id: '5',
+              name: 'Xioami',
+              photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+            },
+          },
         ],
-        "meta": {
-          "totalItems": 1,
-          "itemCount": 1,
-          "itemsPerPage": 10,
-          "totalPages": 1,
-          "currentPage": 1
+        meta: {
+          totalItems: 2,
+          itemCount: 2,
+          itemsPerPage: 10,
+          totalPages: 1,
+          currentPage: 1,
         },
-        "links": {
-          "first": "/stores?limit=10",
-          "previous": "",
-          "next": "",
-          "last": "/stores?page=1&limit=10"
-        }
-      }
-    }
+        links: {
+          first: '/stores?limit=10',
+          previous: '',
+          next: '',
+          last: '/stores?page=1&limit=10',
+        },
+      },
+    },
   })
   @ApiQuery({
     name: 'page',
+    type: Number,
     description: 'Requiered page',
     required: false,
-    example: 3,
+    example: 1,
   })
   @ApiQuery({
     name: 'limit',
-    description: 'Number of results per page',
+    type: Number,
+    description: 'Limit of paginated stores',
     required: false,
-    example: 25,
+    example: 10,
   })
   @Get()
+  @Public()
   @HttpCode(200)
   async getAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
     return this.storesService.paginate({
@@ -96,127 +95,43 @@ export class StoresController {
   }
 
   @ApiOperation({
-    summary: 'Get store by Id',
+    summary: 'Get a store by Id',
   })
   @ApiOkResponse({
     status: 200,
     description: 'Ok',
-    type: ReadStoreDto,
+    schema: {
+      example: {
+        id: '2',
+        brand: {
+          id: '5',
+          name: 'Xioami',
+          photoUrl: 'http://dummyimage.com/100x100.png/5fa2dd/ffffff',
+        },
+      },
+    },
   })
   @ApiNotFoundResponse({
     status: 404,
     description: 'Not Found',
     schema: {
       example: {
-        "statusCode": 404,
-        "message": "Store not found",
-        "error": "Not Found"
-      }
-    }
+        statusCode: 404,
+        message: 'Store with id 8 not found',
+        error: 'Not Found',
+      },
+    },
   })
   @ApiParam({
     type: Number,
     name: 'id',
-    description: 'Id of the requested store',
     required: true,
-    example: 8,
+    example: 2,
   })
   @Get(':id')
+  @Public()
   @HttpCode(200)
-  async getOne(
-    @Param('id') id: number,
-    @Res() res: Response,
-  ): Promise<ReadStoreDto | void> {
-    const data = await this.storesService.getOne(id);
-
-    if (!data) throw new NotFoundException('Store not found');
-
-    return res.status(200).send(data).end();
-  }
-
-  @ApiOperation({
-    summary: 'Create a new store',
-  })
-  @ApiCreatedResponse({
-    status: 201,
-    description: 'The store has been successfully created',
-    type: CreateStoreDto,
-  })
-  @ApiBody({
-    type: CreateStoreDto,
-    required: true,
-  })
-  @Post()
-  @HttpCode(201)
-  async create(
-    @Body() createStoreDto: CreateStoreDto,
-  ): Promise<CreateStoreDto> {
-    return this.storesService.create(createStoreDto);
-  }
-
-  @ApiOperation({
-    summary: 'Update a store',
-  })
-  @ApiParam({
-    name: 'id',
-    type: Number,
-    required: true,
-    example: 8,
-  })
-  @ApiResponse({
-    status: 204,
-    description: 'The store has been successfully updated',
-  })
-  @ApiNotFoundResponse({
-    description: '404: Not Found',
-    schema: {
-      example: {
-        "statusCode": 404,
-        "message": "Store not found",
-        "error": "Not Found"
-      }
-    }
-  })
-  @ApiBody({
-    type: CreateStoreDto,
-    required: true,
-  })
-  @Patch(':id')
-  @HttpCode(204)
-  update(
-    @Param('id') id: number,
-    @Body() store: CreateStoreDto,
-  ): Promise<UpdateResult> {
-    return this.storesService.update(id, store);
-  }
-
-  @ApiOperation({
-    summary: 'Delete a store',
-  })
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Not Found',
-    schema: {
-      example: {
-        "statusCode": 404,
-        "message": "Store not found",
-        "error": "Not Found"
-      }
-    }
-  })
-  @ApiParam({
-    name: 'id',
-    type: Number,
-    required: true,
-    example: 8,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Deleted',
-  })
-  @Delete(':id')
-  @HttpCode(200)
-  delete(@Param('id') id: number): Promise<DeleteResult> {
-    return this.storesService.delete(id);
+  async getOne(@Param('id') id: number) {
+    return await this.storesService.getOne(id);
   }
 }
