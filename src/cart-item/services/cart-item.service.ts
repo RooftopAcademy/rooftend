@@ -96,6 +96,15 @@ export class CartItemService {
     body: UpdateCartItemDTO,
   ): Promise<CartItem> {
     const cartItem = await this.findOne(cartId, itemId);
+
+    if (!cartItem.item.isActive()) {
+      throw new ForbiddenException('This item has been paused');
+    }
+
+    if (!cartItem.item.isAvailable(body.quantity)) {
+      throw new ForbiddenException('Required quantity not available');
+    }
+
     this.cartItemRepo.merge(cartItem, body);
     cartItem.subtotal = cartItem.item.getFinalPrice(cartItem.quantity);
 
