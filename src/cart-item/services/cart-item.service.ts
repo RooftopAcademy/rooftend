@@ -27,7 +27,8 @@ export class CartItemService {
    */
   findAllFromCart(cartId: number): Promise<CartItem[]> {
     return this.cartItemRepo.find({
-      cartId: cartId,
+      where: { cart: { id: cartId } },
+      relations: ['item'],
     });
   }
 
@@ -38,8 +39,8 @@ export class CartItemService {
    */
   async findOne(cartId: number, itemId: number): Promise<CartItem> {
     const cartItem = this.cartItemRepo.findOne({
-      cartId,
-      itemId,
+      where: { cartId, itemId },
+      relations: ['item'],
     });
 
     if (!cartItem) throw new NotFoundException();
