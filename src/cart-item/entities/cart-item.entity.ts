@@ -43,7 +43,7 @@ export class CartItem {
 
   @Column({
     name: 'subtotal',
-    type: 'bigint',
+    type: 'float',
     nullable: false,
   })
   @ApiProperty({
