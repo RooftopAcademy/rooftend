@@ -94,12 +94,7 @@ export class CartItemController {
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Read);
 
-    const cartItem: CartItem = await this.cartItemService.findOne(
-      cartId,
-      itemId,
-    );
-
-    return await this.cartItemService.findOne(itemId, cartId);
+    return this.cartItemService.findOne(itemId, cartId);
   }
 
   @ApiOperation({ summary: 'Create a cart item' })
