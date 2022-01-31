@@ -119,7 +119,15 @@ export class CartItemController {
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Create);
 
-    return this.cartItemService.create(cartId, body);
+    try {
+      const cartItem = await this.cartItemService.findOne(cartId, body.itemId);
+
+      return this.update(req, cartId, body.itemId, {
+        quantity: cartItem.quantity + body.quantity,
+      });
+    } catch {
+      return this.cartItemService.create(cartId, body);
+    }
   }
 
   @ApiOperation({ summary: 'Update a cart item by ID' })
