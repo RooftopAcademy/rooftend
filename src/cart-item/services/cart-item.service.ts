@@ -9,14 +9,14 @@ import { Repository } from 'typeorm';
 import { Item } from '../../items/entities/items.entity';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
+import { ItemsService } from '../../items/services/items.service';
 
 @Injectable()
 export class CartItemService {
   constructor(
     @InjectRepository(CartItem)
     private readonly cartItemRepo: Repository<CartItem>,
-    @InjectRepository(Item)
-    private readonly items: Repository<Item>,
+    private readonly itemsService: ItemsService,
   ) {}
 
   /**
@@ -62,7 +62,7 @@ export class CartItemService {
     /**
      * @var Item
      */
-    const item = await this.items.findOne(body.itemId);
+    const item: Item = await this.itemsService.findOne(body.itemId);
 
     if (!item.isActive()) {
       throw new ForbiddenException('This item has been paused');
