@@ -109,17 +109,16 @@ export class CartItemController {
   @ApiForbiddenResponse({
     description: 'Forbidden',
   })
-  @Post(':cartId/items/:itemId')
+  @Post(':cartId/items')
   @HttpCode(201)
   async create(
     @Req() req: Request,
     @Param('cartId') cartId: number,
-    @Param('itemId') itemId: number,
     @Body() body: CreateCartItemDTO,
   ): Promise<CartItem> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Create);
 
-    return this.cartItemService.create(cartId, itemId, body);
+    return this.cartItemService.create(cartId, body);
   }
 
   @ApiOperation({ summary: 'Update a cart item by ID' })
