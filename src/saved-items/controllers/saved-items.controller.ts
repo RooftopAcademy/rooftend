@@ -18,7 +18,6 @@ import { CreateSavedItemDto } from '../dto/CreateSavedItemDto';
 import { SavedItemsService } from '../services/saved-items.service';
 import {
   ApiBearerAuth,
-  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
@@ -146,9 +145,23 @@ export class SavedItemsController {
   @ApiNotFoundResponse({
     description: 'Saved Item Not Found',
     schema: {
-      example: new NotFoundException('Item not found').getResponse(),
+      example: new NotFoundException('Saved item not found').getResponse(),
     },
   })
+  async remove(@Req() req: Request, @Param('id') id: number): Promise<Status> {
+    const user: User = <User>req.user;
+
+    const savedItem = await this.savedItemsService.findOneSavedItem(id);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(Permission.Delete, subject('SavedItem', savedItem))) {
+      throw new ForbiddenException();
+    }
+
+    await this.savedItemsService.removeSavedItem(savedItem);
+
+    return STATUS.deleted;
+  }
   // async remove(@Res({ passthrough: true }) res: Response, @Param() params) {
   //   try {
   //     const response = await this.savedItemsService.removeSavedItem(params.id);
@@ -162,18 +175,4 @@ export class SavedItemsController {
   //     return err.message;
   //   }
   // }
-  async remove(@Req() req:Request, @Param('id') id:number):Promise<Status> {
-    const user: User = <User>req.user;
-
-    const savedItem = await this.savedItemsService.findOneSavedItem(id);
-    const ability = this.caslAbilityFactory.createForUser(user);
-
-    if (ability.cannot(Permission.Delete, subject('SavedItem', savedItem))) {
-      throw new ForbiddenException();
-    }
-
-    await this.savedItemsService.removeSavedItem(savedItem);
-
-   return STATUS.deleted;
-  }
 }
