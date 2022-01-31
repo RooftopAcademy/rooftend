@@ -152,6 +152,14 @@ export class AddressesController {
       example: STATUS.DELETED,
     },
   })
+  @ApiBadRequestResponse({
+    description: 'Validation error',
+    schema: {
+      example: new BadRequestException([
+        'the itemId must be a number',
+      ]).getResponse(),
+    },
+  })
   @ApiUnauthorizedResponse({
     schema: {
       example: new UnauthorizedException().getResponse(),
