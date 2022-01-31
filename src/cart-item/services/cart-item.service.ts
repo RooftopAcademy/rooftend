@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from '../entities/cart-item.entity';
 import { Repository } from 'typeorm';
 import { Item } from '../../items/entities/items.entity';
+import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 
 @Injectable()
 export class CartItemService {
@@ -56,11 +57,11 @@ export class CartItemService {
    * @param {number} itemId
    * @param body
    */
-  async create(cartId: number, itemId: number, body: any): Promise<CartItem> {
+  async create(cartId: number, body: CreateCartItemDTO): Promise<CartItem> {
     /**
      * @var Item
      */
-    const item = await this.items.findOne(itemId);
+    const item = await this.items.findOne(body.itemId);
 
     if (!item.isActive()) {
       throw new ForbiddenException('This item has been paused');
@@ -70,11 +71,11 @@ export class CartItemService {
       throw new ForbiddenException('Required quantity not available');
     }
 
-    const price = item.getFinalPrice();
+    const subtotal = item.getFinalPrice(body.quantity);
 
-    this.cartItemRepo.merge({ ...body, price }, { cartId, itemId });
+    const cartItem = this.cartItemRepo.create({ ...body, subtotal, cartId });
 
-    return this.cartItemRepo.save(body);
+    return this.cartItemRepo.save(cartItem);
   }
 
   async update(cartId: number, itemId: number, body: any): Promise<CartItem> {
