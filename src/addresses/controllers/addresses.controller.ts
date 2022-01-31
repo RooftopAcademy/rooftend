@@ -23,6 +23,7 @@ import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { subject } from '@casl/ability';
 import STATUS from '../../statusCodes/statusCodes';
+import { UpdateAddressDto } from '../entities/update.address.dto';
 
 @ApiTags('Addresses')
 @ApiBearerAuth()
@@ -80,7 +81,7 @@ export class AddressesController {
 
   @ApiOperation({ summary: 'Update an address by ID' })
   @ApiBody({ 
-    //type: , 
+    type: UpdateAddressDto, 
     required: false 
   })
   @ApiResponse({
@@ -121,7 +122,7 @@ export class AddressesController {
   public async update(
     @Req() req: Request,
     @Param('id') id: number,
-    @Body() body,
+    @Body() body: UpdateAddressDto,
   ) {
     const user: User = <User>req.user;
 
