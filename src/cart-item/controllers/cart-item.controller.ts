@@ -37,6 +37,7 @@ import { CartItem } from '../entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
 import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
 import STATUS from '../../statusCodes/statusCodes';
+import Status from '../../statusCodes/status.interface';
 
 @ApiTags('Cart Item')
 @ApiBearerAuth()
@@ -261,7 +262,7 @@ export class CartItemController {
     @Req() req: Request,
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
-  ): Promise<void> {
+  ): Promise<Status> {
     await this.failIfCannotAccess(<User>req.user, cartId, Permission.Delete);
 
     return this.cartItemService.delete(cartId, itemId);

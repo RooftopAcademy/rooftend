@@ -10,6 +10,8 @@ import { Item } from '../../items/entities/items.entity';
 import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
 import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
 import { ItemsService } from '../../items/services/items.service';
+import Status from '../../statusCodes/status.interface';
+import STATUS from '../../statusCodes/statusCodes';
 
 @Injectable()
 export class CartItemService {
@@ -95,10 +97,11 @@ export class CartItemService {
    * @param cartId
    * @param itemId
    */
-  delete(cartId: number, itemId: number): void {
-    this.cartItemRepo.delete({
-      itemId,
-      cartId,
-    });
+  async delete(cartId: number, itemId: number): Promise<Status> {
+    const cartItem: CartItem = await this.findOne(cartId, itemId);
+
+    await this.cartItemRepo.delete(cartItem);
+
+    return STATUS.DELETED;
   }
 }
