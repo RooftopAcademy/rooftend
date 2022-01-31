@@ -69,7 +69,7 @@ export class AddressesController {
       }
     }
   })
-  public findAll() {
+  public getAll() {
     this.addressesService.findAll();
   }
 
@@ -83,7 +83,7 @@ export class AddressesController {
   })
   @Get(':id')
   @HttpCode(200)
-  public find(
+  public getOne(
     @Param('id') id: number
   ): Promise<Address> {
     return this.addressesService.findOne(id);
