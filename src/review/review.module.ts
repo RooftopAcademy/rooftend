@@ -12,10 +12,15 @@ import { UserReviewsController } from './controllers/userReviews.controller';
 import { ItemsModule } from '../items/items.module';
 import { ItemsService } from '../items/services/items.service';
 import { Item } from '../items/entities/items.entity';
+import { Category } from '../categories/entities/categories.entity';
+import { Brand } from '../brands/entities/brands.entity';
+import { UserService } from '../../dist/users/services/user.service';
+import { UsersModule } from '../../dist/users/users.module';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   controllers: [ItemReviewsController, UserReviewsController],
-  providers: [ItemReviewsService, UserReviewsService, ItemsService],
-  imports: [TypeOrmModule.forFeature([UserReviews, ItemReviews, Item]), CartModule, CaslModule, ItemsModule],
+  providers: [ItemReviewsService, UserReviewsService, ItemsService, UserService],
+  imports: [TypeOrmModule.forFeature([UserReviews, ItemReviews, Item, Category, Brand, User]), CartModule, CaslModule, ItemsModule, UsersModule],
 })
 export class ReviewModule { }
