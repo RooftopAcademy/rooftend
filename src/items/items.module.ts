@@ -11,5 +11,6 @@ import { ItemsService } from './services/items.service';
   controllers: [ItemsController],
   providers: [ItemsService],
   imports: [TypeOrmModule.forFeature([Item, Category, Brand]), CaslModule],
+  exports: [ItemsService],
 })
 export class ItemsModule {}
