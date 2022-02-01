@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   ForbiddenException,
   Get,
@@ -8,7 +9,9 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -21,10 +24,10 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import STATUS from '../../statusCodes/statusCodes';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
@@ -32,6 +35,8 @@ import Status from '../../statusCodes/status.interface';
 import { User } from '../../users/entities/user.entity';
 import { subject } from '@casl/ability';
 import { Permission } from '../../auth/enums/permission.enum';
+import { SavedItem } from '../entities/SavedItems.entity';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Saved')
 @ApiBearerAuth()
@@ -42,18 +47,45 @@ export class SavedItemsController {
     private readonly savedItemsService: SavedItemsService,
   ) {}
 
-  // @Get()
-  // @ApiOperation({ summary: 'Get all saved items' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Returns all saved items',
-  //   type: [CreateSavedItemDto],
-  //   schema: {
-  //     example: {
-  //       items: [{}],
-  //     },
-  //   },
-  // })
+  @ApiOperation({ summary: 'Get all saved items' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all saved items',
+    type: [CreateSavedItemDto],
+    schema: {
+      example: {
+        items: [{}],
+      },
+    },
+  })
+  @ApiQuery({
+    required: false,
+    name: 'page',
+    description: 'Page of the result',
+    example: 1,
+  })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    description: 'Max amount of saved items per page',
+    example: 10,
+  })
+  @Get()
+  @HttpCode(200)
+  @ApiBearerAuth()
+  async findAll(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ): Promise<Pagination<SavedItem, IPaginationMeta>> {
+    const user: User = <User>req.user;
+    page = page >= 1 ? page : 1;
+    limit = limit <= 100 ? limit : 100;
+    return this.savedItemsService.getAllSavedItems(user, {
+      limit,
+      page,
+    });
+  }
   // async findAll(
   //   @Res({ passthrough: true }) res: Response,
   // ): Promise<CreateSavedItemDto[]> {
@@ -89,6 +121,7 @@ export class SavedItemsController {
   //     },
   //   },
   // })
+
   // async create(
   //   @Res({ passthrough: true }) res: Response,
   //   @Body() createSavedItemDto: CreateSavedItemDto,

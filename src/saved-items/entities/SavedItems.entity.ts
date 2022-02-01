@@ -32,7 +32,7 @@ export class SavedItem {
 
   @ManyToMany(() => User)
   // @ManyToOne(() => User)
-  // user => user.savedItems
+  //(user) => user.savedItems
   @JoinTable({ name: 'user_id' })
   @ApiProperty({
     type: User,
@@ -47,7 +47,7 @@ export class SavedItem {
   @ApiProperty({
     example: 1,
     minimum: 1,
-    description: 'The id of the user',
+    description: 'The quantity of saved item',
     type: 'int',
     nullable: false,
   })
@@ -60,7 +60,7 @@ export class SavedItem {
   })
   @ApiProperty({
     example: 1,
-    description: 'The id of the user',
+    description: 'The price of the saved item',
     type: 'int',
     nullable: false,
   })
