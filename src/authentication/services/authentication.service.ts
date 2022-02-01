@@ -133,6 +133,8 @@ export class AuthenticationService {
     user.account_status = AccountStatusesEnum.ACTIVE;
     this.usersService.updateAccountStatus(user);
 
+    this.eventEmitter.emit('user.confirmed', user);
+
     const { account_status, ...result } = user;
 
     return {

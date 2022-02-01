@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 import { CreateUserDTO } from '../../users/entities/create-user-dto.entity';
 import { User } from '../../users/entities/user.entity';
 import { UserService } from '../../users/services/user.service';
@@ -13,14 +14,22 @@ describe('AuthenticationService', () => {
     {
       email: 'email1@gmail.com',
       password: 'anyPass111_',
+      accountStatus: 2,
     },
     {
       email: 'email2@gmail.com',
       password: 'anyPass1yy_',
+      accountStatus: 2,
     },
     {
       email: 'email3@gmail.com',
       password: 'anyValidPass123_',
+      accountStatus: 3,
+    },
+    {
+      email: 'email4@gmail.com',
+      password: 'anyValidPass123_',
+      accountStatus: 4,
     },
   ];
 
@@ -62,6 +71,29 @@ describe('AuthenticationService', () => {
         }
         return null;
       }),
+    confirmRegistry: jest.fn().mockImplementation((token: string) => {
+      // Decipher process simulation
+      const email = token.split('*')[0];
+      const u = mockUserService.findOneByEmail(email);
+      if (!u) {
+        throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+      }
+      if (u.accountStatus == AccountStatusesEnum.ACTIVE) {
+        throw new HttpException('USER_IS_ALREADY_ACTIVE', HttpStatus.CONFLICT);
+      }
+      if (
+        u.accountStatus == AccountStatusesEnum.BLOCKED ||
+        u.accountStatus == AccountStatusesEnum.INACTIVE
+      ) {
+        throw new HttpException(
+          'USER_IS_INACTIVE_OR_BLOCKED',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      return {
+        accessToken: mockJwtService.sign(token),
+      };
+    }),
     login: jest.fn().mockImplementation((user: CreateUserDTO) => {
       let foundUser;
       for (let i = 0; i < registeredUsers.length; i++) {
@@ -86,12 +118,7 @@ describe('AuthenticationService', () => {
           regUser = registeredUsers[i];
         }
       }
-      if (regUser) {
-        throw new HttpException(
-          'The user is already registered',
-          HttpStatus.CONFLICT,
-        );
-      }
+      return regUser;
     }),
     create: jest.fn().mockReturnThis(),
   };
@@ -184,7 +211,48 @@ describe('AuthenticationService', () => {
     });
   });
 
-  describe('login', () => {
+  describe('Registry confirmation', () => {
+    it('should confirm a valid user registration returning a token', () => {
+      const mockTransToken = 'email2@gmail.com*aytttacac32nyPass1yy_';
+      expect(service.confirmRegistry(mockTransToken)).toEqual({
+        accessToken: expect.any(String),
+      });
+      expect(mockUserService.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(mockJwtService.sign).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error is transaction token is invalid', () => {
+      const invalidTransToken = 'emfakel2@gmail.com*aytttacac32nyPass1yy_';
+      const fail = () => {
+        service.confirmRegistry(invalidTransToken);
+      };
+      expect(fail).toThrowError(/USER_NOT_FOUND/);
+      expect(mockUserService.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(mockJwtService.sign).toHaveBeenCalledTimes(0);
+    });
+
+    it("should throw an error if the user's status is ACTIVE", async () => {
+      const invalidTransTocken = 'email3@gmail.com*jkosd234jkd';
+      const fail = () => {
+        service.confirmRegistry(invalidTransTocken);
+      };
+      expect(fail).toThrowError(/USER_IS_ALREADY_ACTIVE/);
+      expect(mockUserService.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(mockJwtService.sign).toHaveBeenCalledTimes(0);
+    });
+
+    it("should throw an error if the user's status is BLOCKED or INACTIVE", () => {
+      const invalidTransTocken = 'email4@gmail.com*jkosd234jkd23';
+      const fail = () => {
+        service.confirmRegistry(invalidTransTocken);
+      };
+      expect(fail).toThrowError(/USER_IS_INACTIVE_OR_BLOCKED/);
+      expect(mockUserService.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(mockJwtService.sign).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('Login', () => {
     it('should login a user', () => {
       expect(
         mockAuthService.login({

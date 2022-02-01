@@ -24,7 +24,7 @@ describe('AuthenticationController', () => {
   const mockAuthenticationService = {
     checkEmail: jest.fn().mockReturnThis(),
     create: jest.fn().mockReturnThis(),
-    registry: jest.fn().mockReturnValue({
+    confirmRegistry: jest.fn().mockReturnValue({
       accessToken: 'tokenstring',
     }),
     login: jest.fn().mockReturnValue({
@@ -50,13 +50,11 @@ describe('AuthenticationController', () => {
 
   afterEach(jest.clearAllMocks);
   describe('Registration', () => {
-    it('should register a new user', async () => {
+    it('should create a new user', async () => {
       const register = await controller.register(validUser);
-      expect(typeof register).toBe('object');
-      expect(register).toEqual({
-        accessToken: expect.any(String),
-      });
-      expect(mockAuthenticationService.registry).toHaveBeenCalledTimes(1);
+      expect(register).toBeUndefined();
+      expect(mockAuthenticationService.checkEmail).toHaveBeenCalledTimes(1);
+      expect(mockAuthenticationService.create).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error if the password is missing lowercase letters', async () => {
@@ -135,6 +133,20 @@ describe('AuthenticationController', () => {
       expect(errors[0].constraints).toEqual({
         maxLength: 'PASSWORD_MAX_LENGTH: 16',
       });
+    });
+  });
+
+  describe('Confirm user', () => {
+    it('should confirm a user', async () => {
+      const mockTransToken = 'feb78257d3cdf2a2';
+      const confirmation = await controller.confirmUser(mockTransToken);
+      expect(typeof confirmation).toBe('object');
+      expect(confirmation).toEqual({
+        accessToken: expect.any(String),
+      });
+      expect(mockAuthenticationService.confirmRegistry).toHaveBeenCalledTimes(
+        1,
+      );
     });
   });
 
