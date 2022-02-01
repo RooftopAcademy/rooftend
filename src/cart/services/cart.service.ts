@@ -51,11 +51,11 @@ export class CartService {
   }
 
   create(user: User): Promise<Cart> {
-    let cart = this.cartRepo.create({ user });
+    const cart = this.cartRepo.create({ user });
     return this.cartRepo.save(cart);
   }
 
-  @OnEvent('user.created')
+  @OnEvent('user.confirmed')
   handleUserCreatedEvent(user: User) {
     this.create(user);
   }
