@@ -34,7 +34,7 @@ import { subject } from '@casl/ability';
 import { Permission } from '../../auth/enums/permission.enum';
 
 @ApiTags('Saved')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('saved')
 export class SavedItemsController {
   constructor(
@@ -109,25 +109,13 @@ export class SavedItemsController {
   //   };
   // }
 
-  @Delete(':id')
-  @HttpCode(200)
-  @ApiBearerAuth()
+  
   @ApiOperation({ summary: 'Delete a saved item by ID' })
   @ApiResponse({
     status: 200,
-    description: 'The saved item has been successfully deleted.',
+    description: 'Saved item deleted successfully.',
     schema: {
       example: STATUS.deleted,
-      // {
-      //   message: 'item with id 5 deleted successfully',
-      // },
-      properties: {
-        message: {
-          type: 'String',
-          description: 'message for successful or fail deletion',
-          example: 'item with id 5 deleted successfully',
-        },
-      },
     },
   })
   @ApiUnauthorizedResponse({
@@ -148,6 +136,9 @@ export class SavedItemsController {
       example: new NotFoundException('Saved item not found').getResponse(),
     },
   })
+  @Delete(':id')
+  @HttpCode(200)
+  @ApiBearerAuth()
   async remove(@Req() req: Request, @Param('id') id: number): Promise<Status> {
     const user: User = <User>req.user;
 

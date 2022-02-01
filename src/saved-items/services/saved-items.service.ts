@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateSavedItemDto } from '../dto/CreateSavedItemDto';
@@ -15,7 +15,12 @@ export class SavedItemsService {
     return this.savedItemsRepo.find();
   }
   findOneSavedItem(id: number) {
-    return this.savedItemsRepo.findOne(id);
+    const savedItem = this.savedItemsRepo.findOne(id, {
+      relations: ['user'],
+    });
+    if (!savedItem) throw new NotFoundException('Saved item Not Found');
+
+    return savedItem;
   }
   createSavedItem(createSavedItemDto: CreateSavedItemDto) {
     const newSavedItem = this.savedItemsRepo.create(createSavedItemDto);
