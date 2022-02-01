@@ -4,6 +4,7 @@ import {
   Column,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
@@ -25,20 +26,16 @@ export class SavedItem {
   @ManyToMany(() => Item)
   @JoinTable({ name: 'item_id' })
   @ApiProperty({
-    example: 1,
-    description: 'The id of the item',
-    type: 'bigint',
-    nullable: false,
+    type: Item,
   })
   item: Item;
 
   @ManyToMany(() => User)
+  // @ManyToOne(() => User)
+  // user => user.savedItems
   @JoinTable({ name: 'user_id' })
   @ApiProperty({
-    example: 1,
-    description: 'The id of the user',
-    type: 'bigint',
-    nullable: false,
+    type: User,
   })
   user: User;
 
