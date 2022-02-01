@@ -1,7 +1,11 @@
-import { OmitType, PartialType } from "@nestjs/swagger";
-import { FavoriteDto } from "./favorite.dto";
+import { IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateFavoriteDto extends PartialType(
-  OmitType(FavoriteDto, ['id', 'user_id', 'updatedAt'] as const),
-) {
+export class CreateFavoriteDto {
+  @IsNumber()
+  @ApiProperty({
+    example: '1',
+    description: 'represents the unique identifier of the item',
+  })
+  itemId: number;
 }

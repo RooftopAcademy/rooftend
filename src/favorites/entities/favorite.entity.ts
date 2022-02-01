@@ -1,4 +1,5 @@
 import {
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   PrimaryGeneratedColumn,
@@ -6,7 +7,6 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { ManyToOne } from 'typeorm';
-
 import { User } from '../../users/entities/user.entity';
 import { Item } from '../../items/entities/items.entity';
 
@@ -29,24 +29,24 @@ export class Favorite {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   @ApiProperty({
-    type: 'integer',
+    type: 'User',
     description: 'The user ID who added the item to favorites',
     nullable: false,
     readOnly: true,
     example: 8,
   })
-  user_id: number;
+  user: User;
 
   @ManyToOne(() => Item)
   @JoinColumn({ name: 'item_id' })
   @ApiProperty({
-    type: 'integer',
+    type: 'Item',
     description: 'The Item ID that was added to favorites',
     nullable: false,
     readOnly: true,
     example: 3,
   })
-  item_id: number;
+  item: Item;
 
   @ApiProperty({
     type: Date,
@@ -60,5 +60,18 @@ export class Favorite {
     type: 'timestamptz',
     nullable: false,
   })
-  updated_at: Date;
+  updatedAt: Date;
+
+  @ApiProperty({
+    type: Date,
+    format: 'date',
+    default: 'now()',
+    description: 'The date the record was last deleted',
+    example: '2021-11-15 17:32:19.537+00',
+  })
+  @DeleteDateColumn({
+    name: 'deleted_at',
+    type: 'timestamptz',
+  })
+  deletedAt: Date;
 }
