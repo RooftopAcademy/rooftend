@@ -7,14 +7,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from '../entities/cart-item.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { Item } from '../../items/entities/items.entity';
+import { CreateCartItemDTO } from '../entities/create-cart-item.dto';
+import { UpdateCartItemDTO } from '../entities/update-cart-item.dto';
+import { ItemsService } from '../../items/services/items.service';
 
 @Injectable()
 export class CartItemService {
   constructor(
     @InjectRepository(CartItem)
     private readonly cartItemRepo: Repository<CartItem>,
-    @InjectRepository(Item)
-    private readonly items: Repository<Item>,
+    private readonly itemsService: ItemsService,
   ) {}
 
   /**
@@ -23,8 +25,28 @@ export class CartItemService {
    */
   findAllFromCart(cartId: number): Promise<CartItem[]> {
     return this.cartItemRepo.find({
-      cartId: cartId,
+      where: { cart: { id: cartId } },
+      relations: ['item'],
     });
+  }
+
+  /**
+   * Find items
+   * @param itemId
+   * @param cartId
+   */
+  async findOne(cartId: number, itemId: number): Promise<CartItem> {
+    const cartItem = await this.cartItemRepo.findOne({
+      where: {
+        cart: { id: cartId },
+        item: { id: itemId },
+      },
+      relations: ['item'],
+    });
+
+    if (!cartItem) throw new NotFoundException();
+
+    return cartItem;
   }
 
   /**
@@ -36,32 +58,15 @@ export class CartItemService {
   }
 
   /**
-   * Find items
-   * @param itemId
-   * @param cartId
-   */
-  async findOneFromCart(itemId: number, cartId: number): Promise<CartItem> {
-    return await this.cartItemRepo
-      .findOne({
-        cartId,
-        itemId,
-      })
-      .then((data) => {
-        if (data) return data;
-        throw new NotFoundException();
-      });
-  }
-
-  /**
    * @param {number} cartId
    * @param {number} itemId
    * @param body
    */
-  async create(cartId: number, itemId: number, body: any): Promise<CartItem> {
+  async create(cartId: number, body: CreateCartItemDTO): Promise<CartItem> {
     /**
      * @var Item
      */
-    const item = await this.items.findOne(itemId);
+    const item: Item = await this.itemsService.findOne(body.itemId);
 
     if (!item.isActive()) {
       throw new ForbiddenException('This item has been paused');
@@ -71,21 +76,46 @@ export class CartItemService {
       throw new ForbiddenException('Required quantity not available');
     }
 
-    const price = item.getFinalPrice();
+    const subtotal = item.getFinalPrice(body.quantity);
 
-    this.cartItemRepo.merge({ ...body, price }, { cartId, itemId });
+    const cartItem = this.cartItemRepo.create({
+      ...body,
+      subtotal,
+      cart: { id: cartId },
+      item,
+    });
 
-    return this.cartItemRepo.save(body);
+    return this.cartItemRepo.save(cartItem);
+  }
+
+  async update(
+    cartId: number,
+    itemId: number,
+    body: UpdateCartItemDTO,
+  ): Promise<CartItem> {
+    const cartItem = await this.findOne(cartId, itemId);
+
+    if (!cartItem.item.isActive()) {
+      throw new ForbiddenException('This item has been paused');
+    }
+
+    if (!cartItem.item.isAvailable(body.quantity)) {
+      throw new ForbiddenException('Required quantity not available');
+    }
+
+    this.cartItemRepo.merge(cartItem, body);
+    cartItem.subtotal = cartItem.item.getFinalPrice(cartItem.quantity);
+
+    return this.cartItemRepo.save(cartItem);
   }
 
   /**
    * @param cartId
    * @param itemId
    */
-  delete(cartId: number, itemId: number): Promise<DeleteResult> {
-    return this.cartItemRepo.delete({
-      itemId,
-      cartId,
-    });
+  async delete(cartId: number, itemId: number): Promise<DeleteResult> {
+    const cartItem: CartItem = await this.findOne(cartId, itemId);
+
+    return this.cartItemRepo.delete(cartItem);
   }
 }

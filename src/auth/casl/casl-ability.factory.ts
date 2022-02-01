@@ -15,7 +15,11 @@ import { CustomMessage } from '../../custom-messages/entities/custom-messages.en
 import { Item } from '../../items/entities/items.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item | typeof Cart | typeof CustomMessage | typeof History> | 'all';
+type Subjects =
+  | InferSubjects<
+      typeof Item | typeof Cart | typeof CustomMessage | typeof History
+    >
+  | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -28,13 +32,14 @@ export class CaslAbilityFactory {
 
     // can<FlatClass<[CLASE]>>(Permission[PERMISO], [CLASE], { 'user.id': user.id });
 
-    can<FlatClass<Cart>>(Permission.Read, Cart, { 'user.id': user.id });
+    can<FlatClass<Cart>>(Permission.Manage, Cart, { 'user.id': user.id });
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
       'user.id': user.id,
     });
-    can<FlatClass<History>>([Permission.Read, Permission.Delete], History, { 
+
+    can<FlatClass<History>>([Permission.Read, Permission.Delete], History, {
       'user.id': user.id,
     });
 

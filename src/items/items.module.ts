@@ -17,5 +17,4 @@ import { ItemsService } from './services/items.service';
     BrandsModule,
   ],
 })
-
 export class ItemsModule {}

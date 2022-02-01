@@ -9,5 +9,13 @@ export class CreateCartItemDTO {
     minimum: 1,
   })
   @IsInt()
-  quantity?: number;
+  quantity: number;
+
+  @ApiProperty({
+    description: 'Id of the item',
+    type: Number,
+    example: 1,
+  })
+  @IsInt()
+  itemId: number;
 }
