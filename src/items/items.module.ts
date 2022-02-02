@@ -16,6 +16,7 @@ import { ItemsService } from './services/items.service';
     CategoriesModule,
     BrandsModule,
   ],
+  exports: [ItemsService],
 })
 
-export class ItemsModule {}
+export class ItemsModule { }
