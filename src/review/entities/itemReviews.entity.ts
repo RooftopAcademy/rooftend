@@ -1,24 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Item } from "../../items/entities/items.entity";
+import { Likes } from "./likes.entity";
 import { Reviews } from "./reviews";
 
 
 @Entity('item_reviews')
 export class ItemReviews extends Reviews {
-    @ApiProperty({
-        type: Number,
-        minimum: 1,
-        maximum: 5,
-        description: 'Integer representing the score the user gave to the reviewed entity.',
-        nullable: false,
-    })
-    @Column({
-        nullable: false,
-        name: 'score',
-        type: 'smallint',
-    })
-    score: number;
+
+    @ManyToOne(() => Item, (item) => item.reviews)
+    likes: Likes[];
 
     @ApiProperty({
         type: Number,
@@ -34,7 +25,7 @@ export class ItemReviews extends Reviews {
 
     @ApiProperty({
         type: Number,
-        description: 'likes in items publications reviews',
+        description: 'dislikes in items publications reviews',
         nullable: true,
         minimum: 0,
     })
@@ -45,6 +36,21 @@ export class ItemReviews extends Reviews {
         default: 0,
     })
     dislike_count: number;
+
+
+    @ApiProperty({
+        type: Number,
+        minimum: 1,
+        maximum: 5,
+        description: 'Integer representing the score the user gave to the reviewed entity.',
+        nullable: false,
+    })
+    @Column({
+        nullable: false,
+        name: 'score',
+        type: 'smallint',
+    })
+    score: number;
 
     @ManyToOne(() => Item, (item) => item.reviews)
     @JoinColumn({ name: 'item_id' })
