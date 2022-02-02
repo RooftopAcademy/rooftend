@@ -23,16 +23,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { ItemReviewsService } from '../services/itemReviews.service';
+import { ItemReviewsService, ScoreType } from '../services/itemReviews.service';
 import { CartService } from '../../cart/services/cart.service';
-import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { User } from '../../users/entities/user.entity';
-import itemReviewDTO from '../entities/itemReview.create.dto';
+import itemReviewDTO from '../DTOs/itemReview.create.dto';
 import { subject } from '@casl/ability';
-import { ItemsService } from '../../items/services/items.service';
 import { ItemReviews } from '../entities/itemReviews.entity';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
-import { Reviews } from '../entities/reviews';
 import { Permission } from '../../auth/enums/permission.enum';
 import { Public } from '../../authentication/decorators/public.decorator';
 
@@ -121,7 +118,7 @@ export class ItemReviewsController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
     @Param('id') id: number,
-    @Query('filter') filter: 'POS' | 'NEG',
+    @Query('filter') filter: ScoreType,
   ): Promise<Pagination<ItemReviews>> {
     limit = limit > 100 ? 100 : limit;
     return this.itemReviewsService.paginate(
@@ -134,11 +131,11 @@ export class ItemReviewsController {
       filter);
   }
 
-  @Post('purchase/:cartId')
+  @Post('purchase/:cartId/:itemId')
   @HttpCode(201)
   async create(
     @Req() req,
-    @Query('itemId') itemId: number,
+    @Param() itemId: number,
     @Body() reviewDTO: itemReviewDTO,
     @Param() cartId: number,
   ) {
@@ -148,15 +145,18 @@ export class ItemReviewsController {
     if (ability.cannot(Permission.Create, subject('ItemReviews', ItemReviews))) {
       throw new ForbiddenException();
     }
+
     const purchase = await this.cartsService.findOneFromUser(cartId, user);
-    if (!purchase) throw new ForbiddenException();
+    if (!purchase && !purchase.purchasedAt) throw new ForbiddenException();
 
-    // const cartItem = purchase.items.find((item: CartItem) => item.itemId == itemId);
-    // if (!cartItem) throw new ForbiddenException();
+    if (!purchase.items.find(cartItem => cartItem.item.id === itemId)) {
+      throw new ForbiddenException();
+    }
 
-    // const unreviewed = await this.itemReviewsService.findUnreviewedItem(1);
-    // if (!unreviewed) throw new ForbiddenException();
+    const unreviewed = await this.itemReviewsService.findUnreviewedItem(itemId)
+    if (!unreviewed) throw new ForbiddenException();
 
     return this.itemReviewsService.create(reviewDTO, user, itemId);
   }
+
 }
