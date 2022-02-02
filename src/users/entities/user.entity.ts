@@ -14,6 +14,7 @@ import { Question } from '../../questions/entities/question.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
 import { UserReviews } from '../../review/entities/userReviews.entity';
 import { Reviews } from '../../review/entities/reviews';
+import { Likes } from '../../review/entities/likes.entity';
 
 @Entity('users')
 export class User {
@@ -96,6 +97,8 @@ export class User {
   @OneToMany(() => UserReviews, (review) => review.user)
   receivedReviews: UserReviews[];
 
+  @OneToMany(() => Likes, (like) => like.user)
+  likes: Likes[];
   /**
    * Published items bookmarked by the user
    */
