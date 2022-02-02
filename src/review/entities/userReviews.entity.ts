@@ -6,7 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { opinionsEnum } from './opinions.enum';
+import { opinionsEnum } from '../enum/opinions.enum';
 import { Reviews } from './reviews';
 
 @Entity('user_reviews')
@@ -37,6 +37,4 @@ export class UserReviews extends Reviews {
     example: 2,
   })
   reviewed: User;
-
-
 }
