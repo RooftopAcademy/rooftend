@@ -6,9 +6,9 @@ import Status from "../../statusCodes/status.interface";
 import STATUS from "../../statusCodes/statusCodes";
 import { User } from "../../users/entities/user.entity";
 import { UserReviews } from "../entities/userReviews.entity";
-import { opinionsEnum } from "../entities/opinions.enum"
-import userReviewDTO from "../entities/userReview.create.dto";
-import { UserService } from "../../../dist/users/services/user.service";
+import { opinionsEnum } from "../enum/opinions.enum"
+import userReviewDTO from "../DTOs/userReview.create.dto";
+import { UserService } from "../../users/services/user.service";
 
 @Injectable()
 export class UserReviewsService {
@@ -29,8 +29,9 @@ export class UserReviewsService {
     // it would return the created entity
     async create(review: userReviewDTO, user: User): Promise<Status> {
         try {
-
-            const reviewEntity = this.userReviewsRepository.create({ ...review, user: user });
+            console.log(review)
+            let reviewedUser = await this.userService.returnLoggedUser(review.userId);
+            const reviewEntity = this.userReviewsRepository.create({ opinion: review.opinion, comment: review.comment, user: user, reviewed: reviewedUser });
             await this.userReviewsRepository.save(reviewEntity);
             return STATUS.CREATED
         }
