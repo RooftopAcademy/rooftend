@@ -4,8 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { CaslAbilityFactory } from "../../auth/casl/casl-ability.factory";
 import { Permission } from "../../auth/enums/permission.enum";
 import { User } from "../../users/entities/user.entity";
-import { ItemReviews } from "../entities/itemReviews.entity";
-import userReviewDTO from "../entities/userReview.create.dto";
+import userReviewDTO from "../DTOs/userReview.create.dto";
 import { UserReviewsService } from "../services/userReviews.service";
 import { CartService } from "../../cart/services/cart.service";
 import { UserReviews } from "../entities/userReviews.entity";
@@ -21,13 +20,13 @@ export class UserReviewsController {
     ) { }
 
 
-    @Post('profile/:userId')
+    @Post('/purchase/:carId/:cartItemId')
     @HttpCode(201)
     async create(
         @Req() req,
         @Body() reviewDTO: userReviewDTO,
         @Param() cartId: number,
-
+        @Param() cardItemId: number,
     ) {
         const user: User = <User>req.user;
         const ability = this.caslAbilityFactory.createForUser(user);
@@ -35,8 +34,9 @@ export class UserReviewsController {
         if (ability.cannot(Permission.Create, subject('UserReviews', UserReviews))) {
             throw new ForbiddenException();
         }
+
         const purchase = await this.cartService.findOneFromUser(cartId, user);
-        if (!purchase) throw new ForbiddenException();
+        if (!purchase && !purchase.purchasedAt) throw new ForbiddenException();
 
         return this.userReviewsService.create(reviewDTO, user);
     }
