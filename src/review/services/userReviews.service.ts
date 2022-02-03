@@ -18,12 +18,18 @@ export class UserReviewsService {
         private userService: UserService,
     ) { }
 
-    async paginate(options: IPaginationOptions, filter?: opinionsEnum) {
-        let reviews = this.userReviewsRepository.createQueryBuilder('reviews')
 
+    async paginate(options: IPaginationOptions, userId: number, filter?: opinionsEnum): Promise<Pagination<UserReviews>> {
+        let reviews = this.userReviewsRepository.createQueryBuilder('reviews')
+            .leftJoin('reviews.user', 'user')
+            .where('user.id = :userId', { userId })
+
+
+        if (filter) {
+            reviews.andWhere(`reviews.opinion = :opinion`, { opinion: filter })
+        }
         return paginate<UserReviews>(reviews, options)
     }
-
 
 
     // it would return the created entity
