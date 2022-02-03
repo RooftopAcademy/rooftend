@@ -8,7 +8,8 @@ import userReviewDTO from "../DTOs/userReview.create.dto";
 import { UserReviewsService } from "../services/userReviews.service";
 import { CartService } from "../../cart/services/cart.service";
 import { UserReviews } from "../entities/userReviews.entity";
-
+import { CartItemService } from "../../cart-item/services/cart-item.service";
+import { ItemsService } from "../../items/services/items.service";
 @ApiTags('User Reviews')
 @Controller('reviews')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -16,17 +17,20 @@ export class UserReviewsController {
     constructor(
         private readonly userReviewsService: UserReviewsService,
         private readonly caslAbilityFactory: CaslAbilityFactory,
-        private cartService: CartService
+        private cartService: CartService,
+        private cartItemService: CartItemService,
+        private itemsService: ItemsService,
+
     ) { }
 
 
-    @Post('/purchase/:carId/:cartItemId')
+    @Post('/purchase/:carId/user/:reviewedId')
     @HttpCode(201)
     async create(
         @Req() req,
         @Body() reviewDTO: userReviewDTO,
-        @Param() cartId: number,
-        @Param() cardItemId: number,
+        @Param('carId') cartId: number,
+        @Param('reviewedId') reviewedId: number,
     ) {
         const user: User = <User>req.user;
         const ability = this.caslAbilityFactory.createForUser(user);
@@ -38,7 +42,13 @@ export class UserReviewsController {
         const purchase = await this.cartService.findOneFromUser(cartId, user);
         if (!purchase && !purchase.purchasedAt) throw new ForbiddenException();
 
-        return this.userReviewsService.create(reviewDTO, user);
+        const cartItem = await this.cartItemService.findOne(cartId, reviewDTO.itemId);
+        if (!cartItem && cartItem.item.id != reviewDTO.itemId) throw new ForbiddenException();
+
+        const item = await this.itemsService.findOne(reviewDTO.itemId);
+        if (!item && item.user.id != reviewedId) throw new ForbiddenException();
+
+        return this.userReviewsService.create(reviewDTO, user, reviewedId);
     }
 
 }
