@@ -18,15 +18,15 @@ export class LikesService {
     ) { }
 
     async react(liked: boolean, user: User, itemReviewId: number) {
+
         try {
             // Busco si el usuario reacciono a esa review.
             const reacted = await this.likesRepository.findOne({
                 where: {
-                    'userId': user.id,
-                    'itemReview_id': itemReviewId,
+                    user: { id: user.id },
+                    itemReview: { id: itemReviewId },
                 },
             });
-
             reacted ?
                 // Si el paramatro liked es igual a valor actual de la comuna liked, tiene que updatear a null
                 // de lo contrario, actualizarlo a lo que diga el parametro liked
@@ -36,7 +36,7 @@ export class LikesService {
                 // si reacciono previamente o si la reaccion es nueva
                 this.firstReaction(liked, user, itemReviewId)
 
-            return this.countLikesAndDislikes(itemReviewId)
+            return await this.countLikesAndDislikes(itemReviewId)
         }
 
         catch (err) {
