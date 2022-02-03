@@ -41,7 +41,6 @@ export class CartItemService {
    * @param cartId
    */
   async findOne(cartId: number, itemId: number): Promise<CartItem> {
-    console.log('atrno')
     const cartItem = await this.cartItemRepo.findOne({
       where: {
         cart: { id: cartId },
