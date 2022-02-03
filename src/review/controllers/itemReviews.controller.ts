@@ -6,7 +6,6 @@ import {
   ForbiddenException,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -15,7 +14,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {
-  ApiNotFoundResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -32,6 +32,9 @@ import { ItemReviews } from '../entities/itemReviews.entity';
 import { CaslAbilityFactory } from '../../auth/casl/casl-ability.factory';
 import { Permission } from '../../auth/enums/permission.enum';
 import { Public } from '../../authentication/decorators/public.decorator';
+import { CartItemService } from '../../cart-item/services/cart-item.service';
+import STATUS from '../../statusCodes/statusCodes';
+
 
 
 @ApiTags('Item Reviews')
@@ -42,6 +45,7 @@ export class ItemReviewsController {
     private readonly itemReviewsService: ItemReviewsService,
     private readonly cartsService: CartService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
+    private cartItemService: CartItemService,
   ) { }
 
   @Get('item/:id')
@@ -131,13 +135,41 @@ export class ItemReviewsController {
       filter);
   }
 
-  @Post('purchase/:cartId/:itemId')
+  @HttpCode(201)
+  @ApiCreatedResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: STATUS.CREATED
+    }
+  })
+  @ApiForbiddenResponse({
+    status: 403,
+    description: 'Forbidden',
+  }
+  )
+  @ApiOperation({ summary: 'Create a review of item purchased' })
+  @ApiParam({
+    name: 'cartId',
+    type: Number,
+    required: true,
+    description: 'If of cart purchased',
+    example: 1,
+  })
+  @ApiParam({
+    name: 'itemId',
+    type: Number,
+    required: true,
+    description: 'If of item purchased',
+    example: 1,
+  })
+  @Post('purchase/:cartId/item/:itemId')
   @HttpCode(201)
   async create(
     @Req() req,
-    @Param() itemId: number,
     @Body() reviewDTO: itemReviewDTO,
-    @Param() cartId: number,
+    @Param('itemId') itemId: number,
+    @Param('cartId') cartId: number,
   ) {
     const user: User = <User>req.user;
     const ability = this.caslAbilityFactory.createForUser(user);
@@ -147,14 +179,13 @@ export class ItemReviewsController {
     }
 
     const purchase = await this.cartsService.findOneFromUser(cartId, user);
-    if (!purchase && !purchase.purchasedAt) throw new ForbiddenException();
+    if (!purchase && !purchase.purchasedAt) throw new ForbiddenException('Purchase not found');
 
-    if (!purchase.items.find(cartItem => cartItem.item.id === itemId)) {
-      throw new ForbiddenException();
-    }
+    const cartItem = await this.cartItemService.findOne(cartId, itemId);
+    if (cartItem.cartId != purchase.id) throw new ForbiddenException("Item is not in cart");
 
-    const unreviewed = await this.itemReviewsService.findUnreviewedItem(itemId)
-    if (!unreviewed) throw new ForbiddenException();
+    const unreviewed = await this.itemReviewsService.findOneWith(itemId, user.id)
+    if (unreviewed.createdAt != null) throw new ForbiddenException("You have already reviewed this item");
 
     return this.itemReviewsService.create(reviewDTO, user, itemId);
   }
