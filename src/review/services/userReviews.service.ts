@@ -27,11 +27,11 @@ export class UserReviewsService {
 
 
     // it would return the created entity
-    async create(review: userReviewDTO, user: User): Promise<Status> {
+    async create(review: userReviewDTO, user: User, reviewedId: number): Promise<Status> {
         try {
             console.log(review)
-            let reviewedUser = await this.userService.returnLoggedUser(review.userId);
-            const reviewEntity = this.userReviewsRepository.create({ opinion: review.opinion, comment: review.comment, user: user, reviewed: reviewedUser });
+            let reviewedUser = await this.userService.returnLoggedUser(reviewedId);
+            const reviewEntity = this.userReviewsRepository.create({ 'opinion': review.opinion, 'comment': review.comment, 'user': user, 'reviewed': reviewedUser });
             await this.userReviewsRepository.save(reviewEntity);
             return STATUS.CREATED
         }
