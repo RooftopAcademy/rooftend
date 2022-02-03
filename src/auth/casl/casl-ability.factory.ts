@@ -13,9 +13,10 @@ import { FlatClass } from '../types/flat-class.type';
 import { Reviews } from '../../review/entities/reviews';
 import { ItemReviews } from '../../review/entities/itemReviews.entity';
 import { UserReviews } from '../../review/entities/userReviews.entity';
+import { Likes } from '../../review/entities/likes.entity';
 
 // TODO: add classes to InferSubjects -> InferSubjects<typeof Item | typeof Review ...>
-type Subjects = InferSubjects<typeof Item | typeof ItemReviews | typeof UserReviews> | 'all';
+type Subjects = InferSubjects<typeof Item | typeof ItemReviews | typeof Likes | typeof UserReviews> | 'all';
 
 export type AppAbility = Ability<[Permission, Subjects]>;
 
@@ -38,6 +39,11 @@ export class CaslAbilityFactory {
 
     can([Permission.Create, Permission.Read], Item);
     can<FlatClass<Item>>([Permission.Delete, Permission.Update], Item, {
+      'user.id': user.id,
+    });
+
+    can([Permission.Create], Likes);
+    can<FlatClass<Likes>>([Permission.Create], Likes, {
       'user.id': user.id,
     });
 
