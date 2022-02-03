@@ -114,7 +114,7 @@ export class Item {
 
   @ManyToOne(() => Brand)
   @JoinColumn({
-    name: 'brand',
+    name: 'brand_id',
   })
   @ApiProperty({
     type: Brand,
@@ -135,11 +135,11 @@ export class Item {
   @JoinColumn({
     name: 'category_id',
   })
-  @ApiProperty({ example: 999, description: 'Id of the Item Category' })
-  categoryId: Category;
+  @ApiProperty({ type: Category, description: 'Item Category' })
+  category: Category;
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cartId)
-  cartItemsId: CartItem[];
+  cartItems: CartItem[];
 
   @OneToMany(() => Question, (question) => question.item)
   questions: Question[];
