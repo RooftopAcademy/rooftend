@@ -28,7 +28,8 @@ export class LikesController {
 
         const user: User = <User>req.user;
         const ability = this.caslAbilityFactory.createForUser(user);
-        if (ability.cannot(Permission.Create, subject('ItemReviews', Likes))) {
+
+        if (ability.cannot(Permission.Create, subject('Likes', Likes))) {
             throw new ForbiddenException();
         }
         return this.likesService.react(liked, user, reviewId)
