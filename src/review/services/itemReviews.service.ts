@@ -69,11 +69,16 @@ export class ItemReviewsService {
    * Returns "1" if true or "0" if false
 //    * @param itemId
 //    */
-  findUnreviewedItem(itemId: number) {
-    let q = this.itemReviewsRepository.createQueryBuilder('review')
-    q.where('review.item_id = :itemId', { itemId: itemId }).getOne()
-    console.log(q)
-    return q
+  async findOneWith(itemId: number, userId: number) {
+
+    const unreviewed = await this.itemReviewsRepository.findOne({
+      where: {
+        user: { id: userId },
+        item: { id: itemId },
+      },
+    });
+
+    return unreviewed
   }
 
 }
