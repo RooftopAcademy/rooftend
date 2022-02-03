@@ -15,10 +15,11 @@ import { UsersModule } from '../users/users.module';
 import { Likes } from './entities/likes.entity';
 import { LikesService } from './services/likes.service';
 import { CartItemModule } from '../cart-item/cart-item.module';
+import { LikesController } from './controllers/likes.controller';
 
 
 @Module({
-  controllers: [ItemReviewsController, UserReviewsController],
+  controllers: [ItemReviewsController, UserReviewsController, LikesController],
   providers: [ItemReviewsService, UserReviewsService, LikesService],
   imports: [TypeOrmModule.forFeature([UserReviews, ItemReviews, Likes]), CartModule, CaslModule, ItemsModule, UsersModule, CartItemModule],
 })
