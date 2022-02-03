@@ -10,7 +10,7 @@ class userReviewDTO {
     comment: string
 
     @IsNumber()
-    userId: number
+    itemId: number
 
 }
 
