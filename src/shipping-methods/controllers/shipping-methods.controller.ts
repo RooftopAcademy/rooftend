@@ -8,6 +8,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 import { ShippingMethod } from '../entities/shipping-method.entity';
 import { ShippingMethodsService } from '../services/shipping-methods.service';
@@ -38,6 +39,7 @@ export class ShippingMethodsController {
       ],
     },
   })
+  @Public()
   @Get()
   @HttpCode(200)
   getAll(): Promise<ShippingMethod[]> {
