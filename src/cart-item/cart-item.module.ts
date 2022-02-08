@@ -9,5 +9,6 @@ import { Item } from '../items/entities/items.entity';
   providers: [CartItemService],
   controllers: [CartItemController],
   imports: [TypeOrmModule.forFeature([CartItem, Item])],
+  exports: [CartItemService],
 })
-export class CartItemModule {}
+export class CartItemModule { }

@@ -15,7 +15,7 @@ export class CartItemService {
     private readonly cartItemRepo: Repository<CartItem>,
     @InjectRepository(Item)
     private readonly items: Repository<Item>,
-  ) {}
+  ) { }
 
   /**
    * Find all items attached to one cart
@@ -40,16 +40,18 @@ export class CartItemService {
    * @param itemId
    * @param cartId
    */
-  async findOneFromCart(itemId: number, cartId: number): Promise<CartItem> {
-    return await this.cartItemRepo
-      .findOne({
-        cartId,
-        itemId,
-      })
-      .then((data) => {
-        if (data) return data;
-        throw new NotFoundException();
-      });
+  async findOne(cartId: number, itemId: number): Promise<CartItem> {
+    const cartItem = await this.cartItemRepo.findOne({
+      where: {
+        cart: { id: cartId },
+        item: { id: itemId },
+      },
+      relations: ['item'],
+    });
+
+    if (!cartItem) throw new NotFoundException();
+
+    return cartItem;
   }
 
   /**

@@ -60,7 +60,7 @@ export class CartItemController {
     @Param('cartId') cartId: number,
     @Param('itemId') itemId: number,
   ): Promise<CartItem> {
-    return await this.cartItemService.findOneFromCart(itemId, cartId);
+    return await this.cartItemService.findOne(cartId, itemId);
   }
 
   @ApiOperation({ summary: 'Create a cart item' })

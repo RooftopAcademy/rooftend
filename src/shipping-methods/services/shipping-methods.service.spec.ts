@@ -1,6 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule
+} from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { ShippingMethod } from '../entities/shipping-method.entity';
 import { ShippingMethodsService } from './shipping-methods.service';
 
@@ -56,27 +59,5 @@ describe('ShippingMethodsService', () => {
         },
       ]),
     );
-  });
-
-  it('should return a Shipping Method with the given id', async () => {
-    expect(await service.findOne(id)).toEqual({
-      id,
-      name: 'Name',
-      photoId: 1,
-    });
-  });
-
-  it('should throw a NotFoundException', async () => {
-    mockShippingMethodsRepository.findOne.mockReturnValueOnce(null);
-
-    try {
-      expect(await service.findOne(id)).toThrow(NotFoundException);
-    } catch (error) {
-      expect(error.message).toEqual("Not Found")
-    }
-  });
-
-  it('should return the quantity of existing Shipping Methods', async () => {
-    expect(await service.getCount()).toEqual(10);
   });
 });
