@@ -184,7 +184,7 @@ export class ItemReviewsController {
     const cartItem = await this.cartItemService.findOne(cartId, itemId);
     if (cartItem.cartId != purchase.id) throw new ForbiddenException("Item is not in cart");
 
-    const unreviewed = await this.itemReviewsService.findOneWith(itemId, user.id)
+    const unreviewed = await this.itemReviewsService.findOneWith(itemId, user.id);
     if (unreviewed.createdAt != null) throw new ForbiddenException("You have already reviewed this item");
 
     return this.itemReviewsService.create(reviewDTO, user, itemId);
