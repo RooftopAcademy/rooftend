@@ -8,7 +8,7 @@ import { Cart } from '../entities/cart.entity';
 
 @Injectable()
 export class CartService {
-  constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) {}
+  constructor(@InjectRepository(Cart) private cartRepo: Repository<Cart>) { }
 
   findAll(): Promise<Cart[]> {
     return this.cartRepo.find();
@@ -21,13 +21,13 @@ export class CartService {
   /**
    * Find cart owned by user
    * @param id
-   * @param userId
+   * @param user
    * @param purchased
    */
   findOneFromUser(id: number, user: User, purchased = true): Promise<Cart> {
     const q = this.cartRepo.createQueryBuilder();
 
-    q.where({ userId: user.id, id });
+    q.where({ user: user.id, id });
 
     if (purchased) {
       q.where({ purchasedAt: Not(IsNull()) });

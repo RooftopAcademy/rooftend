@@ -11,8 +11,10 @@ import { History } from '../../history/models/history.entity';
 import { AccountStatusesEnum } from '../../account-status/models/AccountStatusesEnum';
 import { Item } from '../../items/entities/items.entity';
 import { Question } from '../../questions/entities/question.entity';
-import { Review } from '../../review/review.entity';
 import { SupportRequest } from '../../support/entities/supportRequest.entity';
+import { UserReviews } from '../../review/entities/userReviews.entity';
+import { Reviews } from '../../review/entities/reviews';
+import { Likes } from '../../review/entities/likes.entity';
 
 @Entity('users')
 export class User {
@@ -86,16 +88,17 @@ export class User {
   /**
    * Reviews sent to other users
    */
-  @OneToMany(() => Review, (review) => review.user)
-  publishedReviews: Review[];
+  @OneToMany(() => UserReviews, (review) => review.user)
+  publishedReviews: Reviews[];
 
   /**
    * Reviews received from other users after buy
    */
-  // @PolymorphicChildren(() => Review, { eager: false })
-  @OneToMany(() => Review, (review) => review.subject)
-  receivedReviews: Review[];
+  @OneToMany(() => UserReviews, (review) => review.user)
+  receivedReviews: UserReviews[];
 
+  @OneToMany(() => Likes, (like) => like.user)
+  likes: Likes[];
   /**
    * Published items bookmarked by the user
    */
@@ -106,6 +109,7 @@ export class User {
    */
   @OneToMany(() => Item, (item) => item.user)
   items: Item[];
+
 
   /**
    * Search keywords from this user
