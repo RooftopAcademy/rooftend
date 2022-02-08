@@ -1,11 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { 
-  IsString, 
-  Matches, 
-  MaxLength, 
-  MinLength 
-} from "class-validator";
-import { PasswordMatch } from "../class-validator/password-match.decorator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { StringMatch } from '../class-validator/string-match.decorator';
 
 export class EditPasswordDTO {
   @ApiProperty({
@@ -43,7 +38,7 @@ export class EditPasswordDTO {
     type: String,
   })
   @IsString()
-  @PasswordMatch('newPassword', {
+  @StringMatch('newPassword', {
     message: 'NEW_PASSWORD_CONFIRMATION_NOT_MATCHING',
   })
   newPasswordConfirmation: string;
