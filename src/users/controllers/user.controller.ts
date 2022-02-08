@@ -26,20 +26,21 @@ import {
   ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { EditPasswordDTO } from '../entities/edit-password-dto.entity';
+import { EmailChangeDTO } from '../entities/change-email.dto';
+import STATUS from '../../statusCodes/statusCodes';
+import { Public } from '../../authentication/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'Get the logged user' })
   @ApiResponse({
     status: 200,
     description: 'User found',
-    type: PartialType(
-      OmitType(User, ['password'] as const),
-    ),
+    type: PartialType(OmitType(User, ['password'] as const)),
   })
   @Get()
   @HttpCode(200)
@@ -58,26 +59,26 @@ export class UserController {
   })
   @ApiConflictResponse({
     status: 409,
-    description: "The username is already in use",
+    description: 'The username is already in use',
   })
   @ApiBody({
     schema: {
-      example: { "username": "New username" }
-    }
+      example: { username: 'New username' },
+    },
   })
-  async updateUsername(
-    @Req() req,
-    @Body('username') newUsername: string,
-  ) {
+  async updateUsername(@Req() req, @Body('username') newUsername: string) {
     const id = req.user.id;
 
     const user = await this.userService.findOneByUsername(newUsername);
 
     if (user) {
-      throw new HttpException('The username is already in use', HttpStatus.CONFLICT);
+      throw new HttpException(
+        'The username is already in use',
+        HttpStatus.CONFLICT,
+      );
     }
 
-    return await this.userService.update(id, { username: newUsername });
+    return await this.userService.updateUsername(id, newUsername);
   }
 
   @Patch('email')
@@ -89,26 +90,46 @@ export class UserController {
   })
   @ApiConflictResponse({
     status: 409,
-    description: "The email is already in use",
+    description: 'The email is already in use',
   })
   @ApiBody({
     schema: {
-      example: { "email": "New email" }
-    }
+      example: { email: 'New email' },
+    },
   })
-  async updateEmail(
-    @Req() req,
-    @Body('email') newEmail: string,
-  ) {
-    const id = req.user.id;
-
-    const user = await this.userService.findOneByEmail(newEmail);
+  async updateEmail(@Req() req, @Body() emailChange: EmailChangeDTO) {
+    const user = await this.userService.findOneByEmail(emailChange.email);
 
     if (user) {
-      throw new HttpException('The email is already in use', HttpStatus.CONFLICT);
+      throw new HttpException(
+        'The email is already in use',
+        HttpStatus.CONFLICT,
+      );
     }
 
-    return this.userService.update(id, { email: newEmail });
+    await this.userService.canChangeEmail(req.user);
+
+    return this.userService.updateEmail(req.user, emailChange.email);
+  }
+
+  @Public()
+  @Patch('confirm-email')
+  async confirmEmail(
+    @Req() req,
+    @Body('authorization_id') authorizationId: string,
+  ) {
+    const emailChangeRegister = await this.userService.checkEmailChangeByAuthId(
+      authorizationId,
+    );
+
+    if (emailChangeRegister) {
+      /**
+       * está bien pasarle el req.user? esto debería ser un endpoint público
+       */
+      await this.userService.confirmEmailChange(req.user, emailChangeRegister);
+    }
+
+    return STATUS.UPDATED;
   }
 
   @Patch('password')
@@ -121,26 +142,29 @@ export class UserController {
   })
   @ApiConflictResponse({
     status: 409,
-    description: "New password should be different from the current one",
+    description: 'New password should be different from the current one',
   })
   @ApiForbiddenResponse({
     status: 403,
-    description: "Invalid current password",
+    description: 'Invalid current password',
   })
-  async updatePassword(
-    @Req() req,
-    @Body() editPasswordDTO: EditPasswordDTO,
-  ) {
+  async updatePassword(@Req() req, @Body() editPasswordDTO: EditPasswordDTO) {
     const id = req.user.id;
 
-    const passwordsMatch = await this.userService.validateCurrentPassword(req.user, editPasswordDTO.currentPassword);
+    const passwordsMatch = await this.userService.validateCurrentPassword(
+      req.user,
+      editPasswordDTO.currentPassword,
+    );
 
     if (!passwordsMatch) {
-      throw new HttpException("Invalid current password", HttpStatus.FORBIDDEN)
+      throw new HttpException('Invalid current password', HttpStatus.FORBIDDEN);
     }
 
     if (editPasswordDTO.currentPassword == editPasswordDTO.newPassword) {
-      throw new HttpException("New password should be different from the current one", HttpStatus.CONFLICT)
+      throw new HttpException(
+        'New password should be different from the current one',
+        HttpStatus.CONFLICT,
+      );
     }
 
     return this.userService.updatePassword(id, editPasswordDTO);
