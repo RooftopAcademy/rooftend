@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { Search } from '../../search/entities/search.entity';
@@ -70,6 +72,22 @@ export class User {
     select: false,
   })
   account_status: AccountStatusesEnum;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    select: false,
+  })
+  @ApiHideProperty()
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    select: false,
+  })
+  @ApiHideProperty()
+  updatedAt: Date;
 
   @ApiHideProperty()
   @DeleteDateColumn({
