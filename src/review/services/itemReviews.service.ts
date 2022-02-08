@@ -13,6 +13,7 @@ import STATUS from '../../statusCodes/statusCodes';
 import ItemReviewDTO from '../DTOs/itemReview.create.dto';
 import { ItemReviews } from '../entities/itemReviews.entity';
 import { ItemsService } from '../../items/services/items.service';
+import ReactionsCounter from './ReactionsCounter';
 
 export enum ScoreType {
   'POS' = '> 3',
@@ -28,13 +29,10 @@ export class ItemReviewsService {
     private readonly itemsService: ItemsService,
   ) { }
 
-
-
   async paginate(options: IPaginationOptions, itemId: number, filter?: ScoreType): Promise<Pagination<ItemReviews>> {
     let reviews = this.itemReviewsRepository.createQueryBuilder('reviews')
       .leftJoin('reviews.item', 'items')
       .where('items.id = :itemId', { itemId })
-
 
     if (filter) {
       reviews.andWhere(`reviews.score ${ScoreType[filter]}`)
@@ -63,12 +61,11 @@ export class ItemReviewsService {
     }
   }
 
-
   /**
    * Find if some item has been reviewed
    * Returns "1" if true or "0" if false
-//    * @param itemId
-//    */
+   * @param itemId
+   */
   async findOneWith(itemId: number, userId: number) {
 
     const unreviewed = await this.itemReviewsRepository.findOne({
@@ -81,15 +78,11 @@ export class ItemReviewsService {
     return unreviewed
   }
 
-
-  setLike(itemReviewId: number, likesAndDislikes: Array<{ liked: string, count: string }>) {
-
-    likesAndDislikes.forEach(item => {
-      if (item.liked === 'like') {
-        this.itemReviewsRepository.update(itemReviewId, { likes_count: Number(item.count) })
-      }
-      this.itemReviewsRepository.update(itemReviewId, { dislike_count: Number(item.count) })
-    })
-
+  /**
+   * @param itemReviewId
+   * @param likesAndDislikes
+   */
+  updateReactionsCount(itemReviewId: number, likesAndDislikes: ReactionsCounter) {
+    this.itemReviewsRepository.update(itemReviewId, likesAndDislikes)
   }
 }
