@@ -6,7 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { PasswordMatch } from '../class-validator/password-match.decorator';
+import { StringMatch } from '../class-validator/string-match.decorator';
 
 export class CreateUserDTO {
   @ApiProperty({
@@ -37,7 +37,7 @@ export class CreateUserDTO {
     type: String,
   })
   @IsString()
-  @PasswordMatch('password', {
+  @StringMatch('password', {
     message: 'PASSWORD_CONFIRMATION_NOT_MATCHING',
   })
   passwordConfirmation: string;
