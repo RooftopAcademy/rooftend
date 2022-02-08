@@ -1,9 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ItemsService } from '../../items/services/items.service';
-import Status from '../../statusCodes/status.interface';
-import STATUS from '../../statusCodes/statusCodes';
+import { Review } from '../../../dist/review/review.entity';
 import { User } from '../../users/entities/user.entity';
 import { Likes } from '../entities/likes.entity';
 import { ItemReviewsService } from './itemReviews.service';
@@ -27,16 +25,21 @@ export class LikesService {
                     itemReview: { id: itemReviewId },
                 },
             });
+
             reacted ?
                 // Si el paramatro liked es igual a valor actual de la comuna liked, tiene que updatear a null
                 // de lo contrario, actualizarlo a lo que diga el parametro liked
-                this.setLiked(reacted, liked == reacted.liked ? null : liked) :
+                this.setLiked(reacted, (liked == reacted.liked) ? null : liked) :
 
                 //si no reacciono previamente 
                 // si reacciono previamente o si la reaccion es nueva
                 this.firstReaction(liked, user, itemReviewId)
 
-            return await this.countLikesAndDislikes(itemReviewId)
+            const counters = await this.countLikesAndDislikes(itemReviewId)
+
+            this.itemReviewsService.setLike(itemReviewId, counters)
+
+            return counters
         }
 
         catch (err) {
