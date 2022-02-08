@@ -81,4 +81,15 @@ export class ItemReviewsService {
     return unreviewed
   }
 
+
+  setLike(itemReviewId: number, likesAndDislikes: Array<{ liked: string, count: string }>) {
+
+    likesAndDislikes.forEach(item => {
+      if (item.liked === 'like') {
+        this.itemReviewsRepository.update(itemReviewId, { likes_count: Number(item.count) })
+      }
+      this.itemReviewsRepository.update(itemReviewId, { dislike_count: Number(item.count) })
+    })
+
+  }
 }
